@@ -26,32 +26,6 @@ export async function readTextIfExists(targetPath: string): Promise<string | nul
   return readFile(targetPath, 'utf8')
 }
 
-export async function writeTextFile(
-  rootDir: string,
-  relativePath: string,
-  content: string,
-  force = false,
-): Promise<WriteFileResult> {
-  const absolutePath = path.resolve(rootDir, relativePath)
-  await ensureDir(path.dirname(absolutePath))
-
-  const current = await readTextIfExists(absolutePath)
-  if (current !== null && current === content) {
-    return { path: relativePath, changed: false, created: false }
-  }
-
-  if (current !== null && !force) {
-    return { path: relativePath, changed: false, created: false }
-  }
-
-  await writeFile(absolutePath, content, 'utf8')
-  return {
-    path: relativePath,
-    changed: true,
-    created: current === null,
-  }
-}
-
 export async function upsertTextFile(rootDir: string, relativePath: string, content: string): Promise<WriteFileResult> {
   const absolutePath = path.resolve(rootDir, relativePath)
   await ensureDir(path.dirname(absolutePath))
