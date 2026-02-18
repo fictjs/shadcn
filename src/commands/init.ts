@@ -2,8 +2,8 @@ import path from 'node:path'
 
 import colors from 'picocolors'
 
-import { DEFAULT_CONFIG, DEV_DEPENDENCIES, RUNTIME_DEPENDENCIES } from '../core/constants'
-import { saveConfig } from '../core/config'
+import { DEV_DEPENDENCIES, RUNTIME_DEPENDENCIES } from '../core/constants'
+import { loadConfig, saveConfig } from '../core/config'
 import { exists, readTextIfExists, upsertTextFile } from '../core/io'
 import { detectPackageManager, findProjectRoot, runPackageManagerInstall } from '../core/project'
 import {
@@ -20,7 +20,7 @@ import type { InitOptions } from '../core/types'
 export async function runInit(options: InitOptions = {}): Promise<void> {
   const cwd = options.cwd ?? process.cwd()
   const projectRoot = await findProjectRoot(cwd)
-  const config = { ...DEFAULT_CONFIG }
+  const config = await loadConfig(projectRoot)
 
   await saveConfig(projectRoot, config)
 

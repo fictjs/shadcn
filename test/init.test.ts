@@ -25,4 +25,44 @@ describe('runInit', () => {
     expect(globals).toContain('@fictcn tokens:start')
     expect(tsconfig).toContain('"@/*"')
   })
+
+  it('preserves existing config values on re-init', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-init-existing-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, CONFIG_FILE),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fictjs.dev/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'custom/ui',
+          libDir: 'custom/lib',
+          css: 'custom/styles.css',
+          tailwindConfig: 'tailwind.custom.ts',
+          registry: 'builtin',
+          aliases: {
+            base: '~',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    await runInit({ cwd, skipInstall: true })
+
+    const config = await readFile(path.join(cwd, CONFIG_FILE), 'utf8')
+    const cnFile = await readFile(path.join(cwd, 'custom/lib/cn.ts'), 'utf8')
+    const globals = await readFile(path.join(cwd, 'custom/styles.css'), 'utf8')
+    const tailwindConfig = await readFile(path.join(cwd, 'tailwind.custom.ts'), 'utf8')
+
+    expect(config).toContain('"componentsDir": "custom/ui"')
+    expect(config).toContain('"aliases": {\n    "base": "~"\n  }')
+    expect(cnFile).toContain('twMerge')
+    expect(globals).toContain('@fictcn tokens:start')
+    expect(tailwindConfig).toContain('tailwindcss-animate')
+  })
 })
