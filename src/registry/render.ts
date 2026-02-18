@@ -2,6 +2,7 @@ import type { FictcnConfig } from '../core/types'
 import { hashContent } from '../core/io'
 import { createTemplateContext, resolveTemplatePath } from './context'
 import { getBuiltinComponent } from './index'
+import type { RegistryEntry } from './types'
 
 export interface RenderedRegistryFile {
   component: string
@@ -16,13 +17,17 @@ export function renderComponentFiles(componentName: string, config: FictcnConfig
     throw new Error(`Unknown registry component: ${componentName}`)
   }
 
+  return renderRegistryEntryFiles(component, config)
+}
+
+export function renderRegistryEntryFiles(entry: RegistryEntry, config: FictcnConfig): RenderedRegistryFile[] {
   const context = createTemplateContext(config)
 
-  return component.files.map(file => {
+  return entry.files.map(file => {
     const relativePath = resolveTemplatePath(file.path, config)
     const content = normalizeNewLine(file.content(context))
     return {
-      component: component.name,
+      component: entry.name,
       relativePath,
       content,
       hash: hashContent(content),
