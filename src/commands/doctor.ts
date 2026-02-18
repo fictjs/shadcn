@@ -6,6 +6,7 @@ import colors from 'picocolors'
 import { CONFIG_FILE } from '../core/constants'
 import { loadConfig } from '../core/config'
 import { exists, readJsonFile, readTextIfExists } from '../core/io'
+import { getAliasPathKey, getAliasPathTarget } from '../core/layout'
 import { findProjectRoot } from '../core/project'
 
 export interface DoctorIssue {
@@ -64,13 +65,14 @@ export async function runDoctor(cwd = process.cwd()): Promise<DoctorResult> {
           paths?: Record<string, string[]>
         }
       }
-      const aliasPathKey = toAliasPathKey(config.aliases.base)
+      const aliasPathKey = getAliasPathKey(config.aliases.base)
+      const aliasPathTarget = getAliasPathTarget(config)
       const alias = tsconfig.compilerOptions?.paths?.[aliasPathKey]
-      if (!alias || !alias.includes('src/*')) {
+      if (!alias || !alias.includes(aliasPathTarget)) {
         issues.push({
           level: 'warning',
           code: 'alias-paths',
-          message: `tsconfig paths is missing ${aliasPathKey} -> src/* alias.`,
+          message: `tsconfig paths is missing ${aliasPathKey} -> ${aliasPathTarget} alias.`,
         })
       }
     } catch {
@@ -158,9 +160,4 @@ export async function runDoctor(cwd = process.cwd()): Promise<DoctorResult> {
     ok: issues.every(issue => issue.level !== 'error'),
     issues,
   }
-}
-
-function toAliasPathKey(baseAlias: string): string {
-  const normalized = baseAlias.trim().replace(/\/+$/, '')
-  return normalized.endsWith('/*') ? normalized : `${normalized}/*`
 }

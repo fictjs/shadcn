@@ -5,6 +5,7 @@ import colors from 'picocolors'
 import { DEV_DEPENDENCIES, RUNTIME_DEPENDENCIES } from '../core/constants'
 import { loadConfig, saveConfig } from '../core/config'
 import { exists, readTextIfExists, upsertTextFile } from '../core/io'
+import { getAliasPathKey, getAliasPathTarget } from '../core/layout'
 import { detectPackageManager, findProjectRoot, runPackageManagerInstall } from '../core/project'
 import {
   createCnUtility,
@@ -15,7 +16,7 @@ import {
   createVariantsUtility,
   patchTailwindConfig,
 } from '../core/templates'
-import type { InitOptions } from '../core/types'
+import type { FictcnConfig, InitOptions } from '../core/types'
 
 export async function runInit(options: InitOptions = {}): Promise<void> {
   const cwd = options.cwd ?? process.cwd()
@@ -32,7 +33,7 @@ export async function runInit(options: InitOptions = {}): Promise<void> {
     createVariantsUtility(),
   )
 
-  await ensureTsconfigAlias(projectRoot)
+  await ensureTsconfigAlias(projectRoot, config)
   await ensureTailwindConfig(projectRoot, config.tailwindConfig)
   await ensurePostcssConfig(projectRoot)
 
@@ -47,7 +48,9 @@ export async function runInit(options: InitOptions = {}): Promise<void> {
   console.log(colors.green('fictcn init completed.'))
 }
 
-async function ensureTsconfigAlias(projectRoot: string): Promise<void> {
+async function ensureTsconfigAlias(projectRoot: string, config: FictcnConfig): Promise<void> {
+  const aliasPathKey = getAliasPathKey(config.aliases.base)
+  const aliasPathTarget = getAliasPathTarget(config)
   const tsconfigPath = path.resolve(projectRoot, 'tsconfig.json')
   const existing = await readTextIfExists(tsconfigPath)
 
@@ -56,7 +59,7 @@ async function ensureTsconfigAlias(projectRoot: string): Promise<void> {
       compilerOptions: {
         baseUrl: '.',
         paths: {
-          '@/*': ['src/*'],
+          [aliasPathKey]: [aliasPathTarget],
         },
       },
     }
@@ -64,7 +67,7 @@ async function ensureTsconfigAlias(projectRoot: string): Promise<void> {
     return
   }
 
-  const patched = createTsconfigPathPatch(existing)
+  const patched = createTsconfigPathPatch(existing, aliasPathKey, aliasPathTarget)
   if (patched === null) {
     console.log(colors.yellow('Warning: could not patch tsconfig.json automatically.'))
     return

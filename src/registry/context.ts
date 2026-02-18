@@ -1,3 +1,4 @@
+import { getAliasImportBase, getAliasPathTarget } from '../core/layout'
 import type { FictcnConfig } from '../core/types'
 import type { TemplateContext } from './types'
 
@@ -19,8 +20,9 @@ export function resolveTemplatePath(templatePath: string, config: FictcnConfig):
 
 function toAliasImport(config: FictcnConfig, relativePath: string): string {
   const normalized = relativePath.replaceAll('\\', '/').replace(/\.tsx?$/, '')
-  const withoutSrc = normalized.startsWith('src/') ? normalized.slice(4) : normalized
-  const base = config.aliases.base.replace(/\/$/, '')
+  const shouldStripSrcPrefix = getAliasPathTarget(config) === 'src/*'
+  const withoutSrc = shouldStripSrcPrefix && normalized.startsWith('src/') ? normalized.slice(4) : normalized
+  const base = getAliasImportBase(config.aliases.base)
 
   if (withoutSrc.length === 0) return base
   return `${base}/${withoutSrc}`

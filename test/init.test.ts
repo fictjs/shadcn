@@ -58,12 +58,15 @@ describe('runInit', () => {
     const cnFile = await readFile(path.join(cwd, 'custom/lib/cn.ts'), 'utf8')
     const globals = await readFile(path.join(cwd, 'custom/styles.css'), 'utf8')
     const tailwindConfig = await readFile(path.join(cwd, 'tailwind.custom.ts'), 'utf8')
+    const tsconfig = await readFile(path.join(cwd, 'tsconfig.json'), 'utf8')
 
     expect(config).toContain('"componentsDir": "custom/ui"')
     expect(config).toContain('"aliases": {\n    "base": "~"\n  }')
     expect(cnFile).toContain('twMerge')
     expect(globals).toContain('@fictcn tokens:start')
     expect(tailwindConfig).toContain('tailwindcss-animate')
+    expect(tsconfig).toContain('"~/*"')
+    expect(tsconfig).toContain('"*"')
   })
 
   it('patches tsconfig JSONC with comments and trailing commas', async () => {
