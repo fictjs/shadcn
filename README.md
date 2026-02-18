@@ -1,5 +1,9 @@
 # @fictjs/shadcn
 
+[![Node CI](https://github.com/fictjs/shadcn/actions/workflows/nodejs.yml/badge.svg)](https://github.com/fictjs/shadcn/actions/workflows/nodejs.yml)
+[![npm](https://img.shields.io/npm/v/@fictjs/shadcn.svg)](https://www.npmjs.com/package/@fictjs/shadcn)
+![license](https://img.shields.io/npm/l/@fictjs/shadcn)
+
 The official [shadcn/ui](https://ui.shadcn.com)-style code distribution system for [Fict](https://fictjs.dev) — a reactive UI library with compiler-driven fine-grained reactivity.
 
 Instead of installing a component library as a dependency, `@fictjs/shadcn` copies beautifully-designed, accessible component source code directly into your project. You own the code, you customize it, and the CLI helps you keep it up to date.
@@ -180,19 +184,19 @@ Running `fictcn init` creates a `fictcn.json` at your project root:
   "tailwindConfig": "tailwind.config.ts",
   "registry": "builtin",
   "aliases": {
-    "base": "@"
-  }
+    "base": "@",
+  },
 }
 ```
 
-| Field            | Description                                              | Default                    |
-| ---------------- | -------------------------------------------------------- | -------------------------- |
-| `componentsDir`  | Where UI component files are written                     | `src/components/ui`        |
-| `libDir`         | Where utility files (`cn.ts`, `variants.ts`) are placed  | `src/lib`                  |
-| `css`            | Path to the global CSS file with design tokens           | `src/styles/globals.css`   |
-| `tailwindConfig` | Path to the Tailwind CSS configuration file              | `tailwind.config.ts`       |
-| `registry`       | Registry source (`builtin` is currently the only option) | `builtin`                  |
-| `aliases.base`   | TypeScript path alias prefix for imports                 | `@`                        |
+| Field            | Description                                              | Default                  |
+| ---------------- | -------------------------------------------------------- | ------------------------ |
+| `componentsDir`  | Where UI component files are written                     | `src/components/ui`      |
+| `libDir`         | Where utility files (`cn.ts`, `variants.ts`) are placed  | `src/lib`                |
+| `css`            | Path to the global CSS file with design tokens           | `src/styles/globals.css` |
+| `tailwindConfig` | Path to the Tailwind CSS configuration file              | `tailwind.config.ts`     |
+| `registry`       | Registry source (`builtin` is currently the only option) | `builtin`                |
+| `aliases.base`   | TypeScript path alias prefix for imports                 | `@`                      |
 
 ## Lock File
 
@@ -208,14 +212,14 @@ Commit this file to version control so your team stays in sync.
 
 ### Components (35)
 
-| Category   | Components                                                                                          |
-| ---------- | --------------------------------------------------------------------------------------------------- |
+| Category   | Components                                                                                                 |
+| ---------- | ---------------------------------------------------------------------------------------------------------- |
 | Base       | `button`, `badge`, `card`, `separator`, `avatar`, `aspect-ratio`, `skeleton`, `label`, `input`, `textarea` |
-| Forms      | `checkbox`, `radio-group`, `switch`, `select`, `combobox`, `slider`, `toggle`, `toggle-group`, `form` |
-| Overlay    | `dialog`, `alert-dialog`, `popover`, `tooltip`, `hover-card`, `sheet`                               |
-| Navigation | `dropdown-menu`, `context-menu`, `menubar`, `tabs`, `accordion`, `collapsible`, `navigation-menu`   |
-| Feedback   | `toast`, `progress`                                                                                 |
-| Data       | `table`                                                                                             |
+| Forms      | `checkbox`, `radio-group`, `switch`, `select`, `combobox`, `slider`, `toggle`, `toggle-group`, `form`      |
+| Overlay    | `dialog`, `alert-dialog`, `popover`, `tooltip`, `hover-card`, `sheet`                                      |
+| Navigation | `dropdown-menu`, `context-menu`, `menubar`, `tabs`, `accordion`, `collapsible`, `navigation-menu`          |
+| Feedback   | `toast`, `progress`                                                                                        |
+| Data       | `table`                                                                                                    |
 
 ### Blocks
 
@@ -232,13 +236,13 @@ Commit this file to version control so your team stays in sync.
 
 ### Themes
 
-| Theme               | Description                         |
-| -------------------- | ----------------------------------- |
-| `theme-default`      | Neutral gray palette                |
-| `theme-slate`        | Cool slate tones                    |
-| `theme-zinc`         | Zinc/charcoal palette               |
-| `theme-stone`        | Warm stone tones                    |
-| `theme-brand-ocean`  | Blue ocean brand palette            |
+| Theme               | Description              |
+| ------------------- | ------------------------ |
+| `theme-default`     | Neutral gray palette     |
+| `theme-slate`       | Cool slate tones         |
+| `theme-zinc`        | Zinc/charcoal palette    |
+| `theme-stone`       | Warm stone tones         |
+| `theme-brand-ocean` | Blue ocean brand palette |
 
 All themes provide light and dark mode variants via CSS custom properties and can be applied with a class name (e.g., `class="theme-slate dark"`).
 
