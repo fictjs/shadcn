@@ -1,5 +1,6 @@
 import path from 'node:path'
 
+import { parse, type ParseError } from 'jsonc-parser'
 import colors from 'picocolors'
 
 import { CONFIG_FILE } from '../core/constants'
@@ -48,7 +49,17 @@ export async function runDoctor(cwd = process.cwd()): Promise<DoctorResult> {
     })
   } else {
     try {
-      const tsconfig = JSON.parse(tsconfigRaw) as {
+      const parseErrors: ParseError[] = []
+      const parsed = parse(tsconfigRaw, parseErrors, {
+        allowTrailingComma: true,
+        disallowComments: false,
+      })
+
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed) || parseErrors.length > 0) {
+        throw new Error('invalid-tsconfig-jsonc')
+      }
+
+      const tsconfig = parsed as {
         compilerOptions?: {
           paths?: Record<string, string[]>
         }
