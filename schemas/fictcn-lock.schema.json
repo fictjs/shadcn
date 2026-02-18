@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://fictjs.dev/schemas/fictcn-lock.schema.json",
+  "$id": "https://fict.js.org/schemas/fictcn-lock.schema.json",
   "title": "fictcn lock",
   "type": "object",
   "required": ["version", "registry", "components", "blocks", "themes"],

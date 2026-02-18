@@ -33,7 +33,12 @@ describe('maintenance commands', () => {
     const guardedUpdate = await runUpdate({ cwd, components: ['button'], skipInstall: true })
     expect(guardedUpdate.skipped).toContain('button')
 
-    const forcedUpdate = await runUpdate({ cwd, components: ['button'], force: true, skipInstall: true })
+    const forcedUpdate = await runUpdate({
+      cwd,
+      components: ['button'],
+      force: true,
+      skipInstall: true,
+    })
     expect(forcedUpdate.updated).toContain('button')
 
     const refreshed = await readFile(filePath, 'utf8')
@@ -105,7 +110,7 @@ describe('maintenance commands', () => {
       path.join(cwd, 'fictcn.json'),
       `${JSON.stringify(
         {
-          $schema: 'https://fictjs.dev/schemas/fictcn.schema.json',
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
           version: 1,
           style: 'tailwind-css-vars',
           componentsDir: 'src/components/ui',
@@ -158,13 +163,17 @@ describe('maintenance commands', () => {
   it('fails doctor when registry is unsupported', async () => {
     const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-doctor-registry-'))
     await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
-    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{"paths":{"@/*":["src/*"]}}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'tsconfig.json'),
+      '{"compilerOptions":{"paths":{"@/*":["src/*"]}}}\n',
+      'utf8',
+    )
     await mkdir(path.join(cwd, 'src/styles'), { recursive: true })
     await writeFile(
       path.join(cwd, 'fictcn.json'),
       `${JSON.stringify(
         {
-          $schema: 'https://fictjs.dev/schemas/fictcn.schema.json',
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
           version: 1,
           style: 'tailwind-css-vars',
           componentsDir: 'src/components/ui',
@@ -207,7 +216,7 @@ describe('maintenance commands', () => {
       path.join(cwd, 'fictcn.json'),
       `${JSON.stringify(
         {
-          $schema: 'https://fictjs.dev/schemas/fictcn.schema.json',
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
           version: 1,
           style: 'tailwind-css-vars',
           componentsDir: 'src/components/ui',
@@ -264,7 +273,7 @@ describe('maintenance commands', () => {
       path.join(cwd, 'fictcn.json'),
       `${JSON.stringify(
         {
-          $schema: 'https://fictjs.dev/schemas/fictcn.schema.json',
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
           version: 1,
           style: 'tailwind-css-vars',
           componentsDir: 'custom/ui',

@@ -34,7 +34,7 @@ describe('runInit', () => {
       path.join(cwd, CONFIG_FILE),
       `${JSON.stringify(
         {
-          $schema: 'https://fictjs.dev/schemas/fictcn.schema.json',
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
           version: 1,
           style: 'tailwind-css-vars',
           componentsDir: 'custom/ui',
@@ -103,7 +103,7 @@ describe('runInit', () => {
       path.join(cwd, CONFIG_FILE),
       `${JSON.stringify(
         {
-          $schema: 'https://fictjs.dev/schemas/fictcn.schema.json',
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
           version: 1,
           style: 'tailwind-css-vars',
           componentsDir: 'src/components/ui',
@@ -137,13 +137,17 @@ describe('runInit', () => {
 
   it('creates CommonJS tailwind config for .js when package type is commonjs', async () => {
     const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-init-tailwind-js-cjs-'))
-    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox","type":"commonjs"}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'package.json'),
+      '{"name":"sandbox","type":"commonjs"}\n',
+      'utf8',
+    )
     await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
     await writeFile(
       path.join(cwd, CONFIG_FILE),
       `${JSON.stringify(
         {
-          $schema: 'https://fictjs.dev/schemas/fictcn.schema.json',
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
           version: 1,
           style: 'tailwind-css-vars',
           componentsDir: 'src/components/ui',

@@ -175,7 +175,7 @@ Running `fictcn init` creates a `fictcn.json` at your project root:
 
 ```jsonc
 {
-  "$schema": "https://fictjs.dev/schemas/fictcn.schema.json",
+  "$schema": "https://fict.js.org/schemas/fictcn.schema.json",
   "version": 1,
   "style": "tailwind-css-vars",
   "componentsDir": "src/components/ui",
@@ -331,8 +331,8 @@ pnpm test:watch    # watch mode
 
 Schemas for editor autocompletion and validation:
 
-- **Config**: `https://fictjs.dev/schemas/fictcn.schema.json`
-- **Lock file**: `https://fictjs.dev/schemas/fictcn-lock.schema.json`
+- **Config**: `https://fict.js.org/schemas/fictcn.schema.json`
+- **Lock file**: `https://fict.js.org/schemas/fictcn-lock.schema.json`
 
 Local copies are in the `schemas/` directory.
 
