@@ -1,6 +1,6 @@
 # @fictjs/shadcn
 
-[![Node CI](https://github.com/fictjs/shadcn/actions/workflows/nodejs.yml/badge.svg)](https://github.com/fictjs/shadcn/actions/workflows/nodejs.yml)
+[![Node CI](https://github.com/fictjs/shadcn/actions/workflows/CI/badge.svg)](https://github.com/fictjs/shadcn/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@fictjs/shadcn.svg)](https://www.npmjs.com/package/@fictjs/shadcn)
 ![license](https://img.shields.io/npm/l/@fictjs/shadcn)
 
