@@ -4,7 +4,7 @@
 [![npm](https://img.shields.io/npm/v/@fictjs/shadcn.svg)](https://www.npmjs.com/package/@fictjs/shadcn)
 ![license](https://img.shields.io/npm/l/@fictjs/shadcn)
 
-The official [shadcn/ui](https://ui.shadcn.com)-style code distribution system for [Fict](https://fictjs.dev) — a reactive UI library with compiler-driven fine-grained reactivity.
+The official [shadcn/ui](https://ui.shadcn.com)-style code distribution system for [Fict](https://github.com/fictjs/fict) — a reactive UI library with compiler-driven fine-grained reactivity.
 
 Instead of installing a component library as a dependency, `@fictjs/shadcn` copies beautifully-designed, accessible component source code directly into your project. You own the code, you customize it, and the CLI helps you keep it up to date.
 
