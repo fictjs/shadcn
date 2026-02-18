@@ -11,6 +11,7 @@
     "url": "git+https://github.com/fictjs/shadcn.git"
   },
   "type": "module",
+  "packageManager": "pnpm@9.1.1",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
