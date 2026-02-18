@@ -3,7 +3,7 @@ import path from 'node:path'
 import { parse, type ParseError } from 'jsonc-parser'
 import colors from 'picocolors'
 
-import { CONFIG_FILE } from '../core/constants'
+import { CONFIG_FILE, DEFAULT_CONFIG } from '../core/constants'
 import { loadConfig } from '../core/config'
 import { exists, readJsonFile, readTextIfExists } from '../core/io'
 import { getAliasPathKey, getAliasPathTarget, getTailwindContentGlobs } from '../core/layout'
@@ -22,15 +22,32 @@ export interface DoctorResult {
 
 export async function runDoctor(cwd = process.cwd()): Promise<DoctorResult> {
   const projectRoot = await findProjectRoot(cwd)
-  const config = await loadConfig(projectRoot)
   const issues: DoctorIssue[] = []
+  const configPath = path.resolve(projectRoot, CONFIG_FILE)
+  let config = { ...DEFAULT_CONFIG }
 
-  if (!(await exists(path.resolve(projectRoot, CONFIG_FILE)))) {
+  if (!(await exists(configPath))) {
     issues.push({
       level: 'error',
       code: 'missing-config',
       message: 'fictcn.json is missing. Run `fictcn init` first.',
     })
+  } else {
+    try {
+      config = await loadConfig(projectRoot)
+    } catch (error) {
+      issues.push({
+        level: 'error',
+        code: 'invalid-config',
+        message: error instanceof Error ? error.message : String(error),
+      })
+
+      printIssues(issues)
+      return {
+        ok: false,
+        issues,
+      }
+    }
   }
 
   if (config.registry !== 'builtin') {
@@ -150,17 +167,22 @@ export async function runDoctor(cwd = process.cwd()): Promise<DoctorResult> {
     }
   }
 
-  if (issues.length === 0) {
-    console.log(colors.green('Doctor check passed.'))
-  } else {
-    for (const issue of issues) {
-      const color = issue.level === 'error' ? colors.red : colors.yellow
-      console.log(color(`[${issue.level}] ${issue.code}: ${issue.message}`))
-    }
-  }
+  printIssues(issues)
 
   return {
     ok: issues.every(issue => issue.level !== 'error'),
     issues,
+  }
+}
+
+function printIssues(issues: DoctorIssue[]): void {
+  if (issues.length === 0) {
+    console.log(colors.green('Doctor check passed.'))
+    return
+  }
+
+  for (const issue of issues) {
+    const color = issue.level === 'error' ? colors.red : colors.yellow
+    console.log(color(`[${issue.level}] ${issue.code}: ${issue.message}`))
   }
 }
