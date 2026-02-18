@@ -1,5 +1,7 @@
 import { Command } from 'commander'
 
+import { runInit } from '../commands/init'
+
 export async function main(argv: string[]): Promise<void> {
   const program = new Command()
 
@@ -11,8 +13,11 @@ export async function main(argv: string[]): Promise<void> {
   program
     .command('init')
     .description('Initialize the current project for fictcn')
-    .action(() => {
-      console.log('fictcn init (coming next commit)')
+    .option('--skip-install', 'Skip dependency installation')
+    .action(async options => {
+      await runInit({
+        skipInstall: Boolean(options.skipInstall),
+      })
     })
 
   await program.parseAsync(argv)
