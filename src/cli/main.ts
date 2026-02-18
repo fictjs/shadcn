@@ -1,4 +1,4 @@
-import { Command } from 'commander'
+import { Command, Option } from 'commander'
 
 import { runAdd } from '../commands/add'
 import { runBlocksInstall } from '../commands/blocks'
@@ -82,7 +82,11 @@ export async function main(argv: string[]): Promise<void> {
   program
     .command('list')
     .description('List builtin registry entries')
-    .option('--type <type>', 'components | blocks | themes | all', 'all')
+    .addOption(
+      new Option('--type <type>', 'components | blocks | themes | all')
+        .choices(['components', 'blocks', 'themes', 'all'])
+        .default('all'),
+    )
     .option('--json', 'Output as JSON')
     .action(options => {
       const output = runList({

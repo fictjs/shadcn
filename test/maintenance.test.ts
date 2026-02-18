@@ -56,6 +56,10 @@ describe('maintenance commands', () => {
     expect(doctor.issues.some(issue => issue.code === 'missing-dependency')).toBe(true)
   })
 
+  it('throws for invalid list type', () => {
+    expect(() => runList({ type: 'invalid-type' })).toThrow('Invalid list type')
+  })
+
   it('accepts custom alias base in doctor checks', async () => {
     const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-doctor-alias-'))
     await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
