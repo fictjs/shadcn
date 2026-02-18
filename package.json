@@ -1,6 +1,6 @@
 {
   "name": "@fictjs/shadcn",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Official shadcn-style code distribution system for Fict",
   "publishConfig": {
     "access": "public",
