@@ -10,7 +10,7 @@ export const builtinThemes: RegistryEntry[] = [
     registryDependencies: [],
     files: [
       {
-        path: 'src/styles/themes/theme-default.css',
+        path: '{{themesDir}}/theme-default.css',
         content: () => `.theme-default {
   --primary: 222.2 47.4% 11.2%;
   --primary-foreground: 210 40% 98%;
@@ -43,7 +43,7 @@ export const builtinThemes: RegistryEntry[] = [
     registryDependencies: [],
     files: [
       {
-        path: 'src/styles/themes/theme-slate.css',
+        path: '{{themesDir}}/theme-slate.css',
         content: () => `.theme-slate {
   --primary: 215 28% 17%;
   --primary-foreground: 210 40% 98%;
@@ -76,7 +76,7 @@ export const builtinThemes: RegistryEntry[] = [
     registryDependencies: [],
     files: [
       {
-        path: 'src/styles/themes/theme-zinc.css',
+        path: '{{themesDir}}/theme-zinc.css',
         content: () => `.theme-zinc {
   --primary: 240 5.9% 10%;
   --primary-foreground: 0 0% 98%;
@@ -109,7 +109,7 @@ export const builtinThemes: RegistryEntry[] = [
     registryDependencies: [],
     files: [
       {
-        path: 'src/styles/themes/theme-stone.css',
+        path: '{{themesDir}}/theme-stone.css',
         content: () => `.theme-stone {
   --primary: 24 9.8% 10%;
   --primary-foreground: 60 9.1% 97.8%;
@@ -142,7 +142,7 @@ export const builtinThemes: RegistryEntry[] = [
     registryDependencies: [],
     files: [
       {
-        path: 'src/styles/themes/theme-brand-ocean.css',
+        path: '{{themesDir}}/theme-brand-ocean.css',
         content: () => `.theme-brand-ocean {
   --primary: 199 89% 48%;
   --primary-foreground: 0 0% 100%;

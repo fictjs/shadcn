@@ -38,6 +38,12 @@ export function getBlocksDir(config: FictcnConfig): string {
   return `${baseDir}/blocks`
 }
 
+export function getThemesDir(config: FictcnConfig): string {
+  const normalizedCssPath = normalizeRelativePath(config.css)
+  const stylesDir = path.posix.dirname(normalizedCssPath)
+  return `${stylesDir}/themes`
+}
+
 function shouldUseSrcAliasTarget(config: FictcnConfig): boolean {
   return [config.componentsDir, config.libDir].every(isSrcScopedPath)
 }

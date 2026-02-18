@@ -1,4 +1,4 @@
-import { getAliasImportBase, getAliasPathTarget, getBlocksDir } from '../core/layout'
+import { getAliasImportBase, getAliasPathTarget, getBlocksDir, getThemesDir } from '../core/layout'
 import type { FictcnConfig } from '../core/types'
 import type { TemplateContext } from './types'
 
@@ -18,6 +18,7 @@ export function resolveTemplatePath(templatePath: string, config: FictcnConfig):
   return templatePath
     .replaceAll('{{componentsDir}}', config.componentsDir)
     .replaceAll('{{blocksDir}}', getBlocksDir(config))
+    .replaceAll('{{themesDir}}', getThemesDir(config))
     .replaceAll('{{libDir}}', config.libDir)
 }
 
