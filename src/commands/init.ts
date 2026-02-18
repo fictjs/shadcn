@@ -5,7 +5,7 @@ import colors from 'picocolors'
 import { DEV_DEPENDENCIES, RUNTIME_DEPENDENCIES } from '../core/constants'
 import { loadConfig, saveConfig } from '../core/config'
 import { exists, readTextIfExists, upsertTextFile } from '../core/io'
-import { getAliasPathKey, getAliasPathTarget } from '../core/layout'
+import { getAliasPathKey, getAliasPathTarget, getTailwindContentGlobs } from '../core/layout'
 import { detectPackageManager, findProjectRoot, runPackageManagerInstall } from '../core/project'
 import {
   createCnUtility,
@@ -34,7 +34,7 @@ export async function runInit(options: InitOptions = {}): Promise<void> {
   )
 
   await ensureTsconfigAlias(projectRoot, config)
-  await ensureTailwindConfig(projectRoot, config.tailwindConfig)
+  await ensureTailwindConfig(projectRoot, config)
   await ensurePostcssConfig(projectRoot)
 
   if (!options.skipInstall) {
@@ -76,20 +76,22 @@ async function ensureTsconfigAlias(projectRoot: string, config: FictcnConfig): P
   await upsertTextFile(projectRoot, 'tsconfig.json', patched)
 }
 
-async function ensureTailwindConfig(projectRoot: string, tailwindConfigPath: string): Promise<void> {
+async function ensureTailwindConfig(projectRoot: string, config: FictcnConfig): Promise<void> {
+  const contentGlobs = getTailwindContentGlobs(config)
+  const tailwindConfigPath = config.tailwindConfig
   const absolutePath = path.resolve(projectRoot, tailwindConfigPath)
   if (!(await exists(absolutePath))) {
-    await upsertTextFile(projectRoot, tailwindConfigPath, createTailwindConfig())
+    await upsertTextFile(projectRoot, tailwindConfigPath, createTailwindConfig(contentGlobs))
     return
   }
 
   const current = await readTextIfExists(absolutePath)
   if (current === null) {
-    await upsertTextFile(projectRoot, tailwindConfigPath, createTailwindConfig())
+    await upsertTextFile(projectRoot, tailwindConfigPath, createTailwindConfig(contentGlobs))
     return
   }
 
-  await upsertTextFile(projectRoot, tailwindConfigPath, patchTailwindConfig(current))
+  await upsertTextFile(projectRoot, tailwindConfigPath, patchTailwindConfig(current, contentGlobs))
 }
 
 async function ensurePostcssConfig(projectRoot: string): Promise<void> {

@@ -14,6 +14,20 @@ export function getAliasPathTarget(config: FictcnConfig): string {
   return shouldUseSrcAliasTarget(config) ? 'src/*' : '*'
 }
 
+export function getTailwindContentGlobs(config: FictcnConfig): string[] {
+  const globs = ['./src/**/*.{ts,tsx}']
+
+  for (const directory of [config.componentsDir, config.libDir]) {
+    if (isSrcScopedPath(directory)) continue
+    const nextGlob = `./${normalizeRelativePath(directory)}/**/*.{ts,tsx}`
+    if (!globs.includes(nextGlob)) {
+      globs.push(nextGlob)
+    }
+  }
+
+  return globs
+}
+
 function shouldUseSrcAliasTarget(config: FictcnConfig): boolean {
   return [config.componentsDir, config.libDir].every(isSrcScopedPath)
 }

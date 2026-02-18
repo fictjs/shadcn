@@ -81,13 +81,14 @@ export function createVariantsUtility(): string {
 `
 }
 
-export function createTailwindConfig(): string {
+export function createTailwindConfig(contentGlobs: string[] = ['./src/**/*.{ts,tsx}']): string {
+  const content = contentGlobs.map(glob => `'${glob}'`).join(', ')
   return `import type { Config } from 'tailwindcss'
 import animate from 'tailwindcss-animate'
 
 const config: Config = {
   darkMode: ['class'],
-  content: ['./src/**/*.{ts,tsx}'],
+  content: [${content}],
   theme: {
     extend: {
       colors: {
@@ -196,15 +197,21 @@ export function createTsconfigPathPatch(
   }
 }
 
-export function patchTailwindConfig(current: string): string {
+export function patchTailwindConfig(current: string, requiredContentGlobs: string[] = ['./src/**/*.{ts,tsx}']): string {
   let patched = current
 
-  if (!patched.includes("'./src/**/*.{ts,tsx}'") && !patched.includes('"./src/**/*.{ts,tsx}"')) {
+  const missingContentGlobs = requiredContentGlobs.filter(glob => !containsContentGlob(patched, glob))
+  if (missingContentGlobs.length > 0) {
     const contentMatch = patched.match(/content\s*:\s*\[(?<content>[\s\S]*?)\]/)
     if (contentMatch?.index !== undefined) {
+      const content = contentMatch.groups?.content ?? ''
+      const nextContent = appendArrayEntries(
+        content,
+        missingContentGlobs.map(glob => `'${glob}'`),
+      )
       patched =
         patched.slice(0, contentMatch.index) +
-        "content: ['./src/**/*.{ts,tsx}']," +
+        contentMatch[0].replace(content, nextContent) +
         patched.slice(contentMatch.index + contentMatch[0].length)
     }
   }
@@ -224,4 +231,18 @@ export function patchTailwindConfig(current: string): string {
   }
 
   return patched
+}
+
+function containsContentGlob(content: string, glob: string): boolean {
+  return content.includes(`'${glob}'`) || content.includes(`"${glob}"`)
+}
+
+function appendArrayEntries(existing: string, entries: string[]): string {
+  if (entries.length === 0) return existing
+  if (existing.trim().length === 0) return entries.join(', ')
+
+  const withoutTrailing = existing.replace(/\s+$/, '')
+  const trailing = existing.slice(withoutTrailing.length)
+  const separator = withoutTrailing.trimEnd().endsWith(',') ? ' ' : ', '
+  return `${withoutTrailing}${separator}${entries.join(', ')}${trailing}`
 }
