@@ -12,7 +12,8 @@
       "const": 1
     },
     "registry": {
-      "type": "string"
+      "type": "string",
+      "enum": ["builtin"]
     },
     "components": {
       "$ref": "#/$defs/entryMap"

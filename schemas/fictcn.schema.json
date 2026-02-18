@@ -37,7 +37,8 @@
       "type": "string"
     },
     "registry": {
-      "type": "string"
+      "type": "string",
+      "enum": ["builtin"]
     },
     "aliases": {
       "type": "object",
