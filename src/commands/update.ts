@@ -5,9 +5,10 @@ import colors from 'picocolors'
 import { assertSupportedRegistry, loadConfig, loadLock, saveLock } from '../core/config'
 import { hashContent, readTextIfExists, upsertTextFile } from '../core/io'
 import { detectPackageManager, findProjectRoot, runPackageManagerInstall } from '../core/project'
-import type { LockEntry } from '../core/types'
-import { resolveBuiltinComponentGraph } from '../registry'
-import { renderComponentFiles } from '../registry/render'
+import type { FictcnLock, LockEntry } from '../core/types'
+import { getBuiltinBlock, getBuiltinTheme, resolveBuiltinBlockGraph, resolveBuiltinComponentGraph } from '../registry'
+import { renderRegistryEntryFiles } from '../registry/render'
+import type { RegistryEntry } from '../registry/types'
 
 export interface UpdateOptions {
   components?: string[]
@@ -21,6 +22,13 @@ export interface UpdateResult {
   skipped: string[]
 }
 
+type RegistryKind = 'component' | 'block' | 'theme'
+
+interface TargetEntry {
+  kind: RegistryKind
+  entry: RegistryEntry
+}
+
 export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResult> {
   const cwd = options.cwd ?? process.cwd()
   const projectRoot = await findProjectRoot(cwd)
@@ -28,26 +36,23 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
   assertSupportedRegistry(config)
   const lock = await loadLock(projectRoot)
 
-  const targetComponents =
-    options.components && options.components.length > 0
-      ? options.components
-      : Object.keys(lock.components).sort((left, right) => left.localeCompare(right))
+  const targets = resolveTargetEntries(lock, options.components)
 
-  if (targetComponents.length === 0) {
-    console.log(colors.yellow('No components to update.'))
+  if (targets.length === 0) {
+    console.log(colors.yellow('No registry entries to update.'))
     return { updated: [], skipped: [] }
   }
 
-  const entries = resolveBuiltinComponentGraph(targetComponents)
   const dependencies = new Set<string>()
   const updated = new Set<string>()
   const skipped = new Set<string>()
 
-  for (const entry of entries) {
-    entry.dependencies.forEach(dependency => dependencies.add(dependency))
+  for (const target of targets) {
+    target.entry.dependencies.forEach(dependency => dependencies.add(dependency))
 
-    const renderedFiles = renderComponentFiles(entry.name, config)
-    const lockEntry = lock.components[entry.name]
+    const renderedFiles = renderRegistryEntryFiles(target.entry, config)
+    const lockMap = lockMapFor(lock, target.kind)
+    const lockEntry = lockMap[target.entry.name]
     const fileHashes: Record<string, string> = {}
     let hasConflict = false
 
@@ -68,8 +73,8 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
     }
 
     if (hasConflict) {
-      skipped.add(entry.name)
-      console.log(colors.yellow(`Skipped ${entry.name}; local changes detected (use --force to override).`))
+      skipped.add(target.entry.name)
+      console.log(colors.yellow(`Skipped ${target.entry.name}; local changes detected (use --force to override).`))
       continue
     }
 
@@ -79,15 +84,15 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
     }
 
     const nextLockEntry: LockEntry = {
-      name: entry.name,
-      version: entry.version,
+      name: target.entry.name,
+      version: target.entry.version,
       source: 'builtin',
       installedAt: new Date().toISOString(),
       files: fileHashes,
     }
 
-    lock.components[entry.name] = nextLockEntry
-    updated.add(entry.name)
+    lockMap[target.entry.name] = nextLockEntry
+    updated.add(target.entry.name)
   }
 
   await saveLock(projectRoot, lock)
@@ -110,4 +115,63 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
     updated: Array.from(updated).sort((left, right) => left.localeCompare(right)),
     skipped: Array.from(skipped).sort((left, right) => left.localeCompare(right)),
   }
+}
+
+function resolveTargetEntries(lock: FictcnLock, names?: string[]): TargetEntry[] {
+  const requestedNames = names && names.length > 0 ? names : undefined
+
+  const componentNames =
+    requestedNames?.filter(name => resolveNameKinds(name).includes('component')) ??
+    Object.keys(lock.components).sort((left, right) => left.localeCompare(right))
+  const blockNames =
+    requestedNames?.filter(name => resolveNameKinds(name).includes('block')) ??
+    Object.keys(lock.blocks).sort((left, right) => left.localeCompare(right))
+  const themeNames =
+    requestedNames?.filter(name => resolveNameKinds(name).includes('theme')) ??
+    Object.keys(lock.themes).sort((left, right) => left.localeCompare(right))
+
+  const targets: TargetEntry[] = []
+  for (const entry of resolveBuiltinComponentGraph(componentNames)) {
+    targets.push({ kind: 'component', entry })
+  }
+  for (const entry of resolveBuiltinBlockGraph(blockNames)) {
+    targets.push({ kind: 'block', entry })
+  }
+  for (const name of themeNames) {
+    const entry = getBuiltinTheme(name)
+    if (!entry) {
+      throw new Error(`Unknown registry theme: ${name}`)
+    }
+    targets.push({ kind: 'theme', entry })
+  }
+
+  return targets
+}
+
+function resolveNameKinds(name: string): RegistryKind[] {
+  const kinds: RegistryKind[] = []
+  if (resolveBuiltinComponentGraphSafe(name)) kinds.push('component')
+  if (getBuiltinBlock(name)) kinds.push('block')
+  if (getBuiltinTheme(name)) kinds.push('theme')
+
+  if (kinds.length === 0) {
+    throw new Error(`Unknown registry entry: ${name}`)
+  }
+
+  return kinds
+}
+
+function resolveBuiltinComponentGraphSafe(name: string): boolean {
+  try {
+    const entries = resolveBuiltinComponentGraph([name])
+    return entries.length > 0 && entries[entries.length - 1]?.name === name
+  } catch {
+    return false
+  }
+}
+
+function lockMapFor(lock: FictcnLock, kind: RegistryKind): Record<string, LockEntry> {
+  if (kind === 'component') return lock.components
+  if (kind === 'block') return lock.blocks
+  return lock.themes
 }

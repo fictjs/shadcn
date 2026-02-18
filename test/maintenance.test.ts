@@ -5,11 +5,13 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 import { runAdd } from '../src/commands/add'
+import { runBlocksInstall } from '../src/commands/blocks'
 import { runDiff } from '../src/commands/diff'
 import { runDoctor } from '../src/commands/doctor'
 import { runInit } from '../src/commands/init'
 import { runList } from '../src/commands/list'
 import { runSearch } from '../src/commands/search'
+import { runThemeApply } from '../src/commands/theme'
 import { runUpdate } from '../src/commands/update'
 
 describe('maintenance commands', () => {
@@ -36,6 +38,40 @@ describe('maintenance commands', () => {
 
     const refreshed = await readFile(filePath, 'utf8')
     expect(refreshed).toContain('buttonVariants')
+  })
+
+  it('produces diff and update flow for blocks and themes', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-maintenance-blocks-themes-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+
+    await runInit({ cwd, skipInstall: true })
+    await runBlocksInstall({ cwd, blocks: ['auth/login-form'], skipInstall: true })
+    await runThemeApply({ cwd, themes: ['theme-slate'] })
+
+    const blockPath = path.join(cwd, 'src/components/blocks/auth/login-form.tsx')
+    const themePath = path.join(cwd, 'src/styles/themes/theme-slate.css')
+    await writeFile(blockPath, 'block edits\n', 'utf8')
+    await writeFile(themePath, 'theme edits\n', 'utf8')
+
+    const diff = await runDiff({ cwd })
+    expect(diff.changed).toContain('auth/login-form')
+    expect(diff.changed).toContain('theme-slate')
+    expect(diff.patches.join('\n')).toContain('registry/block/auth/login-form@0.1.0')
+    expect(diff.patches.join('\n')).toContain('registry/theme/theme-slate@0.1.0')
+
+    const guardedUpdate = await runUpdate({ cwd, skipInstall: true })
+    expect(guardedUpdate.skipped).toContain('auth/login-form')
+    expect(guardedUpdate.skipped).toContain('theme-slate')
+
+    const forcedUpdate = await runUpdate({ cwd, force: true, skipInstall: true })
+    expect(forcedUpdate.updated).toContain('auth/login-form')
+    expect(forcedUpdate.updated).toContain('theme-slate')
+
+    const refreshedBlock = await readFile(blockPath, 'utf8')
+    const refreshedTheme = await readFile(themePath, 'utf8')
+    expect(refreshedBlock).toContain('export function LoginForm')
+    expect(refreshedTheme).toContain('.theme-slate')
   })
 
   it('lists and searches builtin components and runs doctor checks', async () => {

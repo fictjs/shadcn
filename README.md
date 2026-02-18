@@ -36,8 +36,8 @@ pnpm fictcn theme apply theme-default theme-slate
 ```bash
 fictcn init [--skip-install]
 fictcn add <components...> [--overwrite] [--skip-install]
-fictcn diff [components...]
-fictcn update [components...] [--force] [--skip-install]
+fictcn diff [entries...]
+fictcn update [entries...] [--force] [--skip-install]
 fictcn doctor
 fictcn list [--type components|blocks|themes|all] [--json]
 fictcn search <query>

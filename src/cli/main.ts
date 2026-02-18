@@ -45,9 +45,9 @@ export async function main(argv: string[]): Promise<void> {
   program
     .command('diff')
     .description('Show local file differences against the builtin registry')
-    .argument('[components...]', 'Optional component names')
-    .action(async (components?: string[]) => {
-      const result = await runDiff({ components })
+    .argument('[entries...]', 'Optional registry entry names (components/blocks/themes)')
+    .action(async (entries?: string[]) => {
+      const result = await runDiff({ components: entries })
       if (result.patches.length === 0) {
         console.log('No registry drift detected.')
         return
@@ -57,13 +57,13 @@ export async function main(argv: string[]): Promise<void> {
 
   program
     .command('update')
-    .description('Update installed components from the builtin registry')
-    .argument('[components...]', 'Optional component names')
+    .description('Update installed registry entries from the builtin registry')
+    .argument('[entries...]', 'Optional registry entry names (components/blocks/themes)')
     .option('--force', 'Override local file changes')
     .option('--skip-install', 'Skip dependency installation')
-    .action(async (components: string[] | undefined, options) => {
+    .action(async (entries: string[] | undefined, options) => {
       await runUpdate({
-        components,
+        components: entries,
         force: Boolean(options.force),
         skipInstall: Boolean(options.skipInstall),
       })
