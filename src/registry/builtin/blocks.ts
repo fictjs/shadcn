@@ -10,7 +10,7 @@ export const builtinBlocks: RegistryEntry[] = [
     registryDependencies: ['button', 'card', 'input', 'label'],
     files: [
       {
-        path: 'src/components/blocks/auth/login-form.tsx',
+        path: '{{blocksDir}}/auth/login-form.tsx',
         content: context => `import { Button } from '${context.uiImport('button')}'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '${context.uiImport('card')}'
 import { Input } from '${context.uiImport('input')}'
@@ -52,7 +52,7 @@ export function LoginForm() {
     registryDependencies: ['button', 'card', 'input', 'label'],
     files: [
       {
-        path: 'src/components/blocks/auth/signup-form.tsx',
+        path: '{{blocksDir}}/auth/signup-form.tsx',
         content: context => `import { Button } from '${context.uiImport('button')}'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '${context.uiImport('card')}'
 import { Input } from '${context.uiImport('input')}'
@@ -98,7 +98,7 @@ export function SignupForm() {
     registryDependencies: ['button', 'card', 'input', 'label', 'textarea', 'switch'],
     files: [
       {
-        path: 'src/components/blocks/settings/profile.tsx',
+        path: '{{blocksDir}}/settings/profile.tsx',
         content: context => `import { Button } from '${context.uiImport('button')}'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '${context.uiImport('card')}'
 import { Input } from '${context.uiImport('input')}'
@@ -149,7 +149,7 @@ export function ProfileSettingsBlock() {
     registryDependencies: ['badge', 'card', 'separator'],
     files: [
       {
-        path: 'src/components/blocks/dashboard/layout.tsx',
+        path: '{{blocksDir}}/dashboard/layout.tsx',
         content: context => `import { Badge } from '${context.uiImport('badge')}'
 import { Card, CardContent, CardHeader, CardTitle } from '${context.uiImport('card')}'
 import { Separator } from '${context.uiImport('separator')}'
@@ -212,7 +212,7 @@ export function DashboardLayoutBlock() {
     registryDependencies: ['button', 'separator'],
     files: [
       {
-        path: 'src/components/blocks/dashboard/sidebar.tsx',
+        path: '{{blocksDir}}/dashboard/sidebar.tsx',
         content: context => `import { Button } from '${context.uiImport('button')}'
 import { Separator } from '${context.uiImport('separator')}'
 
@@ -249,7 +249,7 @@ export function DashboardSidebarBlock() {
     registryDependencies: ['badge', 'button', 'input', 'table'],
     files: [
       {
-        path: 'src/components/blocks/tables/users-table.tsx',
+        path: '{{blocksDir}}/tables/users-table.tsx',
         content: context => `import { Badge } from '${context.uiImport('badge')}'
 import { Button } from '${context.uiImport('button')}'
 import { Input } from '${context.uiImport('input')}'
@@ -312,7 +312,7 @@ export function UsersTableBlock() {
     registryDependencies: ['alert-dialog', 'button'],
     files: [
       {
-        path: 'src/components/blocks/dialogs/confirm-delete.tsx',
+        path: '{{blocksDir}}/dialogs/confirm-delete.tsx',
         content: context => `import {
   AlertDialog,
   AlertDialogAction,
@@ -360,7 +360,7 @@ export function ConfirmDeleteBlock() {
     registryDependencies: ['button', 'form', 'input'],
     files: [
       {
-        path: 'src/components/blocks/forms/validated-form.tsx',
+        path: '{{blocksDir}}/forms/validated-form.tsx',
         content: context => `import { createSignal } from '@fictjs/runtime/advanced'
 
 import { Button } from '${context.uiImport('button')}'
