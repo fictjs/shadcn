@@ -22,9 +22,11 @@ export async function main(argv: string[]): Promise<void> {
     .command('init')
     .description('Initialize the current project for fictcn')
     .option('--skip-install', 'Skip dependency installation')
+    .option('--dry-run', 'Preview changes without writing files')
     .action(async options => {
       await runInit({
         skipInstall: Boolean(options.skipInstall),
+        dryRun: Boolean(options.dryRun),
       })
     })
 
@@ -34,11 +36,13 @@ export async function main(argv: string[]): Promise<void> {
     .argument('<components...>', 'Component names, e.g. button dialog')
     .option('--overwrite', 'Overwrite existing conflicting files')
     .option('--skip-install', 'Skip dependency installation')
+    .option('--dry-run', 'Preview changes without writing files')
     .action(async (components: string[], options) => {
       await runAdd({
         components,
         overwrite: Boolean(options.overwrite),
         skipInstall: Boolean(options.skipInstall),
+        dryRun: Boolean(options.dryRun),
       })
     })
 
@@ -61,11 +65,13 @@ export async function main(argv: string[]): Promise<void> {
     .argument('[entries...]', 'Optional registry entry names (components/blocks/themes)')
     .option('--force', 'Override local file changes')
     .option('--skip-install', 'Skip dependency installation')
+    .option('--dry-run', 'Preview changes without writing files')
     .action(async (entries: string[] | undefined, options) => {
       await runUpdate({
         components: entries,
         force: Boolean(options.force),
         skipInstall: Boolean(options.skipInstall),
+        dryRun: Boolean(options.dryRun),
       })
     })
 
@@ -113,11 +119,13 @@ export async function main(argv: string[]): Promise<void> {
     .argument('<blocks...>', 'Block names, e.g. auth/login-form')
     .option('--overwrite', 'Overwrite conflicting files')
     .option('--skip-install', 'Skip dependency installation')
+    .option('--dry-run', 'Preview changes without writing files')
     .action(async (blockNames: string[], options) => {
       await runBlocksInstall({
         blocks: blockNames,
         overwrite: Boolean(options.overwrite),
         skipInstall: Boolean(options.skipInstall),
+        dryRun: Boolean(options.dryRun),
       })
     })
 
@@ -135,10 +143,12 @@ export async function main(argv: string[]): Promise<void> {
     .description('Install and register one or more themes')
     .argument('<themes...>', 'Theme names, e.g. theme-slate')
     .option('--overwrite', 'Overwrite conflicting files')
+    .option('--dry-run', 'Preview changes without writing files')
     .action(async (themes: string[], options) => {
       await runThemeApply({
         themes,
         overwrite: Boolean(options.overwrite),
+        dryRun: Boolean(options.dryRun),
       })
     })
 

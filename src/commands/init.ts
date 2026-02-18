@@ -23,22 +23,27 @@ export async function runInit(options: InitOptions = {}): Promise<void> {
   const cwd = options.cwd ?? process.cwd()
   const projectRoot = await findProjectRoot(cwd)
   const config = await loadConfig(projectRoot)
+  const dryRun = Boolean(options.dryRun)
 
-  await saveConfig(projectRoot, config)
+  if (!dryRun) {
+    await saveConfig(projectRoot, config)
+  }
 
-  await upsertTextFile(projectRoot, config.css, createGlobalsCss())
-  await upsertTextFile(projectRoot, path.posix.join(config.libDir, 'cn.ts'), createCnUtility())
-  await upsertTextFile(
-    projectRoot,
-    path.posix.join(config.libDir, 'variants.ts'),
-    createVariantsUtility(),
-  )
+  if (!dryRun) {
+    await upsertTextFile(projectRoot, config.css, createGlobalsCss())
+    await upsertTextFile(projectRoot, path.posix.join(config.libDir, 'cn.ts'), createCnUtility())
+    await upsertTextFile(
+      projectRoot,
+      path.posix.join(config.libDir, 'variants.ts'),
+      createVariantsUtility(),
+    )
+  }
 
-  await ensureTsconfigAlias(projectRoot, config)
-  await ensureTailwindConfig(projectRoot, config)
-  await ensurePostcssConfig(projectRoot)
+  await ensureTsconfigAlias(projectRoot, config, dryRun)
+  await ensureTailwindConfig(projectRoot, config, dryRun)
+  await ensurePostcssConfig(projectRoot, dryRun)
 
-  if (!options.skipInstall) {
+  if (!options.skipInstall && !dryRun) {
     const packageManager = await detectPackageManager(projectRoot)
 
     console.log(colors.cyan(`Installing dependencies via ${packageManager}...`))
@@ -46,10 +51,14 @@ export async function runInit(options: InitOptions = {}): Promise<void> {
     await runPackageManagerInstall(packageManager, projectRoot, DEV_DEPENDENCIES, true)
   }
 
-  console.log(colors.green('fictcn init completed.'))
+  if (dryRun) {
+    console.log(colors.green('fictcn init dry-run completed. No files were written.'))
+  } else {
+    console.log(colors.green('fictcn init completed.'))
+  }
 }
 
-async function ensureTsconfigAlias(projectRoot: string, config: FictcnConfig): Promise<void> {
+async function ensureTsconfigAlias(projectRoot: string, config: FictcnConfig, dryRun: boolean): Promise<void> {
   const aliasPathKey = getAliasPathKey(config.aliases.base)
   const aliasPathTarget = getAliasPathTarget(config)
   const tsconfigPath = path.resolve(projectRoot, 'tsconfig.json')
@@ -64,7 +73,9 @@ async function ensureTsconfigAlias(projectRoot: string, config: FictcnConfig): P
         },
       },
     }
-    await upsertTextFile(projectRoot, 'tsconfig.json', `${JSON.stringify(fallback, null, 2)}\n`)
+    if (!dryRun) {
+      await upsertTextFile(projectRoot, 'tsconfig.json', `${JSON.stringify(fallback, null, 2)}\n`)
+    }
     return
   }
 
@@ -74,31 +85,39 @@ async function ensureTsconfigAlias(projectRoot: string, config: FictcnConfig): P
     return
   }
 
-  await upsertTextFile(projectRoot, 'tsconfig.json', patched)
+  if (!dryRun) {
+    await upsertTextFile(projectRoot, 'tsconfig.json', patched)
+  }
 }
 
-async function ensureTailwindConfig(projectRoot: string, config: FictcnConfig): Promise<void> {
+async function ensureTailwindConfig(projectRoot: string, config: FictcnConfig, dryRun: boolean): Promise<void> {
   const contentGlobs = getTailwindContentGlobs(config)
   const tailwindConfigPath = config.tailwindConfig
   const absolutePath = path.resolve(projectRoot, tailwindConfigPath)
   const packageType = await readPackageModuleType(projectRoot)
   const defaultModuleFormat = inferTailwindModuleFormatFromPath(tailwindConfigPath, packageType)
   if (!(await exists(absolutePath))) {
-    await upsertTextFile(projectRoot, tailwindConfigPath, createTailwindConfig(contentGlobs, defaultModuleFormat))
+    if (!dryRun) {
+      await upsertTextFile(projectRoot, tailwindConfigPath, createTailwindConfig(contentGlobs, defaultModuleFormat))
+    }
     return
   }
 
   const current = await readTextIfExists(absolutePath)
   if (current === null) {
-    await upsertTextFile(projectRoot, tailwindConfigPath, createTailwindConfig(contentGlobs, defaultModuleFormat))
+    if (!dryRun) {
+      await upsertTextFile(projectRoot, tailwindConfigPath, createTailwindConfig(contentGlobs, defaultModuleFormat))
+    }
     return
   }
 
   const moduleFormat = detectTailwindModuleFormatFromContent(current) ?? defaultModuleFormat
-  await upsertTextFile(projectRoot, tailwindConfigPath, patchTailwindConfig(current, contentGlobs, moduleFormat))
+  if (!dryRun) {
+    await upsertTextFile(projectRoot, tailwindConfigPath, patchTailwindConfig(current, contentGlobs, moduleFormat))
+  }
 }
 
-async function ensurePostcssConfig(projectRoot: string): Promise<void> {
+async function ensurePostcssConfig(projectRoot: string, dryRun: boolean): Promise<void> {
   const candidates = ['postcss.config.js', 'postcss.config.mjs', 'postcss.config.cjs']
 
   for (const candidate of candidates) {
@@ -107,7 +126,9 @@ async function ensurePostcssConfig(projectRoot: string): Promise<void> {
     }
   }
 
-  await upsertTextFile(projectRoot, 'postcss.config.mjs', createPostcssConfig())
+  if (!dryRun) {
+    await upsertTextFile(projectRoot, 'postcss.config.mjs', createPostcssConfig())
+  }
 }
 
 async function readPackageModuleType(projectRoot: string): Promise<'module' | 'commonjs' | undefined> {

@@ -34,6 +34,7 @@ export interface FictcnLock {
 export interface InitOptions {
   cwd?: string
   skipInstall?: boolean
+  dryRun?: boolean
 }
 
 export interface WriteFileResult {

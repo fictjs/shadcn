@@ -15,6 +15,7 @@ export interface AddOptions {
   cwd?: string
   overwrite?: boolean
   skipInstall?: boolean
+  dryRun?: boolean
 }
 
 export async function runAdd(options: AddOptions): Promise<AddResult> {
@@ -25,8 +26,11 @@ export async function runAdd(options: AddOptions): Promise<AddResult> {
   const cwd = options.cwd ?? process.cwd()
   const projectRoot = await findProjectRoot(cwd)
   const config = await loadConfig(projectRoot)
+  const dryRun = Boolean(options.dryRun)
   assertSupportedRegistry(config)
-  await ensureConfigFile(projectRoot, config)
+  if (!dryRun) {
+    await ensureConfigFile(projectRoot, config)
+  }
 
   const resolved = resolveBuiltinComponentGraph(options.components)
   const context = createTemplateContext(config)
@@ -71,7 +75,9 @@ export async function runAdd(options: AddOptions): Promise<AddResult> {
 
     const fileHashes: Record<string, string> = {}
     for (const file of plannedFiles) {
-      await upsertTextFile(projectRoot, file.relativePath, file.content)
+      if (!dryRun) {
+        await upsertTextFile(projectRoot, file.relativePath, file.content)
+      }
       fileHashes[file.relativePath] = hashContent(file.content)
     }
 
@@ -89,12 +95,16 @@ export async function runAdd(options: AddOptions): Promise<AddResult> {
       added.push(entry.name)
     }
 
-    lock.components[entry.name] = lockEntry
+    if (!dryRun) {
+      lock.components[entry.name] = lockEntry
+    }
   }
 
-  await saveLock(projectRoot, lock)
+  if (!dryRun) {
+    await saveLock(projectRoot, lock)
+  }
 
-  if (!options.skipInstall) {
+  if (!options.skipInstall && !dryRun) {
     const dependencies = Array.from(dependencySet).sort((left, right) => left.localeCompare(right))
 
     if (dependencies.length > 0) {
@@ -105,13 +115,13 @@ export async function runAdd(options: AddOptions): Promise<AddResult> {
   }
 
   if (added.length > 0) {
-    console.log(colors.green(`Added: ${added.join(', ')}`))
+    console.log(colors.green(`${dryRun ? 'Would add' : 'Added'}: ${added.join(', ')}`))
   }
   if (updated.length > 0) {
-    console.log(colors.green(`Updated: ${updated.join(', ')}`))
+    console.log(colors.green(`${dryRun ? 'Would update' : 'Updated'}: ${updated.join(', ')}`))
   }
   if (skipped.length > 0) {
-    console.log(colors.yellow(`Skipped: ${skipped.join(', ')}`))
+    console.log(colors.yellow(`${dryRun ? 'Would skip' : 'Skipped'}: ${skipped.join(', ')}`))
   }
 
   return { added, updated, skipped }

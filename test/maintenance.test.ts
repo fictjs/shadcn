@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, stat, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 
@@ -16,6 +16,53 @@ import { runUpdate } from '../src/commands/update'
 import { LOCK_FILE } from '../src/core/constants'
 
 describe('maintenance commands', () => {
+  it('supports dry-run across mutation commands without writing files', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-maintenance-dry-run-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+
+    await runInit({ cwd, skipInstall: true, dryRun: true })
+    expect(await fileExists(path.join(cwd, 'fictcn.json'))).toBe(false)
+    expect(await fileExists(path.join(cwd, 'src/styles/globals.css'))).toBe(false)
+
+    await runInit({ cwd, skipInstall: true })
+
+    await runAdd({ cwd, components: ['button'], skipInstall: true, dryRun: true })
+    expect(await fileExists(path.join(cwd, 'src/components/ui/button.tsx'))).toBe(false)
+    expect(await fileExists(path.join(cwd, LOCK_FILE))).toBe(false)
+
+    await runBlocksInstall({ cwd, blocks: ['auth/login-form'], skipInstall: true, dryRun: true })
+    expect(await fileExists(path.join(cwd, 'src/components/blocks/auth/login-form.tsx'))).toBe(false)
+
+    const globalsCssPath = path.join(cwd, 'src/styles/globals.css')
+    const globalsBefore = await readFile(globalsCssPath, 'utf8')
+    await runThemeApply({ cwd, themes: ['theme-slate'], dryRun: true })
+    expect(await fileExists(path.join(cwd, 'src/styles/themes/theme-slate.css'))).toBe(false)
+    expect(await readFile(globalsCssPath, 'utf8')).toBe(globalsBefore)
+
+    await runAdd({ cwd, components: ['button'], skipInstall: true })
+    const lockPath = path.join(cwd, LOCK_FILE)
+    const lockBefore = JSON.parse(await readFile(lockPath, 'utf8')) as {
+      components: {
+        button: {
+          installedAt: string
+        }
+      }
+    }
+    const installedAtBefore = lockBefore.components.button.installedAt
+
+    await runUpdate({ cwd, components: ['button'], force: true, skipInstall: true, dryRun: true })
+
+    const lockAfter = JSON.parse(await readFile(lockPath, 'utf8')) as {
+      components: {
+        button: {
+          installedAt: string
+        }
+      }
+    }
+    expect(lockAfter.components.button.installedAt).toBe(installedAtBefore)
+  })
+
   it('produces diff and supports guarded update flow', async () => {
     const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-maintenance-'))
     await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
@@ -372,3 +419,12 @@ describe('maintenance commands', () => {
     expect(doctor.issues.some(issue => issue.code === 'tailwind-content')).toBe(false)
   })
 })
+
+async function fileExists(targetPath: string): Promise<boolean> {
+  try {
+    await stat(targetPath)
+    return true
+  } catch {
+    return false
+  }
+}

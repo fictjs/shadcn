@@ -15,6 +15,7 @@ export interface UpdateOptions {
   cwd?: string
   force?: boolean
   skipInstall?: boolean
+  dryRun?: boolean
 }
 
 export interface UpdateResult {
@@ -40,6 +41,7 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
   const cwd = options.cwd ?? process.cwd()
   const projectRoot = await findProjectRoot(cwd)
   const config = await loadConfig(projectRoot)
+  const dryRun = Boolean(options.dryRun)
   assertSupportedRegistry(config)
   const lock = await loadLock(projectRoot)
 
@@ -96,7 +98,9 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
     }
 
     for (const rendered of renderedFiles) {
-      await upsertTextFile(projectRoot, rendered.relativePath, rendered.content)
+      if (!dryRun) {
+        await upsertTextFile(projectRoot, rendered.relativePath, rendered.content)
+      }
       fileHashes[rendered.relativePath] = rendered.hash
     }
 
@@ -108,13 +112,17 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
       files: fileHashes,
     }
 
-    lockMap[target.entry.name] = nextLockEntry
+    if (!dryRun) {
+      lockMap[target.entry.name] = nextLockEntry
+    }
     updated.add(target.entry.name)
   }
 
-  await saveLock(projectRoot, lock)
+  if (!dryRun) {
+    await saveLock(projectRoot, lock)
+  }
 
-  if (!options.skipInstall && dependencies.size > 0) {
+  if (!options.skipInstall && !dryRun && dependencies.size > 0) {
     const packageManager = await detectPackageManager(projectRoot)
     await runPackageManagerInstall(
       packageManager,
@@ -125,7 +133,7 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
   }
 
   if (updated.size > 0) {
-    console.log(colors.green(`Updated: ${Array.from(updated).join(', ')}`))
+    console.log(colors.green(`${dryRun ? 'Would update' : 'Updated'}: ${Array.from(updated).join(', ')}`))
   }
 
   return {
