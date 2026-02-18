@@ -4,6 +4,7 @@ import colors from 'picocolors'
 
 import { assertSupportedRegistry, loadConfig, loadLock, saveConfig, saveLock } from '../core/config'
 import { hashContent, readTextIfExists, upsertTextFile } from '../core/io'
+import { ensureTrailingNewline } from '../core/text'
 import { findProjectRoot } from '../core/project'
 import type { AddResult, LockEntry } from '../core/types'
 import { createTemplateContext, resolveTemplatePath } from '../registry/context'
@@ -45,7 +46,7 @@ export async function runThemeApply(options: ThemeApplyOptions): Promise<AddResu
 
     const plannedFiles = entry.files.map(file => {
       const relativePath = resolveTemplatePath(file.path, config)
-      const content = normalizeNewLine(file.content(context))
+      const content = ensureTrailingNewline(file.content(context))
       return { relativePath, content }
     })
 
@@ -98,7 +99,7 @@ export async function runThemeApply(options: ThemeApplyOptions): Promise<AddResu
   }
 
   if (nextGlobals !== globalsCssRaw && nextGlobals.length > 0) {
-    await upsertTextFile(projectRoot, config.css, normalizeNewLine(nextGlobals))
+    await upsertTextFile(projectRoot, config.css, ensureTrailingNewline(nextGlobals))
   }
 
   await saveLock(projectRoot, lock)
@@ -114,10 +115,6 @@ export async function runThemeApply(options: ThemeApplyOptions): Promise<AddResu
   }
 
   return { added, updated, skipped }
-}
-
-function normalizeNewLine(content: string): string {
-  return content.endsWith('\n') ? content : `${content}\n`
 }
 
 function toImportPath(from: string, to: string): string {

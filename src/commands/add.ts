@@ -4,6 +4,7 @@ import colors from 'picocolors'
 
 import { assertSupportedRegistry, loadConfig, loadLock, saveConfig, saveLock } from '../core/config'
 import { hashContent, readTextIfExists, upsertTextFile } from '../core/io'
+import { ensureTrailingNewline } from '../core/text'
 import { detectPackageManager, findProjectRoot, runPackageManagerInstall } from '../core/project'
 import type { AddResult, LockEntry } from '../core/types'
 import { createTemplateContext, resolveTemplatePath } from '../registry/context'
@@ -41,7 +42,7 @@ export async function runAdd(options: AddOptions): Promise<AddResult> {
 
     const plannedFiles = entry.files.map(file => {
       const relativePath = resolveTemplatePath(file.path, config)
-      const content = normalizeNewLine(file.content(context))
+      const content = ensureTrailingNewline(file.content(context))
       return {
         relativePath,
         content,
@@ -114,8 +115,4 @@ export async function runAdd(options: AddOptions): Promise<AddResult> {
   }
 
   return { added, updated, skipped }
-}
-
-function normalizeNewLine(content: string): string {
-  return content.endsWith('\n') ? content : `${content}\n`
 }
