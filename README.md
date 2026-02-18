@@ -167,15 +167,17 @@ fictcn doctor
 List all available registry entries.
 
 ```bash
-fictcn list [--type components|blocks|themes|all] [--json]
+fictcn list [--type components|blocks|themes|all] [--json] [--registry builtin|<url>]
 ```
+
+When `--registry` is omitted, the CLI uses `fictcn.json` (`registry` field) if available.
 
 ### `fictcn search`
 
-Search the built-in registry by keyword.
+Search registry entries by keyword.
 
 ```bash
-fictcn search <query>
+fictcn search <query> [--registry builtin|<url>]
 
 # Examples
 fictcn search dialog
@@ -208,7 +210,7 @@ Running `fictcn init` creates a `fictcn.json` at your project root:
 | `libDir`         | Where utility files (`cn.ts`, `variants.ts`) are placed  | `src/lib`                |
 | `css`            | Path to the global CSS file with design tokens           | `src/styles/globals.css` |
 | `tailwindConfig` | Path to the Tailwind CSS configuration file              | `tailwind.config.ts`     |
-| `registry`       | Registry source (`builtin` is currently the only option) | `builtin`                |
+| `registry`       | Registry source. `builtin` is fully supported; remote URL currently supports read-only `list/search` | `builtin`                |
 | `aliases.base`   | TypeScript path alias prefix for imports                 | `@`                      |
 
 ## Lock File
