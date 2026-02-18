@@ -1,5 +1,6 @@
 import type { FictcnConfig } from '../core/types'
 import { hashContent } from '../core/io'
+import { ensureTrailingNewline } from '../core/text'
 import { createTemplateContext, resolveTemplatePath } from './context'
 import { getBuiltinComponent } from './index'
 import type { RegistryEntry } from './types'
@@ -25,7 +26,7 @@ export function renderRegistryEntryFiles(entry: RegistryEntry, config: FictcnCon
 
   return entry.files.map(file => {
     const relativePath = resolveTemplatePath(file.path, config)
-    const content = normalizeNewLine(file.content(context))
+    const content = ensureTrailingNewline(file.content(context))
     return {
       component: entry.name,
       relativePath,
@@ -33,8 +34,4 @@ export function renderRegistryEntryFiles(entry: RegistryEntry, config: FictcnCon
       hash: hashContent(content),
     }
   })
-}
-
-function normalizeNewLine(content: string): string {
-  return content.endsWith('\n') ? content : `${content}\n`
 }
