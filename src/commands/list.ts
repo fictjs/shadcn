@@ -6,6 +6,7 @@ import {
   listBuiltinComponentNames,
   listBuiltinThemeNames,
 } from '../registry'
+import { loadRegistryCatalog, type RegistryCatalogRecord } from '../registry/source'
 
 export type ListType = 'components' | 'blocks' | 'themes' | 'all'
 
@@ -18,7 +19,30 @@ export function runList(options: ListOptions = {}): string {
   const type = normalizeListType(options.type)
   const records = collectRecords(type)
 
-  if (options.json) {
+  return formatRecords(records, Boolean(options.json))
+}
+
+export interface RegistryListOptions extends ListOptions {
+  cwd?: string
+  registry?: string
+}
+
+export async function runListFromRegistry(options: RegistryListOptions = {}): Promise<string> {
+  const type = normalizeListType(options.type)
+  const catalog = await loadRegistryCatalog({
+    cwd: options.cwd,
+    registry: options.registry,
+  })
+  const records = filterRecordsByType(catalog, type)
+
+  return formatRecords(records, Boolean(options.json))
+}
+
+function formatRecords(
+  records: Array<{ kind: 'component' | 'block' | 'theme'; name: string; description: string }>,
+  json: boolean,
+): string {
+  if (json) {
     return JSON.stringify(records, null, 2)
   }
 
@@ -52,6 +76,19 @@ function collectRecords(type: ListType) {
   }
 
   return records
+}
+
+function filterRecordsByType(records: RegistryCatalogRecord[], type: ListType): RegistryCatalogRecord[] {
+  if (type === 'all') {
+    return [...records]
+  }
+  if (type === 'components') {
+    return records.filter(record => record.kind === 'component')
+  }
+  if (type === 'blocks') {
+    return records.filter(record => record.kind === 'block')
+  }
+  return records.filter(record => record.kind === 'theme')
 }
 
 function normalizeListType(type: ListOptions['type']): ListType {

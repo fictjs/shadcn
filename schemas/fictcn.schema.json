@@ -37,8 +37,10 @@
       "type": "string"
     },
     "registry": {
-      "type": "string",
-      "enum": ["builtin"]
+      "oneOf": [
+        { "const": "builtin" },
+        { "type": "string", "format": "uri" }
+      ]
     },
     "aliases": {
       "type": "object",
