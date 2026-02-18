@@ -50,7 +50,9 @@ export async function saveConfig(projectRoot: string, config: FictcnConfig): Pro
 
 export function assertSupportedRegistry(config: FictcnConfig): void {
   if (config.registry !== 'builtin') {
-    throw new Error(`Unsupported registry "${config.registry}". Only "builtin" is currently supported.`)
+    throw new Error(
+      `Unsupported registry "${config.registry}" for this command. Use "builtin" for mutation commands; remote registries are currently supported only for list/search.`,
+    )
   }
 }
 
