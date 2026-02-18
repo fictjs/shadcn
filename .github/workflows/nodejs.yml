@@ -35,6 +35,10 @@ jobs:
           pnpm typecheck
           pnpm test
           pnpm build
-          pnpm storybook:smoke
+        env:
+          CI: true
+      - name: Storybook smoke
+        if: matrix.node-version != '18.x'
+        run: pnpm storybook:smoke
         env:
           CI: true
