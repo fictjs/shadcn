@@ -48,14 +48,6 @@ export async function saveConfig(projectRoot: string, config: FictcnConfig): Pro
   })
 }
 
-export function assertSupportedRegistry(config: FictcnConfig): void {
-  if (config.registry !== 'builtin') {
-    throw new Error(
-      `Unsupported registry "${config.registry}" for this command. Use "builtin" for mutation commands; remote registries are currently supported only for list/search.`,
-    )
-  }
-}
-
 export async function loadLock(projectRoot: string): Promise<FictcnLock> {
   const lockPath = path.resolve(projectRoot, LOCK_FILE)
   if (!(await exists(lockPath))) {
@@ -124,6 +116,7 @@ function validateConfig(value: unknown, mode: ValidationMode): string[] {
   validateStringField(value, 'css', errors, { required: mode === 'full', allowEmpty: false })
   validateStringField(value, 'tailwindConfig', errors, { required: mode === 'full', allowEmpty: false })
   validateStringField(value, 'registry', errors, { required: mode === 'full', allowEmpty: false })
+  validateRegistryField(value, errors)
 
   const aliasesValue = value.aliases
   if (aliasesValue === undefined) {
@@ -196,6 +189,24 @@ function validateLiteralField(
 
   if (fieldValue !== expected) {
     errors.push(`Field "${key}" must be ${JSON.stringify(expected)}.`)
+  }
+}
+
+function validateRegistryField(value: Record<string, unknown>, errors: string[]): void {
+  const registry = value.registry
+  if (registry === undefined || typeof registry !== 'string') {
+    return
+  }
+
+  const trimmed = registry.trim()
+  if (trimmed.length === 0 || trimmed === 'builtin') {
+    return
+  }
+
+  try {
+    new URL(trimmed)
+  } catch {
+    errors.push('Field "registry" must be "builtin" or a valid URL.')
   }
 }
 

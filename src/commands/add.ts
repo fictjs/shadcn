@@ -2,13 +2,13 @@ import path from 'node:path'
 
 import colors from 'picocolors'
 
-import { assertSupportedRegistry, ensureConfigFile, loadConfig, loadLock, saveLock } from '../core/config'
+import { ensureConfigFile, loadConfig, loadLock, saveLock } from '../core/config'
 import { hashContent, readTextIfExists, upsertTextFile } from '../core/io'
 import { ensureTrailingNewline } from '../core/text'
 import { detectPackageManager, findProjectRoot, runPackageManagerInstall } from '../core/project'
 import type { AddResult, LockEntry } from '../core/types'
 import { createTemplateContext, resolveTemplatePath } from '../registry/context'
-import { resolveBuiltinComponentGraph } from '../registry'
+import { loadRegistryDataset, resolveComponentGraph } from '../registry/source'
 
 export interface AddOptions {
   components: string[]
@@ -27,12 +27,16 @@ export async function runAdd(options: AddOptions): Promise<AddResult> {
   const projectRoot = await findProjectRoot(cwd)
   const config = await loadConfig(projectRoot)
   const dryRun = Boolean(options.dryRun)
-  assertSupportedRegistry(config)
   if (!dryRun) {
     await ensureConfigFile(projectRoot, config)
   }
 
-  const resolved = resolveBuiltinComponentGraph(options.components)
+  const registry = await loadRegistryDataset({
+    cwd: projectRoot,
+    registry: config.registry,
+    requireFiles: true,
+  })
+  const resolved = resolveComponentGraph(registry, options.components)
   const context = createTemplateContext(config)
   const lock = await loadLock(projectRoot)
   let lockChanged = false
@@ -85,7 +89,7 @@ export async function runAdd(options: AddOptions): Promise<AddResult> {
     const lockEntry: LockEntry = {
       name: entry.name,
       version: entry.version,
-      source: 'builtin',
+      source: registry.source,
       installedAt: new Date().toISOString(),
       files: fileHashes,
     }

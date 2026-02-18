@@ -3,13 +3,13 @@ import path from 'node:path'
 import colors from 'picocolors'
 
 import { runAdd } from './add'
-import { assertSupportedRegistry, ensureConfigFile, loadConfig, loadLock, saveLock } from '../core/config'
+import { ensureConfigFile, loadConfig, loadLock, saveLock } from '../core/config'
 import { hashContent, readTextIfExists, upsertTextFile } from '../core/io'
 import { ensureTrailingNewline } from '../core/text'
 import { detectPackageManager, findProjectRoot, runPackageManagerInstall } from '../core/project'
 import type { AddResult, LockEntry } from '../core/types'
 import { createTemplateContext, resolveTemplatePath } from '../registry/context'
-import { resolveBuiltinBlockGraph } from '../registry'
+import { loadRegistryDataset, resolveBlockGraph } from '../registry/source'
 
 export interface BlockInstallOptions {
   blocks: string[]
@@ -28,14 +28,20 @@ export async function runBlocksInstall(options: BlockInstallOptions): Promise<Ad
   const projectRoot = await findProjectRoot(cwd)
   const config = await loadConfig(projectRoot)
   const dryRun = Boolean(options.dryRun)
-  assertSupportedRegistry(config)
   if (!dryRun) {
     await ensureConfigFile(projectRoot, config)
   }
 
-  const entries = resolveBuiltinBlockGraph(options.blocks)
+  const registry = await loadRegistryDataset({
+    cwd: projectRoot,
+    registry: config.registry,
+    requireFiles: true,
+  })
+  const entries = resolveBlockGraph(registry, options.blocks)
   const componentDependencies = Array.from(
-    new Set(entries.flatMap(entry => entry.registryDependencies)),
+    new Set(
+      entries.flatMap(entry => entry.registryDependencies).filter(dependency => Boolean(registry.components[dependency])),
+    ),
   ).sort((left, right) => left.localeCompare(right))
 
   if (componentDependencies.length > 0) {
@@ -98,7 +104,7 @@ export async function runBlocksInstall(options: BlockInstallOptions): Promise<Ad
     const lockEntry: LockEntry = {
       name: entry.name,
       version: entry.version,
-      source: 'builtin',
+      source: registry.source,
       installedAt: new Date().toISOString(),
       files: fileHashes,
     }

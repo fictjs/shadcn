@@ -52,9 +52,9 @@ export async function runDoctor(cwd = process.cwd()): Promise<DoctorResult> {
 
   if (config.registry !== 'builtin') {
     issues.push({
-      level: 'error',
-      code: 'unsupported-registry',
-      message: `Registry ${config.registry} is not currently supported by this CLI version.`,
+      level: 'warning',
+      code: 'remote-registry',
+      message: `Using remote registry ${config.registry}. Ensure network access and a compatible registry index for add/diff/update commands.`,
     })
   }
 

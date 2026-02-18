@@ -2,13 +2,13 @@ import path from 'node:path'
 
 import colors from 'picocolors'
 
-import { assertSupportedRegistry, ensureConfigFile, loadConfig, loadLock, saveLock } from '../core/config'
+import { ensureConfigFile, loadConfig, loadLock, saveLock } from '../core/config'
 import { hashContent, readTextIfExists, upsertTextFile } from '../core/io'
 import { ensureTrailingNewline } from '../core/text'
 import { findProjectRoot } from '../core/project'
 import type { AddResult, LockEntry } from '../core/types'
 import { createTemplateContext, resolveTemplatePath } from '../registry/context'
-import { getBuiltinTheme, listBuiltinThemeNames } from '../registry'
+import { loadRegistryDataset } from '../registry/source'
 
 export interface ThemeApplyOptions {
   themes: string[]
@@ -26,10 +26,14 @@ export async function runThemeApply(options: ThemeApplyOptions): Promise<AddResu
   const projectRoot = await findProjectRoot(cwd)
   const config = await loadConfig(projectRoot)
   const dryRun = Boolean(options.dryRun)
-  assertSupportedRegistry(config)
   if (!dryRun) {
     await ensureConfigFile(projectRoot, config)
   }
+  const registry = await loadRegistryDataset({
+    cwd: projectRoot,
+    registry: config.registry,
+    requireFiles: true,
+  })
 
   const context = createTemplateContext(config)
   const lock = await loadLock(projectRoot)
@@ -44,9 +48,10 @@ export async function runThemeApply(options: ThemeApplyOptions): Promise<AddResu
   let nextGlobals = globalsCssRaw
 
   for (const themeName of options.themes) {
-    const entry = getBuiltinTheme(themeName)
+    const entry = registry.themes[themeName]
     if (!entry) {
-      throw new Error(`Unknown theme: ${themeName}. Available themes: ${listBuiltinThemeNames().join(', ')}`)
+      const available = Object.keys(registry.themes).sort((left, right) => left.localeCompare(right))
+      throw new Error(`Unknown theme: ${themeName}. Available themes: ${available.join(', ')}`)
     }
 
     const plannedFiles = entry.files.map(file => {
@@ -91,7 +96,7 @@ export async function runThemeApply(options: ThemeApplyOptions): Promise<AddResu
     const lockEntry: LockEntry = {
       name: entry.name,
       version: entry.version,
-      source: 'builtin',
+      source: registry.source,
       installedAt: new Date().toISOString(),
       files: fileHashes,
     }

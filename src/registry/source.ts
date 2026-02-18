@@ -1,7 +1,7 @@
 import { loadConfig } from '../core/config'
 import { findProjectRoot } from '../core/project'
 import { builtinBlocks, builtinComponents, builtinThemes } from './builtin'
-import type { RegistryEntry } from './types'
+import type { RegistryEntry, RegistryEntryType, RegistryTemplateFile } from './types'
 
 export type RegistryCatalogKind = 'component' | 'block' | 'theme'
 
@@ -16,27 +16,80 @@ export interface RegistrySourceOptions {
   registry?: string
 }
 
+export interface RegistryDataset {
+  source: string
+  components: Record<string, RegistryEntry>
+  blocks: Record<string, RegistryEntry>
+  themes: Record<string, RegistryEntry>
+}
+
 interface RemoteRegistryEntry {
-  name: string
-  description?: string
-  type?: string
+  name?: unknown
+  description?: unknown
+  type?: unknown
+  version?: unknown
+  dependencies?: unknown
+  registryDependencies?: unknown
+  files?: unknown
+}
+
+interface RemoteRegistryContainer {
+  entries?: unknown
+  items?: unknown
 }
 
 export async function loadRegistryCatalog(options: RegistrySourceOptions = {}): Promise<RegistryCatalogRecord[]> {
-  const source = await resolveRegistrySource(options)
-  if (source === 'builtin') {
-    return collectBuiltinCatalog()
-  }
+  const dataset = await loadRegistryDataset({
+    ...options,
+    requireFiles: false,
+  })
 
-  return fetchRemoteRegistryCatalog(source)
+  const records: RegistryCatalogRecord[] = []
+  records.push(...toCatalogRecords(Object.values(dataset.components), 'component'))
+  records.push(...toCatalogRecords(Object.values(dataset.blocks), 'block'))
+  records.push(...toCatalogRecords(Object.values(dataset.themes), 'theme'))
+
+  return records.sort((left, right) => left.name.localeCompare(right.name))
 }
 
-function collectBuiltinCatalog(): RegistryCatalogRecord[] {
-  const records: RegistryCatalogRecord[] = []
-  records.push(...toCatalogRecords(builtinComponents, 'component'))
-  records.push(...toCatalogRecords(builtinBlocks, 'block'))
-  records.push(...toCatalogRecords(builtinThemes, 'theme'))
-  return records.sort((left, right) => left.name.localeCompare(right.name))
+interface RegistryDatasetOptions extends RegistrySourceOptions {
+  requireFiles: boolean
+}
+
+export async function loadRegistryDataset(options: RegistryDatasetOptions): Promise<RegistryDataset> {
+  const source = await resolveRegistrySource(options)
+  if (source === 'builtin') {
+    return {
+      source,
+      components: toRegistryMap(builtinComponents),
+      blocks: toRegistryMap(builtinBlocks),
+      themes: toRegistryMap(builtinThemes),
+    }
+  }
+
+  const entries = await fetchRemoteRegistryEntries(source, options.requireFiles)
+  return {
+    source,
+    components: toRegistryMap(entries.filter(entry => entry.type === 'ui-component')),
+    blocks: toRegistryMap(entries.filter(entry => entry.type === 'block')),
+    themes: toRegistryMap(entries.filter(entry => entry.type === 'theme')),
+  }
+}
+
+export function resolveComponentGraph(dataset: RegistryDataset, componentNames: string[]): RegistryEntry[] {
+  return resolveGraph(componentNames, dataset.components, 'component', () => true)
+}
+
+export function resolveBlockGraph(dataset: RegistryDataset, blockNames: string[]): RegistryEntry[] {
+  return resolveGraph(blockNames, dataset.blocks, 'block', dependency => Boolean(dataset.blocks[dependency]))
+}
+
+export function resolveEntryKinds(dataset: RegistryDataset, name: string): RegistryCatalogKind[] {
+  const kinds: RegistryCatalogKind[] = []
+  if (dataset.components[name]) kinds.push('component')
+  if (dataset.blocks[name]) kinds.push('block')
+  if (dataset.themes[name]) kinds.push('theme')
+  return kinds
 }
 
 function toCatalogRecords(entries: RegistryEntry[], kind: RegistryCatalogKind): RegistryCatalogRecord[] {
@@ -45,6 +98,10 @@ function toCatalogRecords(entries: RegistryEntry[], kind: RegistryCatalogKind): 
     name: entry.name,
     description: entry.description,
   }))
+}
+
+function toRegistryMap(entries: RegistryEntry[]): Record<string, RegistryEntry> {
+  return Object.fromEntries(entries.map(entry => [entry.name, entry]))
 }
 
 async function resolveRegistrySource(options: RegistrySourceOptions): Promise<string> {
@@ -64,7 +121,50 @@ async function resolveRegistrySource(options: RegistrySourceOptions): Promise<st
   return config.registry
 }
 
-async function fetchRemoteRegistryCatalog(source: string): Promise<RegistryCatalogRecord[]> {
+function resolveGraph(
+  names: string[],
+  registry: Record<string, RegistryEntry>,
+  kindLabel: 'component' | 'block',
+  shouldFollowDependency: (dependency: string) => boolean,
+): RegistryEntry[] {
+  const resolved: RegistryEntry[] = []
+  const visiting = new Set<string>()
+  const visited = new Set<string>()
+
+  for (const name of names) {
+    visit(name)
+  }
+
+  return resolved
+
+  function visit(name: string): void {
+    if (visited.has(name)) {
+      return
+    }
+    if (visiting.has(name)) {
+      throw new Error(`Circular registry ${kindLabel} dependency detected: ${name}`)
+    }
+
+    const entry = registry[name]
+    if (!entry) {
+      throw new Error(`Unknown registry ${kindLabel}: ${name}`)
+    }
+
+    visiting.add(name)
+    for (const dependency of entry.registryDependencies) {
+      if (!shouldFollowDependency(dependency)) {
+        continue
+      }
+      visit(dependency)
+    }
+    visiting.delete(name)
+
+    visited.add(name)
+    resolved.push(entry)
+  }
+}
+
+async function fetchRemoteRegistryEntries(source: string, requireFiles: boolean): Promise<RegistryEntry[]> {
   const url = resolveRegistryUrl(source)
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), 10_000)
@@ -83,16 +183,22 @@ async function fetchRemoteRegistryCatalog(source: string): Promise<RegistryCatal
 
     const payload = (await response.json()) as unknown
     const entries = unwrapRemoteEntries(payload)
-    return entries
-      .map(entry => normalizeRemoteEntry(entry))
-      .filter((entry): entry is RegistryCatalogRecord => entry !== null)
-      .sort((left, right) => left.name.localeCompare(right.name))
+    const normalized = entries
+      .map(entry => normalizeRemoteEntry(entry, requireFiles))
+      .filter((entry): entry is RegistryEntry => entry !== null)
+
+    if (normalized.length === 0) {
+      throw new Error('Remote registry payload did not contain valid entries.')
+    }
+
+    return normalized
   } catch (error) {
     if (error instanceof Error && error.name === 'AbortError') {
       throw new Error(`Timed out fetching registry from ${url}`, {
         cause: error,
       })
     }
+
     throw new Error(`Failed to fetch registry from ${url}`, {
       cause: error,
     })
@@ -125,11 +231,7 @@ function unwrapRemoteEntries(payload: unknown): RemoteRegistryEntry[] {
     throw new Error('Remote registry payload must be an array or an object containing an array field.')
   }
 
-  const container = payload as {
-    entries?: unknown
-    items?: unknown
-  }
-
+  const container = payload as RemoteRegistryContainer
   if (Array.isArray(container.entries)) {
     return container.entries as RemoteRegistryEntry[]
   }
@@ -140,34 +242,74 @@ function unwrapRemoteEntries(payload: unknown): RemoteRegistryEntry[] {
   throw new Error('Remote registry payload must provide an "entries" or "items" array.')
 }
 
-function normalizeRemoteEntry(entry: RemoteRegistryEntry): RegistryCatalogRecord | null {
+function normalizeRemoteEntry(entry: RemoteRegistryEntry, requireFiles: boolean): RegistryEntry | null {
   if (!entry || typeof entry !== 'object') {
     return null
   }
-  if (typeof entry.name !== 'string' || entry.name.trim().length === 0) {
+
+  const name = normalizeString(entry.name)
+  const type = normalizeRemoteEntryType(entry.type)
+
+  if (!name || !type) {
     return null
   }
 
-  const kind = normalizeRemoteKind(entry.type)
-  if (!kind) {
+  const files = normalizeRemoteFiles(entry.files)
+  if (requireFiles && files.length === 0) {
     return null
   }
 
   return {
-    kind,
-    name: entry.name.trim(),
-    description: typeof entry.description === 'string' ? entry.description : '',
+    name,
+    type,
+    version: normalizeString(entry.version) ?? '0.0.0',
+    description: normalizeString(entry.description) ?? '',
+    dependencies: normalizeStringArray(entry.dependencies),
+    registryDependencies: normalizeStringArray(entry.registryDependencies),
+    files,
   }
 }
 
-function normalizeRemoteKind(value: string | undefined): RegistryCatalogKind | null {
+function normalizeRemoteFiles(value: unknown): RegistryTemplateFile[] {
+  if (!Array.isArray(value)) {
+    return []
+  }
+
+  return value
+    .map(file => normalizeRemoteFile(file))
+    .filter((file): file is RegistryTemplateFile => file !== null)
+}
+
+function normalizeRemoteFile(value: unknown): RegistryTemplateFile | null {
+  if (!value || typeof value !== 'object') {
+    return null
+  }
+
+  const file = value as {
+    path?: unknown
+    content?: unknown
+  }
+
+  const path = normalizeString(file.path)
+  if (!path || typeof file.content !== 'string') {
+    return null
+  }
+
+  const content = file.content
+  return {
+    path,
+    content: () => content,
+  }
+}
+
+function normalizeRemoteEntryType(value: unknown): RegistryEntryType | null {
   if (typeof value !== 'string') {
     return null
   }
 
   const normalized = value.toLowerCase()
   if (normalized === 'ui-component' || normalized === 'component' || normalized === 'registry:ui') {
-    return 'component'
+    return 'ui-component'
   }
   if (normalized === 'block' || normalized === 'registry:block') {
     return 'block'
@@ -175,5 +317,25 @@ function normalizeRemoteKind(value: string | undefined): RegistryCatalogKind | n
   if (normalized === 'theme' || normalized === 'registry:theme' || normalized === 'style') {
     return 'theme'
   }
+
   return null
+}
+
+function normalizeString(value: unknown): string | null {
+  if (typeof value !== 'string') {
+    return null
+  }
+
+  const trimmed = value.trim()
+  return trimmed.length > 0 ? trimmed : null
+}
+
+function normalizeStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) {
+    return []
+  }
+
+  return value
+    .map(item => normalizeString(item))
+    .filter((item): item is string => item !== null)
 }
