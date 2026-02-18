@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { runAdd } from '../src/commands/add'
 import { runBlocksInstall } from '../src/commands/blocks'
@@ -13,6 +13,7 @@ import { runList } from '../src/commands/list'
 import { runSearch } from '../src/commands/search'
 import { runThemeApply } from '../src/commands/theme'
 import { runUpdate } from '../src/commands/update'
+import { LOCK_FILE } from '../src/core/constants'
 
 describe('maintenance commands', () => {
   it('produces diff and supports guarded update flow', async () => {
@@ -30,8 +31,14 @@ describe('maintenance commands', () => {
     expect(diff.changed).toContain('button')
     expect(diff.patches.join('\n')).toContain('registry/button@0.1.0')
 
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
     const guardedUpdate = await runUpdate({ cwd, components: ['button'], skipInstall: true })
+    const guardedLogs = logSpy.mock.calls.flat().join('\n')
+    logSpy.mockRestore()
+
     expect(guardedUpdate.skipped).toContain('button')
+    expect(guardedLogs).toContain('local changes detected in src/components/ui/button.tsx')
+    expect(guardedLogs).toContain('fictcn diff button')
 
     const forcedUpdate = await runUpdate({
       cwd,
@@ -43,6 +50,41 @@ describe('maintenance commands', () => {
 
     const refreshed = await readFile(filePath, 'utf8')
     expect(refreshed).toContain('buttonVariants')
+  })
+
+  it('reports stale lock metadata when guarded update cannot verify local edits', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-maintenance-stale-lock-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+
+    await runInit({ cwd, skipInstall: true })
+    await runAdd({ cwd, components: ['button'], skipInstall: true })
+
+    const filePath = path.join(cwd, 'src/components/ui/button.tsx')
+    await writeFile(filePath, 'local edits\n', 'utf8')
+
+    const lockPath = path.join(cwd, LOCK_FILE)
+    const lock = JSON.parse(await readFile(lockPath, 'utf8')) as {
+      components: {
+        button?: {
+          files?: Record<string, string>
+        }
+      }
+    }
+
+    if (lock.components.button?.files) {
+      delete lock.components.button.files['src/components/ui/button.tsx']
+    }
+    await writeFile(lockPath, `${JSON.stringify(lock, null, 2)}\n`, 'utf8')
+
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    const guardedUpdate = await runUpdate({ cwd, components: ['button'], skipInstall: true })
+    const guardedLogs = logSpy.mock.calls.flat().join('\n')
+    logSpy.mockRestore()
+
+    expect(guardedUpdate.skipped).toContain('button')
+    expect(guardedLogs).toContain('lock metadata is missing for this file')
+    expect(guardedLogs).toContain('fictcn diff button')
   })
 
   it('produces diff and update flow for blocks and themes', async () => {
