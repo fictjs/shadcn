@@ -149,7 +149,11 @@ export function createPostcssConfig(): string {
 `
 }
 
-export function createTsconfigPathPatch(tsconfigContent: string): string | null {
+export function createTsconfigPathPatch(
+  tsconfigContent: string,
+  aliasPathKey = '@/*',
+  aliasPathTarget = 'src/*',
+): string | null {
   try {
     const errors: ParseError[] = []
     const parsed = parse(tsconfigContent, errors, {
@@ -184,7 +188,7 @@ export function createTsconfigPathPatch(tsconfigContent: string): string | null 
       tsconfig.compilerOptions.paths = {}
     }
 
-    tsconfig.compilerOptions.paths['@/*'] = ['src/*']
+    tsconfig.compilerOptions.paths[aliasPathKey] = [aliasPathTarget]
 
     return `${JSON.stringify(tsconfig, null, 2)}\n`
   } catch {
