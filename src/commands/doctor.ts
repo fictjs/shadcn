@@ -45,12 +45,13 @@ export async function runDoctor(cwd = process.cwd()): Promise<DoctorResult> {
           paths?: Record<string, string[]>
         }
       }
-      const alias = tsconfig.compilerOptions?.paths?.['@/*']
+      const aliasPathKey = toAliasPathKey(config.aliases.base)
+      const alias = tsconfig.compilerOptions?.paths?.[aliasPathKey]
       if (!alias || !alias.includes('src/*')) {
         issues.push({
           level: 'warning',
           code: 'alias-paths',
-          message: 'tsconfig paths is missing @/* -> src/* alias.',
+          message: `tsconfig paths is missing ${aliasPathKey} -> src/* alias.`,
         })
       }
     } catch {
@@ -138,4 +139,9 @@ export async function runDoctor(cwd = process.cwd()): Promise<DoctorResult> {
     ok: issues.every(issue => issue.level !== 'error'),
     issues,
   }
+}
+
+function toAliasPathKey(baseAlias: string): string {
+  const normalized = baseAlias.trim().replace(/\/+$/, '')
+  return normalized.endsWith('/*') ? normalized : `${normalized}/*`
 }

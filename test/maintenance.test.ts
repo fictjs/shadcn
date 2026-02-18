@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 
@@ -54,5 +54,62 @@ describe('maintenance commands', () => {
 
     expect(doctor.ok).toBe(true)
     expect(doctor.issues.some(issue => issue.code === 'missing-dependency')).toBe(true)
+  })
+
+  it('accepts custom alias base in doctor checks', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-doctor-alias-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fictjs.dev/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: 'builtin',
+          aliases: {
+            base: '~',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+    await writeFile(
+      path.join(cwd, 'tsconfig.json'),
+      `${JSON.stringify(
+        {
+          compilerOptions: {
+            baseUrl: '.',
+            paths: {
+              '~/*': ['src/*'],
+            },
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+    await mkdir(path.join(cwd, 'src/styles'), { recursive: true })
+    await writeFile(
+      path.join(cwd, 'src/styles/globals.css'),
+      '@tailwind base;\n/* @fictcn tokens:start */\n:root {}\n/* @fictcn tokens:end */\n',
+      'utf8',
+    )
+    await writeFile(
+      path.join(cwd, 'tailwind.config.ts'),
+      "import animate from 'tailwindcss-animate'\nexport default { content: ['./src/**/*.{ts,tsx}'], plugins: [animate] }\n",
+      'utf8',
+    )
+
+    const doctor = await runDoctor(cwd)
+
+    expect(doctor.issues.some(issue => issue.code === 'alias-paths')).toBe(false)
   })
 })
