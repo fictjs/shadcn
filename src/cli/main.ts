@@ -6,6 +6,7 @@ import { runDiff } from '../commands/diff'
 import { runDoctor } from '../commands/doctor'
 import { runInit } from '../commands/init'
 import { runList } from '../commands/list'
+import { runRemove } from '../commands/remove'
 import { runSearch } from '../commands/search'
 import { runThemeApply } from '../commands/theme'
 import { runUpdate } from '../commands/update'
@@ -71,6 +72,21 @@ export async function main(argv: string[]): Promise<void> {
         components: entries,
         force: Boolean(options.force),
         skipInstall: Boolean(options.skipInstall),
+        dryRun: Boolean(options.dryRun),
+      })
+    })
+
+  program
+    .command('remove')
+    .alias('uninstall')
+    .description('Remove installed registry entries and tracked files')
+    .argument('<entries...>', 'Installed entry names, e.g. button auth/login-form theme-slate')
+    .option('--force', 'Remove files even when local edits are detected')
+    .option('--dry-run', 'Preview changes without deleting files')
+    .action(async (entries: string[], options) => {
+      await runRemove({
+        entries,
+        force: Boolean(options.force),
         dryRun: Boolean(options.dryRun),
       })
     })
