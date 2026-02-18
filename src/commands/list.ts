@@ -7,13 +7,15 @@ import {
   listBuiltinThemeNames,
 } from '../registry'
 
+export type ListType = 'components' | 'blocks' | 'themes' | 'all'
+
 export interface ListOptions {
   json?: boolean
-  type?: 'components' | 'blocks' | 'themes' | 'all'
+  type?: ListType | string
 }
 
 export function runList(options: ListOptions = {}): string {
-  const type = options.type ?? 'all'
+  const type = normalizeListType(options.type)
   const records = collectRecords(type)
 
   if (options.json) {
@@ -25,7 +27,7 @@ export function runList(options: ListOptions = {}): string {
     .join('\n')
 }
 
-function collectRecords(type: 'components' | 'blocks' | 'themes' | 'all') {
+function collectRecords(type: ListType) {
   const records: Array<{ kind: 'component' | 'block' | 'theme'; name: string; description: string }> = []
 
   if (type === 'components' || type === 'all') {
@@ -50,4 +52,17 @@ function collectRecords(type: 'components' | 'blocks' | 'themes' | 'all') {
   }
 
   return records
+}
+
+function normalizeListType(type: ListOptions['type']): ListType {
+  const value = (type ?? 'all').trim()
+  switch (value) {
+    case 'components':
+    case 'blocks':
+    case 'themes':
+    case 'all':
+      return value
+    default:
+      throw new Error(`Invalid list type "${value}". Expected one of: components, blocks, themes, all.`)
+  }
 }
