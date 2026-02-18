@@ -33,6 +33,7 @@ export async function runThemeApply(options: ThemeApplyOptions): Promise<AddResu
 
   const context = createTemplateContext(config)
   const lock = await loadLock(projectRoot)
+  let lockChanged = false
 
   const added: string[] = []
   const updated: string[] = []
@@ -103,6 +104,7 @@ export async function runThemeApply(options: ThemeApplyOptions): Promise<AddResu
 
     if (!dryRun) {
       lock.themes[entry.name] = lockEntry
+      lockChanged = true
     }
   }
 
@@ -110,7 +112,7 @@ export async function runThemeApply(options: ThemeApplyOptions): Promise<AddResu
     await upsertTextFile(projectRoot, config.css, ensureTrailingNewline(nextGlobals))
   }
 
-  if (!dryRun) {
+  if (!dryRun && lockChanged) {
     await saveLock(projectRoot, lock)
   }
 

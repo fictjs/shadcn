@@ -118,7 +118,7 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
     updated.add(target.entry.name)
   }
 
-  if (!dryRun) {
+  if (!dryRun && updated.size > 0) {
     await saveLock(projectRoot, lock)
   }
 
