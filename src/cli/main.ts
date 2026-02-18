@@ -5,9 +5,9 @@ import { runBlocksInstall } from '../commands/blocks'
 import { runDiff } from '../commands/diff'
 import { runDoctor } from '../commands/doctor'
 import { runInit } from '../commands/init'
-import { runList } from '../commands/list'
+import { runList, runListFromRegistry } from '../commands/list'
 import { runRemove } from '../commands/remove'
-import { runSearch } from '../commands/search'
+import { runSearchFromRegistry } from '../commands/search'
 import { runThemeApply } from '../commands/theme'
 import { runUpdate } from '../commands/update'
 
@@ -103,27 +103,32 @@ export async function main(argv: string[]): Promise<void> {
 
   program
     .command('list')
-    .description('List builtin registry entries')
+    .description('List registry entries')
     .addOption(
       new Option('--type <type>', 'components | blocks | themes | all')
         .choices(['components', 'blocks', 'themes', 'all'])
         .default('all'),
     )
+    .option('--registry <registry>', 'Registry source (`builtin` or URL to remote registry)')
     .option('--json', 'Output as JSON')
-    .action(options => {
-      const output = runList({
+    .action(async options => {
+      const output = await runListFromRegistry({
         json: Boolean(options.json),
         type: options.type,
+        registry: options.registry,
       })
       console.log(output)
     })
 
   program
     .command('search')
-    .description('Search builtin components')
+    .description('Search registry entries')
     .argument('<query>', 'Search term')
-    .action(query => {
-      const output = runSearch(query)
+    .option('--registry <registry>', 'Registry source (`builtin` or URL to remote registry)')
+    .action(async (query, options) => {
+      const output = await runSearchFromRegistry(query, {
+        registry: options.registry,
+      })
       console.log(output.length === 0 ? 'No registry entries matched the query.' : output)
     })
 
