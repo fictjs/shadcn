@@ -17,11 +17,6 @@ export interface RegistryTemplateFile {
   content: (context: TemplateContext) => string
 }
 
-export interface RegistryConstraints {
-  minFictVersion?: string
-  minPrimitivesVersion?: string
-}
-
 export interface RegistryEntry {
   name: string
   version: string
@@ -29,6 +24,5 @@ export interface RegistryEntry {
   description: string
   dependencies: string[]
   registryDependencies: string[]
-  constraints?: RegistryConstraints
   files: RegistryTemplateFile[]
 }
