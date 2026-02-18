@@ -29,6 +29,13 @@ interface TargetEntry {
   entry: RegistryEntry
 }
 
+type ConflictReason = 'missing-lock-hash' | 'hash-mismatch'
+
+interface ConflictDetail {
+  relativePath: string
+  reason: ConflictReason
+}
+
 export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResult> {
   const cwd = options.cwd ?? process.cwd()
   const projectRoot = await findProjectRoot(cwd)
@@ -54,7 +61,7 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
     const lockMap = lockMapFor(lock, target.kind)
     const lockEntry = lockMap[target.entry.name]
     const fileHashes: Record<string, string> = {}
-    let hasConflict = false
+    let conflict: ConflictDetail | null = null
 
     for (const rendered of renderedFiles) {
       const absolutePath = path.resolve(projectRoot, rendered.relativePath)
@@ -63,8 +70,18 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
 
       if (current !== null && current !== rendered.content && !options.force) {
         const currentHash = hashContent(current)
-        if (!lockedHash || currentHash !== lockedHash) {
-          hasConflict = true
+        if (!lockedHash) {
+          conflict = {
+            relativePath: rendered.relativePath,
+            reason: 'missing-lock-hash',
+          }
+          break
+        }
+        if (currentHash !== lockedHash) {
+          conflict = {
+            relativePath: rendered.relativePath,
+            reason: 'hash-mismatch',
+          }
           break
         }
       }
@@ -72,9 +89,9 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
       fileHashes[rendered.relativePath] = rendered.hash
     }
 
-    if (hasConflict) {
+    if (conflict) {
       skipped.add(target.entry.name)
-      console.log(colors.yellow(`Skipped ${target.entry.name}; local changes detected (use --force to override).`))
+      console.log(colors.yellow(createConflictMessage(target.entry.name, conflict)))
       continue
     }
 
@@ -174,4 +191,13 @@ function lockMapFor(lock: FictcnLock, kind: RegistryKind): Record<string, LockEn
   if (kind === 'component') return lock.components
   if (kind === 'block') return lock.blocks
   return lock.themes
+}
+
+function createConflictMessage(entryName: string, conflict: ConflictDetail): string {
+  const reason =
+    conflict.reason === 'missing-lock-hash'
+      ? 'lock metadata is missing for this file'
+      : 'local file hash differs from the lock snapshot'
+
+  return `Skipped ${entryName}; local changes detected in ${conflict.relativePath} (${reason}). Run \`fictcn diff ${entryName}\` to inspect or use --force to override.`
 }
