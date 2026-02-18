@@ -81,8 +81,69 @@ export function createVariantsUtility(): string {
 `
 }
 
-export function createTailwindConfig(contentGlobs: string[] = ['./src/**/*.{ts,tsx}']): string {
+export type TailwindConfigModuleFormat = 'esm' | 'cjs'
+
+export function createTailwindConfig(
+  contentGlobs: string[] = ['./src/**/*.{ts,tsx}'],
+  moduleFormat: TailwindConfigModuleFormat = 'esm',
+): string {
   const content = contentGlobs.map(glob => `'${glob}'`).join(', ')
+  if (moduleFormat === 'cjs') {
+    return `/** @type {import('tailwindcss').Config} */
+const config = {
+  darkMode: ['class'],
+  content: [${content}],
+  theme: {
+    extend: {
+      colors: {
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
+        },
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+        },
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
+        },
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+      },
+    },
+  },
+  plugins: [require('tailwindcss-animate')],
+}
+
+module.exports = config
+`
+  }
+
   return `import type { Config } from 'tailwindcss'
 import animate from 'tailwindcss-animate'
 
@@ -197,8 +258,13 @@ export function createTsconfigPathPatch(
   }
 }
 
-export function patchTailwindConfig(current: string, requiredContentGlobs: string[] = ['./src/**/*.{ts,tsx}']): string {
+export function patchTailwindConfig(
+  current: string,
+  requiredContentGlobs: string[] = ['./src/**/*.{ts,tsx}'],
+  moduleFormat: TailwindConfigModuleFormat = 'esm',
+): string {
   let patched = current
+  const pluginExpression = moduleFormat === 'esm' ? 'animate' : "require('tailwindcss-animate')"
 
   const missingContentGlobs = requiredContentGlobs.filter(glob => !containsContentGlob(patched, glob))
   if (missingContentGlobs.length > 0) {
@@ -216,18 +282,20 @@ export function patchTailwindConfig(current: string, requiredContentGlobs: strin
     }
   }
 
-  if (!patched.includes('tailwindcss-animate')) {
+  if (moduleFormat === 'esm' && !patched.includes('tailwindcss-animate')) {
     patched = `import animate from 'tailwindcss-animate'\n${patched}`
   }
 
   if (patched.includes('plugins: [')) {
     patched = patched.replace(/plugins\s*:\s*\[(?<plugins>[\s\S]*?)\]/m, (_, plugins: string) => {
-      if (plugins.includes('animate')) return `plugins: [${plugins}]`
+      if (hasTailwindAnimatePlugin(plugins)) return `plugins: [${plugins}]`
       const normalized = plugins.trim()
-      return normalized.length > 0 ? `plugins: [${normalized}, animate]` : 'plugins: [animate]'
+      return normalized.length > 0
+        ? `plugins: [${normalized}, ${pluginExpression}]`
+        : `plugins: [${pluginExpression}]`
     })
   } else {
-    patched = patched.replace(/theme\s*:\s*\{[\s\S]*?\},/, match => `${match}\n  plugins: [animate],`)
+    patched = patched.replace(/theme\s*:\s*\{[\s\S]*?\},/, match => `${match}\n  plugins: [${pluginExpression}],`)
   }
 
   return patched
@@ -235,6 +303,10 @@ export function patchTailwindConfig(current: string, requiredContentGlobs: strin
 
 function containsContentGlob(content: string, glob: string): boolean {
   return content.includes(`'${glob}'`) || content.includes(`"${glob}"`)
+}
+
+function hasTailwindAnimatePlugin(plugins: string): boolean {
+  return plugins.includes('tailwindcss-animate') || /(^|[^\w$])animate([^\w$]|$)/.test(plugins)
 }
 
 function appendArrayEntries(existing: string, entries: string[]): string {

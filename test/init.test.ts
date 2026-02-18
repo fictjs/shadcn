@@ -94,4 +94,78 @@ describe('runInit', () => {
     expect(tsconfig).toContain('"@/*"')
     expect(tsconfig).toContain('"src/*"')
   })
+
+  it('patches CommonJS tailwind config without injecting ESM syntax', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-init-tailwind-cjs-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, CONFIG_FILE),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fictjs.dev/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.cjs',
+          registry: 'builtin',
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+    await writeFile(
+      path.join(cwd, 'tailwind.config.cjs'),
+      "module.exports = { content: ['./src/**/*.{ts,tsx}'], theme: { extend: {} }, plugins: [] }\n",
+      'utf8',
+    )
+
+    await runInit({ cwd, skipInstall: true })
+
+    const tailwindConfig = await readFile(path.join(cwd, 'tailwind.config.cjs'), 'utf8')
+    expect(tailwindConfig).toContain('module.exports')
+    expect(tailwindConfig).toContain("require('tailwindcss-animate')")
+    expect(tailwindConfig).not.toContain("import animate from 'tailwindcss-animate'")
+    expect(tailwindConfig).toContain("'./src/components/ui/**/*.{ts,tsx}'")
+  })
+
+  it('creates CommonJS tailwind config for .js when package type is commonjs', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-init-tailwind-js-cjs-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox","type":"commonjs"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, CONFIG_FILE),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fictjs.dev/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.js',
+          registry: 'builtin',
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    await runInit({ cwd, skipInstall: true })
+
+    const tailwindConfig = await readFile(path.join(cwd, 'tailwind.config.js'), 'utf8')
+    expect(tailwindConfig).toContain('module.exports = config')
+    expect(tailwindConfig).toContain("require('tailwindcss-animate')")
+    expect(tailwindConfig).not.toContain("import animate from 'tailwindcss-animate'")
+  })
 })
