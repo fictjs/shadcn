@@ -14,7 +14,8 @@ const LOCK_FILE_TO_PM: Array<{ lockFile: string; pm: PackageManager }> = [
 ]
 
 export async function findProjectRoot(startDir: string): Promise<string> {
-  let current = resolve(startDir)
+  const initial = resolve(startDir)
+  let current = initial
 
   while (true) {
     if (await exists(resolve(current, 'package.json'))) {
@@ -23,7 +24,7 @@ export async function findProjectRoot(startDir: string): Promise<string> {
 
     const parent = dirname(current)
     if (parent === current) {
-      return resolve(startDir)
+      throw new Error(`Could not find package.json from ${initial}. Run this command inside a Node project.`)
     }
     current = parent
   }
