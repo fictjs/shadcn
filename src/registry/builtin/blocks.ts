@@ -361,23 +361,25 @@ export function ConfirmDeleteBlock() {
     files: [
       {
         path: '{{blocksDir}}/forms/validated-form.tsx',
-        content: context => `import { createSignal } from '@fictjs/runtime/advanced'
-
-import { Button } from '${context.uiImport('button')}'
+        content: context => `import { Button } from '${context.uiImport('button')}'
 import { Form, FormControl, FormDescription, FormField, FormLabel, FormMessage } from '${context.uiImport('form')}'
 
 export function ValidatedFormBlock() {
-  const [email, setEmail] = createSignal('')
-  const [message, setMessage] = createSignal('')
-
   const onSubmit = (event: SubmitEvent) => {
     event.preventDefault()
-    const value = email().trim()
-    if (!value.includes('@')) {
-      setMessage('Please enter a valid email address.')
+    const form = event.currentTarget as HTMLFormElement | null
+    if (!form) return
+
+    const emailInput = form.elements.namedItem('email') as HTMLInputElement | null
+    const message = form.querySelector('[data-form-message]') as HTMLElement | null
+    if (!emailInput || !message) return
+
+    const value = emailInput.value.trim()
+    if (value.length === 0 || !value.includes('@')) {
+      message.textContent = 'Please enter a valid email address.'
       return
     }
-    setMessage('Saved successfully.')
+    message.textContent = 'Saved successfully.'
   }
 
   return (
@@ -386,17 +388,13 @@ export function ValidatedFormBlock() {
         <FormLabel>Email</FormLabel>
         <FormControl
           as='input'
+          name='email'
           type='email'
-          value={email()}
-          onInput={event => {
-            const target = event.target as HTMLInputElement | null
-            if (!target) return
-            setEmail(target.value)
-          }}
           placeholder='you@example.com'
+          required
         />
         <FormDescription>We will only use this for account notifications.</FormDescription>
-        <FormMessage>{message()}</FormMessage>
+        <FormMessage data-form-message>Enter an email and submit to validate.</FormMessage>
       </FormField>
       <Button type='submit'>Save changes</Button>
     </Form>
