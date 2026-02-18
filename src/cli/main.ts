@@ -1,5 +1,6 @@
 import { Command } from 'commander'
 
+import { runAdd } from '../commands/add'
 import { runInit } from '../commands/init'
 
 export async function main(argv: string[]): Promise<void> {
@@ -16,6 +17,20 @@ export async function main(argv: string[]): Promise<void> {
     .option('--skip-install', 'Skip dependency installation')
     .action(async options => {
       await runInit({
+        skipInstall: Boolean(options.skipInstall),
+      })
+    })
+
+  program
+    .command('add')
+    .description('Add one or more registry components to the current project')
+    .argument('<components...>', 'Component names, e.g. button dialog')
+    .option('--overwrite', 'Overwrite existing conflicting files')
+    .option('--skip-install', 'Skip dependency installation')
+    .action(async (components: string[], options) => {
+      await runAdd({
+        components,
+        overwrite: Boolean(options.overwrite),
         skipInstall: Boolean(options.skipInstall),
       })
     })
