@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fictjs.dev/schemas/fictcn-lock.schema.json",
+  "title": "fictcn lock",
+  "type": "object",
+  "required": ["version", "registry", "components", "blocks", "themes"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "const": 1
+    },
+    "registry": {
+      "type": "string"
+    },
+    "components": {
+      "$ref": "#/$defs/entryMap"
+    },
+    "blocks": {
+      "$ref": "#/$defs/entryMap"
+    },
+    "themes": {
+      "$ref": "#/$defs/entryMap"
+    }
+  },
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "required": ["name", "version", "source", "installedAt", "files"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "installedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "files": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "entryMap": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/entry"
+      }
+    }
+  },
+  "additionalProperties": false
+}

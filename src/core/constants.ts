@@ -4,6 +4,7 @@ export const CONFIG_FILE = 'fictcn.json'
 export const LOCK_FILE = 'fictcn.lock.json'
 
 export const DEFAULT_CONFIG: FictcnConfig = {
+  $schema: 'https://fictjs.dev/schemas/fictcn.schema.json',
   version: 1,
   style: 'tailwind-css-vars',
   componentsDir: 'src/components/ui',
@@ -17,6 +18,7 @@ export const DEFAULT_CONFIG: FictcnConfig = {
 }
 
 export const DEFAULT_LOCK: FictcnLock = {
+  $schema: 'https://fictjs.dev/schemas/fictcn-lock.schema.json',
   version: 1,
   registry: 'builtin',
   components: {},

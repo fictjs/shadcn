@@ -1,4 +1,11 @@
-import { listBuiltinComponentNames, getBuiltinComponent } from '../registry'
+import {
+  getBuiltinBlock,
+  getBuiltinComponent,
+  getBuiltinTheme,
+  listBuiltinBlockNames,
+  listBuiltinComponentNames,
+  listBuiltinThemeNames,
+} from '../registry'
 
 export function runSearch(query: string): string {
   const normalized = query.trim().toLowerCase()
@@ -6,18 +13,32 @@ export function runSearch(query: string): string {
     return ''
   }
 
-  const matches = listBuiltinComponentNames().filter(name => {
-    const component = getBuiltinComponent(name)
+  const records: Array<{ kind: string; name: string; description: string }> = [
+    ...listBuiltinComponentNames().map(name => ({
+      kind: 'component',
+      name,
+      description: getBuiltinComponent(name)?.description ?? '',
+    })),
+    ...listBuiltinBlockNames().map(name => ({
+      kind: 'block',
+      name,
+      description: getBuiltinBlock(name)?.description ?? '',
+    })),
+    ...listBuiltinThemeNames().map(name => ({
+      kind: 'theme',
+      name,
+      description: getBuiltinTheme(name)?.description ?? '',
+    })),
+  ]
+
+  const matches = records.filter(record => {
     return (
-      name.toLowerCase().includes(normalized) ||
-      (component?.description.toLowerCase().includes(normalized) ?? false)
+      record.name.toLowerCase().includes(normalized) ||
+      record.description.toLowerCase().includes(normalized)
     )
   })
 
   return matches
-    .map(name => {
-      const component = getBuiltinComponent(name)
-      return `${name.padEnd(18)} ${component?.description ?? ''}`
-    })
+    .map(record => `${record.kind.padEnd(10)} ${record.name.padEnd(24)} ${record.description}`)
     .join('\n')
 }
