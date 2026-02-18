@@ -2,7 +2,7 @@ import path from 'node:path'
 
 import colors from 'picocolors'
 
-import { loadConfig, loadLock, saveLock } from '../core/config'
+import { assertSupportedRegistry, loadConfig, loadLock, saveLock } from '../core/config'
 import { hashContent, readTextIfExists, upsertTextFile } from '../core/io'
 import { detectPackageManager, findProjectRoot, runPackageManagerInstall } from '../core/project'
 import type { LockEntry } from '../core/types'
@@ -25,6 +25,7 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
   const cwd = options.cwd ?? process.cwd()
   const projectRoot = await findProjectRoot(cwd)
   const config = await loadConfig(projectRoot)
+  assertSupportedRegistry(config)
   const lock = await loadLock(projectRoot)
 
   const targetComponents =
