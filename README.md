@@ -7,7 +7,7 @@ Instead of installing a component library as a dependency, `@fictjs/shadcn` copi
 ## Features
 
 - **`fictcn` CLI** — scaffold, add, diff, update, and validate UI components from the terminal
-- **40+ UI components** — buttons, dialogs, forms, tables, navigation, and more — all built for Fict
+- **35 UI components** — buttons, dialogs, forms, tables, navigation, and more — all built for Fict
 - **8 pre-built blocks** — login forms, dashboards, settings pages, and data tables ready to drop in
 - **5 color themes** — swap design tokens via CSS custom properties with light/dark mode support
 - **Offline-first registry** — every component ships with the package; no network requests needed
@@ -28,7 +28,10 @@ yarn add -D @fictjs/shadcn
 bun add -D @fictjs/shadcn
 ```
 
-> **Prerequisites**: Node.js 18+, a Fict project with TypeScript and Tailwind CSS.
+> **Prerequisites**: Node.js 18+ and a Fict project. Tailwind baseline can be bootstrapped by `fictcn init`.
+
+> If `@fictjs/shadcn` is installed locally, run the CLI via your package manager:
+> `pnpm exec fictcn`, `npm exec fictcn`, `yarn fictcn`, or `bunx fictcn`.
 
 ## Quick Start
 
@@ -66,7 +69,7 @@ function App() {
 
 ### `fictcn init`
 
-Scaffolds the project baseline: `fictcn.json` config, `globals.css` with design tokens, `tailwind.config.ts`, PostCSS config, and utility files (`cn.ts`, `variants.ts`). Installs required dependencies unless `--skip-install` is passed.
+Scaffolds the project baseline: `fictcn.json` config, `globals.css` with design tokens, Tailwind config (e.g. `tailwind.config.ts` / `tailwind.config.js` / `tailwind.config.mjs` / `tailwind.config.cjs`), PostCSS config, and utility files (`cn.ts`, `variants.ts`). Installs required dependencies unless `--skip-install` is passed.
 
 ```bash
 fictcn init [--skip-install]
@@ -136,7 +139,7 @@ fictcn update --force      # overwrite local changes
 
 ### `fictcn doctor`
 
-Validate that your project is correctly configured: checks for `fictcn.json`, `tsconfig.json` alias paths, `globals.css`, `tailwind.config.ts`, and required npm dependencies.
+Validate that your project is correctly configured: checks for `fictcn.json`, `tsconfig.json` alias paths, `globals.css`, your configured Tailwind file (`tailwindConfig`), and required npm dependencies.
 
 ```bash
 fictcn doctor
@@ -203,7 +206,7 @@ Commit this file to version control so your team stays in sync.
 
 ## Built-in Registry
 
-### Components (40+)
+### Components (35)
 
 | Category   | Components                                                                                          |
 | ---------- | --------------------------------------------------------------------------------------------------- |
