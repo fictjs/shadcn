@@ -4,7 +4,7 @@ import colors from 'picocolors'
 
 import { DEV_DEPENDENCIES, RUNTIME_DEPENDENCIES } from '../core/constants'
 import { loadConfig, saveConfig } from '../core/config'
-import { exists, readTextIfExists, upsertTextFile } from '../core/io'
+import { exists, readJsonFile, readTextIfExists, upsertTextFile } from '../core/io'
 import { getAliasPathKey, getAliasPathTarget, getTailwindContentGlobs } from '../core/layout'
 import { detectPackageManager, findProjectRoot, runPackageManagerInstall } from '../core/project'
 import {
@@ -12,6 +12,7 @@ import {
   createGlobalsCss,
   createPostcssConfig,
   createTailwindConfig,
+  type TailwindConfigModuleFormat,
   createTsconfigPathPatch,
   createVariantsUtility,
   patchTailwindConfig,
@@ -80,18 +81,21 @@ async function ensureTailwindConfig(projectRoot: string, config: FictcnConfig): 
   const contentGlobs = getTailwindContentGlobs(config)
   const tailwindConfigPath = config.tailwindConfig
   const absolutePath = path.resolve(projectRoot, tailwindConfigPath)
+  const packageType = await readPackageModuleType(projectRoot)
+  const defaultModuleFormat = inferTailwindModuleFormatFromPath(tailwindConfigPath, packageType)
   if (!(await exists(absolutePath))) {
-    await upsertTextFile(projectRoot, tailwindConfigPath, createTailwindConfig(contentGlobs))
+    await upsertTextFile(projectRoot, tailwindConfigPath, createTailwindConfig(contentGlobs, defaultModuleFormat))
     return
   }
 
   const current = await readTextIfExists(absolutePath)
   if (current === null) {
-    await upsertTextFile(projectRoot, tailwindConfigPath, createTailwindConfig(contentGlobs))
+    await upsertTextFile(projectRoot, tailwindConfigPath, createTailwindConfig(contentGlobs, defaultModuleFormat))
     return
   }
 
-  await upsertTextFile(projectRoot, tailwindConfigPath, patchTailwindConfig(current, contentGlobs))
+  const moduleFormat = detectTailwindModuleFormatFromContent(current) ?? defaultModuleFormat
+  await upsertTextFile(projectRoot, tailwindConfigPath, patchTailwindConfig(current, contentGlobs, moduleFormat))
 }
 
 async function ensurePostcssConfig(projectRoot: string): Promise<void> {
@@ -104,4 +108,50 @@ async function ensurePostcssConfig(projectRoot: string): Promise<void> {
   }
 
   await upsertTextFile(projectRoot, 'postcss.config.mjs', createPostcssConfig())
+}
+
+async function readPackageModuleType(projectRoot: string): Promise<'module' | 'commonjs' | undefined> {
+  const packageJsonPath = path.resolve(projectRoot, 'package.json')
+  if (!(await exists(packageJsonPath))) {
+    return undefined
+  }
+
+  try {
+    const packageJson = await readJsonFile<{ type?: string }>(packageJsonPath)
+    if (packageJson.type === 'module') return 'module'
+    if (packageJson.type === 'commonjs') return 'commonjs'
+  } catch {
+    return undefined
+  }
+
+  return undefined
+}
+
+function inferTailwindModuleFormatFromPath(
+  tailwindConfigPath: string,
+  packageType: 'module' | 'commonjs' | undefined,
+): TailwindConfigModuleFormat {
+  const normalized = tailwindConfigPath.toLowerCase()
+
+  if (normalized.endsWith('.cjs') || normalized.endsWith('.cts')) {
+    return 'cjs'
+  }
+  if (normalized.endsWith('.mjs') || normalized.endsWith('.mts') || normalized.endsWith('.ts')) {
+    return 'esm'
+  }
+  if (normalized.endsWith('.js')) {
+    return packageType === 'module' ? 'esm' : 'cjs'
+  }
+
+  return packageType === 'module' ? 'esm' : 'cjs'
+}
+
+function detectTailwindModuleFormatFromContent(content: string): TailwindConfigModuleFormat | null {
+  if (/\bmodule\.exports\b/.test(content) || /\brequire\s*\(/.test(content)) {
+    return 'cjs'
+  }
+  if (/\bexport\s+default\b/.test(content) || /\bimport\s+/.test(content)) {
+    return 'esm'
+  }
+  return null
 }
