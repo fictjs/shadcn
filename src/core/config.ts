@@ -1,7 +1,7 @@
 import path from 'node:path'
 
 import { CONFIG_FILE, DEFAULT_CONFIG, LOCK_FILE, DEFAULT_LOCK } from './constants'
-import { exists, readJsonFile, sortRecord, writeJsonFile } from './io'
+import { exists, readJsonFile, readJsoncFile, sortRecord, writeJsonFile } from './io'
 import type { FictcnConfig, FictcnLock } from './types'
 
 export async function loadConfig(projectRoot: string): Promise<FictcnConfig> {
@@ -10,7 +10,11 @@ export async function loadConfig(projectRoot: string): Promise<FictcnConfig> {
     return { ...DEFAULT_CONFIG }
   }
 
-  const config = await readJsonFile<FictcnConfig>(configPath)
+  const config = await readJsoncFile<Partial<FictcnConfig>>(configPath)
+  if (!config || typeof config !== 'object' || Array.isArray(config)) {
+    throw new Error(`Invalid ${CONFIG_FILE}: expected an object.`)
+  }
+
   return {
     ...DEFAULT_CONFIG,
     ...config,
@@ -19,6 +23,12 @@ export async function loadConfig(projectRoot: string): Promise<FictcnConfig> {
       ...config.aliases,
     },
   }
+}
+
+export async function ensureConfigFile(projectRoot: string, config: FictcnConfig): Promise<void> {
+  const configPath = path.resolve(projectRoot, CONFIG_FILE)
+  if (await exists(configPath)) return
+  await saveConfig(projectRoot, config)
 }
 
 export async function saveConfig(projectRoot: string, config: FictcnConfig): Promise<void> {
