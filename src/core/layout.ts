@@ -1,3 +1,5 @@
+import path from 'node:path'
+
 import type { FictcnConfig } from './types'
 
 export function getAliasPathKey(baseAlias: string): string {
@@ -17,7 +19,7 @@ export function getAliasPathTarget(config: FictcnConfig): string {
 export function getTailwindContentGlobs(config: FictcnConfig): string[] {
   const globs = ['./src/**/*.{ts,tsx}']
 
-  for (const directory of [config.componentsDir, config.libDir]) {
+  for (const directory of [config.componentsDir, getBlocksDir(config), config.libDir]) {
     if (isSrcScopedPath(directory)) continue
     const nextGlob = `./${normalizeRelativePath(directory)}/**/*.{ts,tsx}`
     if (!globs.includes(nextGlob)) {
@@ -26,6 +28,14 @@ export function getTailwindContentGlobs(config: FictcnConfig): string[] {
   }
 
   return globs
+}
+
+export function getBlocksDir(config: FictcnConfig): string {
+  const normalizedComponentsDir = normalizeRelativePath(config.componentsDir)
+  const baseDir = normalizedComponentsDir.endsWith('/ui')
+    ? path.posix.dirname(normalizedComponentsDir)
+    : normalizedComponentsDir
+  return `${baseDir}/blocks`
 }
 
 function shouldUseSrcAliasTarget(config: FictcnConfig): boolean {
