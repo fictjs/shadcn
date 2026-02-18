@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { handleCliError } from '../src/bin/fictcn'
+import { handleCliError } from '../src/cli/error'
 
 describe('bin error handling', () => {
   afterEach(() => {
