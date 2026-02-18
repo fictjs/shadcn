@@ -29,6 +29,12 @@ export async function saveConfig(projectRoot: string, config: FictcnConfig): Pro
   })
 }
 
+export function assertSupportedRegistry(config: FictcnConfig): void {
+  if (config.registry !== 'builtin') {
+    throw new Error(`Unsupported registry "${config.registry}". Only "builtin" is currently supported.`)
+  }
+}
+
 export async function loadLock(projectRoot: string): Promise<FictcnLock> {
   const lockPath = path.resolve(projectRoot, LOCK_FILE)
   if (!(await exists(lockPath))) {

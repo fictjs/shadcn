@@ -31,6 +31,14 @@ export async function runDoctor(cwd = process.cwd()): Promise<DoctorResult> {
     })
   }
 
+  if (config.registry !== 'builtin') {
+    issues.push({
+      level: 'warning',
+      code: 'unsupported-registry',
+      message: `Registry ${config.registry} is not currently supported by this CLI version.`,
+    })
+  }
+
   const tsconfigRaw = await readTextIfExists(path.resolve(projectRoot, 'tsconfig.json'))
   if (!tsconfigRaw) {
     issues.push({

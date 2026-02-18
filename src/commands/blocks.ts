@@ -3,7 +3,7 @@ import path from 'node:path'
 import colors from 'picocolors'
 
 import { runAdd } from './add'
-import { loadConfig, loadLock, saveConfig, saveLock } from '../core/config'
+import { assertSupportedRegistry, loadConfig, loadLock, saveConfig, saveLock } from '../core/config'
 import { hashContent, readTextIfExists, upsertTextFile } from '../core/io'
 import { detectPackageManager, findProjectRoot, runPackageManagerInstall } from '../core/project'
 import type { AddResult, LockEntry } from '../core/types'
@@ -25,6 +25,7 @@ export async function runBlocksInstall(options: BlockInstallOptions): Promise<Ad
   const cwd = options.cwd ?? process.cwd()
   const projectRoot = await findProjectRoot(cwd)
   const config = await loadConfig(projectRoot)
+  assertSupportedRegistry(config)
   await saveConfig(projectRoot, config)
 
   const entries = resolveBuiltinBlockGraph(options.blocks)

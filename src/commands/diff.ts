@@ -2,7 +2,7 @@ import path from 'node:path'
 
 import { createPatch } from 'diff'
 
-import { loadConfig, loadLock } from '../core/config'
+import { assertSupportedRegistry, loadConfig, loadLock } from '../core/config'
 import { readTextIfExists } from '../core/io'
 import { findProjectRoot } from '../core/project'
 import { resolveBuiltinComponentGraph } from '../registry'
@@ -22,6 +22,7 @@ export async function runDiff(options: DiffOptions = {}): Promise<DiffResult> {
   const cwd = options.cwd ?? process.cwd()
   const projectRoot = await findProjectRoot(cwd)
   const config = await loadConfig(projectRoot)
+  assertSupportedRegistry(config)
   const lock = await loadLock(projectRoot)
 
   const targetComponents =
