@@ -10,7 +10,7 @@ Instead of installing a component library as a dependency, `@fictjs/shadcn` copi
 
 ## Features
 
-- **`fictcn` CLI** — scaffold, add, diff, update, and validate UI components from the terminal
+- **`fictcn` CLI** — scaffold, add, remove, diff, update, and validate UI components from the terminal
 - **35 UI components** — buttons, dialogs, forms, tables, navigation, and more — all built for Fict
 - **8 pre-built blocks** — login forms, dashboards, settings pages, and data tables ready to drop in
 - **5 color themes** — swap design tokens via CSS custom properties with light/dark mode support
@@ -76,7 +76,7 @@ function App() {
 Scaffolds the project baseline: `fictcn.json` config, `globals.css` with design tokens, Tailwind config (e.g. `tailwind.config.ts` / `tailwind.config.js` / `tailwind.config.mjs` / `tailwind.config.cjs`), PostCSS config, and utility files (`cn.ts`, `variants.ts`). Installs required dependencies unless `--skip-install` is passed.
 
 ```bash
-fictcn init [--skip-install]
+fictcn init [--skip-install] [--dry-run]
 ```
 
 ### `fictcn add`
@@ -84,7 +84,7 @@ fictcn init [--skip-install]
 Adds one or more components to your project. Registry dependencies (e.g., `dialog` depends on `button`) are resolved and installed automatically.
 
 ```bash
-fictcn add <components...> [--overwrite] [--skip-install]
+fictcn add <components...> [--overwrite] [--skip-install] [--dry-run]
 
 # Examples
 fictcn add button
@@ -97,7 +97,7 @@ fictcn add select --overwrite  # replace existing files
 Install pre-built UI blocks — higher-level compositions of multiple components.
 
 ```bash
-fictcn blocks add <blocks...> [--overwrite] [--skip-install]
+fictcn blocks add <blocks...> [--overwrite] [--skip-install] [--dry-run]
 fictcn blocks list
 
 # Examples
@@ -109,7 +109,7 @@ fictcn blocks add auth/login-form dashboard/layout
 Apply color themes that override CSS custom properties with light/dark variants.
 
 ```bash
-fictcn theme apply <themes...> [--overwrite]
+fictcn theme apply <themes...> [--overwrite] [--dry-run]
 fictcn theme list
 
 # Examples
@@ -133,12 +133,25 @@ fictcn diff button card  # diff specific components
 Update installed registry entries to the latest built-in versions. Without `--force`, entries with local modifications are skipped.
 
 ```bash
-fictcn update [entries...] [--force] [--skip-install]
+fictcn update [entries...] [--force] [--skip-install] [--dry-run]
 
 # Examples
 fictcn update              # update all
 fictcn update button card  # update specific entries
 fictcn update --force      # overwrite local changes
+```
+
+### `fictcn remove` / `fictcn uninstall`
+
+Remove installed entries and tracked files from your project and lock file. By default, edited files are protected; pass `--force` to remove anyway.
+
+```bash
+fictcn remove <entries...> [--force] [--dry-run]
+
+# Examples
+fictcn remove button
+fictcn remove auth/login-form theme-slate
+fictcn remove button --force
 ```
 
 ### `fictcn doctor`
@@ -282,13 +295,16 @@ your-project/
 All CLI commands are also available as TypeScript functions:
 
 ```ts
-import { runInit, runAdd, runDiff, runDoctor, runList } from '@fictjs/shadcn'
+import { runInit, runAdd, runRemove, runDiff, runDoctor, runList } from '@fictjs/shadcn'
 
 // Initialize programmatically
 await runInit({ skipInstall: true })
 
 // Add components
 await runAdd({ components: ['button', 'dialog'], overwrite: false })
+
+// Remove entries
+await runRemove({ entries: ['dialog'] })
 
 // Check for drift
 const { patches } = await runDiff()
