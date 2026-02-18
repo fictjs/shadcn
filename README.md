@@ -47,6 +47,23 @@ fictcn theme apply <themes...> [--overwrite]
 fictcn theme list
 ```
 
+## Storybook (Fict + shadcn)
+
+This repo now includes a Fict-native Storybook setup with shadcn-style component stories.
+
+```bash
+# start local storybook
+pnpm storybook
+
+# smoke test startup in CI mode
+pnpm storybook:smoke
+
+# build static storybook
+pnpm storybook:build
+```
+
+Story files are under `stories/`, and Storybook config is under `.storybook/`.
+
 ## Built-in Component Coverage
 
 - Base: `button`, `badge`, `card`, `separator`, `avatar`, `aspect-ratio`, `skeleton`
