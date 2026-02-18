@@ -33,7 +33,7 @@ export async function runDoctor(cwd = process.cwd()): Promise<DoctorResult> {
 
   if (config.registry !== 'builtin') {
     issues.push({
-      level: 'warning',
+      level: 'error',
       code: 'unsupported-registry',
       message: `Registry ${config.registry} is not currently supported by this CLI version.`,
     })
