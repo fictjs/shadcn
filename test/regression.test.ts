@@ -54,4 +54,43 @@ describe('regressions', () => {
     expect(blockSource).not.toContain('createSignal(')
     expect(blockSource).toContain('data-form-message')
   })
+
+  it('surfaces actionable config validation errors for malformed fictcn.json', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-regression-config-validation-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          version: 2,
+          style: 'unknown-style',
+          componentsDir: 123,
+          aliases: {
+            base: '',
+            extra: '@/x',
+          },
+          unexpected: true,
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    let thrown: Error | undefined
+    try {
+      await runAdd({ cwd, components: ['button'], skipInstall: true })
+    } catch (error) {
+      thrown = error as Error
+    }
+
+    expect(thrown).toBeInstanceOf(Error)
+    expect(thrown?.message).toContain('Invalid fictcn.json')
+    expect(thrown?.message).toContain('Field "version" must be 1.')
+    expect(thrown?.message).toContain('Field "style" must be "tailwind-css-vars".')
+    expect(thrown?.message).toContain('Field "componentsDir" must be a string.')
+    expect(thrown?.message).toContain('Unknown field "aliases.extra".')
+    expect(thrown?.message).toContain('Field "aliases.base" cannot be empty.')
+    expect(thrown?.message).toContain('Unknown field "unexpected".')
+  })
 })
