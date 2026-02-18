@@ -16,6 +16,7 @@ export interface BlockInstallOptions {
   cwd?: string
   overwrite?: boolean
   skipInstall?: boolean
+  dryRun?: boolean
 }
 
 export async function runBlocksInstall(options: BlockInstallOptions): Promise<AddResult> {
@@ -26,8 +27,11 @@ export async function runBlocksInstall(options: BlockInstallOptions): Promise<Ad
   const cwd = options.cwd ?? process.cwd()
   const projectRoot = await findProjectRoot(cwd)
   const config = await loadConfig(projectRoot)
+  const dryRun = Boolean(options.dryRun)
   assertSupportedRegistry(config)
-  await ensureConfigFile(projectRoot, config)
+  if (!dryRun) {
+    await ensureConfigFile(projectRoot, config)
+  }
 
   const entries = resolveBuiltinBlockGraph(options.blocks)
   const componentDependencies = Array.from(
@@ -40,6 +44,7 @@ export async function runBlocksInstall(options: BlockInstallOptions): Promise<Ad
       components: componentDependencies,
       overwrite: options.overwrite,
       skipInstall: options.skipInstall,
+      dryRun,
     })
   }
 
@@ -83,7 +88,9 @@ export async function runBlocksInstall(options: BlockInstallOptions): Promise<Ad
 
     const fileHashes: Record<string, string> = {}
     for (const file of plannedFiles) {
-      await upsertTextFile(projectRoot, file.relativePath, file.content)
+      if (!dryRun) {
+        await upsertTextFile(projectRoot, file.relativePath, file.content)
+      }
       fileHashes[file.relativePath] = hashContent(file.content)
     }
 
@@ -101,12 +108,16 @@ export async function runBlocksInstall(options: BlockInstallOptions): Promise<Ad
       added.push(entry.name)
     }
 
-    lock.blocks[entry.name] = lockEntry
+    if (!dryRun) {
+      lock.blocks[entry.name] = lockEntry
+    }
   }
 
-  await saveLock(projectRoot, lock)
+  if (!dryRun) {
+    await saveLock(projectRoot, lock)
+  }
 
-  if (!options.skipInstall) {
+  if (!options.skipInstall && !dryRun) {
     const dependencies = Array.from(dependencySet).sort((left, right) => left.localeCompare(right))
     if (dependencies.length > 0) {
       const packageManager = await detectPackageManager(projectRoot)
@@ -115,13 +126,13 @@ export async function runBlocksInstall(options: BlockInstallOptions): Promise<Ad
   }
 
   if (added.length > 0) {
-    console.log(colors.green(`Blocks added: ${added.join(', ')}`))
+    console.log(colors.green(`${dryRun ? 'Would add blocks' : 'Blocks added'}: ${added.join(', ')}`))
   }
   if (updated.length > 0) {
-    console.log(colors.green(`Blocks updated: ${updated.join(', ')}`))
+    console.log(colors.green(`${dryRun ? 'Would update blocks' : 'Blocks updated'}: ${updated.join(', ')}`))
   }
   if (skipped.length > 0) {
-    console.log(colors.yellow(`Blocks skipped: ${skipped.join(', ')}`))
+    console.log(colors.yellow(`${dryRun ? 'Would skip blocks' : 'Blocks skipped'}: ${skipped.join(', ')}`))
   }
 
   return { added, updated, skipped }

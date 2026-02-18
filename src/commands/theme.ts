@@ -14,6 +14,7 @@ export interface ThemeApplyOptions {
   themes: string[]
   cwd?: string
   overwrite?: boolean
+  dryRun?: boolean
 }
 
 export async function runThemeApply(options: ThemeApplyOptions): Promise<AddResult> {
@@ -24,8 +25,11 @@ export async function runThemeApply(options: ThemeApplyOptions): Promise<AddResu
   const cwd = options.cwd ?? process.cwd()
   const projectRoot = await findProjectRoot(cwd)
   const config = await loadConfig(projectRoot)
+  const dryRun = Boolean(options.dryRun)
   assertSupportedRegistry(config)
-  await ensureConfigFile(projectRoot, config)
+  if (!dryRun) {
+    await ensureConfigFile(projectRoot, config)
+  }
 
   const context = createTemplateContext(config)
   const lock = await loadLock(projectRoot)
@@ -71,7 +75,9 @@ export async function runThemeApply(options: ThemeApplyOptions): Promise<AddResu
 
     const fileHashes: Record<string, string> = {}
     for (const file of plannedFiles) {
-      await upsertTextFile(projectRoot, file.relativePath, file.content)
+      if (!dryRun) {
+        await upsertTextFile(projectRoot, file.relativePath, file.content)
+      }
       fileHashes[file.relativePath] = hashContent(file.content)
 
       const importPath = toImportPath(config.css, file.relativePath)
@@ -95,23 +101,27 @@ export async function runThemeApply(options: ThemeApplyOptions): Promise<AddResu
       added.push(entry.name)
     }
 
-    lock.themes[entry.name] = lockEntry
+    if (!dryRun) {
+      lock.themes[entry.name] = lockEntry
+    }
   }
 
-  if (nextGlobals !== globalsCssRaw && nextGlobals.length > 0) {
+  if (!dryRun && nextGlobals !== globalsCssRaw && nextGlobals.length > 0) {
     await upsertTextFile(projectRoot, config.css, ensureTrailingNewline(nextGlobals))
   }
 
-  await saveLock(projectRoot, lock)
+  if (!dryRun) {
+    await saveLock(projectRoot, lock)
+  }
 
   if (added.length > 0) {
-    console.log(colors.green(`Themes added: ${added.join(', ')}`))
+    console.log(colors.green(`${dryRun ? 'Would add themes' : 'Themes added'}: ${added.join(', ')}`))
   }
   if (updated.length > 0) {
-    console.log(colors.green(`Themes updated: ${updated.join(', ')}`))
+    console.log(colors.green(`${dryRun ? 'Would update themes' : 'Themes updated'}: ${updated.join(', ')}`))
   }
   if (skipped.length > 0) {
-    console.log(colors.yellow(`Themes skipped: ${skipped.join(', ')}`))
+    console.log(colors.yellow(`${dryRun ? 'Would skip themes' : 'Themes skipped'}: ${skipped.join(', ')}`))
   }
 
   return { added, updated, skipped }
