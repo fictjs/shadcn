@@ -14,7 +14,7 @@ Instead of installing a component library as a dependency, `@fictjs/shadcn` copi
 - **35 UI components** — buttons, dialogs, forms, tables, navigation, and more — all built for Fict
 - **8 pre-built blocks** — login forms, dashboards, settings pages, and data tables ready to drop in
 - **5 color themes** — swap design tokens via CSS custom properties with light/dark mode support
-- **Offline-first registry** — every component ships with the package; no network requests needed
+- **Flexible registry source** — use the bundled offline registry or a remote JSON registry
 - **Deterministic lock file** — `fictcn.lock.json` tracks installed versions and SHA-256 file hashes for drift detection
 - **Automatic dependency resolution** — registry dependencies are resolved with circular dependency detection
 - **Tailwind CSS + CSS variables** — baseline configuration generated for you, including PostCSS and `tailwindcss-animate`
@@ -81,7 +81,7 @@ fictcn init [--skip-install] [--dry-run]
 
 ### `fictcn add`
 
-Adds one or more components to your project. Registry dependencies (e.g., `dialog` depends on `button`) are resolved and installed automatically.
+Adds one or more components to your project from the configured registry (`builtin` or remote URL). Registry dependencies (e.g., `dialog` depends on `button`) are resolved and installed automatically.
 
 ```bash
 fictcn add <components...> [--overwrite] [--skip-install] [--dry-run]
@@ -118,7 +118,7 @@ fictcn theme apply theme-slate
 
 ### `fictcn diff`
 
-Show a unified diff of local modifications against the built-in registry. Useful for reviewing what you've customized before updating.
+Show a unified diff of local modifications against the configured registry source. Useful for reviewing what you've customized before updating.
 
 ```bash
 fictcn diff [entries...]
@@ -130,7 +130,7 @@ fictcn diff button card  # diff specific components
 
 ### `fictcn update`
 
-Update installed registry entries to the latest built-in versions. Without `--force`, entries with local modifications are skipped.
+Update installed registry entries from the configured registry source. Without `--force`, entries with local modifications are skipped.
 
 ```bash
 fictcn update [entries...] [--force] [--skip-install] [--dry-run]
@@ -210,8 +210,11 @@ Running `fictcn init` creates a `fictcn.json` at your project root:
 | `libDir`         | Where utility files (`cn.ts`, `variants.ts`) are placed  | `src/lib`                |
 | `css`            | Path to the global CSS file with design tokens           | `src/styles/globals.css` |
 | `tailwindConfig` | Path to the Tailwind CSS configuration file              | `tailwind.config.ts`     |
-| `registry`       | Registry source. `builtin` is fully supported; remote URL currently supports read-only `list/search` | `builtin`                |
+| `registry`       | Registry source (`builtin` or remote URL to `index.json`) | `builtin`                |
 | `aliases.base`   | TypeScript path alias prefix for imports                 | `@`                      |
+
+For remote registries, each entry in `index.json` should include:
+`name`, `type`, `version`, `dependencies`, `registryDependencies`, and `files` (`[{ path, content }]`).
 
 ## Lock File
 
@@ -286,7 +289,7 @@ your-project/
 
 1. **`fictcn init`** detects your project root, package manager, and TypeScript config. It generates baseline files and installs core dependencies (`@fictjs/ui-primitives`, `class-variance-authority`, `clsx`, `tailwind-merge`).
 
-2. **`fictcn add button`** looks up `button` in the built-in registry, resolves any registry dependencies (e.g., adding `dialog` also pulls in `button`), renders template files with your configured paths and aliases, writes them to `componentsDir`, and records everything in the lock file with SHA-256 hashes.
+2. **`fictcn add button`** looks up `button` in your configured registry, resolves any registry dependencies (e.g., adding `dialog` also pulls in `button`), renders template files with your configured paths and aliases, writes them to `componentsDir`, and records everything in the lock file with SHA-256 hashes.
 
 3. **You own the code.** Modify the generated components however you like. When the registry updates, use `fictcn diff` to see what changed, and `fictcn update` to pull in upstream improvements — your local changes are preserved unless you pass `--force`.
 
