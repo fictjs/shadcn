@@ -1,112 +1,334 @@
 # @fictjs/shadcn
 
-`@fictjs/shadcn` is the official shadcn-style code distribution system for Fict.
+The official [shadcn/ui](https://ui.shadcn.com)-style code distribution system for [Fict](https://fictjs.dev) — a reactive UI library with compiler-driven fine-grained reactivity.
 
-It provides:
+Instead of installing a component library as a dependency, `@fictjs/shadcn` copies beautifully-designed, accessible component source code directly into your project. You own the code, you customize it, and the CLI helps you keep it up to date.
 
-- `fictcn` CLI (`init/add/diff/update/doctor/list/search/theme/blocks`)
-- Built-in offline registry for UI components, blocks, and themes
-- Deterministic lock file (`fictcn.lock.json`) with file hashes
-- Tailwind + CSS variable baseline setup for Fict projects
+## Features
+
+- **`fictcn` CLI** — scaffold, add, diff, update, and validate UI components from the terminal
+- **40+ UI components** — buttons, dialogs, forms, tables, navigation, and more — all built for Fict
+- **8 pre-built blocks** — login forms, dashboards, settings pages, and data tables ready to drop in
+- **5 color themes** — swap design tokens via CSS custom properties with light/dark mode support
+- **Offline-first registry** — every component ships with the package; no network requests needed
+- **Deterministic lock file** — `fictcn.lock.json` tracks installed versions and SHA-256 file hashes for drift detection
+- **Automatic dependency resolution** — registry dependencies are resolved with circular dependency detection
+- **Tailwind CSS + CSS variables** — baseline configuration generated for you, including PostCSS and `tailwindcss-animate`
+- **Package manager agnostic** — auto-detects pnpm, npm, yarn, or bun
 
 ## Install
 
 ```bash
 pnpm add -D @fictjs/shadcn
+# or
+npm install -D @fictjs/shadcn
+# or
+yarn add -D @fictjs/shadcn
+# or
+bun add -D @fictjs/shadcn
 ```
+
+> **Prerequisites**: Node.js 18+, a Fict project with TypeScript and Tailwind CSS.
 
 ## Quick Start
 
 ```bash
-# initialize current Fict project
+# 1. Initialize your project (generates config, globals.css, tailwind config, utilities)
 pnpm fictcn init
 
-# add components
+# 2. Add components — dependencies are resolved automatically
 pnpm fictcn add button dialog tabs table
 
-# add blocks
-pnpm fictcn blocks add auth/login-form tables/users-table
-
-# apply themes
-pnpm fictcn theme apply theme-default theme-slate
+# 3. Import and use in your Fict components
 ```
 
-## CLI Commands
+```tsx
+import { Button } from '@/components/ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+
+function App() {
+  let count = $state(0)
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Counter</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Button onClick={() => count++}>Clicked {count} times</Button>
+      </CardContent>
+    </Card>
+  )
+}
+```
+
+## CLI Reference
+
+### `fictcn init`
+
+Scaffolds the project baseline: `fictcn.json` config, `globals.css` with design tokens, `tailwind.config.ts`, PostCSS config, and utility files (`cn.ts`, `variants.ts`). Installs required dependencies unless `--skip-install` is passed.
 
 ```bash
 fictcn init [--skip-install]
-fictcn add <components...> [--overwrite] [--skip-install]
-fictcn diff [entries...]
-fictcn update [entries...] [--force] [--skip-install]
-fictcn doctor
-fictcn list [--type components|blocks|themes|all] [--json]
-fictcn search <query>
-fictcn blocks add <blocks...> [--overwrite] [--skip-install]
-fictcn blocks list
-fictcn theme apply <themes...> [--overwrite]
-fictcn theme list
 ```
 
-## Storybook (Fict + shadcn)
+### `fictcn add`
 
-This repo now includes a Fict-native Storybook setup with shadcn-style component stories.
+Adds one or more components to your project. Registry dependencies (e.g., `dialog` depends on `button`) are resolved and installed automatically.
 
 ```bash
-# start local storybook
-pnpm storybook
+fictcn add <components...> [--overwrite] [--skip-install]
 
-# smoke test startup in CI mode
-pnpm storybook:smoke
-
-# build static storybook
-pnpm storybook:build
+# Examples
+fictcn add button
+fictcn add dialog tabs accordion tooltip
+fictcn add select --overwrite  # replace existing files
 ```
 
-Story files are under `stories/`, and Storybook config is under `.storybook/`.
+### `fictcn blocks`
 
-## Built-in Component Coverage
+Install pre-built UI blocks — higher-level compositions of multiple components.
 
-- Base: `button`, `badge`, `card`, `separator`, `avatar`, `aspect-ratio`, `skeleton`
-- Forms: `label`, `input`, `textarea`, `checkbox`, `radio-group`, `switch`, `select`, `combobox`, `slider`, `toggle`, `toggle-group`, `form`
-- Overlay: `dialog`, `alert-dialog`, `popover`, `tooltip`, `hover-card`, `sheet`
-- Navigation/Menu: `dropdown-menu`, `context-menu`, `menubar`, `tabs`, `accordion`, `collapsible`, `navigation-menu`
-- Feedback/Data: `toast`, `progress`, `table`
+```bash
+fictcn blocks add <blocks...> [--overwrite] [--skip-install]
+fictcn blocks list
 
-## Built-in Blocks
+# Examples
+fictcn blocks add auth/login-form dashboard/layout
+```
 
-- `auth/login-form`
-- `auth/signup-form`
-- `settings/profile`
-- `dashboard/layout`
-- `dashboard/sidebar`
-- `tables/users-table`
-- `dialogs/confirm-delete`
-- `forms/validated-form`
+### `fictcn theme`
 
-## Built-in Themes
+Apply color themes that override CSS custom properties with light/dark variants.
 
-- `theme-default`
-- `theme-slate`
-- `theme-zinc`
-- `theme-stone`
-- `theme-brand-ocean`
+```bash
+fictcn theme apply <themes...> [--overwrite]
+fictcn theme list
 
-## Schemas
+# Examples
+fictcn theme apply theme-slate
+```
 
-- `schemas/fictcn.schema.json`
-- `schemas/fictcn-lock.schema.json`
+### `fictcn diff`
 
-`fictcn init` writes config using the schema URL:
+Show a unified diff of local modifications against the built-in registry. Useful for reviewing what you've customized before updating.
 
-- `https://fictjs.dev/schemas/fictcn.schema.json`
-- `https://fictjs.dev/schemas/fictcn-lock.schema.json`
+```bash
+fictcn diff [entries...]
+
+# Examples
+fictcn diff              # diff all installed entries
+fictcn diff button card  # diff specific components
+```
+
+### `fictcn update`
+
+Update installed registry entries to the latest built-in versions. Without `--force`, entries with local modifications are skipped.
+
+```bash
+fictcn update [entries...] [--force] [--skip-install]
+
+# Examples
+fictcn update              # update all
+fictcn update button card  # update specific entries
+fictcn update --force      # overwrite local changes
+```
+
+### `fictcn doctor`
+
+Validate that your project is correctly configured: checks for `fictcn.json`, `tsconfig.json` alias paths, `globals.css`, `tailwind.config.ts`, and required npm dependencies.
+
+```bash
+fictcn doctor
+```
+
+### `fictcn list`
+
+List all available registry entries.
+
+```bash
+fictcn list [--type components|blocks|themes|all] [--json]
+```
+
+### `fictcn search`
+
+Search the built-in registry by keyword.
+
+```bash
+fictcn search <query>
+
+# Examples
+fictcn search dialog
+fictcn search form
+```
+
+## Configuration
+
+Running `fictcn init` creates a `fictcn.json` at your project root:
+
+```jsonc
+{
+  "$schema": "https://fictjs.dev/schemas/fictcn.schema.json",
+  "version": 1,
+  "style": "tailwind-css-vars",
+  "componentsDir": "src/components/ui",
+  "libDir": "src/lib",
+  "css": "src/styles/globals.css",
+  "tailwindConfig": "tailwind.config.ts",
+  "registry": "builtin",
+  "aliases": {
+    "base": "@"
+  }
+}
+```
+
+| Field            | Description                                              | Default                    |
+| ---------------- | -------------------------------------------------------- | -------------------------- |
+| `componentsDir`  | Where UI component files are written                     | `src/components/ui`        |
+| `libDir`         | Where utility files (`cn.ts`, `variants.ts`) are placed  | `src/lib`                  |
+| `css`            | Path to the global CSS file with design tokens           | `src/styles/globals.css`   |
+| `tailwindConfig` | Path to the Tailwind CSS configuration file              | `tailwind.config.ts`       |
+| `registry`       | Registry source (`builtin` is currently the only option) | `builtin`                  |
+| `aliases.base`   | TypeScript path alias prefix for imports                 | `@`                        |
+
+## Lock File
+
+`fictcn.lock.json` is generated automatically and tracks every installed entry with:
+
+- **Version** — the registry version at install time
+- **Timestamp** — when the entry was installed
+- **File hashes** — SHA-256 hashes of every generated file, enabling drift detection via `fictcn diff`
+
+Commit this file to version control so your team stays in sync.
+
+## Built-in Registry
+
+### Components (40+)
+
+| Category   | Components                                                                                          |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| Base       | `button`, `badge`, `card`, `separator`, `avatar`, `aspect-ratio`, `skeleton`, `label`, `input`, `textarea` |
+| Forms      | `checkbox`, `radio-group`, `switch`, `select`, `combobox`, `slider`, `toggle`, `toggle-group`, `form` |
+| Overlay    | `dialog`, `alert-dialog`, `popover`, `tooltip`, `hover-card`, `sheet`                               |
+| Navigation | `dropdown-menu`, `context-menu`, `menubar`, `tabs`, `accordion`, `collapsible`, `navigation-menu`   |
+| Feedback   | `toast`, `progress`                                                                                 |
+| Data       | `table`                                                                                             |
+
+### Blocks
+
+| Block                    | Description                           |
+| ------------------------ | ------------------------------------- |
+| `auth/login-form`        | Email/password login card             |
+| `auth/signup-form`       | Account creation form                 |
+| `settings/profile`       | User profile settings page            |
+| `dashboard/layout`       | Dashboard shell with header           |
+| `dashboard/sidebar`      | Collapsible sidebar navigation        |
+| `tables/users-table`     | Data table with user records          |
+| `dialogs/confirm-delete` | Destructive action confirmation modal |
+| `forms/validated-form`   | Form with field-level validation      |
+
+### Themes
+
+| Theme               | Description                         |
+| -------------------- | ----------------------------------- |
+| `theme-default`      | Neutral gray palette                |
+| `theme-slate`        | Cool slate tones                    |
+| `theme-zinc`         | Zinc/charcoal palette               |
+| `theme-stone`        | Warm stone tones                    |
+| `theme-brand-ocean`  | Blue ocean brand palette            |
+
+All themes provide light and dark mode variants via CSS custom properties and can be applied with a class name (e.g., `class="theme-slate dark"`).
+
+## Project Structure After Init
+
+```
+your-project/
+├── fictcn.json               # CLI configuration
+├── fictcn.lock.json          # Deterministic lock file
+├── tailwind.config.ts        # Auto-configured with design tokens
+├── postcss.config.mjs        # PostCSS with Tailwind + Autoprefixer
+└── src/
+    ├── components/
+    │   └── ui/
+    │       ├── button.tsx     # ← added by `fictcn add button`
+    │       ├── card.tsx
+    │       └── ...
+    ├── lib/
+    │   ├── cn.ts              # clsx + tailwind-merge utility
+    │   └── variants.ts        # class-variance-authority re-export
+    └── styles/
+        └── globals.css        # Tailwind directives + design tokens
+```
+
+## How It Works
+
+1. **`fictcn init`** detects your project root, package manager, and TypeScript config. It generates baseline files and installs core dependencies (`@fictjs/ui-primitives`, `class-variance-authority`, `clsx`, `tailwind-merge`).
+
+2. **`fictcn add button`** looks up `button` in the built-in registry, resolves any registry dependencies (e.g., adding `dialog` also pulls in `button`), renders template files with your configured paths and aliases, writes them to `componentsDir`, and records everything in the lock file with SHA-256 hashes.
+
+3. **You own the code.** Modify the generated components however you like. When the registry updates, use `fictcn diff` to see what changed, and `fictcn update` to pull in upstream improvements — your local changes are preserved unless you pass `--force`.
+
+4. **`fictcn doctor`** validates the full setup: config file, TypeScript aliases, CSS tokens, Tailwind config, and npm dependencies — catching misconfigurations early.
+
+## Programmatic API
+
+All CLI commands are also available as TypeScript functions:
+
+```ts
+import { runInit, runAdd, runDiff, runDoctor, runList } from '@fictjs/shadcn'
+
+// Initialize programmatically
+await runInit({ skipInstall: true })
+
+// Add components
+await runAdd({ components: ['button', 'dialog'], overwrite: false })
+
+// Check for drift
+const { patches } = await runDiff()
+
+// Validate project health
+const { ok, issues } = await runDoctor()
+
+// List registry entries
+const output = runList({ type: 'components', json: true })
+```
+
+## Storybook
+
+This repo includes a Fict-native Storybook setup for developing and previewing components:
+
+```bash
+pnpm storybook          # start dev server on port 6006
+pnpm storybook:build    # build static site
+pnpm storybook:smoke    # CI smoke test
+```
 
 ## Development
 
 ```bash
+# Install dependencies
 pnpm install --ignore-workspace
-pnpm lint
-pnpm typecheck
-pnpm test
-pnpm build
+
+# Development
+pnpm dev           # watch mode
+pnpm build         # production build
+
+# Quality
+pnpm lint          # ESLint
+pnpm typecheck     # TypeScript validation
+pnpm test          # run all tests
+pnpm test:watch    # watch mode
 ```
+
+## JSON Schemas
+
+Schemas for editor autocompletion and validation:
+
+- **Config**: `https://fictjs.dev/schemas/fictcn.schema.json`
+- **Lock file**: `https://fictjs.dev/schemas/fictcn-lock.schema.json`
+
+Local copies are in the `schemas/` directory.
+
+## License
+
+[MIT](LICENSE) &copy; Fict
