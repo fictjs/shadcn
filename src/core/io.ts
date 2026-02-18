@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
+import { parse, type ParseError } from 'jsonc-parser'
 
 import type { WriteFileResult } from './types'
 
@@ -46,6 +47,21 @@ export async function upsertTextFile(rootDir: string, relativePath: string, cont
 export async function readJsonFile<T>(targetPath: string): Promise<T> {
   const raw = await readFile(targetPath, 'utf8')
   return JSON.parse(raw) as T
+}
+
+export async function readJsoncFile<T>(targetPath: string): Promise<T> {
+  const raw = await readFile(targetPath, 'utf8')
+  const errors: ParseError[] = []
+  const parsed = parse(raw, errors, {
+    allowTrailingComma: true,
+    disallowComments: false,
+  }) as T | undefined
+
+  if (errors.length > 0 || parsed === undefined) {
+    throw new Error(`Invalid JSONC file: ${targetPath}`)
+  }
+
+  return parsed
 }
 
 export async function writeJsonFile(targetPath: string, value: unknown): Promise<void> {
