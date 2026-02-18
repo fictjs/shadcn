@@ -1,11 +1,13 @@
 import { Command } from 'commander'
 
 import { runAdd } from '../commands/add'
+import { runBlocksInstall } from '../commands/blocks'
 import { runDiff } from '../commands/diff'
 import { runDoctor } from '../commands/doctor'
 import { runInit } from '../commands/init'
 import { runList } from '../commands/list'
 import { runSearch } from '../commands/search'
+import { runThemeApply } from '../commands/theme'
 import { runUpdate } from '../commands/update'
 
 export async function main(argv: string[]): Promise<void> {
@@ -79,10 +81,14 @@ export async function main(argv: string[]): Promise<void> {
 
   program
     .command('list')
-    .description('List builtin components')
+    .description('List builtin registry entries')
+    .option('--type <type>', 'components | blocks | themes | all', 'all')
     .option('--json', 'Output as JSON')
     .action(options => {
-      const output = runList({ json: Boolean(options.json) })
+      const output = runList({
+        json: Boolean(options.json),
+        type: options.type,
+      })
       console.log(output)
     })
 
@@ -92,7 +98,51 @@ export async function main(argv: string[]): Promise<void> {
     .argument('<query>', 'Search term')
     .action(query => {
       const output = runSearch(query)
-      console.log(output.length === 0 ? 'No components matched the query.' : output)
+      console.log(output.length === 0 ? 'No registry entries matched the query.' : output)
+    })
+
+  const blocks = program.command('blocks').description('Manage built-in blocks')
+
+  blocks
+    .command('add')
+    .description('Install one or more blocks')
+    .argument('<blocks...>', 'Block names, e.g. auth/login-form')
+    .option('--overwrite', 'Overwrite conflicting files')
+    .option('--skip-install', 'Skip dependency installation')
+    .action(async (blockNames: string[], options) => {
+      await runBlocksInstall({
+        blocks: blockNames,
+        overwrite: Boolean(options.overwrite),
+        skipInstall: Boolean(options.skipInstall),
+      })
+    })
+
+  blocks
+    .command('list')
+    .description('List available blocks')
+    .action(() => {
+      console.log(runList({ type: 'blocks' }))
+    })
+
+  const theme = program.command('theme').description('Manage built-in themes')
+
+  theme
+    .command('apply')
+    .description('Install and register one or more themes')
+    .argument('<themes...>', 'Theme names, e.g. theme-slate')
+    .option('--overwrite', 'Overwrite conflicting files')
+    .action(async (themes: string[], options) => {
+      await runThemeApply({
+        themes,
+        overwrite: Boolean(options.overwrite),
+      })
+    })
+
+  theme
+    .command('list')
+    .description('List available themes')
+    .action(() => {
+      console.log(runList({ type: 'themes' }))
     })
 
   await program.parseAsync(argv)

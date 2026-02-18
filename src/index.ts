@@ -1,11 +1,13 @@
 export const SHADCN_PACKAGE_NAME = '@fictjs/shadcn'
 
 export * from './commands/add'
+export * from './commands/blocks'
 export * from './commands/diff'
 export * from './commands/doctor'
 export * from './commands/init'
 export * from './commands/list'
 export * from './commands/search'
+export * from './commands/theme'
 export * from './commands/update'
 export * from './core/config'
 export * from './core/constants'

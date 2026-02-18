@@ -1,6 +1,7 @@
 export type FictcnStyle = 'tailwind-css-vars'
 
 export interface FictcnConfig {
+  $schema?: string
   version: 1
   style: FictcnStyle
   componentsDir: string
@@ -22,6 +23,7 @@ export interface LockEntry {
 }
 
 export interface FictcnLock {
+  $schema?: string
   version: 1
   registry: string
   components: Record<string, LockEntry>

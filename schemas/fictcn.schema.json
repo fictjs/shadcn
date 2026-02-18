@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fictjs.dev/schemas/fictcn.schema.json",
+  "title": "fictcn config",
+  "type": "object",
+  "required": ["version", "style", "componentsDir", "libDir", "css", "tailwindConfig", "registry", "aliases"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "const": 1
+    },
+    "style": {
+      "type": "string",
+      "enum": ["tailwind-css-vars"]
+    },
+    "componentsDir": {
+      "type": "string"
+    },
+    "libDir": {
+      "type": "string"
+    },
+    "css": {
+      "type": "string"
+    },
+    "tailwindConfig": {
+      "type": "string"
+    },
+    "registry": {
+      "type": "string"
+    },
+    "aliases": {
+      "type": "object",
+      "required": ["base"],
+      "properties": {
+        "base": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
