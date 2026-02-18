@@ -10,6 +10,7 @@ import { runDiff } from '../src/commands/diff'
 import { runDoctor } from '../src/commands/doctor'
 import { runInit } from '../src/commands/init'
 import { runList } from '../src/commands/list'
+import { runRemove } from '../src/commands/remove'
 import { runSearch } from '../src/commands/search'
 import { runThemeApply } from '../src/commands/theme'
 import { runUpdate } from '../src/commands/update'
@@ -97,6 +98,69 @@ describe('maintenance commands', () => {
 
     const refreshed = await readFile(filePath, 'utf8')
     expect(refreshed).toContain('buttonVariants')
+  })
+
+  it('removes installed entries and cleans lock + theme imports', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-maintenance-remove-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+
+    await runInit({ cwd, skipInstall: true })
+    await runAdd({ cwd, components: ['button'], skipInstall: true })
+    await runThemeApply({ cwd, themes: ['theme-slate'] })
+
+    const buttonPath = path.join(cwd, 'src/components/ui/button.tsx')
+    const themePath = path.join(cwd, 'src/styles/themes/theme-slate.css')
+    const globalsPath = path.join(cwd, 'src/styles/globals.css')
+    expect(await fileExists(buttonPath)).toBe(true)
+    expect(await fileExists(themePath)).toBe(true)
+
+    const removeResult = await runRemove({ cwd, entries: ['button', 'theme-slate'] })
+    expect(removeResult.removed).toContain('button')
+    expect(removeResult.removed).toContain('theme-slate')
+
+    expect(await fileExists(buttonPath)).toBe(false)
+    expect(await fileExists(themePath)).toBe(false)
+    const globals = await readFile(globalsPath, 'utf8')
+    expect(globals).not.toContain('@import "./themes/theme-slate.css";')
+
+    const lock = JSON.parse(await readFile(path.join(cwd, LOCK_FILE), 'utf8')) as {
+      components?: Record<string, unknown>
+      themes?: Record<string, unknown>
+    }
+    expect(lock.components?.button).toBeUndefined()
+    expect(lock.themes?.['theme-slate']).toBeUndefined()
+  })
+
+  it('guards remove for local edits and supports dry-run previews', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-maintenance-remove-guarded-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+
+    await runInit({ cwd, skipInstall: true })
+    await runAdd({ cwd, components: ['button'], skipInstall: true })
+
+    const buttonPath = path.join(cwd, 'src/components/ui/button.tsx')
+    await writeFile(buttonPath, 'local edits\n', 'utf8')
+
+    const guarded = await runRemove({ cwd, entries: ['button'] })
+    expect(guarded.skipped).toContain('button')
+    expect(await fileExists(buttonPath)).toBe(true)
+
+    const cleanCwd = await mkdtemp(path.join(tmpdir(), 'fictcn-maintenance-remove-dry-'))
+    await writeFile(path.join(cleanCwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cleanCwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await runInit({ cwd: cleanCwd, skipInstall: true })
+    await runAdd({ cwd: cleanCwd, components: ['button'], skipInstall: true })
+
+    const cleanButtonPath = path.join(cleanCwd, 'src/components/ui/button.tsx')
+    const cleanLockPath = path.join(cleanCwd, LOCK_FILE)
+    const lockBefore = await readFile(cleanLockPath, 'utf8')
+
+    const preview = await runRemove({ cwd: cleanCwd, entries: ['button'], dryRun: true })
+    expect(preview.removed).toContain('button')
+    expect(await fileExists(cleanButtonPath)).toBe(true)
+    expect(await readFile(cleanLockPath, 'utf8')).toBe(lockBefore)
   })
 
   it('reports stale lock metadata when guarded update cannot verify local edits', async () => {
