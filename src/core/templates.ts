@@ -1,3 +1,5 @@
+import { parse, type ParseError } from 'jsonc-parser'
+
 const DESIGN_TOKENS_BLOCK = `/* @fictcn tokens:start */
 :root {
   --background: 0 0% 100%;
@@ -149,25 +151,42 @@ export function createPostcssConfig(): string {
 
 export function createTsconfigPathPatch(tsconfigContent: string): string | null {
   try {
-    const parsed = JSON.parse(tsconfigContent) as {
+    const errors: ParseError[] = []
+    const parsed = parse(tsconfigContent, errors, {
+      allowTrailingComma: true,
+      disallowComments: false,
+    }) as
+      | {
+          compilerOptions?: {
+            baseUrl?: string
+            paths?: Record<string, string[]>
+          }
+        }
+      | null
+
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed) || errors.length > 0) {
+      return null
+    }
+
+    const tsconfig = parsed as {
       compilerOptions?: {
         baseUrl?: string
         paths?: Record<string, string[]>
       }
     }
 
-    if (!parsed.compilerOptions) {
-      parsed.compilerOptions = {}
+    if (!tsconfig.compilerOptions) {
+      tsconfig.compilerOptions = {}
     }
-    parsed.compilerOptions.baseUrl = parsed.compilerOptions.baseUrl ?? '.'
+    tsconfig.compilerOptions.baseUrl = tsconfig.compilerOptions.baseUrl ?? '.'
 
-    if (!parsed.compilerOptions.paths) {
-      parsed.compilerOptions.paths = {}
+    if (!tsconfig.compilerOptions.paths) {
+      tsconfig.compilerOptions.paths = {}
     }
 
-    parsed.compilerOptions.paths['@/*'] = ['src/*']
+    tsconfig.compilerOptions.paths['@/*'] = ['src/*']
 
-    return `${JSON.stringify(parsed, null, 2)}\n`
+    return `${JSON.stringify(tsconfig, null, 2)}\n`
   } catch {
     return null
   }
