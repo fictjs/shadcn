@@ -2,11 +2,17 @@ import path from 'node:path'
 
 import colors from 'picocolors'
 
-import { assertSupportedRegistry, loadConfig, loadLock, saveLock } from '../core/config'
+import { loadConfig, loadLock, saveLock } from '../core/config'
 import { hashContent, readTextIfExists, upsertTextFile } from '../core/io'
 import { detectPackageManager, findProjectRoot, runPackageManagerInstall } from '../core/project'
 import type { FictcnLock, LockEntry } from '../core/types'
-import { getBuiltinBlock, getBuiltinTheme, resolveBuiltinBlockGraph, resolveBuiltinComponentGraph } from '../registry'
+import {
+  loadRegistryDataset,
+  resolveBlockGraph,
+  resolveComponentGraph,
+  resolveEntryKinds,
+  type RegistryDataset,
+} from '../registry/source'
 import { renderRegistryEntryFiles } from '../registry/render'
 import type { RegistryEntry } from '../registry/types'
 
@@ -41,11 +47,15 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
   const cwd = options.cwd ?? process.cwd()
   const projectRoot = await findProjectRoot(cwd)
   const config = await loadConfig(projectRoot)
+  const registry = await loadRegistryDataset({
+    cwd: projectRoot,
+    registry: config.registry,
+    requireFiles: true,
+  })
   const dryRun = Boolean(options.dryRun)
-  assertSupportedRegistry(config)
   const lock = await loadLock(projectRoot)
 
-  const targets = resolveTargetEntries(lock, options.components)
+  const targets = resolveTargetEntries(lock, options.components, registry)
 
   if (targets.length === 0) {
     console.log(colors.yellow('No registry entries to update.'))
@@ -107,7 +117,7 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
     const nextLockEntry: LockEntry = {
       name: target.entry.name,
       version: target.entry.version,
-      source: 'builtin',
+      source: registry.source,
       installedAt: new Date().toISOString(),
       files: fileHashes,
     }
@@ -142,28 +152,28 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
   }
 }
 
-function resolveTargetEntries(lock: FictcnLock, names?: string[]): TargetEntry[] {
+function resolveTargetEntries(lock: FictcnLock, names: string[] | undefined, registry: RegistryDataset): TargetEntry[] {
   const requestedNames = names && names.length > 0 ? names : undefined
 
   const componentNames =
-    requestedNames?.filter(name => resolveNameKinds(name).includes('component')) ??
+    requestedNames?.filter(name => resolveNameKinds(name, registry).includes('component')) ??
     Object.keys(lock.components).sort((left, right) => left.localeCompare(right))
   const blockNames =
-    requestedNames?.filter(name => resolveNameKinds(name).includes('block')) ??
+    requestedNames?.filter(name => resolveNameKinds(name, registry).includes('block')) ??
     Object.keys(lock.blocks).sort((left, right) => left.localeCompare(right))
   const themeNames =
-    requestedNames?.filter(name => resolveNameKinds(name).includes('theme')) ??
+    requestedNames?.filter(name => resolveNameKinds(name, registry).includes('theme')) ??
     Object.keys(lock.themes).sort((left, right) => left.localeCompare(right))
 
   const targets: TargetEntry[] = []
-  for (const entry of resolveBuiltinComponentGraph(componentNames)) {
+  for (const entry of resolveComponentGraph(registry, componentNames)) {
     targets.push({ kind: 'component', entry })
   }
-  for (const entry of resolveBuiltinBlockGraph(blockNames)) {
+  for (const entry of resolveBlockGraph(registry, blockNames)) {
     targets.push({ kind: 'block', entry })
   }
   for (const name of themeNames) {
-    const entry = getBuiltinTheme(name)
+    const entry = registry.themes[name]
     if (!entry) {
       throw new Error(`Unknown registry theme: ${name}`)
     }
@@ -173,26 +183,14 @@ function resolveTargetEntries(lock: FictcnLock, names?: string[]): TargetEntry[]
   return targets
 }
 
-function resolveNameKinds(name: string): RegistryKind[] {
-  const kinds: RegistryKind[] = []
-  if (resolveBuiltinComponentGraphSafe(name)) kinds.push('component')
-  if (getBuiltinBlock(name)) kinds.push('block')
-  if (getBuiltinTheme(name)) kinds.push('theme')
+function resolveNameKinds(name: string, registry: RegistryDataset): RegistryKind[] {
+  const kinds = resolveEntryKinds(registry, name) as RegistryKind[]
 
   if (kinds.length === 0) {
     throw new Error(`Unknown registry entry: ${name}`)
   }
 
   return kinds
-}
-
-function resolveBuiltinComponentGraphSafe(name: string): boolean {
-  try {
-    const entries = resolveBuiltinComponentGraph([name])
-    return entries.length > 0 && entries[entries.length - 1]?.name === name
-  } catch {
-    return false
-  }
 }
 
 function lockMapFor(lock: FictcnLock, kind: RegistryKind): Record<string, LockEntry> {

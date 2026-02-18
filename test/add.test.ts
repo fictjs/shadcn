@@ -56,7 +56,7 @@ describe('runAdd', () => {
     await expect(readFile(path.join(cwd, LOCK_FILE), 'utf8')).rejects.toThrow()
   })
 
-  it('fails fast when configured registry is unsupported', async () => {
+  it('fails fast when configured remote registry is unavailable', async () => {
     const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-add-registry-'))
     await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
     await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
@@ -65,11 +65,9 @@ describe('runAdd', () => {
     const configPath = path.join(cwd, 'fictcn.json')
     const configRaw = await readFile(configPath, 'utf8')
     const config = JSON.parse(configRaw) as Record<string, unknown>
-    config.registry = 'https://example.com/registry.json'
+    config.registry = 'http://127.0.0.1:1/registry'
     await writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`, 'utf8')
 
-    await expect(runAdd({ cwd, components: ['button'], skipInstall: true })).rejects.toThrow(
-      'Unsupported registry',
-    )
+    await expect(runAdd({ cwd, components: ['button'], skipInstall: true })).rejects.toThrow('Failed to fetch registry')
   })
 })

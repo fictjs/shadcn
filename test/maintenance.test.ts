@@ -316,7 +316,7 @@ describe('maintenance commands', () => {
     expect(doctor.issues.some(issue => issue.code === 'alias-paths')).toBe(false)
   })
 
-  it('fails doctor when registry is unsupported', async () => {
+  it('reports remote registry usage in doctor checks', async () => {
     const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-doctor-registry-'))
     await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
     await writeFile(
@@ -360,8 +360,9 @@ describe('maintenance commands', () => {
     const doctor = await runDoctor(cwd)
 
     expect(doctor.ok).toBe(false)
+    expect(doctor.issues.some(issue => issue.code === 'unsupported-registry')).toBe(false)
     expect(
-      doctor.issues.some(issue => issue.code === 'unsupported-registry' && issue.level === 'error'),
+      doctor.issues.some(issue => issue.code === 'remote-registry' && issue.level === 'warning'),
     ).toBe(true)
   })
 

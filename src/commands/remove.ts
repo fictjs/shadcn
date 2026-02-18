@@ -3,7 +3,7 @@ import path from 'node:path'
 
 import colors from 'picocolors'
 
-import { assertSupportedRegistry, loadConfig, loadLock, saveLock } from '../core/config'
+import { loadConfig, loadLock, saveLock } from '../core/config'
 import { hashContent, readTextIfExists, upsertTextFile } from '../core/io'
 import { findProjectRoot } from '../core/project'
 import { ensureTrailingNewline } from '../core/text'
@@ -39,7 +39,6 @@ export async function runRemove(options: RemoveOptions): Promise<RemoveResult> {
   const projectRoot = await findProjectRoot(cwd)
   const config = await loadConfig(projectRoot)
   const dryRun = Boolean(options.dryRun)
-  assertSupportedRegistry(config)
   const lock = await loadLock(projectRoot)
 
   const missing = new Set<string>()

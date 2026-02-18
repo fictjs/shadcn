@@ -1,13 +1,20 @@
 import { once } from 'node:events'
+import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { createServer } from 'node:http'
 import type { AddressInfo } from 'node:net'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
 
 import { afterEach, describe, expect, it } from 'vitest'
 
+import { runAdd } from '../src/commands/add'
+import { runDiff } from '../src/commands/diff'
 import { runListFromRegistry } from '../src/commands/list'
 import { runSearchFromRegistry } from '../src/commands/search'
+import { runUpdate } from '../src/commands/update'
+import { LOCK_FILE } from '../src/core/constants'
 
-describe('remote registry read-only commands', () => {
+describe('remote registry support', () => {
   const servers: Array<ReturnType<typeof createServer>> = []
 
   afterEach(async () => {
@@ -75,6 +82,92 @@ describe('remote registry read-only commands', () => {
 
     expect(output).toContain('remote-command-palette')
     expect(output).not.toContain('theme-forest')
+  })
+
+  it('adds, diffs, and updates remote components', async () => {
+    const { registryUrl } = await startRegistryServer(servers, [
+      {
+        name: 'remote-button',
+        type: 'ui-component',
+        version: '1.0.0',
+        description: 'Remote button primitive',
+        dependencies: [],
+        registryDependencies: [],
+        files: [
+          {
+            path: '{{componentsDir}}/remote-button.tsx',
+            content: 'export function RemoteButton() {\n  return <button>Remote</button>\n}\n',
+          },
+        ],
+      },
+      {
+        name: 'remote-dialog',
+        type: 'ui-component',
+        version: '1.0.0',
+        description: 'Remote dialog depending on remote-button',
+        dependencies: [],
+        registryDependencies: ['remote-button'],
+        files: [
+          {
+            path: '{{componentsDir}}/remote-dialog.tsx',
+            content: 'export function RemoteDialog() {\n  return <section>Dialog</section>\n}\n',
+          },
+        ],
+      },
+    ])
+
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-remote-mutation-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: registryUrl,
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    const addResult = await runAdd({ cwd, components: ['remote-dialog'], skipInstall: true })
+    expect(addResult.added).toContain('remote-button')
+    expect(addResult.added).toContain('remote-dialog')
+
+    const buttonPath = path.join(cwd, 'src/components/ui/remote-button.tsx')
+    const dialogPath = path.join(cwd, 'src/components/ui/remote-dialog.tsx')
+    expect(await readFile(buttonPath, 'utf8')).toContain('RemoteButton')
+    expect(await readFile(dialogPath, 'utf8')).toContain('RemoteDialog')
+
+    const lockRaw = await readFile(path.join(cwd, LOCK_FILE), 'utf8')
+    expect(lockRaw).toContain(registryUrl)
+
+    await writeFile(buttonPath, 'local remote edits\n', 'utf8')
+    const diff = await runDiff({ cwd, components: ['remote-button'] })
+    expect(diff.changed).toContain('remote-button')
+
+    const guardedUpdate = await runUpdate({ cwd, components: ['remote-button'], skipInstall: true })
+    expect(guardedUpdate.skipped).toContain('remote-button')
+
+    const forcedUpdate = await runUpdate({
+      cwd,
+      components: ['remote-button'],
+      force: true,
+      skipInstall: true,
+    })
+    expect(forcedUpdate.updated).toContain('remote-button')
+    expect(await readFile(buttonPath, 'utf8')).toContain('RemoteButton')
   })
 })
 
