@@ -88,8 +88,10 @@ describe('maintenance commands', () => {
     await runInit({ cwd, skipInstall: true })
     const doctor = await runDoctor(cwd)
 
-    expect(doctor.ok).toBe(true)
-    expect(doctor.issues.some(issue => issue.code === 'missing-dependency')).toBe(true)
+    expect(doctor.ok).toBe(false)
+    expect(
+      doctor.issues.some(issue => issue.code === 'missing-dependency' && issue.level === 'error'),
+    ).toBe(true)
   })
 
   it('throws for invalid list type', () => {

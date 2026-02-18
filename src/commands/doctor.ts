@@ -70,7 +70,7 @@ export async function runDoctor(cwd = process.cwd()): Promise<DoctorResult> {
       const alias = tsconfig.compilerOptions?.paths?.[aliasPathKey]
       if (!alias || !alias.includes(aliasPathTarget)) {
         issues.push({
-          level: 'warning',
+          level: 'error',
           code: 'alias-paths',
           message: `tsconfig paths is missing ${aliasPathKey} -> ${aliasPathTarget} alias.`,
         })
@@ -142,7 +142,7 @@ export async function runDoctor(cwd = process.cwd()): Promise<DoctorResult> {
     for (const dependency of required) {
       if (!dependencies[dependency]) {
         issues.push({
-          level: 'warning',
+          level: 'error',
           code: 'missing-dependency',
           message: `Missing dependency ${dependency}.`,
         })
