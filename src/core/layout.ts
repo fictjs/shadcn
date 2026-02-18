@@ -17,17 +17,8 @@ export function getAliasPathTarget(config: FictcnConfig): string {
 }
 
 export function getTailwindContentGlobs(config: FictcnConfig): string[] {
-  const globs = ['./src/**/*.{ts,tsx}']
-
-  for (const directory of [config.componentsDir, getBlocksDir(config), config.libDir]) {
-    if (isSrcScopedPath(directory)) continue
-    const nextGlob = `./${normalizeRelativePath(directory)}/**/*.{ts,tsx}`
-    if (!globs.includes(nextGlob)) {
-      globs.push(nextGlob)
-    }
-  }
-
-  return globs
+  const directories = [config.componentsDir, getBlocksDir(config), config.libDir]
+  return Array.from(new Set(directories.map(directory => `./${normalizeRelativePath(directory)}/**/*.{ts,tsx}`)))
 }
 
 export function getBlocksDir(config: FictcnConfig): string {
