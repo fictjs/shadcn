@@ -33,7 +33,6 @@ export interface FictcnLock {
 
 export interface InitOptions {
   cwd?: string
-  force?: boolean
   skipInstall?: boolean
 }
 
