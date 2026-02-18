@@ -217,4 +217,44 @@ describe('maintenance commands', () => {
     expect(doctor.issues.some(issue => issue.code === 'tsconfig-parse')).toBe(false)
     expect(doctor.issues.some(issue => issue.code === 'alias-paths')).toBe(false)
   })
+
+  it('keeps init/add/doctor consistent for custom aliases and directories', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-custom-layout-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fictjs.dev/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'custom/ui',
+          libDir: 'custom/lib',
+          css: 'custom/styles.css',
+          tailwindConfig: 'tailwind.custom.ts',
+          registry: 'builtin',
+          aliases: {
+            base: '~',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    await runInit({ cwd, skipInstall: true })
+    await runAdd({ cwd, components: ['button'], skipInstall: true })
+
+    const tsconfig = await readFile(path.join(cwd, 'tsconfig.json'), 'utf8')
+    const button = await readFile(path.join(cwd, 'custom/ui/button.tsx'), 'utf8')
+    const doctor = await runDoctor(cwd)
+
+    expect(tsconfig).toContain('"~/*"')
+    expect(tsconfig).toContain('"*"')
+    expect(button).toContain("from '~/custom/lib/cn'")
+    expect(doctor.issues.some(issue => issue.code === 'alias-paths')).toBe(false)
+    expect(doctor.issues.some(issue => issue.code === 'tailwind-content')).toBe(false)
+  })
 })
