@@ -251,6 +251,31 @@ describe('maintenance commands', () => {
     ).toBe(true)
   })
 
+  it('reports invalid config as a doctor issue instead of throwing', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-doctor-invalid-config-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          version: 2,
+          style: 'broken-style',
+          aliases: {
+            base: '',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    const doctor = await runDoctor(cwd)
+
+    expect(doctor.ok).toBe(false)
+    expect(doctor.issues.some(issue => issue.code === 'invalid-config' && issue.level === 'error')).toBe(true)
+  })
+
   it('parses JSONC tsconfig in doctor checks', async () => {
     const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-doctor-jsonc-'))
     await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
