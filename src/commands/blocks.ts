@@ -50,6 +50,7 @@ export async function runBlocksInstall(options: BlockInstallOptions): Promise<Ad
 
   const context = createTemplateContext(config)
   const lock = await loadLock(projectRoot)
+  let lockChanged = false
   const dependencySet = new Set<string>()
   const added: string[] = []
   const updated: string[] = []
@@ -110,10 +111,11 @@ export async function runBlocksInstall(options: BlockInstallOptions): Promise<Ad
 
     if (!dryRun) {
       lock.blocks[entry.name] = lockEntry
+      lockChanged = true
     }
   }
 
-  if (!dryRun) {
+  if (!dryRun && lockChanged) {
     await saveLock(projectRoot, lock)
   }
 

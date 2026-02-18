@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 
@@ -42,6 +42,18 @@ describe('runAdd', () => {
     const result = await runAdd({ cwd, components: ['button'], skipInstall: true })
 
     expect(result.skipped).toContain('button')
+  })
+
+  it('does not create a lock file when every requested component is skipped', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-add-all-skipped-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await mkdir(path.join(cwd, 'src/components/ui'), { recursive: true })
+    await writeFile(path.join(cwd, 'src/components/ui/button.tsx'), 'custom button\n', 'utf8')
+
+    const result = await runAdd({ cwd, components: ['button'], skipInstall: true })
+
+    expect(result.skipped).toContain('button')
+    await expect(readFile(path.join(cwd, LOCK_FILE), 'utf8')).rejects.toThrow()
   })
 
   it('fails fast when configured registry is unsupported', async () => {

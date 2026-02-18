@@ -35,6 +35,7 @@ export async function runAdd(options: AddOptions): Promise<AddResult> {
   const resolved = resolveBuiltinComponentGraph(options.components)
   const context = createTemplateContext(config)
   const lock = await loadLock(projectRoot)
+  let lockChanged = false
 
   const dependencySet = new Set<string>()
   const added: string[] = []
@@ -97,10 +98,11 @@ export async function runAdd(options: AddOptions): Promise<AddResult> {
 
     if (!dryRun) {
       lock.components[entry.name] = lockEntry
+      lockChanged = true
     }
   }
 
-  if (!dryRun) {
+  if (!dryRun && lockChanged) {
     await saveLock(projectRoot, lock)
   }
 
