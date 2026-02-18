@@ -18,7 +18,10 @@ describe('blocks and themes', () => {
     await runInit({ cwd, skipInstall: true })
     await runBlocksInstall({ cwd, blocks: ['auth/login-form'], skipInstall: true })
 
-    const loginBlock = await readFile(path.join(cwd, 'src/components/blocks/auth/login-form.tsx'), 'utf8')
+    const loginBlock = await readFile(
+      path.join(cwd, 'src/components/blocks/auth/login-form.tsx'),
+      'utf8',
+    )
     const buttonComponent = await readFile(path.join(cwd, 'src/components/ui/button.tsx'), 'utf8')
 
     expect(loginBlock).toContain('export function LoginForm')
@@ -44,7 +47,7 @@ describe('blocks and themes', () => {
       path.join(cwd, 'fictcn.json'),
       `${JSON.stringify(
         {
-          $schema: 'https://fictjs.dev/schemas/fictcn.schema.json',
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
           version: 1,
           style: 'tailwind-css-vars',
           componentsDir: 'custom/ui',
