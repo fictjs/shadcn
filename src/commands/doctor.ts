@@ -6,7 +6,7 @@ import colors from 'picocolors'
 import { CONFIG_FILE } from '../core/constants'
 import { loadConfig } from '../core/config'
 import { exists, readJsonFile, readTextIfExists } from '../core/io'
-import { getAliasPathKey, getAliasPathTarget } from '../core/layout'
+import { getAliasPathKey, getAliasPathTarget, getTailwindContentGlobs } from '../core/layout'
 import { findProjectRoot } from '../core/project'
 
 export interface DoctorIssue {
@@ -107,11 +107,14 @@ export async function runDoctor(cwd = process.cwd()): Promise<DoctorResult> {
       message: `Missing Tailwind config at ${config.tailwindConfig}.`,
     })
   } else {
-    if (!tailwindConfig.includes('src/**/*.{ts,tsx}')) {
+    const missingContentGlobs = getTailwindContentGlobs(config).filter(glob => {
+      return !(tailwindConfig.includes(`'${glob}'`) || tailwindConfig.includes(`"${glob}"`))
+    })
+    if (missingContentGlobs.length > 0) {
       issues.push({
         level: 'warning',
         code: 'tailwind-content',
-        message: 'Tailwind content glob is missing src/**/*.{ts,tsx}.',
+        message: `Tailwind content globs are missing: ${missingContentGlobs.join(', ')}.`,
       })
     }
     if (!tailwindConfig.includes('tailwindcss-animate')) {

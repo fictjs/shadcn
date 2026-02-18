@@ -65,6 +65,8 @@ describe('runInit', () => {
     expect(cnFile).toContain('twMerge')
     expect(globals).toContain('@fictcn tokens:start')
     expect(tailwindConfig).toContain('tailwindcss-animate')
+    expect(tailwindConfig).toContain("'./custom/ui/**/*.{ts,tsx}'")
+    expect(tailwindConfig).toContain("'./custom/lib/**/*.{ts,tsx}'")
     expect(tsconfig).toContain('"~/*"')
     expect(tsconfig).toContain('"*"')
   })
