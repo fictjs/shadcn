@@ -2,7 +2,14 @@
   "name": "@fictjs/shadcn",
   "version": "0.1.0",
   "description": "Official shadcn-style code distribution system for Fict",
-  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fictjs/shadcn.git"
+  },
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -75,5 +82,7 @@
     "ui",
     "cli",
     "registry"
-  ]
+  ],
+  "license": "MIT",
+  "author": "unadlib"
 }
