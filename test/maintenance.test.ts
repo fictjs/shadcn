@@ -250,6 +250,9 @@ describe('maintenance commands', () => {
     expect(
       doctor.issues.some(issue => issue.code === 'missing-dependency' && issue.level === 'error'),
     ).toBe(true)
+    expect(
+      doctor.issues.some(issue => issue.code === 'missing-dev-dependency' && issue.level === 'warning'),
+    ).toBe(true)
   })
 
   it('throws for invalid list type', () => {
