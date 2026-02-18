@@ -3,7 +3,7 @@ import path from 'node:path'
 import { parse, type ParseError } from 'jsonc-parser'
 import colors from 'picocolors'
 
-import { CONFIG_FILE, DEFAULT_CONFIG } from '../core/constants'
+import { CONFIG_FILE, DEFAULT_CONFIG, DEV_DEPENDENCIES, RUNTIME_DEPENDENCIES } from '../core/constants'
 import { loadConfig } from '../core/config'
 import { exists, readJsonFile, readTextIfExists } from '../core/io'
 import { getAliasPathKey, getAliasPathTarget, getTailwindContentGlobs } from '../core/layout'
@@ -155,13 +155,22 @@ export async function runDoctor(cwd = process.cwd()): Promise<DoctorResult> {
       ...(packageJson.devDependencies ?? {}),
     }
 
-    const required = ['@fictjs/ui-primitives', 'class-variance-authority', 'clsx', 'tailwind-merge']
-    for (const dependency of required) {
+    for (const dependency of RUNTIME_DEPENDENCIES) {
       if (!dependencies[dependency]) {
         issues.push({
           level: 'error',
           code: 'missing-dependency',
           message: `Missing dependency ${dependency}.`,
+        })
+      }
+    }
+
+    for (const dependency of DEV_DEPENDENCIES) {
+      if (!dependencies[dependency]) {
+        issues.push({
+          level: 'warning',
+          code: 'missing-dev-dependency',
+          message: `Missing development dependency ${dependency}.`,
         })
       }
     }
