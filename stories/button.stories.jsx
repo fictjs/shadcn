@@ -14,11 +14,11 @@ const meta = {
   argTypes: {
     variant: {
       control: { type: 'select' },
-      options: ['default', 'secondary', 'outline', 'destructive', 'ghost'],
+      options: ['default', 'secondary', 'outline', 'destructive', 'ghost', 'link'],
     },
     size: {
       control: { type: 'select' },
-      options: ['default', 'sm', 'lg'],
+      options: ['default', 'sm', 'lg', 'icon'],
     },
     label: { control: 'text' },
   },
@@ -55,6 +55,16 @@ export const Variants = {
         <Button variant='destructive' size={args.size}>
           Destructive
         </Button>
+        <Button variant='link' size={args.size}>
+          Link
+        </Button>
       </div>
     )),
+}
+
+export const Icon = {
+  args: {
+    label: '→',
+    size: 'icon',
+  },
 }
