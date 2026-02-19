@@ -11,9 +11,8 @@ Instead of installing a component library as a dependency, `@fictjs/shadcn` copi
 ## Features
 
 - **`fictcn` CLI** — scaffold, add, remove, diff, update, and validate UI components from the terminal
-- **35 UI components** — buttons, dialogs, forms, tables, navigation, and more — all built for Fict
-- **8 pre-built blocks** — login forms, dashboards, settings pages, and data tables ready to drop in
-- **5 color themes** — swap design tokens via CSS custom properties with light/dark mode support
+- **206 built-in registry entries** — core Fict-native set plus expanded compatibility catalog
+- **Core Fict-native set** — 35 UI components + 8 blocks + 5 themes
 - **Flexible registry source** — use the bundled offline registry or a remote JSON registry
 - **Deterministic lock file** — `fictcn.lock.json` tracks installed versions and SHA-256 file hashes for drift detection
 - **Automatic dependency resolution** — registry dependencies are resolved with circular dependency detection
@@ -249,7 +248,11 @@ Commit this file to version control so your team stays in sync.
 
 ## Built-in Registry
 
-### Components (35)
+The bundled registry now includes **206** entries in total:
+- Core Fict-native entries: 35 components + 8 blocks + 5 themes
+- Expanded compatibility entries: additional registry items ported from the vendored shadcn-svelte snapshot
+
+### Core Components (35)
 
 | Category   | Components                                                                                                 |
 | ---------- | ---------------------------------------------------------------------------------------------------------- |
@@ -260,7 +263,7 @@ Commit this file to version control so your team stays in sync.
 | Feedback   | `toast`, `progress`                                                                                        |
 | Data       | `table`                                                                                                    |
 
-### Blocks
+### Core Blocks (8)
 
 | Block                    | Description                           |
 | ------------------------ | ------------------------------------- |
@@ -273,7 +276,7 @@ Commit this file to version control so your team stays in sync.
 | `dialogs/confirm-delete` | Destructive action confirmation modal |
 | `forms/validated-form`   | Form with field-level validation      |
 
-### Themes
+### Core Themes (5)
 
 | Theme               | Description              |
 | ------------------- | ------------------------ |
