@@ -23,6 +23,19 @@ export interface RegistryDataset {
   themes: Record<string, RegistryEntry>
 }
 
+const REMOTE_REGISTRY_TIMEOUT_MS = readPositiveIntEnv('FICTCN_REGISTRY_TIMEOUT_MS', 10_000)
+const REMOTE_REGISTRY_RETRIES = readPositiveIntEnv('FICTCN_REGISTRY_RETRIES', 2)
+const REMOTE_REGISTRY_RETRY_DELAY_MS = readPositiveIntEnv('FICTCN_REGISTRY_RETRY_DELAY_MS', 250)
+const REMOTE_REGISTRY_CACHE_TTL_MS = readPositiveIntEnv('FICTCN_REGISTRY_CACHE_TTL_MS', 10_000)
+
+const remoteRegistryCache = new Map<
+  string,
+  {
+    expiresAt: number
+    entries: RegistryEntry[]
+  }
+>()
+
 interface RemoteRegistryEntry {
   name?: unknown
   description?: unknown
@@ -166,8 +179,51 @@ function resolveGraph(
 
 async function fetchRemoteRegistryEntries(source: string, requireFiles: boolean): Promise<RegistryEntry[]> {
   const url = resolveRegistryUrl(source)
+  const now = Date.now()
+  const cached = remoteRegistryCache.get(url)
+  if (cached && cached.expiresAt > now) {
+    return filterEntriesByFilesRequirement(cached.entries, requireFiles)
+  }
+
+  const entries = await fetchRemoteRegistryEntriesWithRetry(url)
+  remoteRegistryCache.set(url, {
+    entries,
+    expiresAt: Date.now() + REMOTE_REGISTRY_CACHE_TTL_MS,
+  })
+
+  return filterEntriesByFilesRequirement(entries, requireFiles)
+}
+
+async function fetchRemoteRegistryEntriesWithRetry(url: string): Promise<RegistryEntry[]> {
+  let attempt = 0
+  let lastError: RegistryFetchError | null = null
+
+  while (attempt <= REMOTE_REGISTRY_RETRIES) {
+    try {
+      return await fetchRemoteRegistryEntriesOnce(url)
+    } catch (error) {
+      const wrapped = toRegistryFetchError(url, error)
+      lastError = wrapped
+
+      const canRetry = wrapped.retryable && attempt < REMOTE_REGISTRY_RETRIES
+      if (!canRetry) {
+        throw wrapped
+      }
+
+      const delayMs = REMOTE_REGISTRY_RETRY_DELAY_MS * (attempt + 1)
+      await wait(delayMs)
+      attempt += 1
+    }
+  }
+
+  throw new RegistryFetchError(`Failed to fetch registry from ${url}`, {
+    cause: lastError,
+  })
+}
+
+async function fetchRemoteRegistryEntriesOnce(url: string): Promise<RegistryEntry[]> {
   const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), 10_000)
+  const timeoutId = setTimeout(() => controller.abort(), REMOTE_REGISTRY_TIMEOUT_MS)
 
   try {
     const response = await fetch(url, {
@@ -178,30 +234,25 @@ async function fetchRemoteRegistryEntries(source: string, requireFiles: boolean)
     })
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch registry from ${url}: ${response.status} ${response.statusText}`)
+      throw new RegistryFetchError(`Failed to fetch registry from ${url}: ${response.status} ${response.statusText}`, {
+        statusCode: response.status,
+        retryable: isRetryableStatus(response.status),
+      })
     }
 
     const payload = (await response.json()) as unknown
     const entries = unwrapRemoteEntries(payload)
     const normalized = entries
-      .map(entry => normalizeRemoteEntry(entry, requireFiles))
+      .map(entry => normalizeRemoteEntry(entry, false))
       .filter((entry): entry is RegistryEntry => entry !== null)
 
     if (normalized.length === 0) {
-      throw new Error('Remote registry payload did not contain valid entries.')
+      throw new RegistryFetchError('Remote registry payload did not contain valid entries.')
     }
 
     return normalized
   } catch (error) {
-    if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error(`Timed out fetching registry from ${url}`, {
-        cause: error,
-      })
-    }
-
-    throw new Error(`Failed to fetch registry from ${url}`, {
-      cause: error,
-    })
+    throw toRegistryFetchError(url, error)
   } finally {
     clearTimeout(timeoutId)
   }
@@ -338,4 +389,85 @@ function normalizeStringArray(value: unknown): string[] {
   return value
     .map(item => normalizeString(item))
     .filter((item): item is string => item !== null)
+}
+
+function filterEntriesByFilesRequirement(entries: RegistryEntry[], requireFiles: boolean): RegistryEntry[] {
+  if (!requireFiles) {
+    return entries
+  }
+
+  return entries.filter(entry => entry.files.length > 0)
+}
+
+function toRegistryFetchError(url: string, error: unknown): RegistryFetchError {
+  if (error instanceof RegistryFetchError) {
+    return error
+  }
+
+  if (error instanceof Error && error.name === 'AbortError') {
+    return new RegistryFetchError(`Timed out fetching registry from ${url}`, {
+      cause: error,
+      retryable: true,
+    })
+  }
+
+  if (error instanceof SyntaxError) {
+    return new RegistryFetchError(`Registry response from ${url} is not valid JSON.`, {
+      cause: error,
+    })
+  }
+
+  return new RegistryFetchError(`Failed to fetch registry from ${url}`, {
+    cause: error,
+    retryable: isLikelyNetworkError(error),
+  })
+}
+
+function isRetryableStatus(statusCode: number): boolean {
+  return statusCode === 408 || statusCode === 429 || statusCode >= 500
+}
+
+function isLikelyNetworkError(error: unknown): boolean {
+  return error instanceof TypeError
+}
+
+function wait(delayMs: number): Promise<void> {
+  return new Promise(resolve => {
+    setTimeout(resolve, delayMs)
+  })
+}
+
+class RegistryFetchError extends Error {
+  readonly retryable: boolean
+  readonly statusCode: number | undefined
+
+  constructor(
+    message: string,
+    options: {
+      cause?: unknown
+      retryable?: boolean
+      statusCode?: number
+    } = {},
+  ) {
+    super(message, {
+      cause: options.cause,
+    })
+    this.name = 'RegistryFetchError'
+    this.retryable = Boolean(options.retryable)
+    this.statusCode = options.statusCode
+  }
+}
+
+function readPositiveIntEnv(name: string, fallback: number): number {
+  const raw = process.env[name]
+  if (!raw) {
+    return fallback
+  }
+
+  const parsed = Number.parseInt(raw, 10)
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return fallback
+  }
+
+  return parsed
 }
