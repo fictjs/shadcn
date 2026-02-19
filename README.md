@@ -219,7 +219,7 @@ For remote registries, each entry in `index.json` (or `registry.json`) should in
 - Inline content: `[{ path, content }]`
 - File reference: `[{ path }]` (the CLI fetches file contents relative to the registry JSON URL)
 
-`@fictjs/shadcn` is compatible with shadcn-style registry types:
+`@fictjs/shadcn` is compatible with shadcn-style registry type tags:
 - `registry:ui`, `registry:block`, `registry:style`
 - `registry:hook`, `registry:lib` (treated as installable component entries)
 
@@ -250,7 +250,7 @@ Commit this file to version control so your team stays in sync.
 
 The bundled registry now includes **206** entries in total:
 - Core Fict-native entries: 35 components + 8 blocks + 5 themes
-- Expanded compatibility entries: additional registry items ported from the vendored shadcn-svelte snapshot
+- Expanded Fict-native entries: additional scaffolds for broader coverage in the built-in catalog
 
 ### Core Components (35)
 
@@ -287,16 +287,6 @@ The bundled registry now includes **206** entries in total:
 | `theme-brand-ocean` | Blue ocean brand palette |
 
 All themes provide light and dark mode variants via CSS custom properties and can be applied with a class name (e.g., `class="theme-slate dark"`).
-
-### Optional Large Registry Snapshot (206 Entries)
-
-This repo also includes a vendored shadcn-svelte registry snapshot at `shadcn-svelte/docs/registry.json` (56 UI + 147 blocks + style/hook/lib entries).
-
-You can point `registry` to its `file://` URL to browse or install from that larger catalog:
-
-```bash
-fictcn list --registry file:///ABSOLUTE/PATH/TO/shadcn-svelte/docs/registry.json --type all
-```
 
 ## Project Structure After Init
 

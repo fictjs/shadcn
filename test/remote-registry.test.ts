@@ -4,7 +4,6 @@ import { createServer, type IncomingMessage, type ServerResponse } from 'node:ht
 import type { AddressInfo } from 'node:net'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { pathToFileURL } from 'node:url'
 
 import { afterEach, describe, expect, it } from 'vitest'
 
@@ -275,7 +274,7 @@ describe('remote registry support', () => {
               registryDependencies: ['ref-accordion'],
               files: [
                 {
-                  path: 'src/lib/registry/blocks/ref-dashboard.svelte',
+                  path: 'src/lib/registry/blocks/ref-dashboard.tsx',
                 },
               ],
             },
@@ -296,9 +295,9 @@ describe('remote registry support', () => {
         return
       }
 
-      if (request.url === '/registry/src/lib/registry/blocks/ref-dashboard.svelte') {
+      if (request.url === '/registry/src/lib/registry/blocks/ref-dashboard.tsx') {
         response.writeHead(200, { 'content-type': 'text/plain' })
-        response.end('<section>dashboard</section>\\n')
+        response.end('export function RefDashboardBlock() {\\n  return <section>dashboard</section>\\n}\\n')
         return
       }
 
@@ -343,26 +342,8 @@ describe('remote registry support', () => {
     const blockResult = await runBlocksInstall({ cwd, blocks: ['ref-dashboard'], skipInstall: true })
     expect(blockResult.added).toContain('ref-dashboard')
 
-    const blockPath = path.join(cwd, 'src/components/blocks/ref-dashboard.svelte')
+    const blockPath = path.join(cwd, 'src/components/blocks/ref-dashboard.tsx')
     expect(await readFile(blockPath, 'utf8')).toContain('<section>dashboard</section>')
-  })
-
-  it('loads the full shadcn-svelte docs registry from file URL', async () => {
-    const registryUrl = pathToFileURL(path.resolve('shadcn-svelte/docs/registry.json')).toString()
-
-    const output = await runListFromRegistry({
-      registry: registryUrl,
-      type: 'all',
-      json: true,
-    })
-    const parsed = JSON.parse(output) as Array<{ kind: string; name: string }>
-
-    expect(parsed).toHaveLength(206)
-    expect(parsed.some(entry => entry.name === 'accordion' && entry.kind === 'component')).toBe(true)
-    expect(parsed.some(entry => entry.name === 'calendar-01' && entry.kind === 'block')).toBe(true)
-    expect(parsed.some(entry => entry.name === 'init' && entry.kind === 'theme')).toBe(true)
-    expect(parsed.some(entry => entry.name === 'is-mobile' && entry.kind === 'component')).toBe(true)
-    expect(parsed.some(entry => entry.name === 'utils' && entry.kind === 'component')).toBe(true)
   })
 })
 
