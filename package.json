@@ -54,6 +54,7 @@
     "semver": "^7.7.4"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.0",
     "@eslint/js": "^10.0.1",
     "@storybook/addon-a11y": "^10.2.10",
     "@storybook/html": "^10.2.10",
