@@ -5,17 +5,18 @@ import { fileURLToPath } from 'node:url'
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const distEntryPath = path.join(rootDir, 'dist/index.js')
 const outputPath = path.join(rootDir, 'stories/registry-builtins.stories.jsx')
+const runtimeRoot = path.join(rootDir, 'stories/generated/runtime')
 
 if (!fs.existsSync(distEntryPath)) {
   throw new Error('dist/index.js not found. Run `pnpm build` before generating Storybook registry stories.')
 }
 
 const registryModule = await import(distEntryPath)
-const componentNames = registryModule.listBuiltinComponentNames()
-const blockNames = registryModule.listBuiltinBlockNames()
-const themeNames = registryModule.listBuiltinThemeNames()
+const componentNames = registryModule.listBuiltinComponentNames().sort((left, right) => left.localeCompare(right))
+const blockNames = registryModule.listBuiltinBlockNames().sort((left, right) => left.localeCompare(right))
+const themeNames = registryModule.listBuiltinThemeNames().sort((left, right) => left.localeCompare(right))
 
-function toExportIdentifier(prefix, name, used) {
+function toIdentifier(prefix, name, used) {
   const base = name
     .split(/[^a-zA-Z0-9]+/)
     .filter(Boolean)
@@ -42,26 +43,170 @@ function toExportIdentifier(prefix, name, used) {
   return uniqueId
 }
 
-const usedIdentifiers = new Set()
+function ensurePosixPath(value) {
+  return value.replace(/\\/g, '/')
+}
+
+function ensureDir(targetPath) {
+  fs.mkdirSync(path.dirname(targetPath), { recursive: true })
+}
+
+function writeFile(targetPath, content) {
+  ensureDir(targetPath)
+  fs.writeFileSync(targetPath, content, 'utf8')
+}
+
+function collectAllRegistryEntries() {
+  const allEntries = new Map()
+  const saveEntry = entry => {
+    const key = `${entry.type}:${entry.name}`
+    allEntries.set(key, entry)
+  }
+
+  for (const name of componentNames) {
+    for (const entry of registryModule.resolveBuiltinComponentGraph([name])) {
+      saveEntry(entry)
+    }
+  }
+
+  for (const name of blockNames) {
+    for (const entry of registryModule.resolveBuiltinBlockGraph([name])) {
+      saveEntry(entry)
+    }
+  }
+
+  for (const name of themeNames) {
+    const entry = registryModule.getBuiltinTheme(name)
+    if (entry) {
+      saveEntry(entry)
+    }
+  }
+
+  return [...allEntries.values()]
+}
+
+function pickPrimaryFile(entry, renderedFiles) {
+  const preferredPrefixes =
+    entry.type === 'ui-component'
+      ? ['src/components/ui/', 'src/lib/hooks/', 'src/lib/']
+      : entry.type === 'block'
+        ? ['src/components/blocks/']
+        : ['src/styles/themes/']
+
+  for (const prefix of preferredPrefixes) {
+    const match = renderedFiles.find(file => file.relativePath.startsWith(prefix))
+    if (match) return match
+  }
+
+  const tsx = renderedFiles.find(file => file.relativePath.endsWith('.tsx'))
+  if (tsx) return tsx
+  const ts = renderedFiles.find(file => file.relativePath.endsWith('.ts'))
+  if (ts) return ts
+  return renderedFiles[0]
+}
+
+const runtimeConfig = {
+  ...registryModule.DEFAULT_CONFIG,
+  componentsDir: 'src/components/ui',
+  libDir: 'src/lib',
+  css: 'src/styles/globals.css',
+  tailwindConfig: 'tailwind.config.cjs',
+  aliases: {
+    base: '@',
+  },
+}
+
+fs.rmSync(runtimeRoot, { recursive: true, force: true })
+
+const entries = collectAllRegistryEntries()
+for (const entry of entries) {
+  const renderedFiles = registryModule.renderRegistryEntryFiles(entry, runtimeConfig)
+  for (const file of renderedFiles) {
+    writeFile(path.join(runtimeRoot, file.relativePath), file.content)
+  }
+}
+
+writeFile(
+  path.join(runtimeRoot, 'src/lib/cn.ts'),
+  `import { clsx } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+
+export function cn(...inputs: unknown[]): string {
+  return twMerge(clsx(inputs))
+}
+`,
+)
+
+const templateContext = {
+  config: runtimeConfig,
+  imports: {
+    cn: '@/lib/cn',
+    variants: '@/lib/variants',
+  },
+  aliasFor: relativePath => '@/' + relativePath,
+  uiImport: componentName => '@/components/ui/' + componentName,
+}
+
+const usedIds = new Set()
+const importLines = []
+const moduleMapLines = {
+  component: [],
+  block: [],
+}
+const themeImportLines = []
 const storyExports = []
 
 for (const name of componentNames) {
-  storyExports.push({ identifier: toExportIdentifier('Component', name, usedIdentifiers), kind: 'component', name })
+  const entry = registryModule.getBuiltinComponent(name)
+  if (!entry) continue
+  const rendered = registryModule.renderRegistryEntryFiles(entry, runtimeConfig)
+  const primary = pickPrimaryFile(entry, rendered)
+  const importId = toIdentifier('ComponentModule', name, usedIds)
+  const importPath = './generated/runtime/' + ensurePosixPath(primary.relativePath)
+  importLines.push(`import * as ${importId} from '${importPath}'`)
+  moduleMapLines.component.push(`    '${name}': ${importId},`)
+  storyExports.push({ identifier: toIdentifier('Component', name, usedIds), kind: 'component', name })
 }
+
 for (const name of blockNames) {
-  storyExports.push({ identifier: toExportIdentifier('Block', name, usedIdentifiers), kind: 'block', name })
+  const entry = registryModule.getBuiltinBlock(name)
+  if (!entry) continue
+  const rendered = registryModule.renderRegistryEntryFiles(entry, runtimeConfig)
+  const primary = pickPrimaryFile(entry, rendered)
+  const importId = toIdentifier('BlockModule', name, usedIds)
+  const importPath = './generated/runtime/' + ensurePosixPath(primary.relativePath)
+  importLines.push(`import * as ${importId} from '${importPath}'`)
+  moduleMapLines.block.push(`    '${name}': ${importId},`)
+  storyExports.push({ identifier: toIdentifier('Block', name, usedIds), kind: 'block', name })
 }
+
 for (const name of themeNames) {
-  storyExports.push({ identifier: toExportIdentifier('Theme', name, usedIdentifiers), kind: 'theme', name })
+  const entry = registryModule.getBuiltinTheme(name)
+  if (!entry) continue
+  const rendered = registryModule.renderRegistryEntryFiles(entry, runtimeConfig)
+  const primary = pickPrimaryFile(entry, rendered)
+  const importPath = './generated/runtime/' + ensurePosixPath(primary.relativePath)
+  themeImportLines.push(`import '${importPath}'`)
+  storyExports.push({ identifier: toIdentifier('Theme', name, usedIds), kind: 'theme', name })
 }
 
 const lines = []
 lines.push('/** @jsxImportSource fict */')
 lines.push('')
-lines.push("import { DEFAULT_CONFIG } from '../src/core/constants'")
-lines.push("import { builtinBlocks, builtinComponents, builtinThemes } from '../src/registry/builtin'")
+lines.push("import { renderRegistryEntryPreview } from './registry-runtime-preview'")
 lines.push('')
-lines.push("import { renderFict } from './render-fict'")
+lines.push(...importLines.sort((left, right) => left.localeCompare(right)))
+lines.push('')
+lines.push(...themeImportLines.sort((left, right) => left.localeCompare(right)))
+lines.push('')
+lines.push('const liveModules = {')
+lines.push('  component: {')
+lines.push(...moduleMapLines.component.sort((left, right) => left.localeCompare(right)))
+lines.push('  },')
+lines.push('  block: {')
+lines.push(...moduleMapLines.block.sort((left, right) => left.localeCompare(right)))
+lines.push('  },')
+lines.push('}')
 lines.push('')
 lines.push('const meta = {')
 lines.push("  title: 'Fict Shadcn/Builtin Registry',")
@@ -72,69 +217,10 @@ lines.push('}')
 lines.push('')
 lines.push('export default meta')
 lines.push('')
-lines.push('const templateContext = {')
-lines.push('  config: DEFAULT_CONFIG,')
-lines.push('  imports: {')
-lines.push("    cn: '@/lib/cn',")
-lines.push("    variants: '@/lib/variants',")
-lines.push('  },')
-lines.push("  aliasFor: relativePath => '@/' + relativePath,")
-lines.push("  uiImport: componentName => '@/components/ui/' + componentName,")
-lines.push('}')
-lines.push('')
-lines.push('const entryRegistry = {')
-lines.push("  component: new Map(builtinComponents.map(entry => [entry.name, entry])),")
-lines.push("  block: new Map(builtinBlocks.map(entry => [entry.name, entry])),")
-lines.push("  theme: new Map(builtinThemes.map(entry => [entry.name, entry])),")
-lines.push('}')
-lines.push('')
-lines.push('function getRegistryEntry(kind, name) {')
-lines.push('  const entry = entryRegistry[kind].get(name)')
-lines.push('  if (!entry) {')
-lines.push("    throw new Error('Unknown registry entry: ' + kind + '/' + name)")
-lines.push('  }')
-lines.push('  return entry')
-lines.push('}')
-lines.push('')
-lines.push('function renderRegistryEntry(kind, name) {')
-lines.push('  const entry = getRegistryEntry(kind, name)')
-lines.push('  const files = entry.files.map(file => ({')
-lines.push('    path: file.path,')
-lines.push('    content: file.content(templateContext),')
-lines.push('  }))')
-lines.push('')
-lines.push('  return renderFict(() => (')
-lines.push("    <div class='min-h-screen w-full bg-background p-6 text-foreground'>")
-lines.push("      <div class='mx-auto grid w-full max-w-6xl gap-4'>")
-lines.push("        <header class='rounded-lg border bg-card p-4'>")
-lines.push("          <p class='text-xs uppercase tracking-wider text-muted-foreground'>{kind}</p>")
-lines.push("          <h1 class='mt-1 text-xl font-semibold'>{entry.name}</h1>")
-lines.push("          <p class='mt-1 text-sm text-muted-foreground'>{entry.description}</p>")
-lines.push("          <div class='mt-3 flex flex-wrap gap-2'>")
-lines.push("            <span class='rounded border px-2 py-1 text-xs'>version: {entry.version}</span>")
-lines.push("            <span class='rounded border px-2 py-1 text-xs'>files: {files.length}</span>")
-lines.push("            <span class='rounded border px-2 py-1 text-xs'>deps: {entry.dependencies.length}</span>")
-lines.push("            <span class='rounded border px-2 py-1 text-xs'>registry deps: {entry.registryDependencies.length}</span>")
-lines.push('          </div>')
-lines.push('        </header>')
-lines.push('')
-lines.push('        {files.map(file => (')
-lines.push("          <section class='overflow-hidden rounded-lg border bg-card'>")
-lines.push("            <div class='border-b px-4 py-2 text-xs text-muted-foreground'>{file.path}</div>")
-lines.push("            <pre class='max-h-[500px] overflow-auto p-4 text-xs leading-relaxed'>")
-lines.push('              <code>{file.content}</code>')
-lines.push('            </pre>')
-lines.push('          </section>')
-lines.push('        ))}')
-lines.push('      </div>')
-lines.push('    </div>')
-lines.push('  ))')
-lines.push('}')
-lines.push('')
 lines.push('function createRegistryStory(kind, name) {')
 lines.push('  return {')
 lines.push("    name: kind + '/' + name,")
-lines.push('    render: () => renderRegistryEntry(kind, name),')
+lines.push('    render: () => renderRegistryEntryPreview(kind, name, liveModules),')
 lines.push('  }')
 lines.push('}')
 lines.push('')
@@ -149,4 +235,23 @@ for (const entry of storyExports) {
 lines.push(']')
 lines.push('')
 
-fs.writeFileSync(outputPath, lines.join('\n'))
+writeFile(outputPath, lines.join('\n'))
+
+const previewMetaPath = path.join(rootDir, 'stories/generated/runtime/.generated-meta.json')
+writeFile(
+  previewMetaPath,
+  `${JSON.stringify(
+    {
+      generatedAt: new Date().toISOString(),
+      entries: {
+        components: componentNames.length,
+        blocks: blockNames.length,
+        themes: themeNames.length,
+      },
+      runtimeFiles: entries.length,
+      templateContext,
+    },
+    null,
+    2,
+  )}\n`,
+)
