@@ -345,6 +345,125 @@ describe('remote registry support', () => {
     const blockPath = path.join(cwd, 'src/components/blocks/ref-dashboard.tsx')
     expect(await readFile(blockPath, 'utf8')).toContain('<section>dashboard</section>')
   })
+
+  it('fails fast when remote file references are unavailable', async () => {
+    const { registryUrl } = await startCustomRegistryServer(servers, (request, response) => {
+      if (request.url === '/registry/index.json') {
+        response.writeHead(200, { 'content-type': 'application/json' })
+        response.end(
+          JSON.stringify([
+            {
+              name: 'broken-button',
+              type: 'ui-component',
+              version: '1.0.0',
+              files: [
+                {
+                  path: 'src/lib/registry/ui/broken-button.tsx',
+                },
+              ],
+            },
+          ]),
+        )
+        return
+      }
+
+      response.writeHead(404)
+      response.end('not found')
+    })
+
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-remote-file-missing-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: registryUrl,
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    await expect(runAdd({ cwd, components: ['broken-button'], skipInstall: true })).rejects.toThrow(
+      'Failed to fetch registry',
+    )
+
+    await expect(readFile(path.join(cwd, 'src/components/ui/broken-button.tsx'), 'utf8')).rejects.toThrow()
+    await expect(readFile(path.join(cwd, LOCK_FILE), 'utf8')).rejects.toThrow()
+  })
+
+  it('reports circular dependency graphs from remote registries', async () => {
+    const { registryUrl } = await startRegistryServer(servers, [
+      {
+        name: 'alpha-card',
+        type: 'ui-component',
+        version: '1.0.0',
+        registryDependencies: ['beta-card'],
+        files: [
+          {
+            path: '{{componentsDir}}/alpha-card.tsx',
+            content: 'export function AlphaCard() {\\n  return <div>alpha</div>\\n}\\n',
+          },
+        ],
+      },
+      {
+        name: 'beta-card',
+        type: 'ui-component',
+        version: '1.0.0',
+        registryDependencies: ['alpha-card'],
+        files: [
+          {
+            path: '{{componentsDir}}/beta-card.tsx',
+            content: 'export function BetaCard() {\\n  return <div>beta</div>\\n}\\n',
+          },
+        ],
+      },
+    ])
+
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-remote-circular-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: registryUrl,
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    await expect(runAdd({ cwd, components: ['alpha-card'], skipInstall: true })).rejects.toThrow(
+      'Circular registry component dependency detected',
+    )
+
+    await expect(readFile(path.join(cwd, 'src/components/ui/alpha-card.tsx'), 'utf8')).rejects.toThrow()
+    await expect(readFile(path.join(cwd, LOCK_FILE), 'utf8')).rejects.toThrow()
+  })
 })
 
 async function startRegistryServer(
