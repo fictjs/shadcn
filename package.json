@@ -38,6 +38,7 @@
     "clean": "rimraf dist coverage",
     "dev": "tsup --config tsup.config.ts --watch",
     "lint": "eslint .",
+    "storybook:generate": "pnpm build && node scripts/generate-registry-stories.mjs",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
     "storybook:smoke": "storybook dev --ci --smoke-test",
