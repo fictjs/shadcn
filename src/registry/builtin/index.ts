@@ -1,15 +1,19 @@
-import { builtinBlocks } from './blocks'
+import { builtinBlocks as coreBuiltinBlocks } from './blocks'
 import { basicComponentRegistry } from './basic'
 import { dataComponentRegistry } from './data'
+import { expandedBlockRegistry, expandedComponentRegistry, expandedThemeRegistry } from './expanded'
 import { feedbackComponentRegistry } from './feedback'
 import { formComponentRegistry } from './forms'
 import { navigationComponentRegistry } from './navigation'
 import { overlayComponentRegistry } from './overlay'
-import { builtinThemes } from './themes'
+import { builtinThemes as coreBuiltinThemes } from './themes'
 import type { RegistryEntry } from '../types'
 
-export { builtinBlocks } from './blocks'
-export { builtinThemes } from './themes'
+export { builtinBlocks as coreBuiltinBlocks } from './blocks'
+export { builtinThemes as coreBuiltinThemes } from './themes'
+
+export const builtinBlocks: RegistryEntry[] = [...coreBuiltinBlocks, ...expandedBlockRegistry]
+export const builtinThemes: RegistryEntry[] = [...coreBuiltinThemes, ...expandedThemeRegistry]
 
 export const builtinComponents: RegistryEntry[] = [
   ...basicComponentRegistry,
@@ -18,6 +22,7 @@ export const builtinComponents: RegistryEntry[] = [
   ...navigationComponentRegistry,
   ...feedbackComponentRegistry,
   ...dataComponentRegistry,
+  ...expandedComponentRegistry,
 ]
 
 export const builtinRegistry: Record<string, RegistryEntry> = Object.fromEntries(
