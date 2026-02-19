@@ -317,6 +317,63 @@ describe('remote registry support', () => {
     ).rejects.toThrow('is not valid JSON')
   })
 
+  it('reports file:// registry paths that do not exist', async () => {
+    const missingPath = path.join(tmpdir(), `fictcn-missing-registry-${Date.now()}`, 'index.json')
+    await expect(
+      runListFromRegistry({
+        registry: pathToFileURL(missingPath).toString(),
+        type: 'all',
+      }),
+    ).rejects.toThrow('File not found for registry source')
+  })
+
+  it('rejects empty remote registry payloads', async () => {
+    const { registryUrl } = await startCustomRegistryServer(servers, (request, response) => {
+      if (request.url === '/registry/index.json') {
+        response.writeHead(200, { 'content-type': 'application/json' })
+        response.end('[]')
+        return
+      }
+
+      response.writeHead(404)
+      response.end('not found')
+    })
+
+    await expect(
+      runListFromRegistry({
+        registry: registryUrl,
+        type: 'all',
+      }),
+    ).rejects.toThrow('did not contain valid entries')
+  })
+
+  it('ignores entries with non-string or unsupported type values', async () => {
+    const { registryUrl } = await startCustomRegistryServer(servers, (request, response) => {
+      if (request.url === '/registry/index.json') {
+        response.writeHead(200, { 'content-type': 'application/json' })
+        response.end(
+          JSON.stringify([
+            { name: 'bad-type-number', type: 123, description: 'ignored' },
+            { name: 'bad-type-string', type: 'unsupported-type', description: 'ignored' },
+            { name: 'good-entry', type: 'ui-component', description: 'kept' },
+          ]),
+        )
+        return
+      }
+
+      response.writeHead(404)
+      response.end('not found')
+    })
+
+    const output = await runListFromRegistry({
+      registry: registryUrl,
+      type: 'components',
+    })
+    expect(output).toContain('good-entry')
+    expect(output).not.toContain('bad-type-number')
+    expect(output).not.toContain('bad-type-string')
+  })
+
   it('adds, diffs, and updates remote components', async () => {
     const { registryUrl } = await startRegistryServer(servers, [
       {
@@ -504,6 +561,129 @@ describe('remote registry support', () => {
 
     const blockPath = path.join(cwd, 'src/components/blocks/ref-dashboard.tsx')
     expect(await readFile(blockPath, 'utf8')).toContain('<section>dashboard</section>')
+  })
+
+  it('maps legacy blocks/* file paths for block entries', async () => {
+    const { registryUrl } = await startCustomRegistryServer(servers, (request, response) => {
+      if (request.url === '/registry/index.json') {
+        response.writeHead(200, { 'content-type': 'application/json' })
+        response.end(
+          JSON.stringify([
+            {
+              name: 'legacy-mapped-block',
+              type: 'block',
+              files: [
+                {
+                  path: 'blocks/legacy-mapped-block.tsx',
+                  content: 'export function LegacyMappedBlock() {\\n  return <section>legacy</section>\\n}\\n',
+                },
+              ],
+            },
+          ]),
+        )
+        return
+      }
+
+      response.writeHead(404)
+      response.end('not found')
+    })
+
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-remote-block-legacy-path-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: registryUrl,
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    const result = await runBlocksInstall({ cwd, blocks: ['legacy-mapped-block'], skipInstall: true })
+    expect(result.added).toContain('legacy-mapped-block')
+    const blockPath = path.join(cwd, 'src/components/blocks/legacy-mapped-block.tsx')
+    expect(await readFile(blockPath, 'utf8')).toContain('LegacyMappedBlock')
+  })
+
+  it('retries transient file fetch failures for remote template files', async () => {
+    let fileRequests = 0
+    const { registryUrl } = await startCustomRegistryServer(servers, (request, response) => {
+      if (request.url === '/registry/index.json') {
+        response.writeHead(200, { 'content-type': 'application/json' })
+        response.end(
+          JSON.stringify([
+            {
+              name: 'retry-file-button',
+              type: 'ui-component',
+              files: [
+                {
+                  path: 'src/lib/registry/ui/retry-file-button.tsx',
+                },
+              ],
+            },
+          ]),
+        )
+        return
+      }
+
+      if (request.url === '/registry/src/lib/registry/ui/retry-file-button.tsx') {
+        fileRequests += 1
+        if (fileRequests === 1) {
+          response.writeHead(503, { 'content-type': 'text/plain' })
+          response.end('retry me')
+          return
+        }
+        response.writeHead(200, { 'content-type': 'text/plain' })
+        response.end('export function RetryFileButton() {\\n  return <button>retry file</button>\\n}\\n')
+        return
+      }
+
+      response.writeHead(404)
+      response.end('not found')
+    })
+
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-remote-file-retry-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: registryUrl,
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    const result = await runAdd({ cwd, components: ['retry-file-button'], skipInstall: true })
+    expect(result.added).toContain('retry-file-button')
+    expect(fileRequests).toBe(2)
   })
 
   it('fails fast when remote file references are unavailable', async () => {

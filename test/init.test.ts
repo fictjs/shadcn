@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
+import { chmod, mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 
@@ -8,6 +8,8 @@ import { runInit } from '../src/commands/init'
 import { CONFIG_FILE } from '../src/core/constants'
 
 describe('runInit', () => {
+  const ORIGINAL_PATH = process.env.PATH ?? ''
+  const unixOnlyIt = process.platform === 'win32' ? it.skip : it
   it('writes baseline config and utility files', async () => {
     const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-init-'))
     await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
@@ -272,4 +274,78 @@ describe('runInit', () => {
     expect(tailwindConfig).toContain("import animate from 'tailwindcss-animate'")
     expect(tailwindConfig).toContain('plugins: [animate]')
   })
+
+  it('keeps existing postcss config files unchanged', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-init-existing-postcss-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(path.join(cwd, 'postcss.config.js'), 'module.exports = { plugins: {} }\n', 'utf8')
+
+    await runInit({ cwd, skipInstall: true })
+
+    await expect(readFile(path.join(cwd, 'postcss.config.mjs'), 'utf8')).rejects.toThrow()
+    expect(await readFile(path.join(cwd, 'postcss.config.js'), 'utf8')).toBe(
+      'module.exports = { plugins: {} }\n',
+    )
+  })
+
+  it('detects existing ESM tailwind config format from content', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-init-tailwind-existing-esm-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox","type":"module"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'tailwind.config.ts'),
+      "export default { content: ['./src/**/*.{ts,tsx}'], theme: { extend: {} }, plugins: [] }\n",
+      'utf8',
+    )
+
+    await runInit({ cwd, skipInstall: true })
+
+    const tailwindConfig = await readFile(path.join(cwd, 'tailwind.config.ts'), 'utf8')
+    expect(tailwindConfig).toContain("import animate from 'tailwindcss-animate'")
+    expect(tailwindConfig).toContain('plugins: [animate]')
+  })
+
+  unixOnlyIt('installs runtime and dev dependencies when skipInstall is false', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-init-install-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'package-lock.json'), '{}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+
+    const argsPath = path.join(cwd, 'npm.args')
+    const fakeBinDir = await createFakePackageManagerBinary('npm', argsPath, 0)
+    process.env.PATH = `${fakeBinDir}${path.delimiter}${ORIGINAL_PATH}`
+
+    try {
+      await runInit({ cwd })
+      const calls = (await readFile(argsPath, 'utf8'))
+        .trim()
+        .split('\n')
+        .filter(Boolean)
+
+      expect(calls.length).toBe(2)
+      expect(calls[0]).toContain('install --save')
+      expect(calls[1]).toContain('install --save-dev')
+    } finally {
+      process.env.PATH = ORIGINAL_PATH
+    }
+  })
 })
+
+async function createFakePackageManagerBinary(
+  command: 'npm',
+  argsOutputPath: string,
+  exitCode: number,
+): Promise<string> {
+  const binDir = await mkdtemp(path.join(tmpdir(), `fictcn-fake-${command}-`))
+  const binPath = path.join(binDir, command)
+  const script = `#!/usr/bin/env bash
+set -eu
+printf '%s\\n' "$*" >> ${JSON.stringify(argsOutputPath)}
+exit ${exitCode}
+`
+
+  await writeFile(binPath, script, 'utf8')
+  await chmod(binPath, 0o755)
+  return binDir
+}
