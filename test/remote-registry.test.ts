@@ -1,9 +1,10 @@
 import { once } from 'node:events'
-import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
 import type { AddressInfo } from 'node:net'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
+import { pathToFileURL } from 'node:url'
 
 import { afterEach, describe, expect, it } from 'vitest'
 
@@ -155,6 +156,165 @@ describe('remote registry support', () => {
     expect(listOutput).toContain('cached-entry')
     expect(searchOutput).toContain('cached-entry')
     expect(requests).toBe(1)
+  })
+
+  it('falls back to registry.json when index.json is missing', async () => {
+    let indexRequests = 0
+    const { registryUrl } = await startCustomRegistryServer(servers, (request, response) => {
+      if (request.url === '/registry/index.json') {
+        indexRequests += 1
+        response.writeHead(404, { 'content-type': 'application/json' })
+        response.end(JSON.stringify({ message: 'index missing' }))
+        return
+      }
+
+      if (request.url === '/registry/registry.json') {
+        response.writeHead(200, { 'content-type': 'application/json' })
+        response.end(
+          JSON.stringify([
+            {
+              name: 'fallback-button',
+              type: 'ui-component',
+              description: 'Loaded from registry.json fallback',
+            },
+          ]),
+        )
+        return
+      }
+
+      response.writeHead(404)
+      response.end('not found')
+    })
+
+    const output = await runListFromRegistry({
+      registry: registryUrl,
+      type: 'components',
+    })
+
+    expect(output).toContain('fallback-button')
+    expect(indexRequests).toBe(1)
+  })
+
+  it('supports direct .json registry URLs and items payloads', async () => {
+    let indexRequests = 0
+    const { registryUrl } = await startCustomRegistryServer(servers, (request, response) => {
+      if (request.url === '/registry/index.json') {
+        indexRequests += 1
+        response.writeHead(500, { 'content-type': 'application/json' })
+        response.end(JSON.stringify({ message: 'should not be called' }))
+        return
+      }
+
+      if (request.url === '/registry/custom.json') {
+        response.writeHead(200, { 'content-type': 'application/json' })
+        response.end(
+          JSON.stringify({
+            items: [
+              {
+                name: 'items-theme',
+                type: 'theme',
+                description: 'Theme delivered through items[]',
+              },
+            ],
+          }),
+        )
+        return
+      }
+
+      response.writeHead(404)
+      response.end('not found')
+    })
+
+    const customRegistryUrl = `${registryUrl}/custom.json`
+    const output = await runListFromRegistry({
+      registry: customRegistryUrl,
+      type: 'themes',
+      json: true,
+    })
+    const parsed = JSON.parse(output) as Array<{ kind: string; name: string }>
+
+    expect(parsed).toEqual(
+      expect.arrayContaining([expect.objectContaining({ kind: 'theme', name: 'items-theme' })]),
+    )
+    expect(indexRequests).toBe(0)
+  })
+
+  it('loads file:// registries and referenced template files', async () => {
+    const registryRoot = await mkdtemp(path.join(tmpdir(), 'fictcn-remote-file-protocol-'))
+    await mkdir(path.join(registryRoot, 'src/lib/registry/ui'), { recursive: true })
+
+    await writeFile(
+      path.join(registryRoot, 'index.json'),
+      `${JSON.stringify(
+        [
+          {
+            name: 'file-registry-button',
+            type: 'ui-component',
+            version: '1.0.0',
+            files: [{ path: 'src/lib/registry/ui/file-registry-button.tsx' }],
+          },
+        ],
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+    await writeFile(
+      path.join(registryRoot, 'src/lib/registry/ui/file-registry-button.tsx'),
+      'export function FileRegistryButton() {\\n  return <button>file registry</button>\\n}\\n',
+      'utf8',
+    )
+
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-remote-file-protocol-project-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: pathToFileURL(path.join(registryRoot, 'index.json')).toString(),
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    const addResult = await runAdd({ cwd, components: ['file-registry-button'], skipInstall: true })
+    expect(addResult.added).toContain('file-registry-button')
+
+    const buttonPath = path.join(cwd, 'src/components/ui/file-registry-button.tsx')
+    expect(await readFile(buttonPath, 'utf8')).toContain('FileRegistryButton')
+  })
+
+  it('reports invalid JSON payloads from remote registries', async () => {
+    const { registryUrl } = await startCustomRegistryServer(servers, (request, response) => {
+      if (request.url === '/registry/index.json') {
+        response.writeHead(200, { 'content-type': 'application/json' })
+        response.end('not-json')
+        return
+      }
+
+      response.writeHead(404)
+      response.end('not found')
+    })
+
+    await expect(
+      runListFromRegistry({
+        registry: registryUrl,
+        type: 'all',
+      }),
+    ).rejects.toThrow('is not valid JSON')
   })
 
   it('adds, diffs, and updates remote components', async () => {
