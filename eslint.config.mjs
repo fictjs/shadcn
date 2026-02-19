@@ -35,6 +35,6 @@ export default tseslint.config(
     },
   },
   {
-    ignores: ['dist/**', 'coverage/**', 'storybook-static/**', 'node_modules/**', 'shadcn-svelte/**'],
+    ignores: ['dist/**', 'coverage/**', 'storybook-static/**', 'node_modules/**'],
   },
 )
