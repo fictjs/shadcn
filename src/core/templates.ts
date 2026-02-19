@@ -204,7 +204,7 @@ export default config
 export function createPostcssConfig(): string {
   return `export default {
   plugins: {
-    tailwindcss: {},
+    '@tailwindcss/postcss': {},
     autoprefixer: {},
   },
 }

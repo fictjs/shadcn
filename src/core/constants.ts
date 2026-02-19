@@ -33,4 +33,4 @@ export const RUNTIME_DEPENDENCIES = [
   'tailwind-merge',
 ]
 
-export const DEV_DEPENDENCIES = ['autoprefixer', 'postcss', 'tailwindcss', 'tailwindcss-animate']
+export const DEV_DEPENDENCIES = ['autoprefixer', 'postcss', '@tailwindcss/postcss', 'tailwindcss', 'tailwindcss-animate']

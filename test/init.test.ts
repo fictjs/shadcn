@@ -18,11 +18,14 @@ describe('runInit', () => {
     const config = await readFile(path.join(cwd, CONFIG_FILE), 'utf8')
     const cnFile = await readFile(path.join(cwd, 'src/lib/cn.ts'), 'utf8')
     const globals = await readFile(path.join(cwd, 'src/styles/globals.css'), 'utf8')
+    const postcss = await readFile(path.join(cwd, 'postcss.config.mjs'), 'utf8')
     const tsconfig = await readFile(path.join(cwd, 'tsconfig.json'), 'utf8')
 
     expect(config).toContain('"style": "tailwind-css-vars"')
     expect(cnFile).toContain('twMerge')
     expect(globals).toContain('@fictcn tokens:start')
+    expect(postcss).toContain("'@tailwindcss/postcss'")
+    expect(postcss).not.toContain('tailwindcss: {}')
     expect(tsconfig).toContain('"@/*"')
   })
 
