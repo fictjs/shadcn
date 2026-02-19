@@ -9,6 +9,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+env:
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -99,7 +102,9 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Storybook smoke
-        run: pnpm storybook:smoke
+      - name: Install Playwright browser
+        run: pnpm test:e2e:install
+      - name: Storybook E2E
+        run: pnpm test:e2e
         env:
           CI: true

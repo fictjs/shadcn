@@ -44,6 +44,9 @@
     "storybook": "pnpm storybook:prepare && pnpm exec storybook dev -p 6006",
     "storybook:build": "pnpm storybook:prepare && pnpm exec storybook build",
     "storybook:smoke": "pnpm storybook:prepare && pnpm exec storybook dev --ci --smoke-test",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:install": "playwright install --with-deps chromium",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -58,6 +61,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@fictjs/ui-primitives": "^0.1.0",
+    "@playwright/test": "^1.58.0",
     "@storybook/addon-a11y": "^10.2.10",
     "@storybook/html": "^10.2.10",
     "@storybook/html-vite": "^10.2.10",

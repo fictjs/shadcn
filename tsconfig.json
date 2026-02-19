@@ -16,5 +16,5 @@
     "rootDir": ".",
     "outDir": "dist"
   },
-  "include": ["src", "test", "schemas", "tsup.config.ts", "vitest.config.ts"]
+  "include": ["src", "test", "e2e", "schemas", "tsup.config.ts", "vitest.config.ts", "playwright.config.ts"]
 }
