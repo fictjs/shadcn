@@ -1,6 +1,6 @@
 import { once } from 'node:events'
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
-import { createServer } from 'node:http'
+import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
 import type { AddressInfo } from 'node:net'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
@@ -82,6 +82,78 @@ describe('remote registry support', () => {
 
     expect(output).toContain('remote-command-palette')
     expect(output).not.toContain('theme-forest')
+  })
+
+  it('retries transient remote failures', async () => {
+    let attempts = 0
+    const { registryUrl } = await startCustomRegistryServer(servers, (request, response) => {
+      if (request.url !== '/registry/index.json') {
+        response.writeHead(404)
+        response.end('not found')
+        return
+      }
+
+      attempts += 1
+      if (attempts === 1) {
+        response.writeHead(503, { 'content-type': 'application/json' })
+        response.end(JSON.stringify({ message: 'temporary outage' }))
+        return
+      }
+
+      response.writeHead(200, { 'content-type': 'application/json' })
+      response.end(
+        JSON.stringify([
+          {
+            name: 'retry-ok',
+            type: 'ui-component',
+            description: 'resolved after retry',
+          },
+        ]),
+      )
+    })
+
+    const output = await runListFromRegistry({
+      registry: registryUrl,
+      type: 'components',
+    })
+
+    expect(output).toContain('retry-ok')
+    expect(attempts).toBe(2)
+  })
+
+  it('caches remote registry responses across list/search calls', async () => {
+    let requests = 0
+    const { registryUrl } = await startCustomRegistryServer(servers, (request, response) => {
+      if (request.url !== '/registry/index.json') {
+        response.writeHead(404)
+        response.end('not found')
+        return
+      }
+
+      requests += 1
+      response.writeHead(200, { 'content-type': 'application/json' })
+      response.end(
+        JSON.stringify([
+          {
+            name: 'cached-entry',
+            type: 'ui-component',
+            description: 'served from cache',
+          },
+        ]),
+      )
+    })
+
+    const listOutput = await runListFromRegistry({
+      registry: registryUrl,
+      type: 'components',
+    })
+    const searchOutput = await runSearchFromRegistry('cached-entry', {
+      registry: registryUrl,
+    })
+
+    expect(listOutput).toContain('cached-entry')
+    expect(searchOutput).toContain('cached-entry')
+    expect(requests).toBe(1)
   })
 
   it('adds, diffs, and updates remote components', async () => {
@@ -175,7 +247,7 @@ async function startRegistryServer(
   servers: Array<ReturnType<typeof createServer>>,
   entries: unknown[],
 ): Promise<{ registryUrl: string }> {
-  const server = createServer((request, response) => {
+  return startCustomRegistryServer(servers, (request, response) => {
     if (request.url === '/registry/index.json') {
       response.writeHead(200, { 'content-type': 'application/json' })
       response.end(JSON.stringify(entries))
@@ -185,15 +257,19 @@ async function startRegistryServer(
     response.writeHead(404)
     response.end('not found')
   })
+}
 
+async function startCustomRegistryServer(
+  servers: Array<ReturnType<typeof createServer>>,
+  handler: (request: IncomingMessage, response: ServerResponse<IncomingMessage>) => void,
+): Promise<{ registryUrl: string }> {
+  const server = createServer(handler)
   server.listen(0, '127.0.0.1')
   await once(server, 'listening')
   servers.push(server)
 
   const address = server.address() as AddressInfo
-  const registryUrl = `http://127.0.0.1:${address.port}/registry`
-
   return {
-    registryUrl,
+    registryUrl: `http://127.0.0.1:${address.port}/registry`,
   }
 }
