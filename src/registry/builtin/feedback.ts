@@ -24,7 +24,7 @@ export const feedbackComponentRegistry: RegistryEntry[] = [
 
 import { cn } from '${context.imports.cn}'
 
-export { useToast }
+export { useToast, ToastProvider }
 
 type GenericProps = {
   class?: string
