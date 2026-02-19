@@ -653,24 +653,27 @@ function renderComponentPreview(name, moduleRecord) {
     }
 
     if (name === 'toast' || name === 'sonner') {
+      const ProviderComp = moduleRecord.ToastProvider ?? moduleRecord.SonnerProvider
       const ToastComp = moduleRecord.Toast ?? moduleRecord.Sonner
       const TitleComp = moduleRecord.ToastTitle ?? moduleRecord.SonnerTitle
       const DescComp = moduleRecord.ToastDescription ?? moduleRecord.SonnerDescription
       const ViewportComp = moduleRecord.ToastViewport ?? moduleRecord.SonnerViewport
-      if (ToastComp && TitleComp && DescComp && ViewportComp) {
+      if (ProviderComp && ToastComp && TitleComp && DescComp && ViewportComp) {
         return (
-          <div class='relative min-h-[160px] w-full max-w-md rounded-md border bg-card p-4'>
-            {renderComponentInstance(
-              ToastComp,
-              { open: true, class: 'pointer-events-auto' },
-              <>
-                <TitleComp>Deployment Complete</TitleComp>
-                <DescComp>Your project is now live.</DescComp>
-              </>,
-              'toast',
-            )}
-            <ViewportComp />
-          </div>
+          <ProviderComp>
+            <div class='relative min-h-[160px] w-full max-w-md rounded-md border bg-card p-4'>
+              {renderComponentInstance(
+                ToastComp,
+                { open: true, class: 'pointer-events-auto' },
+                <>
+                  <TitleComp>Deployment Complete</TitleComp>
+                  <DescComp>Your project is now live.</DescComp>
+                </>,
+                'toast',
+              )}
+              <ViewportComp />
+            </div>
+          </ProviderComp>
         )
       }
     }
