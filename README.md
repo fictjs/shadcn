@@ -210,22 +210,32 @@ Running `fictcn init` creates a `fictcn.json` at your project root:
 | `libDir`         | Where utility files (`cn.ts`, `variants.ts`) are placed  | `src/lib`                |
 | `css`            | Path to the global CSS file with design tokens           | `src/styles/globals.css` |
 | `tailwindConfig` | Path to the Tailwind CSS configuration file              | `tailwind.config.ts`     |
-| `registry`       | Registry source (`builtin` or remote URL to `index.json`) | `builtin`                |
+| `registry`       | Registry source (`builtin`, remote URL, or `file://` URL) | `builtin`                |
 | `aliases.base`   | TypeScript path alias prefix for imports                 | `@`                      |
 
-For remote registries, each entry in `index.json` should include:
-`name`, `type`, `version`, `dependencies`, `registryDependencies`, and `files` (`[{ path, content }]`).
+For remote registries, each entry in `index.json` (or `registry.json`) should include:
+`name`, `type`, `version`, `dependencies`, `registryDependencies`, and `files`.
+
+`files` supports two formats:
+- Inline content: `[{ path, content }]`
+- File reference: `[{ path }]` (the CLI fetches file contents relative to the registry JSON URL)
+
+`@fictjs/shadcn` is compatible with shadcn-style registry types:
+- `registry:ui`, `registry:block`, `registry:style`
+- `registry:hook`, `registry:lib` (treated as installable component entries)
 
 Remote registry requests include:
 - retry on transient failures (default `2` retries)
 - request timeout (default `10000ms`)
 - short-lived in-process cache (default `10000ms`)
+- concurrent file fetches for file-reference registries (default `16`)
 
 Optional environment variables:
 - `FICTCN_REGISTRY_RETRIES`
 - `FICTCN_REGISTRY_TIMEOUT_MS`
 - `FICTCN_REGISTRY_RETRY_DELAY_MS`
 - `FICTCN_REGISTRY_CACHE_TTL_MS`
+- `FICTCN_REGISTRY_FETCH_CONCURRENCY`
 
 ## Lock File
 
@@ -274,6 +284,16 @@ Commit this file to version control so your team stays in sync.
 | `theme-brand-ocean` | Blue ocean brand palette |
 
 All themes provide light and dark mode variants via CSS custom properties and can be applied with a class name (e.g., `class="theme-slate dark"`).
+
+### Optional Large Registry Snapshot (206 Entries)
+
+This repo also includes a vendored shadcn-svelte registry snapshot at `shadcn-svelte/docs/registry.json` (56 UI + 147 blocks + style/hook/lib entries).
+
+You can point `registry` to its `file://` URL to browse or install from that larger catalog:
+
+```bash
+fictcn list --registry file:///ABSOLUTE/PATH/TO/shadcn-svelte/docs/registry.json --type all
+```
 
 ## Project Structure After Init
 

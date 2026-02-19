@@ -1,3 +1,6 @@
+import { readFile } from 'node:fs/promises'
+import { fileURLToPath } from 'node:url'
+
 import { loadConfig } from '../core/config'
 import { findProjectRoot } from '../core/project'
 import { builtinBlocks, builtinComponents, builtinThemes } from './builtin'
@@ -27,12 +30,21 @@ const REMOTE_REGISTRY_TIMEOUT_MS = readPositiveIntEnv('FICTCN_REGISTRY_TIMEOUT_M
 const REMOTE_REGISTRY_RETRIES = readPositiveIntEnv('FICTCN_REGISTRY_RETRIES', 2)
 const REMOTE_REGISTRY_RETRY_DELAY_MS = readPositiveIntEnv('FICTCN_REGISTRY_RETRY_DELAY_MS', 250)
 const REMOTE_REGISTRY_CACHE_TTL_MS = readPositiveIntEnv('FICTCN_REGISTRY_CACHE_TTL_MS', 10_000)
+const REMOTE_REGISTRY_FETCH_CONCURRENCY = readPositiveIntEnv('FICTCN_REGISTRY_FETCH_CONCURRENCY', 16)
 
 const remoteRegistryCache = new Map<
   string,
   {
     expiresAt: number
-    entries: RegistryEntry[]
+    entries: RemoteRegistryEntry[]
+  }
+>()
+
+const remoteRegistryFileCache = new Map<
+  string,
+  {
+    expiresAt: number
+    content: string
   }
 >()
 
@@ -42,6 +54,7 @@ interface RemoteRegistryEntry {
   type?: unknown
   version?: unknown
   dependencies?: unknown
+  devDependencies?: unknown
   registryDependencies?: unknown
   files?: unknown
 }
@@ -49,6 +62,11 @@ interface RemoteRegistryEntry {
 interface RemoteRegistryContainer {
   entries?: unknown
   items?: unknown
+}
+
+interface NormalizeRemoteEntryOptions {
+  requireFiles: boolean
+  registryUrl: string
 }
 
 export async function loadRegistryCatalog(options: RegistrySourceOptions = {}): Promise<RegistryCatalogRecord[]> {
@@ -90,11 +108,11 @@ export async function loadRegistryDataset(options: RegistryDatasetOptions): Prom
 }
 
 export function resolveComponentGraph(dataset: RegistryDataset, componentNames: string[]): RegistryEntry[] {
-  return resolveGraph(componentNames, dataset.components, 'component', () => true)
+  return resolveGraph(dataset.components, componentNames, 'component', () => true)
 }
 
 export function resolveBlockGraph(dataset: RegistryDataset, blockNames: string[]): RegistryEntry[] {
-  return resolveGraph(blockNames, dataset.blocks, 'block', dependency => Boolean(dataset.blocks[dependency]))
+  return resolveGraph(dataset.blocks, blockNames, 'block', dependency => Boolean(dataset.blocks[dependency]))
 }
 
 export function resolveEntryKinds(dataset: RegistryDataset, name: string): RegistryCatalogKind[] {
@@ -135,8 +153,8 @@ async function resolveRegistrySource(options: RegistrySourceOptions): Promise<st
 }
 
 function resolveGraph(
-  names: string[],
   registry: Record<string, RegistryEntry>,
+  names: string[],
   kindLabel: 'component' | 'block',
   shouldFollowDependency: (dependency: string) => boolean,
 ): RegistryEntry[] {
@@ -178,23 +196,62 @@ function resolveGraph(
 }
 
 async function fetchRemoteRegistryEntries(source: string, requireFiles: boolean): Promise<RegistryEntry[]> {
-  const url = resolveRegistryUrl(source)
-  const now = Date.now()
-  const cached = remoteRegistryCache.get(url)
-  if (cached && cached.expiresAt > now) {
-    return filterEntriesByFilesRequirement(cached.entries, requireFiles)
+  const candidates = resolveRegistryUrls(source)
+  let lastError: RegistryFetchError | null = null
+
+  for (let index = 0; index < candidates.length; index += 1) {
+    const url = candidates[index]
+    try {
+      return await fetchRemoteRegistryEntriesFromUrl(url, requireFiles)
+    } catch (error) {
+      const wrapped = toRegistryFetchError(url, error)
+      lastError = wrapped
+
+      const hasFallback = index + 1 < candidates.length
+      if (hasFallback && wrapped.statusCode === 404) {
+        continue
+      }
+
+      throw wrapped
+    }
   }
 
+  throw (
+    lastError ??
+    new RegistryFetchError(`Failed to fetch registry from ${source}`, {
+      retryable: false,
+    })
+  )
+}
+
+async function fetchRemoteRegistryEntriesFromUrl(url: string, requireFiles: boolean): Promise<RegistryEntry[]> {
+  const now = Date.now()
+  const cached = remoteRegistryCache.get(url)
+  const rawEntries =
+    cached && cached.expiresAt > now ? cached.entries : await fetchAndCacheRemoteRegistryEntries(url)
+
+  const normalized = await normalizeRemoteEntries(rawEntries, {
+    requireFiles,
+    registryUrl: url,
+  })
+
+  if (normalized.length === 0) {
+    throw new RegistryFetchError('Remote registry payload did not contain valid entries.')
+  }
+
+  return normalized
+}
+
+async function fetchAndCacheRemoteRegistryEntries(url: string): Promise<RemoteRegistryEntry[]> {
   const entries = await fetchRemoteRegistryEntriesWithRetry(url)
   remoteRegistryCache.set(url, {
     entries,
     expiresAt: Date.now() + REMOTE_REGISTRY_CACHE_TTL_MS,
   })
-
-  return filterEntriesByFilesRequirement(entries, requireFiles)
+  return entries
 }
 
-async function fetchRemoteRegistryEntriesWithRetry(url: string): Promise<RegistryEntry[]> {
+async function fetchRemoteRegistryEntriesWithRetry(url: string): Promise<RemoteRegistryEntry[]> {
   let attempt = 0
   let lastError: RegistryFetchError | null = null
 
@@ -221,44 +278,19 @@ async function fetchRemoteRegistryEntriesWithRetry(url: string): Promise<Registr
   })
 }
 
-async function fetchRemoteRegistryEntriesOnce(url: string): Promise<RegistryEntry[]> {
-  const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), REMOTE_REGISTRY_TIMEOUT_MS)
-
+async function fetchRemoteRegistryEntriesOnce(url: string): Promise<RemoteRegistryEntry[]> {
+  const rawPayload = await fetchRemoteTextOnce(url, 'application/json')
+  let payload: unknown
   try {
-    const response = await fetch(url, {
-      headers: {
-        accept: 'application/json',
-      },
-      signal: controller.signal,
-    })
-
-    if (!response.ok) {
-      throw new RegistryFetchError(`Failed to fetch registry from ${url}: ${response.status} ${response.statusText}`, {
-        statusCode: response.status,
-        retryable: isRetryableStatus(response.status),
-      })
-    }
-
-    const payload = (await response.json()) as unknown
-    const entries = unwrapRemoteEntries(payload)
-    const normalized = entries
-      .map(entry => normalizeRemoteEntry(entry, false))
-      .filter((entry): entry is RegistryEntry => entry !== null)
-
-    if (normalized.length === 0) {
-      throw new RegistryFetchError('Remote registry payload did not contain valid entries.')
-    }
-
-    return normalized
-  } catch (error) {
-    throw toRegistryFetchError(url, error)
-  } finally {
-    clearTimeout(timeoutId)
+    payload = JSON.parse(rawPayload) as unknown
+  } catch {
+    throw new SyntaxError(`Registry response from ${url} is not valid JSON.`)
   }
+
+  return unwrapRemoteEntries(payload)
 }
 
-function resolveRegistryUrl(source: string): string {
+function resolveRegistryUrls(source: string): string[] {
   let parsed: URL
   try {
     parsed = new URL(source)
@@ -267,11 +299,18 @@ function resolveRegistryUrl(source: string): string {
   }
 
   if (parsed.pathname.endsWith('.json')) {
-    return parsed.toString()
+    return [parsed.toString()]
   }
 
   const baseWithSlash = parsed.toString().endsWith('/') ? parsed.toString() : `${parsed.toString()}/`
-  return new URL('index.json', baseWithSlash).toString()
+  const indexUrl = new URL('index.json', baseWithSlash).toString()
+  const registryUrl = new URL('registry.json', baseWithSlash).toString()
+
+  if (indexUrl === registryUrl) {
+    return [indexUrl]
+  }
+
+  return [indexUrl, registryUrl]
 }
 
 function unwrapRemoteEntries(payload: unknown): RemoteRegistryEntry[] {
@@ -293,7 +332,21 @@ function unwrapRemoteEntries(payload: unknown): RemoteRegistryEntry[] {
   throw new Error('Remote registry payload must provide an "entries" or "items" array.')
 }
 
-function normalizeRemoteEntry(entry: RemoteRegistryEntry, requireFiles: boolean): RegistryEntry | null {
+async function normalizeRemoteEntries(
+  entries: RemoteRegistryEntry[],
+  options: NormalizeRemoteEntryOptions,
+): Promise<RegistryEntry[]> {
+  const normalized = await mapWithConcurrency(entries, REMOTE_REGISTRY_FETCH_CONCURRENCY, entry => {
+    return normalizeRemoteEntry(entry, options)
+  })
+
+  return normalized.filter((entry): entry is RegistryEntry => entry !== null)
+}
+
+async function normalizeRemoteEntry(
+  entry: RemoteRegistryEntry,
+  options: NormalizeRemoteEntryOptions,
+): Promise<RegistryEntry | null> {
   if (!entry || typeof entry !== 'object') {
     return null
   }
@@ -305,33 +358,45 @@ function normalizeRemoteEntry(entry: RemoteRegistryEntry, requireFiles: boolean)
     return null
   }
 
-  const files = normalizeRemoteFiles(entry.files)
-  if (requireFiles && files.length === 0) {
+  const files = await normalizeRemoteFiles(entry.files, type, options)
+  if (options.requireFiles && files.length === 0) {
     return null
   }
+
+  const dependencies = mergeStringArrays(entry.dependencies, entry.devDependencies)
 
   return {
     name,
     type,
     version: normalizeString(entry.version) ?? '0.0.0',
     description: normalizeString(entry.description) ?? '',
-    dependencies: normalizeStringArray(entry.dependencies),
+    dependencies,
     registryDependencies: normalizeStringArray(entry.registryDependencies),
     files,
   }
 }
 
-function normalizeRemoteFiles(value: unknown): RegistryTemplateFile[] {
-  if (!Array.isArray(value)) {
+async function normalizeRemoteFiles(
+  value: unknown,
+  entryType: RegistryEntryType,
+  options: NormalizeRemoteEntryOptions,
+): Promise<RegistryTemplateFile[]> {
+  if (!options.requireFiles || !Array.isArray(value)) {
     return []
   }
 
-  return value
-    .map(file => normalizeRemoteFile(file))
-    .filter((file): file is RegistryTemplateFile => file !== null)
+  const files = await mapWithConcurrency(value, REMOTE_REGISTRY_FETCH_CONCURRENCY, file => {
+    return normalizeRemoteFile(file, entryType, options.registryUrl)
+  })
+
+  return files.filter((file): file is RegistryTemplateFile => file !== null)
 }
 
-function normalizeRemoteFile(value: unknown): RegistryTemplateFile | null {
+async function normalizeRemoteFile(
+  value: unknown,
+  entryType: RegistryEntryType,
+  registryUrl: string,
+): Promise<RegistryTemplateFile | null> {
   if (!value || typeof value !== 'object') {
     return null
   }
@@ -341,15 +406,129 @@ function normalizeRemoteFile(value: unknown): RegistryTemplateFile | null {
     content?: unknown
   }
 
-  const path = normalizeString(file.path)
-  if (!path || typeof file.content !== 'string') {
+  const sourcePath = normalizeString(file.path)
+  if (!sourcePath) {
     return null
   }
 
-  const content = file.content
+  const targetPath = normalizeRemoteFilePath(sourcePath, entryType)
+  const content =
+    typeof file.content === 'string' ? file.content : await readRemoteRegistryFile(sourcePath, registryUrl)
+
   return {
-    path,
+    path: targetPath,
     content: () => content,
+  }
+}
+
+function normalizeRemoteFilePath(sourcePath: string, entryType: RegistryEntryType): string {
+  const normalized = sourcePath.replaceAll('\\', '/')
+  if (normalized.includes('{{')) {
+    return normalized
+  }
+
+  const mappings: Array<{ sourcePrefix: string; targetPrefix: string }> = [
+    { sourcePrefix: 'src/lib/registry/ui/', targetPrefix: '{{componentsDir}}/' },
+    { sourcePrefix: 'src/lib/registry/blocks/', targetPrefix: '{{blocksDir}}/' },
+    { sourcePrefix: 'src/lib/registry/themes/', targetPrefix: '{{themesDir}}/' },
+    { sourcePrefix: 'src/lib/registry/styles/', targetPrefix: '{{themesDir}}/' },
+    { sourcePrefix: 'src/lib/registry/lib/', targetPrefix: '{{libDir}}/' },
+    { sourcePrefix: 'src/lib/registry/hooks/', targetPrefix: '{{libDir}}/hooks/' },
+  ]
+
+  for (const mapping of mappings) {
+    if (normalized.startsWith(mapping.sourcePrefix)) {
+      return `${mapping.targetPrefix}${normalized.slice(mapping.sourcePrefix.length)}`
+    }
+  }
+
+  if (entryType === 'block' && normalized.startsWith('blocks/')) {
+    return `{{blocksDir}}/${normalized.slice('blocks/'.length)}`
+  }
+
+  return normalized
+}
+
+async function readRemoteRegistryFile(sourcePath: string, registryUrl: string): Promise<string> {
+  const fileUrl = resolveRemoteFileUrl(sourcePath, registryUrl)
+  const cached = remoteRegistryFileCache.get(fileUrl)
+  const now = Date.now()
+  if (cached && cached.expiresAt > now) {
+    return cached.content
+  }
+
+  const content = await fetchRemoteFileContentWithRetry(fileUrl)
+  remoteRegistryFileCache.set(fileUrl, {
+    content,
+    expiresAt: Date.now() + REMOTE_REGISTRY_CACHE_TTL_MS,
+  })
+  return content
+}
+
+function resolveRemoteFileUrl(sourcePath: string, registryUrl: string): string {
+  try {
+    return new URL(sourcePath).toString()
+  } catch {
+    return new URL(sourcePath, registryUrl).toString()
+  }
+}
+
+async function fetchRemoteFileContentWithRetry(url: string): Promise<string> {
+  let attempt = 0
+  let lastError: RegistryFetchError | null = null
+
+  while (attempt <= REMOTE_REGISTRY_RETRIES) {
+    try {
+      return await fetchRemoteTextOnce(url, 'text/plain,*/*;q=0.9')
+    } catch (error) {
+      const wrapped = toRegistryFetchError(url, error)
+      lastError = wrapped
+
+      const canRetry = wrapped.retryable && attempt < REMOTE_REGISTRY_RETRIES
+      if (!canRetry) {
+        throw wrapped
+      }
+
+      const delayMs = REMOTE_REGISTRY_RETRY_DELAY_MS * (attempt + 1)
+      await wait(delayMs)
+      attempt += 1
+    }
+  }
+
+  throw new RegistryFetchError(`Failed to fetch file from ${url}`, {
+    cause: lastError,
+  })
+}
+
+async function fetchRemoteTextOnce(url: string, accept: string): Promise<string> {
+  const parsed = new URL(url)
+  if (parsed.protocol === 'file:') {
+    return readFile(fileURLToPath(parsed), 'utf8')
+  }
+
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), REMOTE_REGISTRY_TIMEOUT_MS)
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        accept,
+      },
+      signal: controller.signal,
+    })
+
+    if (!response.ok) {
+      throw new RegistryFetchError(`Failed to fetch registry from ${url}: ${response.status} ${response.statusText}`, {
+        statusCode: response.status,
+        retryable: isRetryableStatus(response.status),
+      })
+    }
+
+    return await response.text()
+  } catch (error) {
+    throw toRegistryFetchError(url, error)
+  } finally {
+    clearTimeout(timeoutId)
   }
 }
 
@@ -359,13 +538,21 @@ function normalizeRemoteEntryType(value: unknown): RegistryEntryType | null {
   }
 
   const normalized = value.toLowerCase()
-  if (normalized === 'ui-component' || normalized === 'component' || normalized === 'registry:ui') {
+  if (
+    normalized === 'ui-component' ||
+    normalized === 'component' ||
+    normalized === 'registry:ui' ||
+    normalized === 'registry:hook' ||
+    normalized === 'registry:lib' ||
+    normalized === 'hook' ||
+    normalized === 'lib'
+  ) {
     return 'ui-component'
   }
   if (normalized === 'block' || normalized === 'registry:block') {
     return 'block'
   }
-  if (normalized === 'theme' || normalized === 'registry:theme' || normalized === 'style') {
+  if (normalized === 'theme' || normalized === 'registry:theme' || normalized === 'style' || normalized === 'registry:style') {
     return 'theme'
   }
 
@@ -391,12 +578,21 @@ function normalizeStringArray(value: unknown): string[] {
     .filter((item): item is string => item !== null)
 }
 
-function filterEntriesByFilesRequirement(entries: RegistryEntry[], requireFiles: boolean): RegistryEntry[] {
-  if (!requireFiles) {
-    return entries
+function mergeStringArrays(...values: unknown[]): string[] {
+  const seen = new Set<string>()
+  const merged: string[] = []
+
+  for (const value of values) {
+    for (const item of normalizeStringArray(value)) {
+      if (seen.has(item)) {
+        continue
+      }
+      seen.add(item)
+      merged.push(item)
+    }
   }
 
-  return entries.filter(entry => entry.files.length > 0)
+  return merged
 }
 
 function toRegistryFetchError(url: string, error: unknown): RegistryFetchError {
@@ -417,6 +613,12 @@ function toRegistryFetchError(url: string, error: unknown): RegistryFetchError {
     })
   }
 
+  if (isFileNotFoundError(error)) {
+    return new RegistryFetchError(`File not found for registry source ${url}.`, {
+      cause: error,
+    })
+  }
+
   return new RegistryFetchError(`Failed to fetch registry from ${url}`, {
     cause: error,
     retryable: isLikelyNetworkError(error),
@@ -431,10 +633,48 @@ function isLikelyNetworkError(error: unknown): boolean {
   return error instanceof TypeError
 }
 
+function isFileNotFoundError(error: unknown): error is NodeJS.ErrnoException {
+  return (
+    error !== null &&
+    typeof error === 'object' &&
+    'code' in error &&
+    (error as { code?: unknown }).code === 'ENOENT'
+  )
+}
+
 function wait(delayMs: number): Promise<void> {
   return new Promise(resolve => {
     setTimeout(resolve, delayMs)
   })
+}
+
+async function mapWithConcurrency<T, TResult>(
+  items: T[],
+  concurrency: number,
+  mapper: (item: T) => Promise<TResult>,
+): Promise<TResult[]> {
+  if (items.length === 0) {
+    return []
+  }
+
+  const workers = Math.max(1, Math.min(concurrency, items.length))
+  const results = new Array<TResult>(items.length)
+  let index = 0
+
+  await Promise.all(
+    Array.from({ length: workers }, async () => {
+      while (true) {
+        const current = index
+        index += 1
+        if (current >= items.length) {
+          return
+        }
+        results[current] = await mapper(items[current])
+      }
+    }),
+  )
+
+  return results
 }
 
 class RegistryFetchError extends Error {

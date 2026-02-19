@@ -4,10 +4,12 @@ import { createServer, type IncomingMessage, type ServerResponse } from 'node:ht
 import type { AddressInfo } from 'node:net'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
+import { pathToFileURL } from 'node:url'
 
 import { afterEach, describe, expect, it } from 'vitest'
 
 import { runAdd } from '../src/commands/add'
+import { runBlocksInstall } from '../src/commands/blocks'
 import { runDiff } from '../src/commands/diff'
 import { runListFromRegistry } from '../src/commands/list'
 import { runSearchFromRegistry } from '../src/commands/search'
@@ -240,6 +242,127 @@ describe('remote registry support', () => {
     })
     expect(forcedUpdate.updated).toContain('remote-button')
     expect(await readFile(buttonPath, 'utf8')).toContain('RemoteButton')
+  })
+
+  it('resolves registry file references for component and block installs', async () => {
+    const { registryUrl } = await startCustomRegistryServer(servers, (request, response) => {
+      if (request.url === '/registry/index.json') {
+        response.writeHead(200, { 'content-type': 'application/json' })
+        response.end(
+          JSON.stringify([
+            {
+              name: 'utils',
+              type: 'registry:lib',
+              files: [
+                {
+                  path: 'src/lib/registry/lib/utils.ts',
+                },
+              ],
+            },
+            {
+              name: 'ref-accordion',
+              type: 'registry:ui',
+              registryDependencies: ['utils'],
+              files: [
+                {
+                  path: 'src/lib/registry/ui/ref-accordion/index.ts',
+                },
+              ],
+            },
+            {
+              name: 'ref-dashboard',
+              type: 'registry:block',
+              registryDependencies: ['ref-accordion'],
+              files: [
+                {
+                  path: 'src/lib/registry/blocks/ref-dashboard.svelte',
+                },
+              ],
+            },
+          ]),
+        )
+        return
+      }
+
+      if (request.url === '/registry/src/lib/registry/lib/utils.ts') {
+        response.writeHead(200, { 'content-type': 'text/plain' })
+        response.end("export const cn = (...classes: string[]) => classes.filter(Boolean).join(' ')\\n")
+        return
+      }
+
+      if (request.url === '/registry/src/lib/registry/ui/ref-accordion/index.ts') {
+        response.writeHead(200, { 'content-type': 'text/plain' })
+        response.end("export const RefAccordion = 'ok'\\n")
+        return
+      }
+
+      if (request.url === '/registry/src/lib/registry/blocks/ref-dashboard.svelte') {
+        response.writeHead(200, { 'content-type': 'text/plain' })
+        response.end('<section>dashboard</section>\\n')
+        return
+      }
+
+      response.writeHead(404)
+      response.end('not found')
+    })
+
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-remote-file-refs-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: registryUrl,
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    const addResult = await runAdd({ cwd, components: ['ref-accordion'], skipInstall: true })
+    expect(addResult.added).toContain('utils')
+    expect(addResult.added).toContain('ref-accordion')
+
+    const utilsPath = path.join(cwd, 'src/lib/utils.ts')
+    const accordionPath = path.join(cwd, 'src/components/ui/ref-accordion/index.ts')
+    expect(await readFile(utilsPath, 'utf8')).toContain('export const cn')
+    expect(await readFile(accordionPath, 'utf8')).toContain("export const RefAccordion = 'ok'")
+
+    const blockResult = await runBlocksInstall({ cwd, blocks: ['ref-dashboard'], skipInstall: true })
+    expect(blockResult.added).toContain('ref-dashboard')
+
+    const blockPath = path.join(cwd, 'src/components/blocks/ref-dashboard.svelte')
+    expect(await readFile(blockPath, 'utf8')).toContain('<section>dashboard</section>')
+  })
+
+  it('loads the full shadcn-svelte docs registry from file URL', async () => {
+    const registryUrl = pathToFileURL(path.resolve('shadcn-svelte/docs/registry.json')).toString()
+
+    const output = await runListFromRegistry({
+      registry: registryUrl,
+      type: 'all',
+      json: true,
+    })
+    const parsed = JSON.parse(output) as Array<{ kind: string; name: string }>
+
+    expect(parsed).toHaveLength(206)
+    expect(parsed.some(entry => entry.name === 'accordion' && entry.kind === 'component')).toBe(true)
+    expect(parsed.some(entry => entry.name === 'calendar-01' && entry.kind === 'block')).toBe(true)
+    expect(parsed.some(entry => entry.name === 'init' && entry.kind === 'theme')).toBe(true)
+    expect(parsed.some(entry => entry.name === 'is-mobile' && entry.kind === 'component')).toBe(true)
+    expect(parsed.some(entry => entry.name === 'utils' && entry.kind === 'component')).toBe(true)
   })
 })
 
