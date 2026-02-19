@@ -216,6 +216,17 @@ Running `fictcn init` creates a `fictcn.json` at your project root:
 For remote registries, each entry in `index.json` should include:
 `name`, `type`, `version`, `dependencies`, `registryDependencies`, and `files` (`[{ path, content }]`).
 
+Remote registry requests include:
+- retry on transient failures (default `2` retries)
+- request timeout (default `10000ms`)
+- short-lived in-process cache (default `10000ms`)
+
+Optional environment variables:
+- `FICTCN_REGISTRY_RETRIES`
+- `FICTCN_REGISTRY_TIMEOUT_MS`
+- `FICTCN_REGISTRY_RETRY_DELAY_MS`
+- `FICTCN_REGISTRY_CACHE_TTL_MS`
+
 ## Lock File
 
 `fictcn.lock.json` is generated automatically and tracks every installed entry with:
