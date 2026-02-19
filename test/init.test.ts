@@ -2,7 +2,7 @@ import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { runInit } from '../src/commands/init'
 import { CONFIG_FILE } from '../src/core/constants'
@@ -174,5 +174,102 @@ describe('runInit', () => {
     expect(tailwindConfig).toContain('module.exports = config')
     expect(tailwindConfig).toContain("require('tailwindcss-animate')")
     expect(tailwindConfig).not.toContain("import animate from 'tailwindcss-animate'")
+  })
+
+  it('creates fallback tsconfig when tsconfig.json is missing', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-init-no-tsconfig-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+
+    await runInit({ cwd, skipInstall: true })
+
+    const tsconfig = await readFile(path.join(cwd, 'tsconfig.json'), 'utf8')
+    expect(tsconfig).toContain('"baseUrl": "."')
+    expect(tsconfig).toContain('"@/*"')
+    expect(tsconfig).toContain('"src/*"')
+  })
+
+  it('warns when tsconfig cannot be patched automatically', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-init-tsconfig-warn-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{ invalid json }\n', 'utf8')
+
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    await runInit({ cwd, skipInstall: true })
+    const logs = logSpy.mock.calls.flat().join('\n')
+    logSpy.mockRestore()
+
+    expect(logs).toContain('Warning: could not patch tsconfig.json automatically.')
+  })
+
+  it('falls back to CJS tailwind format for unknown extension when package.json is unreadable', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-init-tailwind-unknown-ext-'))
+    await writeFile(path.join(cwd, 'package.json'), '{\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, CONFIG_FILE),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.custom',
+          registry: 'builtin',
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    await runInit({ cwd, skipInstall: true })
+
+    const tailwindConfig = await readFile(path.join(cwd, 'tailwind.custom'), 'utf8')
+    expect(tailwindConfig).toContain('module.exports = config')
+    expect(tailwindConfig).toContain("require('tailwindcss-animate')")
+    expect(tailwindConfig).not.toContain("import animate from 'tailwindcss-animate'")
+  })
+
+  it('infers ESM patching when existing tailwind config has no explicit module syntax', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-init-tailwind-format-fallback-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox","type":"module"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, CONFIG_FILE),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: 'builtin',
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+    await writeFile(
+      path.join(cwd, 'tailwind.config.ts'),
+      "const config = { content: ['./src/**/*.{ts,tsx}'], theme: { extend: {} }, plugins: [] }\n",
+      'utf8',
+    )
+
+    await runInit({ cwd, skipInstall: true })
+
+    const tailwindConfig = await readFile(path.join(cwd, 'tailwind.config.ts'), 'utf8')
+    expect(tailwindConfig).toContain("import animate from 'tailwindcss-animate'")
+    expect(tailwindConfig).toContain('plugins: [animate]')
   })
 })

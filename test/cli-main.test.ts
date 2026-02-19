@@ -56,6 +56,22 @@ describe('CLI main command routing', () => {
     })
   })
 
+  it('routes init and update command flags', async () => {
+    await main(['node', 'fictcn', 'init', '--skip-install', '--dry-run'])
+    expect(mocked.runInit).toHaveBeenCalledWith({
+      skipInstall: true,
+      dryRun: true,
+    })
+
+    await main(['node', 'fictcn', 'update', 'button', '--force', '--skip-install', '--dry-run'])
+    expect(mocked.runUpdate).toHaveBeenCalledWith({
+      components: ['button'],
+      force: true,
+      skipInstall: true,
+      dryRun: true,
+    })
+  })
+
   it('routes blocks add and theme apply commands', async () => {
     await main(['node', 'fictcn', 'blocks', 'add', 'auth/login-form', '--overwrite', '--skip-install', '--dry-run'])
     expect(mocked.runBlocksInstall).toHaveBeenCalledWith({
@@ -90,6 +106,19 @@ describe('CLI main command routing', () => {
 
     expect(mocked.runDiff).toHaveBeenCalledWith({ components: ['button'] })
     expect(logSpy).toHaveBeenCalledWith('No registry drift detected.')
+    logSpy.mockRestore()
+  })
+
+  it('prints diff patches when drift exists', async () => {
+    mocked.runDiff.mockResolvedValue({
+      changed: ['button'],
+      patches: ['@@ -1 +1 @@\n-old\n+new'],
+    })
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+
+    await main(['node', 'fictcn', 'diff', 'button'])
+
+    expect(logSpy).toHaveBeenCalledWith('@@ -1 +1 @@\n-old\n+new')
     logSpy.mockRestore()
   })
 
@@ -135,6 +164,22 @@ describe('CLI main command routing', () => {
       registry: 'https://example.com/registry',
     })
     expect(logSpy).toHaveBeenCalledWith('[{"kind":"component","name":"button"}]')
+    logSpy.mockRestore()
+  })
+
+  it('routes blocks list and theme list through builtin listing', async () => {
+    mocked.runList
+      .mockReturnValueOnce('block-list-output')
+      .mockReturnValueOnce('theme-list-output')
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+
+    await main(['node', 'fictcn', 'blocks', 'list'])
+    await main(['node', 'fictcn', 'theme', 'list'])
+
+    expect(mocked.runList).toHaveBeenNthCalledWith(1, { type: 'blocks' })
+    expect(mocked.runList).toHaveBeenNthCalledWith(2, { type: 'themes' })
+    expect(logSpy).toHaveBeenNthCalledWith(1, 'block-list-output')
+    expect(logSpy).toHaveBeenNthCalledWith(2, 'theme-list-output')
     logSpy.mockRestore()
   })
 })
