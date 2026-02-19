@@ -250,7 +250,9 @@ Commit this file to version control so your team stays in sync.
 
 The bundled registry now includes **206** entries in total:
 - Core Fict-native entries: 35 components + 8 blocks + 5 themes
-- Expanded Fict-native entries: additional scaffolds for broader coverage in the built-in catalog
+- Expanded Fict-native entries: 25 compatibility components + 132 blocks + 1 theme bootstrap template
+
+Expanded entries are now generated as usable Fict templates (with meaningful imports, dependencies, and starter UI), rather than empty placeholder shells.
 
 ### Core Components (35)
 
