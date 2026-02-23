@@ -145,34 +145,44 @@ export async function runDoctor(cwd = process.cwd()): Promise<DoctorResult> {
 
   const packageJsonPath = path.resolve(projectRoot, 'package.json')
   if (await exists(packageJsonPath)) {
-    const packageJson = await readJsonFile<{
-      dependencies?: Record<string, string>
-      devDependencies?: Record<string, string>
-    }>(packageJsonPath)
+    try {
+      const packageJson = await readJsonFile<{
+        dependencies?: Record<string, string>
+        devDependencies?: Record<string, string>
+      }>(packageJsonPath)
 
-    const dependencies = {
-      ...(packageJson.dependencies ?? {}),
-      ...(packageJson.devDependencies ?? {}),
-    }
-
-    for (const dependency of RUNTIME_DEPENDENCIES) {
-      if (!dependencies[dependency]) {
-        issues.push({
-          level: 'error',
-          code: 'missing-dependency',
-          message: `Missing dependency ${dependency}.`,
-        })
+      const dependencies = {
+        ...(packageJson.dependencies ?? {}),
+        ...(packageJson.devDependencies ?? {}),
       }
-    }
 
-    for (const dependency of DEV_DEPENDENCIES) {
-      if (!dependencies[dependency]) {
-        issues.push({
-          level: 'warning',
-          code: 'missing-dev-dependency',
-          message: `Missing development dependency ${dependency}.`,
-        })
+      for (const dependency of RUNTIME_DEPENDENCIES) {
+        if (!dependencies[dependency]) {
+          issues.push({
+            level: 'error',
+            code: 'missing-dependency',
+            message: `Missing dependency ${dependency}.`,
+          })
+        }
       }
+
+      for (const dependency of DEV_DEPENDENCIES) {
+        if (!dependencies[dependency]) {
+          issues.push({
+            level: 'warning',
+            code: 'missing-dev-dependency',
+            message: `Missing development dependency ${dependency}.`,
+          })
+        }
+      }
+    } catch (error) {
+      issues.push({
+        level: 'warning',
+        code: 'package-json-parse',
+        message: `Could not parse package.json to validate dependencies: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      })
     }
   }
 

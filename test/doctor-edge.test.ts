@@ -152,6 +152,14 @@ describe('runDoctor edge coverage', () => {
     expect(result.issues.some(issue => issue.code === 'tsconfig-parse')).toBe(true)
   })
 
+  it('reports package-json-parse warning for invalid package.json payloads', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-doctor-package-json-invalid-'))
+    await writeFile(path.join(cwd, 'package.json'), '{ invalid json }\n', 'utf8')
+
+    const result = await runDoctor(cwd)
+    expect(result.issues.some(issue => issue.code === 'package-json-parse' && issue.level === 'warning')).toBe(true)
+  })
+
   it('reports alias-paths when tsconfig paths are present but missing the expected alias', async () => {
     const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-doctor-alias-missing-'))
     await mkdir(path.join(cwd, 'src/styles'), { recursive: true })
