@@ -1,4 +1,5 @@
 import { Command, Option } from 'commander'
+import packageJson from '../../package.json'
 
 import { runAdd } from '../commands/add'
 import { runBlocksInstall } from '../commands/blocks'
@@ -17,7 +18,7 @@ export async function main(argv: string[]): Promise<void> {
   program
     .name('fictcn')
     .description('Fict shadcn-style code distribution CLI')
-    .version('0.1.0')
+    .version(packageJson.version)
 
   program
     .command('init')
