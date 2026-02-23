@@ -4,7 +4,7 @@ import path from 'node:path'
 import colors from 'picocolors'
 
 import { loadConfig, loadLock, saveLock } from '../core/config'
-import { hashContent, readTextIfExists, upsertTextFile } from '../core/io'
+import { hashContent, readTextIfExists, resolvePathWithinRoot, upsertTextFile } from '../core/io'
 import { findProjectRoot } from '../core/project'
 import { ensureTrailingNewline } from '../core/text'
 import type { FictcnLock, LockEntry } from '../core/types'
@@ -70,7 +70,7 @@ export async function runRemove(options: RemoveOptions): Promise<RemoveResult> {
 
     if (!dryRun) {
       for (const relativePath of Object.keys(target.lockEntry.files)) {
-        await rm(path.resolve(projectRoot, relativePath), { force: true })
+        await rm(resolvePathWithinRoot(projectRoot, relativePath), { force: true })
       }
 
       if (target.kind === 'theme') {
@@ -153,7 +153,7 @@ async function findConflictPath(
   }
 
   for (const [relativePath, expectedHash] of Object.entries(lockEntry.files)) {
-    const current = await readTextIfExists(path.resolve(projectRoot, relativePath))
+    const current = await readTextIfExists(resolvePathWithinRoot(projectRoot, relativePath))
     if (current === null) {
       continue
     }

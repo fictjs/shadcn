@@ -27,8 +27,20 @@ export async function readTextIfExists(targetPath: string): Promise<string | nul
   return readFile(targetPath, 'utf8')
 }
 
+export function resolvePathWithinRoot(rootDir: string, targetPath: string): string {
+  const absoluteRoot = path.resolve(rootDir)
+  const absolutePath = path.resolve(absoluteRoot, targetPath)
+  const relativeToRoot = path.relative(absoluteRoot, absolutePath)
+
+  if (relativeToRoot === '' || (!relativeToRoot.startsWith('..') && !path.isAbsolute(relativeToRoot))) {
+    return absolutePath
+  }
+
+  throw new Error(`Resolved path escapes project root: ${targetPath}`)
+}
+
 export async function upsertTextFile(rootDir: string, relativePath: string, content: string): Promise<WriteFileResult> {
-  const absolutePath = path.resolve(rootDir, relativePath)
+  const absolutePath = resolvePathWithinRoot(rootDir, relativePath)
   await ensureDir(path.dirname(absolutePath))
 
   const current = await readTextIfExists(absolutePath)

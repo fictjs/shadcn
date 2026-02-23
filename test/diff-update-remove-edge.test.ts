@@ -1,4 +1,4 @@
-import { chmod, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises'
+import { chmod, mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -69,6 +69,49 @@ describe('diff/update/remove edge behavior', () => {
     })
     expect(result.removed).toContain('button')
     expect(await fileExists(buttonPath)).toBe(false)
+  })
+
+  it('rejects lock file paths that escape project root during remove', async () => {
+    const sandboxRoot = await mkdtemp(path.join(tmpdir(), 'fictcn-remove-path-escape-'))
+    const cwd = path.join(sandboxRoot, 'project')
+    await rm(cwd, { recursive: true, force: true })
+    await mkdir(cwd, { recursive: true })
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await runInit({ cwd, skipInstall: true })
+
+    const outsidePath = path.join(sandboxRoot, 'outside.txt')
+    await writeFile(outsidePath, 'do-not-delete\n', 'utf8')
+    await writeFile(
+      path.join(cwd, LOCK_FILE),
+      `${JSON.stringify(
+        {
+          version: 1,
+          registry: 'builtin',
+          components: {
+            'escape-entry': {
+              name: 'escape-entry',
+              version: '1.0.0',
+              source: 'builtin',
+              installedAt: new Date().toISOString(),
+              files: {
+                '../outside.txt': 'ignored',
+              },
+            },
+          },
+          blocks: {},
+          themes: {},
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    await expect(runRemove({ cwd, entries: ['escape-entry'], force: true })).rejects.toThrow(
+      'Resolved path escapes project root',
+    )
+    expect(await readFile(outsidePath, 'utf8')).toBe('do-not-delete\n')
   })
 
   it('allows removal when tracked files are already missing and globals.css is absent', async () => {

@@ -1,9 +1,7 @@
-import path from 'node:path'
-
 import colors from 'picocolors'
 
 import { ensureConfigFile, loadConfig, loadLock, saveLock } from '../core/config'
-import { hashContent, readTextIfExists, upsertTextFile } from '../core/io'
+import { hashContent, readTextIfExists, resolvePathWithinRoot, upsertTextFile } from '../core/io'
 import { ensureTrailingNewline } from '../core/text'
 import { detectPackageManager, findProjectRoot, runPackageManagerInstall } from '../core/project'
 import type { AddResult, LockEntry } from '../core/types'
@@ -61,7 +59,7 @@ export async function runAdd(options: AddOptions): Promise<AddResult> {
     const conflictPaths: string[] = []
     if (!options.overwrite) {
       for (const file of plannedFiles) {
-        const absolutePath = path.resolve(projectRoot, file.relativePath)
+        const absolutePath = resolvePathWithinRoot(projectRoot, file.relativePath)
         const existing = await readTextIfExists(absolutePath)
         if (existing !== null && existing !== file.content) {
           conflictPaths.push(file.relativePath)

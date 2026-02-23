@@ -1,9 +1,7 @@
-import path from 'node:path'
-
 import colors from 'picocolors'
 
 import { loadConfig, loadLock, saveLock } from '../core/config'
-import { hashContent, readTextIfExists, upsertTextFile } from '../core/io'
+import { hashContent, readTextIfExists, resolvePathWithinRoot, upsertTextFile } from '../core/io'
 import { detectPackageManager, findProjectRoot, runPackageManagerInstall } from '../core/project'
 import type { FictcnLock, LockEntry } from '../core/types'
 import {
@@ -76,7 +74,7 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
     let conflict: ConflictDetail | null = null
 
     for (const rendered of renderedFiles) {
-      const absolutePath = path.resolve(projectRoot, rendered.relativePath)
+      const absolutePath = resolvePathWithinRoot(projectRoot, rendered.relativePath)
       const current = await readTextIfExists(absolutePath)
       const lockedHash = lockEntry?.files[rendered.relativePath]
 
