@@ -61,8 +61,6 @@ export async function runBlocksInstall(options: BlockInstallOptions): Promise<Ad
   const skipped: string[] = []
 
   for (const entry of entries) {
-    entry.dependencies.forEach(dependency => dependencySet.add(dependency))
-
     const plannedFiles = entry.files.map(file => {
       const relativePath = resolveTemplatePath(file.path, config)
       const content = ensureTrailingNewline(file.content(context))
@@ -90,6 +88,8 @@ export async function runBlocksInstall(options: BlockInstallOptions): Promise<Ad
       }
       continue
     }
+
+    entry.dependencies.forEach(dependency => dependencySet.add(dependency))
 
     const fileHashes: Record<string, string> = {}
     for (const file of plannedFiles) {

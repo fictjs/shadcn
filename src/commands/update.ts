@@ -65,8 +65,6 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
   const skipped = new Set<string>()
 
   for (const target of targets) {
-    target.entry.dependencies.forEach(dependency => dependencies.add(dependency))
-
     const renderedFiles = renderRegistryEntryFiles(target.entry, config)
     const lockMap = lockMapFor(lock, target.kind)
     const lockEntry = lockMap[target.entry.name]
@@ -104,6 +102,8 @@ export async function runUpdate(options: UpdateOptions = {}): Promise<UpdateResu
       console.log(colors.yellow(createConflictMessage(target.entry.name, conflict)))
       continue
     }
+
+    target.entry.dependencies.forEach(dependency => dependencies.add(dependency))
 
     for (const rendered of renderedFiles) {
       if (!dryRun) {

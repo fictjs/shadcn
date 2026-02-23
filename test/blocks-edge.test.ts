@@ -1,4 +1,4 @@
-import { chmod, mkdtemp, readFile, writeFile } from 'node:fs/promises'
+import { chmod, mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -116,6 +116,76 @@ describe('runBlocksInstall edge cases', () => {
 
     expect(result.added).toContain('remote-dep-block')
     expect(await readFile(argsPath, 'utf8')).toBe('install --save @tanstack/table-core zod')
+  })
+
+  unixOnlyIt('does not install dependencies when block install is skipped due to conflicts', async () => {
+    const registryRoot = await mkdtemp(path.join(tmpdir(), 'fictcn-blocks-edge-registry-skip-install-'))
+    const registryIndex = path.join(registryRoot, 'index.json')
+    await writeFile(
+      registryIndex,
+      `${JSON.stringify(
+        [
+          {
+            name: 'remote-skip-block',
+            type: 'block',
+            version: '1.0.0',
+            dependencies: ['zod'],
+            registryDependencies: [],
+            files: [
+              {
+                path: '{{blocksDir}}/remote-skip-block.tsx',
+                content: 'export function RemoteSkipBlock() {\\n  return <div>remote</div>\\n}\\n',
+              },
+            ],
+          },
+        ],
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-blocks-edge-skip-install-project-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'package-lock.json'), '{}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: pathToFileURL(registryIndex).toString(),
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    const blockPath = path.join(cwd, 'src/components/blocks/remote-skip-block.tsx')
+    await mkdir(path.dirname(blockPath), { recursive: true })
+    await writeFile(blockPath, 'local conflict\n', 'utf8')
+
+    const argsPath = path.join(cwd, 'npm.args')
+    const fakeBinDir = await createFakePackageManagerBinary('npm', argsPath, 0)
+    process.env.PATH = `${fakeBinDir}${path.delimiter}${ORIGINAL_PATH}`
+
+    const result = await runBlocksInstall({
+      cwd,
+      blocks: ['remote-skip-block'],
+    })
+
+    expect(result.skipped).toContain('remote-skip-block')
+    await expect(readFile(argsPath, 'utf8')).rejects.toThrow()
   })
 })
 

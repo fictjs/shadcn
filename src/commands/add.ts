@@ -45,8 +45,6 @@ export async function runAdd(options: AddOptions): Promise<AddResult> {
   const skipped: string[] = []
 
   for (const entry of resolved) {
-    entry.dependencies.forEach(dependency => dependencySet.add(dependency))
-
     const plannedFiles = entry.files.map(file => {
       const relativePath = resolveTemplatePath(file.path, config)
       const content = ensureTrailingNewline(file.content(context))
@@ -75,6 +73,8 @@ export async function runAdd(options: AddOptions): Promise<AddResult> {
       }
       continue
     }
+
+    entry.dependencies.forEach(dependency => dependencySet.add(dependency))
 
     const fileHashes: Record<string, string> = {}
     for (const file of plannedFiles) {
