@@ -1,10 +1,8 @@
-import path from 'node:path'
-
 import colors from 'picocolors'
 
 import { runAdd } from './add'
 import { ensureConfigFile, loadConfig, loadLock, saveLock } from '../core/config'
-import { hashContent, readTextIfExists, upsertTextFile } from '../core/io'
+import { hashContent, readTextIfExists, resolvePathWithinRoot, upsertTextFile } from '../core/io'
 import { ensureTrailingNewline } from '../core/text'
 import { detectPackageManager, findProjectRoot, runPackageManagerInstall } from '../core/project'
 import type { AddResult, LockEntry } from '../core/types'
@@ -77,7 +75,7 @@ export async function runBlocksInstall(options: BlockInstallOptions): Promise<Ad
     const conflicts: string[] = []
     if (!options.overwrite) {
       for (const file of plannedFiles) {
-        const existing = await readTextIfExists(path.resolve(projectRoot, file.relativePath))
+        const existing = await readTextIfExists(resolvePathWithinRoot(projectRoot, file.relativePath))
         if (existing !== null && existing !== file.content) {
           conflicts.push(file.relativePath)
         }

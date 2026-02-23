@@ -1,10 +1,8 @@
-import path from 'node:path'
-
 import { createPatch } from 'diff'
 
 import { loadConfig, loadLock } from '../core/config'
 import type { FictcnLock } from '../core/types'
-import { readTextIfExists } from '../core/io'
+import { readTextIfExists, resolvePathWithinRoot } from '../core/io'
 import { findProjectRoot } from '../core/project'
 import {
   loadRegistryDataset,
@@ -57,7 +55,7 @@ export async function runDiff(options: DiffOptions = {}): Promise<DiffResult> {
     const renderedFiles = renderRegistryEntryFiles(target.entry, config)
 
     for (const rendered of renderedFiles) {
-      const absolutePath = path.resolve(projectRoot, rendered.relativePath)
+      const absolutePath = resolvePathWithinRoot(projectRoot, rendered.relativePath)
       const current = (await readTextIfExists(absolutePath)) ?? ''
       if (current === rendered.content) continue
 
