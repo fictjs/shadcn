@@ -1,4 +1,4 @@
-import { chmod, mkdtemp, readFile, writeFile } from 'node:fs/promises'
+import { chmod, mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -152,6 +152,76 @@ describe('runAdd edge cases', () => {
 
     expect(result.added).toContain('remote-dedupe-button')
     expect(await readFile(argsPath, 'utf8')).toBe('install --save zod zustand')
+  })
+
+  unixOnlyIt('does not install dependencies when entry is skipped due to conflicts', async () => {
+    const registryRoot = await mkdtemp(path.join(tmpdir(), 'fictcn-add-edge-registry-skip-install-'))
+    const registryPath = path.join(registryRoot, 'index.json')
+    await writeFile(
+      registryPath,
+      `${JSON.stringify(
+        [
+          {
+            name: 'remote-skip-button',
+            type: 'ui-component',
+            version: '1.0.0',
+            dependencies: ['zod'],
+            registryDependencies: [],
+            files: [
+              {
+                path: '{{componentsDir}}/remote-skip-button.tsx',
+                content: 'export function RemoteSkipButton() {\\n  return <button>remote</button>\\n}\\n',
+              },
+            ],
+          },
+        ],
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-add-edge-skip-install-project-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'package-lock.json'), '{}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: pathToFileURL(registryPath).toString(),
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    const targetPath = path.join(cwd, 'src/components/ui/remote-skip-button.tsx')
+    await mkdir(path.dirname(targetPath), { recursive: true })
+    await writeFile(targetPath, 'local conflict\n', 'utf8')
+
+    const argsPath = path.join(cwd, 'npm.args')
+    const fakeBinDir = await createFakePackageManagerBinary('npm', argsPath, 0)
+    process.env.PATH = `${fakeBinDir}${path.delimiter}${ORIGINAL_PATH}`
+
+    const result = await runAdd({
+      cwd,
+      components: ['remote-skip-button'],
+    })
+
+    expect(result.skipped).toContain('remote-skip-button')
+    await expect(readFile(argsPath, 'utf8')).rejects.toThrow()
   })
 })
 

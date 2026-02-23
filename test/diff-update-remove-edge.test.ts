@@ -218,6 +218,80 @@ describe('diff/update/remove edge behavior', () => {
       process.env.PATH = ORIGINAL_PATH
     }
   })
+
+  it('does not install dependencies when update is skipped due to local conflicts', async () => {
+    const registryRoot = await mkdtemp(path.join(tmpdir(), 'fictcn-update-skip-deps-registry-'))
+    const registryPath = path.join(registryRoot, 'index.json')
+    await writeFile(
+      registryPath,
+      `${JSON.stringify(
+        [
+          {
+            name: 'remote-update-skip-card',
+            type: 'ui-component',
+            version: '1.0.0',
+            dependencies: ['zod', '@tanstack/react-query'],
+            registryDependencies: [],
+            files: [
+              {
+                path: '{{componentsDir}}/remote-update-skip-card.tsx',
+                content: 'export function RemoteUpdateSkipCard() {\\n  return <div>card</div>\\n}\\n',
+              },
+            ],
+          },
+        ],
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-update-skip-deps-project-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'package-lock.json'), '{}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: pathToFileURL(registryPath).toString(),
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    await runAdd({
+      cwd,
+      components: ['remote-update-skip-card'],
+      skipInstall: true,
+    })
+
+    const componentPath = path.join(cwd, 'src/components/ui/remote-update-skip-card.tsx')
+    await writeFile(componentPath, 'local edits\n', 'utf8')
+
+    const argsPath = path.join(cwd, 'npm.args')
+    const fakeBinDir = await createFakePackageManagerBinary('npm', argsPath, 0)
+    process.env.PATH = `${fakeBinDir}${path.delimiter}${ORIGINAL_PATH}`
+    try {
+      const result = await runUpdate({ cwd, components: ['remote-update-skip-card'] })
+      expect(result.skipped).toContain('remote-update-skip-card')
+      await expect(readFile(argsPath, 'utf8')).rejects.toThrow()
+    } finally {
+      process.env.PATH = ORIGINAL_PATH
+    }
+  })
 })
 
 async function fileExists(targetPath: string): Promise<boolean> {
