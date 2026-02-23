@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises'
+import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { loadConfig } from '../core/config'
@@ -31,6 +32,8 @@ const REMOTE_REGISTRY_RETRIES = readPositiveIntEnv('FICTCN_REGISTRY_RETRIES', 2)
 const REMOTE_REGISTRY_RETRY_DELAY_MS = readPositiveIntEnv('FICTCN_REGISTRY_RETRY_DELAY_MS', 250)
 const REMOTE_REGISTRY_CACHE_TTL_MS = readPositiveIntEnv('FICTCN_REGISTRY_CACHE_TTL_MS', 10_000)
 const REMOTE_REGISTRY_FETCH_CONCURRENCY = readPositiveIntEnv('FICTCN_REGISTRY_FETCH_CONCURRENCY', 16)
+const ALLOWED_REMOTE_PROTOCOLS = new Set(['http:', 'https:', 'file:'])
+const ALLOWED_TEMPLATE_PATH_TOKENS = new Set(['componentsDir', 'blocksDir', 'themesDir', 'libDir'])
 
 const remoteRegistryCache = new Map<
   string,
@@ -298,6 +301,10 @@ function resolveRegistryUrls(source: string): string[] {
     throw new Error(`Unsupported registry source "${source}". Use "builtin" or a valid URL.`)
   }
 
+  if (!ALLOWED_REMOTE_PROTOCOLS.has(parsed.protocol)) {
+    throw new Error(`Unsupported registry protocol "${parsed.protocol}". Use http(s) or file URLs.`)
+  }
+
   if (parsed.pathname.endsWith('.json')) {
     return [parsed.toString()]
   }
@@ -422,31 +429,32 @@ async function normalizeRemoteFile(
 }
 
 function normalizeRemoteFilePath(sourcePath: string, entryType: RegistryEntryType): string {
-  const normalized = sourcePath.replaceAll('\\', '/')
-  if (normalized.includes('{{')) {
-    return normalized
-  }
+  const normalized = sourcePath.replaceAll('\\', '/').trim()
+  let mappedPath = normalized
 
-  const mappings: Array<{ sourcePrefix: string; targetPrefix: string }> = [
-    { sourcePrefix: 'src/lib/registry/ui/', targetPrefix: '{{componentsDir}}/' },
-    { sourcePrefix: 'src/lib/registry/blocks/', targetPrefix: '{{blocksDir}}/' },
-    { sourcePrefix: 'src/lib/registry/themes/', targetPrefix: '{{themesDir}}/' },
-    { sourcePrefix: 'src/lib/registry/styles/', targetPrefix: '{{themesDir}}/' },
-    { sourcePrefix: 'src/lib/registry/lib/', targetPrefix: '{{libDir}}/' },
-    { sourcePrefix: 'src/lib/registry/hooks/', targetPrefix: '{{libDir}}/hooks/' },
-  ]
+  if (!normalized.includes('{{')) {
+    const mappings: Array<{ sourcePrefix: string; targetPrefix: string }> = [
+      { sourcePrefix: 'src/lib/registry/ui/', targetPrefix: '{{componentsDir}}/' },
+      { sourcePrefix: 'src/lib/registry/blocks/', targetPrefix: '{{blocksDir}}/' },
+      { sourcePrefix: 'src/lib/registry/themes/', targetPrefix: '{{themesDir}}/' },
+      { sourcePrefix: 'src/lib/registry/styles/', targetPrefix: '{{themesDir}}/' },
+      { sourcePrefix: 'src/lib/registry/lib/', targetPrefix: '{{libDir}}/' },
+      { sourcePrefix: 'src/lib/registry/hooks/', targetPrefix: '{{libDir}}/hooks/' },
+    ]
 
-  for (const mapping of mappings) {
-    if (normalized.startsWith(mapping.sourcePrefix)) {
-      return `${mapping.targetPrefix}${normalized.slice(mapping.sourcePrefix.length)}`
+    for (const mapping of mappings) {
+      if (normalized.startsWith(mapping.sourcePrefix)) {
+        mappedPath = `${mapping.targetPrefix}${normalized.slice(mapping.sourcePrefix.length)}`
+        break
+      }
+    }
+
+    if (entryType === 'block' && normalized.startsWith('blocks/')) {
+      mappedPath = `{{blocksDir}}/${normalized.slice('blocks/'.length)}`
     }
   }
 
-  if (entryType === 'block' && normalized.startsWith('blocks/')) {
-    return `{{blocksDir}}/${normalized.slice('blocks/'.length)}`
-  }
-
-  return normalized
+  return sanitizeRemoteTemplatePath(mappedPath)
 }
 
 async function readRemoteRegistryFile(sourcePath: string, registryUrl: string): Promise<string> {
@@ -466,11 +474,19 @@ async function readRemoteRegistryFile(sourcePath: string, registryUrl: string): 
 }
 
 function resolveRemoteFileUrl(sourcePath: string, registryUrl: string): string {
+  const registry = new URL(registryUrl)
+  let resolved: URL
+
   try {
-    return new URL(sourcePath).toString()
+    resolved = new URL(sourcePath)
   } catch {
-    return new URL(sourcePath, registryUrl).toString()
+    resolved = new URL(sourcePath, registry)
   }
+
+  assertSupportedRemoteFileProtocol(resolved)
+  assertRemoteFileAccessAllowed(resolved, registry, sourcePath)
+
+  return resolved.toString()
 }
 
 async function fetchRemoteFileContentWithRetry(url: string): Promise<string> {
@@ -619,6 +635,13 @@ function toRegistryFetchError(url: string, error: unknown): RegistryFetchError {
     })
   }
 
+  if (error instanceof Error) {
+    return new RegistryFetchError(`Failed to fetch registry from ${url}: ${error.message}`, {
+      cause: error,
+      retryable: isLikelyNetworkError(error),
+    })
+  }
+
   return new RegistryFetchError(`Failed to fetch registry from ${url}`, {
     cause: error,
     retryable: isLikelyNetworkError(error),
@@ -710,4 +733,65 @@ function readPositiveIntEnv(name: string, fallback: number): number {
   }
 
   return parsed
+}
+
+function sanitizeRemoteTemplatePath(templatePath: string): string {
+  const normalized = templatePath.replaceAll('\\', '/').replace(/^\.\/+/, '')
+  if (normalized.length === 0) {
+    throw new Error('Remote registry file path cannot be empty.')
+  }
+
+  const tokenMatches = normalized.matchAll(/\{\{([^{}]+)\}\}/g)
+  let renderedPath = normalized
+  for (const match of tokenMatches) {
+    const token = match[1]
+    if (!ALLOWED_TEMPLATE_PATH_TOKENS.has(token)) {
+      throw new Error(`Unsupported template token "${token}" in remote file path "${templatePath}".`)
+    }
+    renderedPath = renderedPath.replace(match[0], `__${token}__`)
+  }
+
+  if (renderedPath.includes('{{') || renderedPath.includes('}}')) {
+    throw new Error(`Malformed template token in remote file path "${templatePath}".`)
+  }
+  if (renderedPath.startsWith('/') || /^[A-Za-z]:\//.test(renderedPath)) {
+    throw new Error(`Remote file path must be project-relative: "${templatePath}".`)
+  }
+
+  const segments = renderedPath.split('/').filter(Boolean)
+  if (segments.includes('..')) {
+    throw new Error(`Remote file path cannot traverse parent directories: "${templatePath}".`)
+  }
+
+  return normalized
+}
+
+function assertSupportedRemoteFileProtocol(url: URL): void {
+  if (ALLOWED_REMOTE_PROTOCOLS.has(url.protocol)) {
+    return
+  }
+
+  throw new Error(`Unsupported remote file protocol "${url.protocol}".`)
+}
+
+function assertRemoteFileAccessAllowed(url: URL, registryUrl: URL, sourcePath: string): void {
+  if (url.protocol !== 'file:') {
+    if (registryUrl.protocol === 'file:') {
+      throw new Error(`Local file registry cannot reference non-file URL "${sourcePath}".`)
+    }
+    return
+  }
+
+  if (registryUrl.protocol !== 'file:') {
+    throw new Error(`Remote HTTP registries cannot reference local file URLs ("${sourcePath}").`)
+  }
+
+  const registryRootDir = fileURLToPath(new URL('./', registryUrl))
+  const candidatePath = fileURLToPath(url)
+  const relative = path.relative(registryRootDir, candidatePath)
+  if (relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative))) {
+    return
+  }
+
+  throw new Error(`Remote file URL resolves outside the registry root: "${sourcePath}".`)
 }

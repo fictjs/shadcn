@@ -340,9 +340,58 @@ describe('remote registry support', () => {
     )
 
     await expect(runAdd({ cwd, components: ['escape-file'], skipInstall: true })).rejects.toThrow(
-      'Resolved path escapes project root',
+      'Remote file path cannot traverse parent directories',
     )
     await expect(readFile(path.join(sandboxRoot, 'outside.txt'), 'utf8')).rejects.toThrow()
+    await expect(readFile(path.join(cwd, LOCK_FILE), 'utf8')).rejects.toThrow()
+  })
+
+  it('rejects HTTP registries that try to reference local file:// templates', async () => {
+    const localSecret = await mkdtemp(path.join(tmpdir(), 'fictcn-http-registry-file-secret-'))
+    const localSecretPath = path.join(localSecret, 'secret.tsx')
+    await writeFile(localSecretPath, 'export const SECRET = true\n', 'utf8')
+
+    const { registryUrl } = await startRegistryServer(servers, [
+      {
+        name: 'file-scheme-in-http',
+        type: 'ui-component',
+        version: '1.0.0',
+        files: [
+          {
+            path: pathToFileURL(localSecretPath).toString(),
+          },
+        ],
+      },
+    ])
+
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-remote-http-file-protocol-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: registryUrl,
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    await expect(runAdd({ cwd, components: ['file-scheme-in-http'], skipInstall: true })).rejects.toThrow(
+      'Remote HTTP registries cannot reference local file URLs',
+    )
     await expect(readFile(path.join(cwd, LOCK_FILE), 'utf8')).rejects.toThrow()
   })
 
