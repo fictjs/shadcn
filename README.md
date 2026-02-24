@@ -221,6 +221,7 @@ For remote registries, each entry in `index.json` (or `registry.json`) should in
 
 Remote registry safety rules:
 - `http(s)` registries can only reference `http(s)` template file URLs.
+- `http(s)` registries only allow same-origin template file URLs by default.
 - `file://` registries can only reference `file://` template files within the same registry root directory.
 - Generated template output paths must stay project-relative and cannot traverse parent directories.
 
@@ -240,6 +241,7 @@ Optional environment variables:
 - `FICTCN_REGISTRY_RETRY_DELAY_MS`
 - `FICTCN_REGISTRY_CACHE_TTL_MS`
 - `FICTCN_REGISTRY_FETCH_CONCURRENCY`
+- `FICTCN_ALLOW_CROSS_ORIGIN_REGISTRY_FILES` (`1` to allow cross-origin `http(s)` template file URLs)
 
 ## Lock File
 
