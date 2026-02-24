@@ -205,10 +205,10 @@ Running `fictcn init` creates a `fictcn.json` at your project root:
 
 | Field            | Description                                              | Default                  |
 | ---------------- | -------------------------------------------------------- | ------------------------ |
-| `componentsDir`  | Where UI component files are written                     | `src/components/ui`      |
-| `libDir`         | Where utility files (`cn.ts`, `variants.ts`) are placed  | `src/lib`                |
-| `css`            | Path to the global CSS file with design tokens           | `src/styles/globals.css` |
-| `tailwindConfig` | Path to the Tailwind CSS configuration file              | `tailwind.config.ts`     |
+| `componentsDir`  | Project-relative directory where UI component files are written | `src/components/ui`      |
+| `libDir`         | Project-relative directory for utility files (`cn.ts`, `variants.ts`) | `src/lib`                |
+| `css`            | Project-relative path to the global CSS file with design tokens | `src/styles/globals.css` |
+| `tailwindConfig` | Project-relative path to the Tailwind CSS configuration file | `tailwind.config.ts`     |
 | `registry`       | Registry source (`builtin`, `http(s)://...`, or `file://...`) | `builtin`                |
 | `aliases.base`   | TypeScript path alias prefix for imports                 | `@`                      |
 

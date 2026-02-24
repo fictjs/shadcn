@@ -115,6 +115,10 @@ function validateConfig(value: unknown, mode: ValidationMode): string[] {
   validateStringField(value, 'libDir', errors, { required: mode === 'full', allowEmpty: false })
   validateStringField(value, 'css', errors, { required: mode === 'full', allowEmpty: false })
   validateStringField(value, 'tailwindConfig', errors, { required: mode === 'full', allowEmpty: false })
+  validateProjectRelativePathField(value, 'componentsDir', errors)
+  validateProjectRelativePathField(value, 'libDir', errors)
+  validateProjectRelativePathField(value, 'css', errors)
+  validateProjectRelativePathField(value, 'tailwindConfig', errors)
   validateStringField(value, 'registry', errors, { required: mode === 'full', allowEmpty: false })
   validateRegistryField(value, errors)
 
@@ -213,6 +217,28 @@ function validateRegistryField(value: Record<string, unknown>, errors: string[])
 
   if (!['http:', 'https:', 'file:'].includes(parsed.protocol)) {
     errors.push('Field "registry" must be "builtin" or a valid http(s)/file URL.')
+  }
+}
+
+function validateProjectRelativePathField(value: Record<string, unknown>, key: string, errors: string[]): void {
+  const fieldValue = value[key]
+  if (typeof fieldValue !== 'string') {
+    return
+  }
+
+  const normalized = fieldValue.replaceAll('\\', '/').trim()
+  if (normalized.length === 0) {
+    return
+  }
+
+  if (normalized.startsWith('/') || /^[A-Za-z]:\//.test(normalized)) {
+    errors.push(`Field "${key}" must be a project-relative path.`)
+    return
+  }
+
+  const segments = normalized.split('/').filter(Boolean)
+  if (segments.includes('..')) {
+    errors.push(`Field "${key}" cannot contain parent-directory traversal ("..").`)
   }
 }
 
