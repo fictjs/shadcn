@@ -97,6 +97,35 @@ describe('core config and io edges', () => {
     await expect(loadConfig(cwd)).rejects.toThrow('Field "registry" must be "builtin" or a valid http(s)/file URL.')
   })
 
+  it('rejects absolute and parent-traversal project paths in config', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-config-paths-invalid-'))
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: '../outside',
+          libDir: '/tmp/lib',
+          css: 'src/styles/../globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: 'builtin',
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    await expect(loadConfig(cwd)).rejects.toThrow('Field "componentsDir" cannot contain parent-directory traversal')
+    await expect(loadConfig(cwd)).rejects.toThrow('Field "libDir" must be a project-relative path.')
+    await expect(loadConfig(cwd)).rejects.toThrow('Field "css" cannot contain parent-directory traversal')
+  })
+
   it('surfaces JSONC parse failures with actionable errors', async () => {
     const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-config-jsonc-invalid-'))
     await writeFile(
