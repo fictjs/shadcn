@@ -78,6 +78,33 @@ describe('runInit', () => {
     expect(tsconfig).toContain('"*"')
   })
 
+  it('does not rewrite existing JSONC config files during init', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-init-config-jsonc-preserve-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    const configPath = path.join(cwd, CONFIG_FILE)
+    const configWithComments = `{
+  // keep this comment
+  "$schema": "https://fict.js.org/schemas/fictcn.schema.json",
+  "version": 1,
+  "style": "tailwind-css-vars",
+  "componentsDir": "src/components/ui",
+  "libDir": "src/lib",
+  "css": "src/styles/globals.css",
+  "tailwindConfig": "tailwind.config.ts",
+  "registry": "builtin",
+  "aliases": {
+    "base": "@",
+  },
+}
+`
+    await writeFile(configPath, configWithComments, 'utf8')
+
+    await runInit({ cwd, skipInstall: true })
+
+    expect(await readFile(configPath, 'utf8')).toBe(configWithComments)
+  })
+
   it('does not overwrite existing scaffold files without force', async () => {
     const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-init-no-force-overwrite-'))
     await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')

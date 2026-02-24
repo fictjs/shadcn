@@ -3,7 +3,7 @@ import path from 'node:path'
 import colors from 'picocolors'
 
 import { DEV_DEPENDENCIES, RUNTIME_DEPENDENCIES } from '../core/constants'
-import { loadConfig, saveConfig } from '../core/config'
+import { ensureConfigFile, loadConfig } from '../core/config'
 import { exists, readJsonFile, readTextIfExists, resolvePathWithinRoot, upsertTextFile } from '../core/io'
 import { getAliasPathKey, getAliasPathTarget, getTailwindContentGlobs } from '../core/layout'
 import { detectPackageManager, findProjectRoot, runPackageManagerInstall } from '../core/project'
@@ -27,7 +27,7 @@ export async function runInit(options: InitOptions = {}): Promise<void> {
   const force = Boolean(options.force)
 
   if (!dryRun) {
-    await saveConfig(projectRoot, config)
+    await ensureConfigFile(projectRoot, config)
   }
 
   if (!dryRun) {
