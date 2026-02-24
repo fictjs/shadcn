@@ -3,8 +3,8 @@ import path from 'node:path'
 import { parse, type ParseError } from 'jsonc-parser'
 import colors from 'picocolors'
 
-import { CONFIG_FILE, DEFAULT_CONFIG, DEV_DEPENDENCIES, RUNTIME_DEPENDENCIES } from '../core/constants'
-import { loadConfig } from '../core/config'
+import { CONFIG_FILE, DEFAULT_CONFIG, DEV_DEPENDENCIES, LOCK_FILE, RUNTIME_DEPENDENCIES } from '../core/constants'
+import { loadConfig, loadLock } from '../core/config'
 import { exists, readJsonFile, readTextIfExists } from '../core/io'
 import { getAliasPathKey, getAliasPathTarget, getTailwindContentGlobs } from '../core/layout'
 import { findProjectRoot } from '../core/project'
@@ -205,6 +205,19 @@ export async function runDoctor(cwd = process.cwd()): Promise<DoctorResult> {
         message: `Could not parse package.json to validate dependencies: ${
           error instanceof Error ? error.message : String(error)
         }`,
+      })
+    }
+  }
+
+  const lockPath = path.resolve(projectRoot, LOCK_FILE)
+  if (await exists(lockPath)) {
+    try {
+      await loadLock(projectRoot)
+    } catch (error) {
+      issues.push({
+        level: 'error',
+        code: 'invalid-lock',
+        message: error instanceof Error ? error.message : String(error),
       })
     }
   }
