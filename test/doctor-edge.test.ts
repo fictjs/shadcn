@@ -1,6 +1,7 @@
 import { mkdir, mkdtemp, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
+import { pathToFileURL } from 'node:url'
 
 import { describe, expect, it, vi } from 'vitest'
 
@@ -109,6 +110,77 @@ describe('runDoctor edge coverage', () => {
 
     const result = await runDoctor(cwd)
     expect(result.issues.some(issue => issue.code === 'missing-config')).toBe(true)
+  })
+
+  it('reports file-registry warning for file:// registry sources', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-doctor-file-registry-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: pathToFileURL(path.join(tmpdir(), 'registry-index.json')).toString(),
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    const result = await runDoctor(cwd)
+    expect(result.issues.some(issue => issue.code === 'file-registry' && issue.level === 'warning')).toBe(true)
+  })
+
+  it('reports cross-origin registry file warning when env override is enabled', async () => {
+    const original = process.env.FICTCN_ALLOW_CROSS_ORIGIN_REGISTRY_FILES
+    process.env.FICTCN_ALLOW_CROSS_ORIGIN_REGISTRY_FILES = '1'
+
+    try {
+      const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-doctor-cross-origin-env-'))
+      await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+      await writeFile(
+        path.join(cwd, 'fictcn.json'),
+        `${JSON.stringify(
+          {
+            $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+            version: 1,
+            style: 'tailwind-css-vars',
+            componentsDir: 'src/components/ui',
+            libDir: 'src/lib',
+            css: 'src/styles/globals.css',
+            tailwindConfig: 'tailwind.config.ts',
+            registry: 'https://example.com/registry.json',
+            aliases: {
+              base: '@',
+            },
+          },
+          null,
+          2,
+        )}\n`,
+        'utf8',
+      )
+
+      const result = await runDoctor(cwd)
+      expect(
+        result.issues.some(issue => issue.code === 'cross-origin-registry-files' && issue.level === 'warning'),
+      ).toBe(true)
+    } finally {
+      if (original === undefined) {
+        delete process.env.FICTCN_ALLOW_CROSS_ORIGIN_REGISTRY_FILES
+      } else {
+        process.env.FICTCN_ALLOW_CROSS_ORIGIN_REGISTRY_FILES = original
+      }
+    }
   })
 
   it('reports tsconfig parse warning for invalid JSONC payloads', async () => {

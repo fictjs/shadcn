@@ -56,6 +56,29 @@ export async function runDoctor(cwd = process.cwd()): Promise<DoctorResult> {
       code: 'remote-registry',
       message: `Using remote registry ${config.registry}. Ensure network access and a compatible registry index for add/diff/update commands.`,
     })
+
+    try {
+      const registryUrl = new URL(config.registry)
+      if (registryUrl.protocol === 'file:') {
+        issues.push({
+          level: 'warning',
+          code: 'file-registry',
+          message:
+            'Using a local file:// registry. Ensure the registry path is trusted and controlled by your team.',
+        })
+      }
+    } catch {
+      // ignore parse errors; config validation handles invalid registry formats
+    }
+
+    if (readBooleanEnv('FICTCN_ALLOW_CROSS_ORIGIN_REGISTRY_FILES', false)) {
+      issues.push({
+        level: 'warning',
+        code: 'cross-origin-registry-files',
+        message:
+          'FICTCN_ALLOW_CROSS_ORIGIN_REGISTRY_FILES is enabled. HTTP registries may fetch template files from other origins.',
+      })
+    }
   }
 
   const tsconfigRaw = await readTextIfExists(path.resolve(projectRoot, 'tsconfig.json'))
@@ -204,4 +227,21 @@ function printIssues(issues: DoctorIssue[]): void {
     const color = issue.level === 'error' ? colors.red : colors.yellow
     console.log(color(`[${issue.level}] ${issue.code}: ${issue.message}`))
   }
+}
+
+function readBooleanEnv(name: string, fallback: boolean): boolean {
+  const raw = process.env[name]
+  if (!raw) {
+    return fallback
+  }
+
+  const normalized = raw.trim().toLowerCase()
+  if (['1', 'true', 'yes', 'on'].includes(normalized)) {
+    return true
+  }
+  if (['0', 'false', 'no', 'off'].includes(normalized)) {
+    return false
+  }
+
+  return fallback
 }
