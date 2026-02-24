@@ -72,10 +72,10 @@ function App() {
 
 ### `fictcn init`
 
-Scaffolds the project baseline: `fictcn.json` config, `globals.css` with design tokens, Tailwind config (e.g. `tailwind.config.ts` / `tailwind.config.js` / `tailwind.config.mjs` / `tailwind.config.cjs`), PostCSS config, and utility files (`cn.ts`, `variants.ts`). Installs required dependencies unless `--skip-install` is passed.
+Scaffolds the project baseline: `fictcn.json` config, `globals.css` with design tokens, Tailwind config (e.g. `tailwind.config.ts` / `tailwind.config.js` / `tailwind.config.mjs` / `tailwind.config.cjs`), PostCSS config, and utility files (`cn.ts`, `variants.ts`). Existing scaffold files are preserved by default; pass `--force` to overwrite. Installs required dependencies unless `--skip-install` is passed.
 
 ```bash
-fictcn init [--skip-install] [--dry-run]
+fictcn init [--force] [--skip-install] [--dry-run]
 ```
 
 ### `fictcn add`
@@ -209,7 +209,7 @@ Running `fictcn init` creates a `fictcn.json` at your project root:
 | `libDir`         | Where utility files (`cn.ts`, `variants.ts`) are placed  | `src/lib`                |
 | `css`            | Path to the global CSS file with design tokens           | `src/styles/globals.css` |
 | `tailwindConfig` | Path to the Tailwind CSS configuration file              | `tailwind.config.ts`     |
-| `registry`       | Registry source (`builtin`, remote URL, or `file://` URL) | `builtin`                |
+| `registry`       | Registry source (`builtin`, `http(s)://...`, or `file://...`) | `builtin`                |
 | `aliases.base`   | TypeScript path alias prefix for imports                 | `@`                      |
 
 For remote registries, each entry in `index.json` (or `registry.json`) should include:
@@ -218,6 +218,11 @@ For remote registries, each entry in `index.json` (or `registry.json`) should in
 `files` supports two formats:
 - Inline content: `[{ path, content }]`
 - File reference: `[{ path }]` (the CLI fetches file contents relative to the registry JSON URL)
+
+Remote registry safety rules:
+- `http(s)` registries can only reference `http(s)` template file URLs.
+- `file://` registries can only reference `file://` template files within the same registry root directory.
+- Generated template output paths must stay project-relative and cannot traverse parent directories.
 
 `@fictjs/shadcn` is compatible with shadcn-style registry type tags:
 - `registry:ui`, `registry:block`, `registry:style`

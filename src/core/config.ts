@@ -203,10 +203,16 @@ function validateRegistryField(value: Record<string, unknown>, errors: string[])
     return
   }
 
+  let parsed: URL
   try {
-    new URL(trimmed)
+    parsed = new URL(trimmed)
   } catch {
-    errors.push('Field "registry" must be "builtin" or a valid URL.')
+    errors.push('Field "registry" must be "builtin" or a valid http(s)/file URL.')
+    return
+  }
+
+  if (!['http:', 'https:', 'file:'].includes(parsed.protocol)) {
+    errors.push('Field "registry" must be "builtin" or a valid http(s)/file URL.')
   }
 }
 

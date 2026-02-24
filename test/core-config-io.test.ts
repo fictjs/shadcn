@@ -67,7 +67,34 @@ describe('core config and io edges', () => {
       'utf8',
     )
 
-    await expect(loadConfig(cwd)).rejects.toThrow('Field "registry" must be "builtin" or a valid URL.')
+    await expect(loadConfig(cwd)).rejects.toThrow('Field "registry" must be "builtin" or a valid http(s)/file URL.')
+  })
+
+  it('rejects unsupported registry URL protocols in config', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-config-registry-protocol-invalid-'))
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: 'ftp://example.com/registry.json',
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    await expect(loadConfig(cwd)).rejects.toThrow('Field "registry" must be "builtin" or a valid http(s)/file URL.')
   })
 
   it('surfaces JSONC parse failures with actionable errors', async () => {
