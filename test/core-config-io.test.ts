@@ -5,7 +5,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 import { ensureConfigFile, loadConfig, loadLock, saveLock } from '../src/core/config'
-import { DEFAULT_CONFIG, DEFAULT_LOCK } from '../src/core/constants'
+import { DEFAULT_CONFIG, DEFAULT_LOCK, LOCK_FILE } from '../src/core/constants'
 
 describe('core config and io edges', () => {
   it('loads defaults when fictcn.json is missing', async () => {
@@ -152,6 +152,28 @@ describe('core config and io edges', () => {
       blocks: {},
       themes: {},
     })
+  })
+
+  it('rejects invalid lock file payloads with actionable errors', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-lock-invalid-'))
+    await writeFile(
+      path.join(cwd, LOCK_FILE),
+      `${JSON.stringify(
+        {
+          version: 1,
+          registry: 'builtin',
+          components: [],
+          blocks: {},
+          themes: {},
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    await expect(loadLock(cwd)).rejects.toThrow('Invalid fictcn.lock.json')
+    await expect(loadLock(cwd)).rejects.toThrow('Field "components" must be an object.')
   })
 
   it('persists lock entries with deterministic key ordering', async () => {

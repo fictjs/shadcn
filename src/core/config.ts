@@ -59,7 +59,13 @@ export async function loadLock(projectRoot: string): Promise<FictcnLock> {
     }
   }
 
-  const lock = await readJsonFile<FictcnLock>(lockPath)
+  const rawLock = await readJsonFile<unknown>(lockPath)
+  const lockValidationErrors = validateLock(rawLock)
+  if (lockValidationErrors.length > 0) {
+    throw createLockValidationError(lockPath, lockValidationErrors)
+  }
+
+  const lock = rawLock as FictcnLock
   return {
     ...DEFAULT_LOCK,
     ...lock,
@@ -220,6 +226,73 @@ function validateRegistryField(value: Record<string, unknown>, errors: string[])
   }
 }
 
+function validateLock(value: unknown): string[] {
+  if (!isPlainObject(value)) {
+    return ['Expected an object at the top level.']
+  }
+
+  const errors: string[] = []
+  const allowedTopLevelKeys = new Set(['$schema', 'version', 'registry', 'components', 'blocks', 'themes'])
+  for (const key of Object.keys(value)) {
+    if (!allowedTopLevelKeys.has(key)) {
+      errors.push(`Unknown field "${key}".`)
+    }
+  }
+
+  validateLiteralField(value, 'version', 1, errors, false)
+  validateStringField(value, 'registry', errors, { required: false, allowEmpty: false })
+  validateLockSection(value, 'components', errors)
+  validateLockSection(value, 'blocks', errors)
+  validateLockSection(value, 'themes', errors)
+
+  return errors
+}
+
+function validateLockSection(
+  value: Record<string, unknown>,
+  section: 'components' | 'blocks' | 'themes',
+  errors: string[],
+): void {
+  const sectionValue = value[section]
+  if (sectionValue === undefined) {
+    return
+  }
+
+  if (!isPlainObject(sectionValue)) {
+    errors.push(`Field "${section}" must be an object.`)
+    return
+  }
+
+  for (const [entryKey, entryValue] of Object.entries(sectionValue)) {
+    const entryPrefix = `${section}.${entryKey}.`
+    if (!isPlainObject(entryValue)) {
+      errors.push(`Field "${section}.${entryKey}" must be an object.`)
+      continue
+    }
+
+    validateStringField(entryValue, 'name', errors, { required: true, allowEmpty: false, pathPrefix: entryPrefix })
+    validateStringField(entryValue, 'version', errors, { required: true, allowEmpty: false, pathPrefix: entryPrefix })
+    validateStringField(entryValue, 'source', errors, { required: true, allowEmpty: false, pathPrefix: entryPrefix })
+    validateStringField(entryValue, 'installedAt', errors, {
+      required: true,
+      allowEmpty: false,
+      pathPrefix: entryPrefix,
+    })
+
+    const files = entryValue.files
+    if (!isPlainObject(files)) {
+      errors.push(`Field "${entryPrefix}files" must be an object.`)
+      continue
+    }
+
+    for (const [filePath, hash] of Object.entries(files)) {
+      if (typeof hash !== 'string' || hash.trim().length === 0) {
+        errors.push(`Field "${entryPrefix}files.${filePath}" must be a non-empty string.`)
+      }
+    }
+  }
+}
+
 function validateProjectRelativePathField(value: Record<string, unknown>, key: string, errors: string[]): void {
   const fieldValue = value[key]
   if (typeof fieldValue !== 'string') {
@@ -244,6 +317,10 @@ function validateProjectRelativePathField(value: Record<string, unknown>, key: s
 
 function createConfigValidationError(configPath: string, errors: string[]): Error {
   return new Error(`Invalid ${CONFIG_FILE} at ${configPath}:\n${errors.map(error => `- ${error}`).join('\n')}`)
+}
+
+function createLockValidationError(lockPath: string, errors: string[]): Error {
+  return new Error(`Invalid ${LOCK_FILE} at ${lockPath}:\n${errors.map(error => `- ${error}`).join('\n')}`)
 }
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
