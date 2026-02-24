@@ -25,16 +25,20 @@
       "enum": ["tailwind-css-vars"]
     },
     "componentsDir": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|[\\\\/])\\.\\.(?:[\\\\/]|$)).+"
     },
     "libDir": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|[\\\\/])\\.\\.(?:[\\\\/]|$)).+"
     },
     "css": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|[\\\\/])\\.\\.(?:[\\\\/]|$)).+"
     },
     "tailwindConfig": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|[\\\\/])\\.\\.(?:[\\\\/]|$)).+"
     },
     "registry": {
       "oneOf": [
