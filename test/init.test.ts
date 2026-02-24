@@ -1,4 +1,4 @@
-import { chmod, mkdtemp, readFile, writeFile } from 'node:fs/promises'
+import { chmod, mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 
@@ -76,6 +76,44 @@ describe('runInit', () => {
     expect(tailwindConfig).toContain("'./custom/lib/**/*.{ts,tsx}'")
     expect(tsconfig).toContain('"~/*"')
     expect(tsconfig).toContain('"*"')
+  })
+
+  it('does not overwrite existing scaffold files without force', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-init-no-force-overwrite-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await mkdir(path.join(cwd, 'src/styles'), { recursive: true })
+    await mkdir(path.join(cwd, 'src/lib'), { recursive: true })
+    await writeFile(path.join(cwd, 'src/styles/globals.css'), '/* keep me */\n', 'utf8')
+    await writeFile(path.join(cwd, 'src/lib/cn.ts'), 'export const keepCn = true\n', 'utf8')
+    await writeFile(path.join(cwd, 'src/lib/variants.ts'), 'export const keepVariants = true\n', 'utf8')
+
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+    await runInit({ cwd, skipInstall: true })
+    const logs = logSpy.mock.calls.flat().join('\n')
+    logSpy.mockRestore()
+
+    expect(await readFile(path.join(cwd, 'src/styles/globals.css'), 'utf8')).toBe('/* keep me */\n')
+    expect(await readFile(path.join(cwd, 'src/lib/cn.ts'), 'utf8')).toBe('export const keepCn = true\n')
+    expect(await readFile(path.join(cwd, 'src/lib/variants.ts'), 'utf8')).toBe('export const keepVariants = true\n')
+    expect(logs).toContain('rerun with --force to overwrite')
+  })
+
+  it('overwrites existing scaffold files when force is enabled', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-init-force-overwrite-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await mkdir(path.join(cwd, 'src/styles'), { recursive: true })
+    await mkdir(path.join(cwd, 'src/lib'), { recursive: true })
+    await writeFile(path.join(cwd, 'src/styles/globals.css'), '/* keep me */\n', 'utf8')
+    await writeFile(path.join(cwd, 'src/lib/cn.ts'), 'export const keepCn = true\n', 'utf8')
+    await writeFile(path.join(cwd, 'src/lib/variants.ts'), 'export const keepVariants = true\n', 'utf8')
+
+    await runInit({ cwd, skipInstall: true, force: true })
+
+    expect(await readFile(path.join(cwd, 'src/styles/globals.css'), 'utf8')).toContain('@fictcn tokens:start')
+    expect(await readFile(path.join(cwd, 'src/lib/cn.ts'), 'utf8')).toContain('twMerge')
+    expect(await readFile(path.join(cwd, 'src/lib/variants.ts'), 'utf8')).toContain('cva')
   })
 
   it('patches tsconfig JSONC with comments and trailing commas', async () => {

@@ -23,10 +23,12 @@ export async function main(argv: string[]): Promise<void> {
   program
     .command('init')
     .description('Initialize the current project for fictcn')
+    .option('--force', 'Overwrite existing scaffold files')
     .option('--skip-install', 'Skip dependency installation')
     .option('--dry-run', 'Preview changes without writing files')
     .action(async options => {
       await runInit({
+        force: Boolean(options.force),
         skipInstall: Boolean(options.skipInstall),
         dryRun: Boolean(options.dryRun),
       })
