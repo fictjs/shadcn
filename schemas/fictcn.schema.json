@@ -39,7 +39,10 @@
     "registry": {
       "oneOf": [
         { "const": "builtin" },
-        { "type": "string", "format": "uri" }
+        {
+          "type": "string",
+          "pattern": "^(https?:\\/\\/|file:\\/\\/).+"
+        }
       ]
     },
     "aliases": {
