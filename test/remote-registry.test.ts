@@ -18,6 +18,7 @@ import { LOCK_FILE } from '../src/core/constants'
 
 describe('remote registry support', () => {
   const servers: Array<ReturnType<typeof createServer>> = []
+  const ORIGINAL_ALLOW_CROSS_ORIGIN = process.env.FICTCN_ALLOW_CROSS_ORIGIN_REGISTRY_FILES
 
   afterEach(async () => {
     await Promise.all(
@@ -27,6 +28,11 @@ describe('remote registry support', () => {
       }),
     )
     servers.length = 0
+    if (ORIGINAL_ALLOW_CROSS_ORIGIN === undefined) {
+      delete process.env.FICTCN_ALLOW_CROSS_ORIGIN_REGISTRY_FILES
+    } else {
+      process.env.FICTCN_ALLOW_CROSS_ORIGIN_REGISTRY_FILES = ORIGINAL_ALLOW_CROSS_ORIGIN
+    }
   })
 
   it('lists remote entries from an index endpoint', async () => {
@@ -393,6 +399,121 @@ describe('remote registry support', () => {
       'Remote HTTP registries cannot reference local file URLs',
     )
     await expect(readFile(path.join(cwd, LOCK_FILE), 'utf8')).rejects.toThrow()
+  })
+
+  it('rejects cross-origin HTTP template references by default', async () => {
+    const templateHost = await startCustomRegistryServer(servers, (request, response) => {
+      if (request.url === '/registry/src/lib/registry/ui/cross-origin-button.tsx') {
+        response.writeHead(200, { 'content-type': 'text/plain' })
+        response.end('export function CrossOriginButton() {\\n  return <button>cross origin</button>\\n}\\n')
+        return
+      }
+
+      response.writeHead(404)
+      response.end('not found')
+    })
+
+    const { registryUrl } = await startRegistryServer(servers, [
+      {
+        name: 'cross-origin-button',
+        type: 'ui-component',
+        version: '1.0.0',
+        files: [
+          {
+            path: `${templateHost.registryUrl}/src/lib/registry/ui/cross-origin-button.tsx`,
+          },
+        ],
+      },
+    ])
+
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-remote-http-cross-origin-blocked-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: registryUrl,
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    await expect(runAdd({ cwd, components: ['cross-origin-button'], skipInstall: true })).rejects.toThrow(
+      'Cross-origin remote file references are not allowed by default',
+    )
+    await expect(readFile(path.join(cwd, LOCK_FILE), 'utf8')).rejects.toThrow()
+  })
+
+  it('allows cross-origin HTTP template references when explicitly enabled', async () => {
+    process.env.FICTCN_ALLOW_CROSS_ORIGIN_REGISTRY_FILES = '1'
+
+    const templateHost = await startCustomRegistryServer(servers, (request, response) => {
+      if (request.url === '/registry/src/lib/registry/ui/cross-origin-allowed.tsx') {
+        response.writeHead(200, { 'content-type': 'text/plain' })
+        response.end('export function CrossOriginAllowed() {\\n  return <button>allowed</button>\\n}\\n')
+        return
+      }
+
+      response.writeHead(404)
+      response.end('not found')
+    })
+
+    const { registryUrl } = await startRegistryServer(servers, [
+      {
+        name: 'cross-origin-allowed',
+        type: 'ui-component',
+        version: '1.0.0',
+        files: [
+          {
+            path: `${templateHost.registryUrl}/src/lib/registry/ui/cross-origin-allowed.tsx`,
+          },
+        ],
+      },
+    ])
+
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-remote-http-cross-origin-allowed-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(path.join(cwd, 'tsconfig.json'), '{"compilerOptions":{}}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: registryUrl,
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    const result = await runAdd({ cwd, components: ['cross-origin-allowed'], skipInstall: true })
+    expect(result.added).toContain('cross-origin-allowed')
+    expect(await readFile(path.join(cwd, 'src/components/ui/cross-origin-allowed.tsx'), 'utf8')).toContain(
+      'CrossOriginAllowed',
+    )
   })
 
   it('reports invalid JSON payloads from remote registries', async () => {

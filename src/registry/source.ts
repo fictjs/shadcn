@@ -429,7 +429,7 @@ async function normalizeRemoteFile(
 }
 
 function normalizeRemoteFilePath(sourcePath: string, entryType: RegistryEntryType): string {
-  const normalized = sourcePath.replaceAll('\\', '/').trim()
+  const normalized = toRemotePathForMapping(sourcePath)
   let mappedPath = normalized
 
   if (!normalized.includes('{{')) {
@@ -443,14 +443,16 @@ function normalizeRemoteFilePath(sourcePath: string, entryType: RegistryEntryTyp
     ]
 
     for (const mapping of mappings) {
-      if (normalized.startsWith(mapping.sourcePrefix)) {
-        mappedPath = `${mapping.targetPrefix}${normalized.slice(mapping.sourcePrefix.length)}`
+      const suffix = findPathSuffix(normalized, mapping.sourcePrefix)
+      if (suffix !== null) {
+        mappedPath = `${mapping.targetPrefix}${suffix}`
         break
       }
     }
 
-    if (entryType === 'block' && normalized.startsWith('blocks/')) {
-      mappedPath = `{{blocksDir}}/${normalized.slice('blocks/'.length)}`
+    const legacyBlockSuffix = findPathSuffix(normalized, 'blocks/')
+    if (entryType === 'block' && legacyBlockSuffix !== null) {
+      mappedPath = `{{blocksDir}}/${legacyBlockSuffix}`
     }
   }
 
@@ -735,6 +737,23 @@ function readPositiveIntEnv(name: string, fallback: number): number {
   return parsed
 }
 
+function readBooleanEnv(name: string, fallback: boolean): boolean {
+  const raw = process.env[name]
+  if (!raw) {
+    return fallback
+  }
+
+  const normalized = raw.trim().toLowerCase()
+  if (['1', 'true', 'yes', 'on'].includes(normalized)) {
+    return true
+  }
+  if (['0', 'false', 'no', 'off'].includes(normalized)) {
+    return false
+  }
+
+  return fallback
+}
+
 function sanitizeRemoteTemplatePath(templatePath: string): string {
   const normalized = templatePath.replaceAll('\\', '/').replace(/^\.\/+/, '')
   if (normalized.length === 0) {
@@ -766,6 +785,30 @@ function sanitizeRemoteTemplatePath(templatePath: string): string {
   return normalized
 }
 
+function toRemotePathForMapping(sourcePath: string): string {
+  const normalized = sourcePath.replaceAll('\\', '/').trim()
+  try {
+    const parsed = new URL(normalized)
+    return decodeURIComponent(parsed.pathname).replace(/^\/+/, '')
+  } catch {
+    return normalized
+  }
+}
+
+function findPathSuffix(pathValue: string, sourcePrefix: string): string | null {
+  if (pathValue.startsWith(sourcePrefix)) {
+    return pathValue.slice(sourcePrefix.length)
+  }
+
+  const marker = `/${sourcePrefix}`
+  const markerIndex = pathValue.indexOf(marker)
+  if (markerIndex === -1) {
+    return null
+  }
+
+  return pathValue.slice(markerIndex + marker.length)
+}
+
 function assertSupportedRemoteFileProtocol(url: URL): void {
   if (ALLOWED_REMOTE_PROTOCOLS.has(url.protocol)) {
     return
@@ -778,6 +821,14 @@ function assertRemoteFileAccessAllowed(url: URL, registryUrl: URL, sourcePath: s
   if (url.protocol !== 'file:') {
     if (registryUrl.protocol === 'file:') {
       throw new Error(`Local file registry cannot reference non-file URL "${sourcePath}".`)
+    }
+    const allowCrossOriginRegistryFiles = readBooleanEnv('FICTCN_ALLOW_CROSS_ORIGIN_REGISTRY_FILES', false)
+    if (registryUrl.protocol === 'http:' || registryUrl.protocol === 'https:') {
+      if (!allowCrossOriginRegistryFiles && url.origin !== registryUrl.origin) {
+        throw new Error(
+          `Cross-origin remote file references are not allowed by default ("${sourcePath}"). Set FICTCN_ALLOW_CROSS_ORIGIN_REGISTRY_FILES=1 to enable.`,
+        )
+      }
     }
     return
   }
