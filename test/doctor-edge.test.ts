@@ -5,7 +5,7 @@ import { pathToFileURL } from 'node:url'
 
 import { describe, expect, it, vi } from 'vitest'
 
-import { DEV_DEPENDENCIES, RUNTIME_DEPENDENCIES } from '../src/core/constants'
+import { DEV_DEPENDENCIES, LOCK_FILE, RUNTIME_DEPENDENCIES } from '../src/core/constants'
 import { runDoctor } from '../src/commands/doctor'
 
 describe('runDoctor edge coverage', () => {
@@ -230,6 +230,50 @@ describe('runDoctor edge coverage', () => {
 
     const result = await runDoctor(cwd)
     expect(result.issues.some(issue => issue.code === 'package-json-parse' && issue.level === 'warning')).toBe(true)
+  })
+
+  it('reports invalid-lock when lock file structure is malformed', async () => {
+    const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-doctor-invalid-lock-'))
+    await writeFile(path.join(cwd, 'package.json'), '{"name":"sandbox"}\n', 'utf8')
+    await writeFile(
+      path.join(cwd, 'fictcn.json'),
+      `${JSON.stringify(
+        {
+          $schema: 'https://fict.js.org/schemas/fictcn.schema.json',
+          version: 1,
+          style: 'tailwind-css-vars',
+          componentsDir: 'src/components/ui',
+          libDir: 'src/lib',
+          css: 'src/styles/globals.css',
+          tailwindConfig: 'tailwind.config.ts',
+          registry: 'builtin',
+          aliases: {
+            base: '@',
+          },
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+    await writeFile(
+      path.join(cwd, LOCK_FILE),
+      `${JSON.stringify(
+        {
+          version: 1,
+          registry: 'builtin',
+          components: [],
+          blocks: {},
+          themes: {},
+        },
+        null,
+        2,
+      )}\n`,
+      'utf8',
+    )
+
+    const result = await runDoctor(cwd)
+    expect(result.issues.some(issue => issue.code === 'invalid-lock' && issue.level === 'error')).toBe(true)
   })
 
   it('reports alias-paths when tsconfig paths are present but missing the expected alias', async () => {
