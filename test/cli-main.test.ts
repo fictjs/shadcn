@@ -57,8 +57,9 @@ describe('CLI main command routing', () => {
   })
 
   it('routes init and update command flags', async () => {
-    await main(['node', 'fictcn', 'init', '--skip-install', '--dry-run'])
+    await main(['node', 'fictcn', 'init', '--force', '--skip-install', '--dry-run'])
     expect(mocked.runInit).toHaveBeenCalledWith({
+      force: true,
       skipInstall: true,
       dryRun: true,
     })

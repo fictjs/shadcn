@@ -4,7 +4,7 @@ import colors from 'picocolors'
 
 import { DEV_DEPENDENCIES, RUNTIME_DEPENDENCIES } from '../core/constants'
 import { loadConfig, saveConfig } from '../core/config'
-import { exists, readJsonFile, readTextIfExists, upsertTextFile } from '../core/io'
+import { exists, readJsonFile, readTextIfExists, resolvePathWithinRoot, upsertTextFile } from '../core/io'
 import { getAliasPathKey, getAliasPathTarget, getTailwindContentGlobs } from '../core/layout'
 import { detectPackageManager, findProjectRoot, runPackageManagerInstall } from '../core/project'
 import {
@@ -24,18 +24,20 @@ export async function runInit(options: InitOptions = {}): Promise<void> {
   const projectRoot = await findProjectRoot(cwd)
   const config = await loadConfig(projectRoot)
   const dryRun = Boolean(options.dryRun)
+  const force = Boolean(options.force)
 
   if (!dryRun) {
     await saveConfig(projectRoot, config)
   }
 
   if (!dryRun) {
-    await upsertTextFile(projectRoot, config.css, createGlobalsCss())
-    await upsertTextFile(projectRoot, path.posix.join(config.libDir, 'cn.ts'), createCnUtility())
-    await upsertTextFile(
+    await writeScaffoldFile(projectRoot, config.css, createGlobalsCss(), force)
+    await writeScaffoldFile(projectRoot, path.posix.join(config.libDir, 'cn.ts'), createCnUtility(), force)
+    await writeScaffoldFile(
       projectRoot,
       path.posix.join(config.libDir, 'variants.ts'),
       createVariantsUtility(),
+      force,
     )
   }
 
@@ -56,6 +58,16 @@ export async function runInit(options: InitOptions = {}): Promise<void> {
   } else {
     console.log(colors.green('fictcn init completed.'))
   }
+}
+
+async function writeScaffoldFile(projectRoot: string, relativePath: string, content: string, force: boolean): Promise<void> {
+  const current = await readTextIfExists(resolvePathWithinRoot(projectRoot, relativePath))
+  if (!force && current !== null && current !== content) {
+    console.log(colors.yellow(`Skipped existing file ${relativePath}; rerun with --force to overwrite.`))
+    return
+  }
+
+  await upsertTextFile(projectRoot, relativePath, content)
 }
 
 async function ensureTsconfigAlias(projectRoot: string, config: FictcnConfig, dryRun: boolean): Promise<void> {
