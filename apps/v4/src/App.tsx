@@ -115,7 +115,13 @@ export function App(props: AppProps) {
               Docs
             </a>
             <a
-              class={route.pathname === "/docs/components" || route.pathname.startsWith("/docs/components/") ? "active-nav-link" : ""}
+              class={
+                route.pathname === "/components" ||
+                route.pathname === "/docs/components" ||
+                route.pathname.startsWith("/docs/components/")
+                  ? "active-nav-link"
+                  : ""
+              }
               href="/docs/components"
             >
               Components

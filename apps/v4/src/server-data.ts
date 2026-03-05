@@ -147,11 +147,41 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
   }
 
   if (pathname === "/components") {
+    const doc = catalog.docsBySlug.get("components") ?? null
+    const { previous, next } = getDocNeighbors(catalog, "components")
+    if (doc) {
+      return {
+        kind: "docs-detail",
+        status: 200,
+        pathname,
+        pageTitle: `${doc.title} - Docs - @fictjs/shadcn`,
+        docs: catalog.docs,
+        doc,
+        docNavigation: catalog.docNavigation,
+        docPrev: previous,
+        docNext: next,
+        components: catalog.components,
+        examples: catalog.examples,
+        examplePages: featuredExamplePages,
+        activeExample: null,
+        exampleSlug: null,
+        charts: catalog.charts,
+        chartTypes,
+        activeChartType: null,
+        chartItems: [],
+        chartType: null,
+        blocks: catalog.blocks,
+        blockCategories,
+        blockCategory: null,
+        themes: catalog.themes,
+      }
+    }
+
     return {
-      kind: "components",
-      status: 200,
+      kind: "not-found",
+      status: 404,
       pathname,
-      pageTitle: "Components - @fictjs/shadcn",
+      pageTitle: "Not Found - @fictjs/shadcn",
       ...basePayload,
     }
   }
