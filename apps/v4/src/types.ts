@@ -21,6 +21,17 @@ export interface ThemeEntry {
   title: string
 }
 
+export interface DocNavItem {
+  slug: string
+  title: string
+  href: string
+}
+
+export interface DocNavSection {
+  title: string
+  items: DocNavItem[]
+}
+
 export type RouteKind =
   | "home"
   | "docs-index"
@@ -40,6 +51,9 @@ export interface ResolvedRoute {
   pageTitle: string
   docs: DocSummary[]
   doc: DocPage | null
+  docNavigation: DocNavSection[]
+  docPrev: DocSummary | null
+  docNext: DocSummary | null
   components: string[]
   examples: string[]
   charts: string[]
