@@ -457,6 +457,21 @@ h1 {
   gap: 0.4rem;
 }
 
+.home-hero-card {
+  padding: 1.25rem;
+}
+
+.home-preview-card {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.home-preview-images {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
 .example-detail-card,
 .example-detail-head {
   display: grid;
