@@ -112,7 +112,7 @@ if (isWatchMode) {
       }
     }
 
-    watcher.on("error", (error) => {
+    watcher.on("error", (error: unknown) => {
       console.error("❌ Watcher error:", error)
     })
 
