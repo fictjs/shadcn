@@ -1,10 +1,32 @@
 import { $state } from "fict"
 
-import type { BlockEntry, DocPage, DocSummary, ResolvedRoute, ThemeEntry } from "./types"
+import { colors as tailwindColors } from "../registry/_legacy-colors"
+import type {
+  BlockEntry,
+  DocPage,
+  DocSummary,
+  ResolvedRoute,
+  ThemeEntry,
+} from "./types"
 
 interface AppProps {
   route: ResolvedRoute
 }
+
+interface ColorScaleEntry {
+  scale: number
+  hex: string
+  rgb: string
+  hsl: string
+  oklch: string
+}
+
+interface ColorPalette {
+  name: string
+  scales: ColorScaleEntry[]
+}
+
+const colorPalettes = buildColorPalettes()
 
 export function App(props: AppProps) {
   const route = props.route
@@ -17,13 +39,33 @@ export function App(props: AppProps) {
             shadcn/ui
           </a>
           <nav class="site-nav" aria-label="Primary">
-            <a href="/docs">Docs</a>
-            <a href="/components">Components</a>
-            <a href="/examples">Examples</a>
-            <a href="/charts">Charts</a>
-            <a href="/blocks">Blocks</a>
-            <a href="/themes">Themes</a>
-            <a href="/colors">Colors</a>
+            <a
+              class={route.pathname === "/docs" || route.pathname.startsWith("/docs/") ? "active-nav-link" : ""}
+              href="/docs"
+            >
+              Docs
+            </a>
+            <a
+              class={route.pathname === "/components" ? "active-nav-link" : ""}
+              href="/components"
+            >
+              Components
+            </a>
+            <a class={route.pathname === "/examples" ? "active-nav-link" : ""} href="/examples">
+              Examples
+            </a>
+            <a class={route.pathname === "/charts" ? "active-nav-link" : ""} href="/charts">
+              Charts
+            </a>
+            <a class={route.pathname === "/blocks" ? "active-nav-link" : ""} href="/blocks">
+              Blocks
+            </a>
+            <a class={route.pathname === "/themes" ? "active-nav-link" : ""} href="/themes">
+              Themes
+            </a>
+            <a class={route.pathname === "/colors" ? "active-nav-link" : ""} href="/colors">
+              Colors
+            </a>
           </nav>
         </div>
       </header>
@@ -31,9 +73,7 @@ export function App(props: AppProps) {
       <main class="container main-content">
         {route.kind === "home" ? <HomePage route={route} /> : null}
         {route.kind === "docs-index" ? <DocsIndexPage docs={route.docs} /> : null}
-        {route.kind === "docs-detail" && route.doc ? (
-          <DocDetailPage doc={route.doc} />
-        ) : null}
+        {route.kind === "docs-detail" && route.doc ? <DocDetailPage route={route} /> : null}
         {route.kind === "components" ? <ComponentsPage components={route.components} /> : null}
         {route.kind === "examples" ? <ExamplesPage examples={route.examples} /> : null}
         {route.kind === "charts" ? <ChartsPage charts={route.charts} /> : null}
@@ -46,7 +86,11 @@ export function App(props: AppProps) {
       <footer class="site-footer">
         <div class="container footer-row">
           <p>
-            Ported by <a href="https://x.com/unovue">unovue</a>. Source code available on{" "}
+            Built by <a href="https://x.com/shadcn">shadcn</a> at{" "}
+            <a href="https://vercel.com/new?utm_source=shadcn_site&utm_medium=web&utm_campaign=docs_cta_deploy_now_callout">
+              Vercel
+            </a>
+            . The source code is available on{" "}
             <a href="https://github.com/unovue/shadcn-vue">GitHub</a>.
           </p>
         </div>
@@ -67,19 +111,17 @@ function HomePage(props: { route: ResolvedRoute }) {
     <section class="home-grid">
       <div class="hero card">
         <p class="eyebrow">Open Source. Open Code.</p>
-        <h1>A set of beautifully designed components</h1>
+        <h1>The Foundation for your Design System</h1>
         <p class="lead">
-          You can customize, extend, and build on top of them. Start here then make it your own.
+          A set of beautifully designed components that you can customize, extend, and build on.
+          Start here then make it your own. Open Source. Open Code.
         </p>
         <div class="cta-row">
-          <a class="button" href="/docs">
+          <a class="button" href="/docs/installation">
             Get Started
           </a>
           <a class="button button-ghost" href="/components">
             View Components
-          </a>
-          <a class="button button-ghost" href="/colors">
-            Browse Colors
           </a>
         </div>
       </div>
@@ -110,13 +152,6 @@ function HomePage(props: { route: ResolvedRoute }) {
           <p class="stat-value">{themesCount}</p>
         </div>
       </div>
-
-      <div class="card command-card">
-        <p class="eyebrow">CLI</p>
-        <h2>Start a shadcn project</h2>
-        <pre class="inline-code">npx shadcn@latest init</pre>
-        <pre class="inline-code">npx shadcn@latest add button</pre>
-      </div>
     </section>
   )
 }
@@ -139,11 +174,11 @@ function DocsIndexPage(props: { docs: DocSummary[] }) {
 
     const nextDocs: DocSummary[] = []
     for (const doc of props.docs) {
-      const matches =
+      if (
         doc.title.toLowerCase().includes(normalizedQuery) ||
         doc.slug.toLowerCase().includes(normalizedQuery) ||
-        doc.section.toLowerCase().includes(normalizedQuery)
-      if (matches) {
+        (doc.section || "").toLowerCase().includes(normalizedQuery)
+      ) {
         nextDocs.push(doc)
       }
     }
@@ -156,7 +191,7 @@ function DocsIndexPage(props: { docs: DocSummary[] }) {
       <div>
         <p class="eyebrow">Documentation</p>
         <h1>Docs</h1>
-        <p class="lead">Search and open documentation content sourced from the v4 docs tree.</p>
+        <p class="lead">Browse all documentation pages from the v4 docs tree.</p>
       </div>
 
       <div class="card control-card">
@@ -172,13 +207,13 @@ function DocsIndexPage(props: { docs: DocSummary[] }) {
 
       <ul class="list-grid">
         {filteredDocs.map((doc) => (
-          <li class="card list-item" key={doc.slug}>
-            <p class="eyebrow">{doc.section}</p>
+          <li class="card list-item" key={doc.slug || "index"}>
+            <p class="eyebrow">{doc.section || "overview"}</p>
             <h3>
-              <a href={`/docs/${doc.slug}`}>{doc.title}</a>
+              <a href={doc.slug ? `/docs/${doc.slug}` : "/docs"}>{doc.title}</a>
             </h3>
             <p>{doc.description || "No description."}</p>
-            <p class="slug">/docs/{doc.slug}</p>
+            <p class="slug">{doc.slug ? `/docs/${doc.slug}` : "/docs"}</p>
           </li>
         ))}
       </ul>
@@ -186,29 +221,68 @@ function DocsIndexPage(props: { docs: DocSummary[] }) {
   )
 }
 
-function DocDetailPage(props: { doc: DocPage }) {
+function DocDetailPage(props: { route: ResolvedRoute }) {
+  const doc = props.route.doc as DocPage
+
   return (
-    <article class="stack-gap doc-layout">
-      <div>
-        <p class="eyebrow">{props.doc.section}</p>
-        <h1>{props.doc.title}</h1>
-        <p class="lead">{props.doc.description || "No description."}</p>
-        <p class="slug">source: content/docs/{props.doc.sourcePath}</p>
-      </div>
+    <section class="docs-layout">
+      <aside class="docs-sidebar card">
+        <p class="eyebrow">Documentation</p>
+        {props.route.docNavigation.map((section) => (
+          <div class="docs-sidebar-section" key={section.title}>
+            <h3>{section.title}</h3>
+            <ul>
+              {section.items.map((item) => (
+                <li key={item.slug || "index"}>
+                  <a
+                    href={item.href}
+                    class={item.slug === doc.slug ? "docs-link-active" : ""}
+                  >
+                    {item.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </aside>
 
-      <div class="card doc-body">
-        <pre>{props.doc.body}</pre>
-      </div>
+      <article class="doc-main card">
+        <header class="doc-header">
+          <p class="eyebrow">{doc.section || "overview"}</p>
+          <h1>{doc.title}</h1>
+          <p class="lead">{doc.description || "No description provided."}</p>
+          <p class="slug">source: content/docs/{doc.sourcePath}</p>
+        </header>
 
-      <div class="doc-nav">
-        <a class="button button-ghost" href="/docs">
-          &lt;- Docs Index
-        </a>
-        <a class="button button-ghost" href="/components">
-          Browse Components -&gt;
-        </a>
-      </div>
-    </article>
+        <div class="doc-body">
+          <pre class="doc-code">
+            <code>{doc.body}</code>
+          </pre>
+        </div>
+
+        <div class="doc-nav">
+          {props.route.docPrev ? (
+            <a
+              class="button button-ghost"
+              href={props.route.docPrev.slug ? `/docs/${props.route.docPrev.slug}` : "/docs"}
+            >
+              &lt;- {props.route.docPrev.title}
+            </a>
+          ) : (
+            <span />
+          )}
+          {props.route.docNext ? (
+            <a
+              class="button button-ghost"
+              href={props.route.docNext.slug ? `/docs/${props.route.docNext.slug}` : "/docs"}
+            >
+              {props.route.docNext.title} -&gt;
+            </a>
+          ) : null}
+        </div>
+      </article>
+    </section>
   )
 }
 
@@ -229,9 +303,9 @@ function ComponentsPage(props: { components: string[] }) {
     }
 
     const nextComponents: string[] = []
-    for (const name of props.components) {
-      if (name.toLowerCase().includes(normalizedQuery)) {
-        nextComponents.push(name)
+    for (const component of props.components) {
+      if (component.toLowerCase().includes(normalizedQuery)) {
+        nextComponents.push(component)
       }
     }
 
@@ -241,9 +315,11 @@ function ComponentsPage(props: { components: string[] }) {
   return (
     <section class="stack-gap">
       <div>
-        <p class="eyebrow">Registry</p>
-        <h1>Fict shadcn Components</h1>
-        <p class="lead">Component list from `registry/new-york-v4/ui`.</p>
+        <p class="eyebrow">Components</p>
+        <h1>Browse Components</h1>
+        <p class="lead">
+          A set of beautifully designed components that you can copy and paste into your apps.
+        </p>
       </div>
 
       <div class="card control-card">
@@ -288,9 +364,9 @@ function ExamplesPage(props: { examples: string[] }) {
     }
 
     const nextExamples: string[] = []
-    for (const name of props.examples) {
-      if (name.toLowerCase().includes(normalizedQuery)) {
-        nextExamples.push(name)
+    for (const example of props.examples) {
+      if (example.toLowerCase().includes(normalizedQuery)) {
+        nextExamples.push(example)
       }
     }
 
@@ -301,8 +377,11 @@ function ExamplesPage(props: { examples: string[] }) {
     <section class="stack-gap">
       <div>
         <p class="eyebrow">Examples</p>
-        <h1>Fict shadcn Examples</h1>
-        <p class="lead">Examples sourced from `registry/new-york-v4/examples`.</p>
+        <h1>The Foundation for your Design System</h1>
+        <p class="lead">
+          A set of beautifully designed components that you can customize, extend, and build on.
+          Start here then make it your own. Open Source. Open Code.
+        </p>
       </div>
 
       <div class="card control-card">
@@ -347,9 +426,9 @@ function ChartsPage(props: { charts: string[] }) {
     }
 
     const nextCharts: string[] = []
-    for (const name of props.charts) {
-      if (name.toLowerCase().includes(normalizedQuery)) {
-        nextCharts.push(name)
+    for (const chart of props.charts) {
+      if (chart.toLowerCase().includes(normalizedQuery)) {
+        nextCharts.push(chart)
       }
     }
 
@@ -360,8 +439,11 @@ function ChartsPage(props: { charts: string[] }) {
     <section class="stack-gap">
       <div>
         <p class="eyebrow">Charts</p>
-        <h1>Fict shadcn Chart Recipes</h1>
-        <p class="lead">Chart examples sourced from `registry/new-york-v4/charts`.</p>
+        <h1>Beautiful Charts &amp; Graphs</h1>
+        <p class="lead">
+          A collection of ready-to-use chart components. From basic charts to rich data displays,
+          copy and paste into your apps.
+        </p>
       </div>
 
       <div class="card control-card">
@@ -394,8 +476,10 @@ function BlocksPage(props: { blocks: BlockEntry[] }) {
     <section class="stack-gap">
       <div>
         <p class="eyebrow">Blocks</p>
-        <h1>Fict shadcn Blocks</h1>
-        <p class="lead">Block metadata from `registry/__blocks__.json`.</p>
+        <h1>Building Blocks for the Web</h1>
+        <p class="lead">
+          Clean, modern building blocks. Copy and paste into your apps. Open Source. Free forever.
+        </p>
       </div>
 
       <ul class="list-grid">
@@ -445,8 +529,11 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
     <section class="stack-gap">
       <div>
         <p class="eyebrow">Themes</p>
-        <h1>Fict shadcn Themes</h1>
-        <p class="lead">Theme metadata sourced from `registry/themes.ts`.</p>
+        <h1>Pick a Color. Make it yours.</h1>
+        <p class="lead">
+          Try our hand-picked themes. Copy and paste them into your project. New theme editor coming
+          soon.
+        </p>
       </div>
 
       <div class="card control-card">
@@ -474,51 +561,38 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
 }
 
 function ColorsPage() {
-  const palettes = [
-    "zinc",
-    "slate",
-    "stone",
-    "gray",
-    "neutral",
-    "red",
-    "rose",
-    "orange",
-    "amber",
-    "yellow",
-    "lime",
-    "green",
-    "emerald",
-    "teal",
-    "cyan",
-    "sky",
-    "blue",
-    "indigo",
-    "violet",
-    "purple",
-    "fuchsia",
-    "pink",
-  ]
-
   return (
     <section class="stack-gap">
       <div>
         <p class="eyebrow">Colors</p>
         <h1>Tailwind Colors in Every Format</h1>
         <p class="lead">
-          The complete Tailwind color palette in HEX, RGB, HSL, CSS variables, and classes.
+          The complete Tailwind color palette in HEX, RGB, HSL, CSS variables, and classes. Ready to
+          copy and paste into your project.
         </p>
       </div>
 
-      <ul class="pill-grid">
-        {palettes.map((palette) => (
-          <li key={palette}>
-            <div class="card pill-item">
-              <p class="pill-name">{palette}</p>
-              <p class="slug">/colors#{palette}</p>
+      <div class="colors-grid" id="colors">
+        {colorPalettes.map((palette) => (
+          <section class="card color-palette" key={palette.name} id={palette.name}>
+            <h2>{palette.name}</h2>
+            <div class="color-scales">
+              {palette.scales.map((entry) => (
+                <article class="color-scale" key={`${palette.name}-${entry.scale}`}>
+                  <div class="color-swatch" style={`background:${entry.hex}`}></div>
+                  <div class="color-meta">
+                    <p class="pill-name">{entry.scale}</p>
+                    <p class="slug">{entry.hex}</p>
+                    <p class="slug">{entry.rgb}</p>
+                    <p class="slug">{entry.hsl}</p>
+                    <p class="slug">{entry.oklch}</p>
+                  </div>
+                </article>
+              ))}
             </div>
-          </li>
+          </section>
         ))}
-      </ul>
+      </div>
     </section>
   )
 }
@@ -539,4 +613,46 @@ function NotFoundPage(props: { pathname: string }) {
       </div>
     </section>
   )
+}
+
+function buildColorPalettes(): ColorPalette[] {
+  const palettes: ColorPalette[] = []
+
+  for (const [name, value] of Object.entries(tailwindColors)) {
+    if (!Array.isArray(value)) {
+      continue
+    }
+
+    if (!isColorScaleArray(value)) {
+      continue
+    }
+
+    palettes.push({
+      name,
+      scales: [...value].sort((a, b) => a.scale - b.scale),
+    })
+  }
+
+  return palettes.sort((a, b) => a.name.localeCompare(b.name))
+}
+
+function isColorScaleArray(value: unknown[]): value is ColorScaleEntry[] {
+  for (const entry of value) {
+    if (!entry || typeof entry !== "object") {
+      return false
+    }
+
+    const maybe = entry as Record<string, unknown>
+    if (
+      typeof maybe.scale !== "number" ||
+      typeof maybe.hex !== "string" ||
+      typeof maybe.rgb !== "string" ||
+      typeof maybe.hsl !== "string" ||
+      typeof maybe.oklch !== "string"
+    ) {
+      return false
+    }
+  }
+
+  return true
 }
