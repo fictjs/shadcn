@@ -595,6 +595,66 @@ h1 {
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
+.theme-customizer-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.theme-name-scroll {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.theme-pill {
+  border: 1px solid transparent;
+  border-radius: 0.45rem;
+  padding: 0.32rem 0.6rem;
+  background: transparent;
+  color: var(--muted-foreground);
+  font: inherit;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.theme-pill:hover,
+.theme-pill.theme-pill-active {
+  border-color: var(--border);
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+.theme-copy-button {
+  margin-left: auto;
+}
+
+.theme-preview-panel {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.theme-preview-header {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.theme-swatch-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.theme-swatch {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+
 .doc-nav {
   justify-content: space-between;
 }

@@ -772,32 +772,14 @@ function BlocksPage(props: { route: ResolvedRoute }) {
 }
 
 function ThemesPage(props: { themes: ThemeEntry[] }) {
-  let query = $state("")
-  let filtered: ThemeEntry[] = $state(props.themes)
+  let activeThemeName = $state("neutral")
+  let activeThemeTitle = $state("Neutral")
+  let activeSwatches = $state(getThemeSwatches("neutral"))
 
-  const updateFilter = (event: Event) => {
-    const target = event.target as HTMLInputElement | null
-    const nextQuery = target?.value ?? ""
-    const normalizedQuery = nextQuery.trim().toLowerCase()
-
-    query = nextQuery
-
-    if (!normalizedQuery) {
-      filtered = props.themes
-      return
-    }
-
-    const nextThemes: ThemeEntry[] = []
-    for (const theme of props.themes) {
-      if (
-        theme.name.toLowerCase().includes(normalizedQuery) ||
-        theme.title.toLowerCase().includes(normalizedQuery)
-      ) {
-        nextThemes.push(theme)
-      }
-    }
-
-    filtered = nextThemes
+  const setActiveTheme = (theme: ThemeEntry) => {
+    activeThemeName = theme.name
+    activeThemeTitle = theme.title
+    activeSwatches = getThemeSwatches(theme.name)
   }
 
   return (
@@ -819,30 +801,48 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
         </div>
       </div>
 
-      <section class="card themes-preview-card" id="themes">
-        <figure class="example-preview-card">
-          <img src="/examples/cards-light.png" alt="Theme cards light preview" loading="lazy" />
-          <figcaption class="slug">Cards preview (light)</figcaption>
-        </figure>
-        <figure class="example-preview-card">
-          <img src="/examples/cards-dark.png" alt="Theme cards dark preview" loading="lazy" />
-          <figcaption class="slug">Cards preview (dark)</figcaption>
-        </figure>
+      <section class="card theme-customizer-row" id="themes">
+        <div class="theme-name-scroll">
+          {props.themes.map((theme) => (
+            <button
+              type="button"
+              key={theme.name}
+              class={activeThemeName === theme.name ? "theme-pill theme-pill-active" : "theme-pill"}
+              onClick={() => setActiveTheme(theme)}
+            >
+              {theme.name === "neutral" ? "Default" : theme.name}
+            </button>
+          ))}
+        </div>
+        <button type="button" class="button button-ghost theme-copy-button">
+          Copy Code
+        </button>
       </section>
 
-      <div class="card control-card">
-        <label for="theme-filter">Filter themes</label>
-        <input
-          id="theme-filter"
-          type="text"
-          value={query}
-          placeholder="search theme name"
-          onInput={(event) => updateFilter(event)}
-        />
-      </div>
+      <section class="card theme-preview-panel">
+        <div class="theme-preview-header">
+          <h2>{activeThemeTitle}</h2>
+          <p class="slug">theme: {activeThemeName}</p>
+        </div>
+        <div class="theme-swatch-row">
+          {activeSwatches.map((swatch) => (
+            <span key={`${activeThemeName}-${swatch}`} class="theme-swatch" style={`background:${swatch}`} />
+          ))}
+        </div>
+        <div class="themes-preview-card">
+          <figure class="example-preview-card">
+            <img src="/examples/cards-light.png" alt="Theme cards light preview" loading="lazy" />
+            <figcaption class="slug">Cards preview (light)</figcaption>
+          </figure>
+          <figure class="example-preview-card">
+            <img src="/examples/cards-dark.png" alt="Theme cards dark preview" loading="lazy" />
+            <figcaption class="slug">Cards preview (dark)</figcaption>
+          </figure>
+        </div>
+      </section>
 
       <ul class="list-grid">
-        {filtered.map((theme) => (
+        {props.themes.map((theme) => (
           <li class="card list-item" key={theme.name}>
             <h3>{theme.title}</h3>
             <p class="slug">name: {theme.name}</p>
@@ -923,6 +923,28 @@ function NotFoundPage(props: { pathname: string }) {
       </div>
     </section>
   )
+}
+
+function getThemeSwatches(themeName: string): string[] {
+  const palette = colorPalettes.find((entry) => entry.name === themeName) || colorPalettes[0]
+  if (!palette) {
+    return ["#0f172a", "#334155", "#64748b", "#94a3b8", "#cbd5e1"]
+  }
+
+  const preferredScales = [950, 700, 500, 300, 100]
+  const swatches: string[] = []
+  for (const scale of preferredScales) {
+    const match = palette.scales.find((entry) => entry.scale === scale)
+    if (match) {
+      swatches.push(match.hex)
+    }
+  }
+
+  if (swatches.length > 0) {
+    return swatches
+  }
+
+  return palette.scales.slice(0, 5).map((entry) => entry.hex)
 }
 
 function buildColorPalettes(): ColorPalette[] {
