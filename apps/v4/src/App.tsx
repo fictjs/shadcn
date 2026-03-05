@@ -26,7 +26,76 @@ interface ColorPalette {
   scales: ColorScaleEntry[]
 }
 
+interface ExampleRootCard {
+  title: string
+  caption: string
+  image?: string
+}
+
 const colorPalettes = buildColorPalettes()
+const examplesRootColumns: ExampleRootCard[][] = [
+  [
+    {
+      title: "Field Demo",
+      caption: "Compound field patterns with labels, hints, and validation states.",
+    },
+    {
+      title: "Input Group Demo",
+      caption: "Dense form controls and grouped actions in a compact shell.",
+    },
+    {
+      title: "Appearance Settings",
+      caption: "Preference cards for color, spacing, and interaction density.",
+    },
+  ],
+  [
+    {
+      title: "Empty Avatar Group",
+      caption: "Avatar list treatment for empty and partially-loaded user states.",
+    },
+    {
+      title: "Spinner Badge",
+      caption: "Status affordances with animated badges and loading cues.",
+    },
+    {
+      title: "Tasks Preview",
+      caption: "Task table and filters inspired by the tasks example page.",
+      image: "/examples/tasks-light.png",
+    },
+  ],
+  [
+    {
+      title: "Notion Prompt Form",
+      caption: "Prompt builder using grouped inputs and secondary actions.",
+    },
+    {
+      title: "Button Group Demo",
+      caption: "Segmented actions for nested and popover-powered controls.",
+    },
+    {
+      title: "Playground Preview",
+      caption: "Preset-driven prompt playground with panel-style composition.",
+      image: "/examples/playground-light.png",
+    },
+  ],
+  [
+    {
+      title: "Cards Preview",
+      caption: "Theme cards and neutral surfaces used by the themes route.",
+      image: "/examples/cards-light.png",
+    },
+    {
+      title: "Authentication Preview",
+      caption: "Split authentication layout with media and form composition.",
+      image: "/examples/authentication-light.png",
+    },
+    {
+      title: "Dashboard Preview",
+      caption: "Analytics-focused dashboard framing for complex data layouts.",
+      image: "/examples/dashboard-light.png",
+    },
+  ],
+]
 
 export function App(props: AppProps) {
   const route = props.route
@@ -137,17 +206,15 @@ function HomePage(props: { route: ResolvedRoute }) {
         ))}
       </nav>
 
-      <section class="card home-preview-card">
-        <div class="home-preview-images">
-          <figure class="example-preview-card">
-            <img src="/examples/dashboard-light.png" alt="Dashboard light preview" loading="lazy" />
-            <figcaption class="slug">Dashboard light</figcaption>
-          </figure>
-          <figure class="example-preview-card">
-            <img src="/examples/dashboard-dark.png" alt="Dashboard dark preview" loading="lazy" />
-            <figcaption class="slug">Dashboard dark</figcaption>
-          </figure>
-        </div>
+      <section class="card home-mobile-preview">
+        <figure class="example-preview-card">
+          <img src="/examples/dashboard-light.png" alt="Dashboard light preview" loading="lazy" />
+          <figcaption class="slug">Dashboard preview</figcaption>
+        </figure>
+      </section>
+
+      <section class="card home-examples-root">
+        <ExamplesRootPreview />
       </section>
 
       <div class="stats-grid">
@@ -177,6 +244,26 @@ function HomePage(props: { route: ResolvedRoute }) {
         </div>
       </div>
     </section>
+  )
+}
+
+function ExamplesRootPreview() {
+  return (
+    <div class="examples-root-grid">
+      {examplesRootColumns.map((column, columnIndex) => (
+        <div class="examples-root-column" key={`column-${columnIndex}`}>
+          {column.map((card) => (
+            <article class="card example-root-card" key={card.title}>
+              {card.image ? (
+                <img src={card.image} alt={`${card.title} preview`} loading="lazy" />
+              ) : null}
+              <h3>{card.title}</h3>
+              <p>{card.caption}</p>
+            </article>
+          ))}
+        </div>
+      ))}
+    </div>
   )
 }
 
@@ -514,17 +601,23 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
           </div>
         </article>
       ) : (
-        <ul class="list-grid">
-          {props.route.examplePages.map((showcase) => (
-            <li class="card list-item" key={showcase.slug}>
-              <h3>
-                <a href={`/examples/${showcase.slug}`}>{showcase.title}</a>
-              </h3>
-              <p>{showcase.description}</p>
-              <p class="slug">/examples/{showcase.slug}</p>
-            </li>
-          ))}
-        </ul>
+        <>
+          <section class="card home-examples-root">
+            <ExamplesRootPreview />
+          </section>
+
+          <ul class="list-grid">
+            {props.route.examplePages.map((showcase) => (
+              <li class="card list-item" key={showcase.slug}>
+                <h3>
+                  <a href={`/examples/${showcase.slug}`}>{showcase.title}</a>
+                </h3>
+                <p>{showcase.description}</p>
+                <p class="slug">/examples/{showcase.slug}</p>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
 
       <div class="card control-card">
