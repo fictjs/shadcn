@@ -22,14 +22,20 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL!),
   description: siteConfig.description,
-  keywords: ["Next.js", "React", "Tailwind CSS", "Components", "shadcn"],
+  keywords: [
+    "Fict",
+    "@fictjs/shadcn",
+    "Tailwind CSS",
+    "Components",
+    "Registry",
+  ],
   authors: [
     {
-      name: "shadcn",
-      url: "https://shadcn.com",
+      name: "Fict Contributors",
+      url: "https://github.com/fictjs/shadcn",
     },
   ],
-  creator: "shadcn",
+  creator: "fictjs",
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -51,7 +57,7 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     images: [`${process.env.NEXT_PUBLIC_APP_URL}/opengraph-image.png`],
-    creator: "@shadcn",
+    creator: "@fictjs",
   },
   icons: {
     icon: "/favicon.ico",

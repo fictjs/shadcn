@@ -1,13 +1,13 @@
 {
-  "name": "v4",
+  "name": "@fictjs/shadcn-v4-site",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "pnpm icons:dev & next dev --turbopack --port 4000",
-    "build": "pnpm --filter=shadcn build && next build",
+    "build": "pnpm --dir ../.. build && next build",
     "start": "next start --port 4000",
-    "preview": "pnpm --filter=shadcn build && next build && next start --port 4000",
+    "preview": "pnpm --dir ../.. build && next build && next start --port 4000",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit",

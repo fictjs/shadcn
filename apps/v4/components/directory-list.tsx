@@ -23,7 +23,7 @@ import { SearchDirectory } from "./search-directory"
 
 function getHomepageUrl(homepage: string) {
   const url = new URL(homepage)
-  url.searchParams.set("utm_source", "ui.shadcn.com")
+  url.searchParams.set("utm_source", "fict.js.org")
   url.searchParams.set("utm_medium", "referral")
   url.searchParams.set("utm_campaign", "directory")
   return url.toString()
