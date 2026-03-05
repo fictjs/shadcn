@@ -648,7 +648,11 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
 function ChartsPage(props: { route: ResolvedRoute }) {
   const chartTypes = props.route.chartTypes
   const activeType = props.route.activeChartType
-  const activeCharts = props.route.chartItems
+  const activeCharts = props.route.chartItems.slice(0, 12)
+  const emptySlots = Array.from(
+    { length: Math.max(0, 12 - activeCharts.length) },
+    (_, index) => index,
+  )
 
   return (
     <section class="stack-gap">
@@ -691,16 +695,18 @@ function ChartsPage(props: { route: ResolvedRoute }) {
         </div>
       ) : null}
 
-      <ul class="pill-grid" id="charts">
+      <div class="charts-grid" id="charts">
         {activeCharts.map((chart) => (
-          <li key={chart}>
-            <div class="card pill-item">
-              <p class="pill-name">{chart}</p>
-              <p class="slug">registry/new-york-v4/charts/{chart}.tsx</p>
-            </div>
-          </li>
+          <article class="card chart-display-card" key={chart}>
+            <p class="pill-name">{chart}</p>
+            <div class="chart-frame-placeholder" />
+            <p class="slug">registry/new-york-v4/charts/{chart}.tsx</p>
+          </article>
         ))}
-      </ul>
+        {emptySlots.map((slot) => (
+          <div class="chart-empty-slot" key={`empty-${slot}`} />
+        ))}
+      </div>
     </section>
   )
 }
