@@ -51,13 +51,13 @@ export function App(props: AppProps) {
             >
               Components
             </a>
-            <a class={route.pathname === "/examples" ? "active-nav-link" : ""} href="/examples">
+            <a class={route.pathname === "/examples" || route.pathname.startsWith("/examples/") ? "active-nav-link" : ""} href="/examples">
               Examples
             </a>
-            <a class={route.pathname === "/charts" ? "active-nav-link" : ""} href="/charts">
+            <a class={route.pathname === "/charts" || route.pathname.startsWith("/charts/") ? "active-nav-link" : ""} href="/charts">
               Charts
             </a>
-            <a class={route.pathname === "/blocks" ? "active-nav-link" : ""} href="/blocks">
+            <a class={route.pathname === "/blocks" || route.pathname.startsWith("/blocks/") ? "active-nav-link" : ""} href="/blocks">
               Blocks
             </a>
             <a class={route.pathname === "/themes" ? "active-nav-link" : ""} href="/themes">
@@ -75,9 +75,9 @@ export function App(props: AppProps) {
         {route.kind === "docs-index" ? <DocsIndexPage docs={route.docs} /> : null}
         {route.kind === "docs-detail" && route.doc ? <DocDetailPage route={route} /> : null}
         {route.kind === "components" ? <ComponentsPage components={route.components} /> : null}
-        {route.kind === "examples" ? <ExamplesPage examples={route.examples} /> : null}
-        {route.kind === "charts" ? <ChartsPage charts={route.charts} /> : null}
-        {route.kind === "blocks" ? <BlocksPage blocks={route.blocks} /> : null}
+        {route.kind === "examples" ? <ExamplesPage route={route} /> : null}
+        {route.kind === "charts" ? <ChartsPage route={route} /> : null}
+        {route.kind === "blocks" ? <BlocksPage route={route} /> : null}
         {route.kind === "themes" ? <ThemesPage themes={route.themes} /> : null}
         {route.kind === "colors" ? <ColorsPage /> : null}
         {route.kind === "not-found" ? <NotFoundPage pathname={route.pathname} /> : null}
@@ -256,9 +256,29 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
         </header>
 
         <div class="doc-body">
-          <pre class="doc-code">
-            <code>{doc.body}</code>
-          </pre>
+          {doc.blocks.map((block, index) => (
+            block.kind === "heading" ? (
+              block.level === 1 ? (
+                <h1 id={block.id} key={`${block.id || "h1"}-${index}`}>
+                  {block.text}
+                </h1>
+              ) : block.level === 2 ? (
+                <h2 id={block.id} key={`${block.id || "h2"}-${index}`}>
+                  {block.text}
+                </h2>
+              ) : (
+                <h3 id={block.id} key={`${block.id || "h3"}-${index}`}>
+                  {block.text}
+                </h3>
+              )
+            ) : block.kind === "code" ? (
+              <pre class="doc-code" key={`code-${index}`}>
+                <code>{block.text}</code>
+              </pre>
+            ) : (
+              <p key={`p-${index}`}>{block.text}</p>
+            )
+          ))}
         </div>
 
         <div class="doc-nav">
@@ -282,6 +302,23 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
           ) : null}
         </div>
       </article>
+
+      <aside class="docs-toc card">
+        <p class="eyebrow">On this page</p>
+        {doc.headings.length > 0 ? (
+          <ul>
+            {doc.headings.map((heading) => (
+              <li key={heading.id}>
+                <a href={`#${heading.id}`} class={heading.level === 3 ? "toc-level-3" : ""}>
+                  {heading.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="slug">No headings</p>
+        )}
+      </aside>
     </section>
   )
 }
@@ -347,9 +384,10 @@ function ComponentsPage(props: { components: string[] }) {
   )
 }
 
-function ExamplesPage(props: { examples: string[] }) {
+function ExamplesPage(props: { route: ResolvedRoute }) {
+  const activeShowcase = props.route.activeExample
   let query = $state("")
-  let filtered: string[] = $state(props.examples)
+  let filtered: string[] = $state(props.route.examples)
 
   const updateFilter = (event: Event) => {
     const target = event.target as HTMLInputElement | null
@@ -359,12 +397,12 @@ function ExamplesPage(props: { examples: string[] }) {
     query = nextQuery
 
     if (!normalizedQuery) {
-      filtered = props.examples
+      filtered = props.route.examples
       return
     }
 
     const nextExamples: string[] = []
-    for (const example of props.examples) {
+    for (const example of props.route.examples) {
       if (example.toLowerCase().includes(normalizedQuery)) {
         nextExamples.push(example)
       }
@@ -383,6 +421,61 @@ function ExamplesPage(props: { examples: string[] }) {
           Start here then make it your own. Open Source. Open Code.
         </p>
       </div>
+
+      <nav class="section-nav" aria-label="Examples navigation">
+        <a class={props.route.exampleSlug === null ? "section-nav-link-active" : ""} href="/examples">
+          Examples
+        </a>
+        {props.route.examplePages.map((showcase) => (
+          <a
+            key={showcase.slug}
+            class={props.route.exampleSlug === showcase.slug ? "section-nav-link-active" : ""}
+            href={`/examples/${showcase.slug}`}
+          >
+            {showcase.title}
+          </a>
+        ))}
+      </nav>
+
+      {activeShowcase ? (
+        <article class="card example-detail-card">
+          <div class="example-detail-head">
+            <h2>{activeShowcase.title}</h2>
+            <p class="lead">{activeShowcase.description}</p>
+            <p class="slug">route: /examples/{activeShowcase.slug}</p>
+          </div>
+          <div class="example-preview-grid">
+            <figure class="example-preview-card">
+              <img
+                src={activeShowcase.imageLight}
+                alt={`${activeShowcase.title} light preview`}
+                loading="lazy"
+              />
+              <figcaption class="slug">Light preview</figcaption>
+            </figure>
+            <figure class="example-preview-card">
+              <img
+                src={activeShowcase.imageDark}
+                alt={`${activeShowcase.title} dark preview`}
+                loading="lazy"
+              />
+              <figcaption class="slug">Dark preview</figcaption>
+            </figure>
+          </div>
+        </article>
+      ) : (
+        <ul class="list-grid">
+          {props.route.examplePages.map((showcase) => (
+            <li class="card list-item" key={showcase.slug}>
+              <h3>
+                <a href={`/examples/${showcase.slug}`}>{showcase.title}</a>
+              </h3>
+              <p>{showcase.description}</p>
+              <p class="slug">/examples/{showcase.slug}</p>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <div class="card control-card">
         <label for="example-filter">Filter examples</label>
@@ -409,31 +502,10 @@ function ExamplesPage(props: { examples: string[] }) {
   )
 }
 
-function ChartsPage(props: { charts: string[] }) {
-  let query = $state("")
-  let filtered: string[] = $state(props.charts)
-
-  const updateFilter = (event: Event) => {
-    const target = event.target as HTMLInputElement | null
-    const nextQuery = target?.value ?? ""
-    const normalizedQuery = nextQuery.trim().toLowerCase()
-
-    query = nextQuery
-
-    if (!normalizedQuery) {
-      filtered = props.charts
-      return
-    }
-
-    const nextCharts: string[] = []
-    for (const chart of props.charts) {
-      if (chart.toLowerCase().includes(normalizedQuery)) {
-        nextCharts.push(chart)
-      }
-    }
-
-    filtered = nextCharts
-  }
+function ChartsPage(props: { route: ResolvedRoute }) {
+  const chartTypes = props.route.chartTypes
+  const activeType = props.route.activeChartType
+  const activeCharts = props.route.chartItems
 
   return (
     <section class="stack-gap">
@@ -446,19 +518,28 @@ function ChartsPage(props: { charts: string[] }) {
         </p>
       </div>
 
-      <div class="card control-card">
-        <label for="chart-filter">Filter charts</label>
-        <input
-          id="chart-filter"
-          type="text"
-          value={query}
-          placeholder="search chart name"
-          onInput={(event) => updateFilter(event)}
-        />
-      </div>
+      <nav class="section-nav" aria-label="Charts navigation">
+        {chartTypes.map((type) => (
+          <a
+            key={type}
+            class={activeType === type ? "section-nav-link-active" : ""}
+            href={`/charts/${type}`}
+          >
+            {type.charAt(0).toUpperCase() + type.slice(1)}
+          </a>
+        ))}
+      </nav>
+
+      {activeType ? (
+        <div class="card chart-summary-card">
+          <p class="eyebrow">{activeType.charAt(0).toUpperCase() + activeType.slice(1)} charts</p>
+          <h2>{activeCharts.length} chart recipes</h2>
+          <p class="slug">route: /charts/{activeType}</p>
+        </div>
+      ) : null}
 
       <ul class="pill-grid">
-        {filtered.map((chart) => (
+        {activeCharts.map((chart) => (
           <li key={chart}>
             <div class="card pill-item">
               <p class="pill-name">{chart}</p>
@@ -471,7 +552,10 @@ function ChartsPage(props: { charts: string[] }) {
   )
 }
 
-function BlocksPage(props: { blocks: BlockEntry[] }) {
+function BlocksPage(props: { route: ResolvedRoute }) {
+  const categories = props.route.blockCategories
+  const filteredBlocks = props.route.blocks
+
   return (
     <section class="stack-gap">
       <div>
@@ -482,8 +566,23 @@ function BlocksPage(props: { blocks: BlockEntry[] }) {
         </p>
       </div>
 
+      <nav class="section-nav" aria-label="Blocks navigation">
+        <a class={props.route.blockCategory === null ? "section-nav-link-active" : ""} href="/blocks">
+          Featured
+        </a>
+        {categories.map((category) => (
+          <a
+            key={category}
+            class={props.route.blockCategory === category ? "section-nav-link-active" : ""}
+            href={`/blocks/${category}`}
+          >
+            {category.charAt(0).toUpperCase() + category.slice(1)}
+          </a>
+        ))}
+      </nav>
+
       <ul class="list-grid">
-        {props.blocks.map((block) => (
+        {filteredBlocks.map((block) => (
           <li class="card list-item" key={block.name}>
             <h3>{block.name}</h3>
             <p>{block.description}</p>

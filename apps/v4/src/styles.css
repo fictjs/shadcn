@@ -176,6 +176,30 @@ h1 {
   gap: 0.6rem;
 }
 
+.section-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  background: color-mix(in oklab, var(--muted) 55%, transparent);
+  padding: 0.35rem;
+}
+
+.section-nav a {
+  border-radius: 0.45rem;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+
+.section-nav a:hover,
+.section-nav a.section-nav-link-active {
+  background: var(--card);
+  color: var(--foreground);
+}
+
 .button {
   display: inline-flex;
   align-items: center;
@@ -431,6 +455,40 @@ h1 {
 .hero {
   display: grid;
   gap: 0.4rem;
+}
+
+.example-detail-card,
+.example-detail-head {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.example-preview-grid {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.example-preview-card {
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 0.55rem;
+  background: color-mix(in oklab, var(--muted) 30%, var(--card));
+  padding: 0.55rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.example-preview-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 0.35rem;
+  border: 1px solid var(--border);
+}
+
+.chart-summary-card {
+  display: grid;
+  gap: 0.35rem;
 }
 
 .doc-nav {
