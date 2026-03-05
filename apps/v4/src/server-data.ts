@@ -74,6 +74,7 @@ const featuredExamplePages: ExampleShowcase[] = [
   },
 ]
 const chartTypeOrder = ["area", "bar", "line", "pie", "radar", "radial", "tooltip"]
+const featuredBlockNames = ["dashboard-01", "sidebar-07", "sidebar-03", "login-03", "login-04"]
 
 let cachedCatalog: SiteCatalog | null = null
 
@@ -220,6 +221,7 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
       pathname,
       pageTitle: "Blocks - @fictjs/shadcn",
       ...basePayload,
+      blocks: getFeaturedBlocks(catalog.blocks),
     }
   }
 
@@ -647,6 +649,18 @@ function getBlockCategories(blocks: BlockEntry[]): string[] {
 
 function filterBlocksByCategory(blocks: BlockEntry[], category: string): BlockEntry[] {
   return blocks.filter((block) => block.categories.includes(category))
+}
+
+function getFeaturedBlocks(blocks: BlockEntry[]): BlockEntry[] {
+  const featured: BlockEntry[] = []
+  for (const name of featuredBlockNames) {
+    const match = blocks.find((block) => block.name === name)
+    if (match) {
+      featured.push(match)
+    }
+  }
+
+  return featured
 }
 
 function humanizeSegment(value: string): string {

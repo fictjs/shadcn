@@ -581,9 +581,11 @@ function ChartsPage(props: { route: ResolvedRoute }) {
           <a
             key={type}
             class={activeType === type ? "section-nav-link-active" : ""}
-            href={`/charts/${type}`}
+            href={`/charts/${type}#charts`}
           >
-            {type.charAt(0).toUpperCase() + type.slice(1)}
+            {type === "tooltip"
+              ? "Tooltips"
+              : `${type.charAt(0).toUpperCase() + type.slice(1)} Charts`}
           </a>
         ))}
       </nav>
@@ -596,7 +598,7 @@ function ChartsPage(props: { route: ResolvedRoute }) {
         </div>
       ) : null}
 
-      <ul class="pill-grid">
+      <ul class="pill-grid" id="charts">
         {activeCharts.map((chart) => (
           <li key={chart}>
             <div class="card pill-item">
@@ -632,22 +634,31 @@ function BlocksPage(props: { route: ResolvedRoute }) {
         </div>
       </div>
 
-      <nav class="section-nav" aria-label="Blocks navigation">
-        <a class={props.route.blockCategory === null ? "section-nav-link-active" : ""} href="/blocks">
-          Featured
-        </a>
-        {categories.map((category) => (
-          <a
-            key={category}
-            class={props.route.blockCategory === category ? "section-nav-link-active" : ""}
-            href={`/blocks/${category}`}
-          >
-            {category.charAt(0).toUpperCase() + category.slice(1)}
+      <div class="section-nav-row">
+        <nav class="section-nav" aria-label="Blocks navigation">
+          <a class={props.route.blockCategory === null ? "section-nav-link-active" : ""} href="/blocks">
+            Featured
           </a>
-        ))}
-      </nav>
+          {categories.map((category) => (
+            <a
+              key={category}
+              class={props.route.blockCategory === category ? "section-nav-link-active" : ""}
+              href={`/blocks/${category}`}
+            >
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </a>
+          ))}
+        </nav>
+        <a class="button button-ghost section-nav-action" href="/blocks/sidebar">
+          Browse all blocks
+        </a>
+      </div>
 
-      <ul class="list-grid">
+      {props.route.blockCategory === null ? (
+        <p class="slug">Showing featured blocks from shadcn v4.</p>
+      ) : null}
+
+      <ul class="list-grid" id="blocks">
         {filteredBlocks.map((block) => (
           <li class="card list-item" key={block.name}>
             <h3>{block.name}</h3>

@@ -200,6 +200,21 @@ h1 {
   color: var(--foreground);
 }
 
+.section-nav-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.section-nav-row .section-nav {
+  flex: 1;
+}
+
+.section-nav-action {
+  white-space: nowrap;
+}
+
 .button {
   display: inline-flex;
   align-items: center;
