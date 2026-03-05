@@ -41,7 +41,7 @@ Configure registries in your `components.json`:
 Then use the `@registry/name` format to install components:
 
 ```bash
-npx shadcn add @acme/button @internal/auth-system
+npx @fictjs/shadcn add @acme/button @internal/auth-system
 ```
 
 It's completely decentralized. There's no central registrar. Create any namespace you want and organize components however makes sense for your team.
@@ -102,19 +102,19 @@ Three new commands make it easy to find exactly what you need:
 1. View items from the registry before installing
 
 ```bash
-npx shadcn view @acme/auth-system
+npx @fictjs/shadcn view @acme/auth-system
 ```
 
 2. Search items from registries
 
 ```bash
-npx shadcn search @tweakcn -q "dark"
+npx @fictjs/shadcn search @tweakcn -q "dark"
 ```
 
 3. List all items from a registry
 
 ```bash
-npx shadcn list @acme
+npx @fictjs/shadcn list @acme
 ```
 
 Preview components before installing them. Search across multiple registries. See the code and all dependencies upfront.
@@ -142,7 +142,7 @@ Here's what's new:
 Add the MCP server to your project:
 
 ```bash
-npx shadcn@latest mcp init
+npx @fictjs/shadcn@latest mcp init
 ```
 
 See the [docs](/docs/mcp) for more details.
