@@ -147,6 +147,29 @@ a {
   color: var(--muted-foreground);
 }
 
+.announcement-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  background: color-mix(in oklab, var(--muted) 75%, transparent);
+  color: var(--muted-foreground);
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.announcement-chip:hover {
+  color: var(--foreground);
+  border-color: color-mix(in oklab, var(--border) 60%, var(--foreground) 40%);
+}
+
+.announcement-chip-arrow {
+  font-size: 0.7rem;
+}
+
 h1,
 h2,
 h3,
