@@ -1,12 +1,12 @@
 export const siteConfig = {
-  name: "shadcn/ui",
-  url: "https://ui.shadcn.com",
-  ogImage: "https://ui.shadcn.com/og.jpg",
+  name: "@fictjs/shadcn",
+  url: "https://fict.js.org/shadcn",
+  ogImage: "https://fict.js.org/logo.png",
   description:
-    "A set of beautifully designed components that you can customize, extend, and build on. Start here then make it your own. Open Source. Open Code.",
+    "Official shadcn-style code distribution for Fict. Copy component source into your project and customize everything.",
   links: {
-    twitter: "https://twitter.com/shadcn",
-    github: "https://github.com/shadcn-ui/ui",
+    twitter: "https://x.com/fictjs",
+    github: "https://github.com/fictjs/shadcn",
   },
   navItems: [
     {

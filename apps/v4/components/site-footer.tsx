@@ -8,23 +8,14 @@ export function SiteFooter() {
           <div className="w-full px-1 text-center text-xs leading-loose text-muted-foreground sm:text-sm">
             Built by{" "}
             <a
-              href={siteConfig.links.twitter}
+              href={siteConfig.links.github}
               target="_blank"
               rel="noreferrer"
               className="font-medium underline underline-offset-4"
             >
-              shadcn
-            </a>{" "}
-            at{" "}
-            <a
-              href="https://vercel.com/new?utm_source=shadcn_site&utm_medium=web&utm_campaign=docs_cta_deploy_now_callout"
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium underline underline-offset-4"
-            >
-              Vercel
+              Fict contributors
             </a>
-            . The source code is available on{" "}
+            . The source code and registry are available on{" "}
             <a
               href={siteConfig.links.github}
               target="_blank"
