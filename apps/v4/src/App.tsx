@@ -45,9 +45,9 @@ export function App(props: AppProps) {
 
       <footer class="site-footer">
         <div class="container footer-row">
-          <p>Built by shadcn and ported to Fict SSR.</p>
           <p>
-            Source available on <a href="https://github.com/unovue/shadcn-vue">GitHub</a>.
+            Ported by <a href="https://x.com/unovue">unovue</a>. Source code available on{" "}
+            <a href="https://github.com/unovue/shadcn-vue">GitHub</a>.
           </p>
         </div>
       </footer>
@@ -67,10 +67,9 @@ function HomePage(props: { route: ResolvedRoute }) {
     <section class="home-grid">
       <div class="hero card">
         <p class="eyebrow">Open Source. Open Code.</p>
-        <h1>The Foundation for your Design System</h1>
+        <h1>A set of beautifully designed components</h1>
         <p class="lead">
-          A set of beautifully designed components that you can customize, extend, and build on.
-          Start here then make it your own.
+          You can customize, extend, and build on top of them. Start here then make it your own.
         </p>
         <div class="cta-row">
           <a class="button" href="/docs">
