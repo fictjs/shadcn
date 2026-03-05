@@ -195,16 +195,19 @@ function HomePage(props: { route: ResolvedRoute }) {
         </div>
       </div>
 
-      <nav class="section-nav" aria-label="Home examples navigation">
-        <a class="section-nav-link-active" href="/">
-          Examples
-        </a>
-        {props.route.examplePages.map((showcase) => (
-          <a key={showcase.slug} href={`/examples/${showcase.slug}`}>
-            {showcase.title}
+      <div class="route-nav-row">
+        <nav class="section-nav" aria-label="Home examples navigation">
+          <a class="section-nav-link-active" href="/">
+            Examples
           </a>
-        ))}
-      </nav>
+          {props.route.examplePages.map((showcase) => (
+            <a key={showcase.slug} href={`/examples/${showcase.slug}`}>
+              {showcase.title}
+            </a>
+          ))}
+        </nav>
+        <ThemeSelectorStub />
+      </div>
 
       <section class="card home-mobile-preview">
         <figure class="example-preview-card">
@@ -263,6 +266,24 @@ function ExamplesRootPreview() {
           ))}
         </div>
       ))}
+    </div>
+  )
+}
+
+function ThemeSelectorStub() {
+  return (
+    <div class="theme-selector-stub">
+      <span class="theme-selector-label">Theme</span>
+      <select aria-label="Theme selector">
+        <option>Default</option>
+        <option>Blue</option>
+        <option>Emerald</option>
+        <option>Rose</option>
+        <option>Zinc</option>
+      </select>
+      <button type="button" class="button button-ghost theme-selector-copy">
+        Copy Code
+      </button>
     </div>
   )
 }
@@ -559,20 +580,23 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
         </div>
       </div>
 
-      <nav class="section-nav" aria-label="Examples navigation">
-        <a class={props.route.exampleSlug === null ? "section-nav-link-active" : ""} href="/examples">
-          Examples
-        </a>
-        {props.route.examplePages.map((showcase) => (
-          <a
-            key={showcase.slug}
-            class={props.route.exampleSlug === showcase.slug ? "section-nav-link-active" : ""}
-            href={`/examples/${showcase.slug}`}
-          >
-            {showcase.title}
+      <div class="route-nav-row">
+        <nav class="section-nav" aria-label="Examples navigation">
+          <a class={props.route.exampleSlug === null ? "section-nav-link-active" : ""} href="/examples">
+            Examples
           </a>
-        ))}
-      </nav>
+          {props.route.examplePages.map((showcase) => (
+            <a
+              key={showcase.slug}
+              class={props.route.exampleSlug === showcase.slug ? "section-nav-link-active" : ""}
+              href={`/examples/${showcase.slug}`}
+            >
+              {showcase.title}
+            </a>
+          ))}
+        </nav>
+        <ThemeSelectorStub />
+      </div>
 
       {activeShowcase ? (
         <article class="card example-detail-card">
@@ -673,19 +697,22 @@ function ChartsPage(props: { route: ResolvedRoute }) {
         </div>
       </div>
 
-      <nav class="section-nav" aria-label="Charts navigation">
-        {chartTypes.map((type) => (
-          <a
-            key={type}
-            class={activeType === type ? "section-nav-link-active" : ""}
-            href={`/charts/${type}#charts`}
-          >
-            {type === "tooltip"
-              ? "Tooltips"
-              : `${type.charAt(0).toUpperCase() + type.slice(1)} Charts`}
-          </a>
-        ))}
-      </nav>
+      <div class="route-nav-row">
+        <nav class="section-nav" aria-label="Charts navigation">
+          {chartTypes.map((type) => (
+            <a
+              key={type}
+              class={activeType === type ? "section-nav-link-active" : ""}
+              href={`/charts/${type}#charts`}
+            >
+              {type === "tooltip"
+                ? "Tooltips"
+                : `${type.charAt(0).toUpperCase() + type.slice(1)} Charts`}
+            </a>
+          ))}
+        </nav>
+        <ThemeSelectorStub />
+      </div>
 
       {activeType ? (
         <div class="card chart-summary-card">
