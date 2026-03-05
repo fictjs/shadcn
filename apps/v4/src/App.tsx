@@ -189,7 +189,7 @@ function HomePage(props: { route: ResolvedRoute }) {
           <a class="button" href="/docs/installation">
             Get Started
           </a>
-          <a class="button button-ghost" href="/components">
+          <a class="button button-ghost" href="/docs/components">
             View Components
           </a>
         </div>
@@ -553,7 +553,7 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
           <a class="button" href="/docs/installation">
             Get Started
           </a>
-          <a class="button button-ghost" href="/components">
+          <a class="button button-ghost" href="/docs/components">
             View Components
           </a>
         </div>
