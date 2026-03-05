@@ -120,11 +120,11 @@ export function App(props: AppProps) {
             >
               Components
             </a>
-            <a class={route.pathname === "/charts" || route.pathname.startsWith("/charts/") ? "active-nav-link" : ""} href="/charts">
-              Charts
-            </a>
             <a class={route.pathname === "/blocks" || route.pathname.startsWith("/blocks/") ? "active-nav-link" : ""} href="/blocks">
               Blocks
+            </a>
+            <a class={route.pathname === "/charts" || route.pathname.startsWith("/charts/") ? "active-nav-link" : ""} href="/charts">
+              Charts
             </a>
             <a class={route.pathname === "/themes" ? "active-nav-link" : ""} href="/themes">
               Themes
