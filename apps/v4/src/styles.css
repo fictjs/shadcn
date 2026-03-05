@@ -1,0 +1,284 @@
+:root {
+  --bg: #f5f7fb;
+  --bg-accent: #e9f0ff;
+  --text: #0f172a;
+  --muted: #475569;
+  --card: #ffffff;
+  --border: #dbe3f2;
+  --brand: #0f766e;
+  --brand-strong: #0b5f5a;
+  --brand-soft: #d1f3ef;
+  --code-bg: #0f172a;
+  --code-text: #dbeafe;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  background: radial-gradient(circle at 15% 15%, var(--bg-accent) 0%, var(--bg) 45%, #f8fafc 100%);
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.container {
+  width: min(1080px, 100% - 2rem);
+  margin: 0 auto;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  backdrop-filter: blur(8px);
+  background: color-mix(in oklab, #ffffff 78%, #dbeafe 22%);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0;
+}
+
+.brand-link {
+  font-family: "Space Grotesk", "IBM Plex Sans", sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.site-nav a {
+  padding: 0.45rem 0.72rem;
+  border-radius: 0.6rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.site-nav a:hover {
+  background: #eef3ff;
+  color: var(--text);
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem 0 2.5rem;
+}
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  background: #ffffffcc;
+}
+
+.footer-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.home-grid,
+.stack-gap {
+  display: grid;
+  gap: 1rem;
+}
+
+.home-grid {
+  grid-template-columns: 1.35fr 1fr;
+}
+
+.hero {
+  grid-column: 1 / -1;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--brand);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-family: "Space Grotesk", "IBM Plex Sans", sans-serif;
+  font-size: clamp(1.6rem, 2.4vw, 2.3rem);
+  margin-top: 0.4rem;
+}
+
+h2 {
+  font-family: "Space Grotesk", "IBM Plex Sans", sans-serif;
+  margin-top: 0.4rem;
+}
+
+.lead {
+  color: var(--muted);
+  line-height: 1.55;
+  margin-top: 0.65rem;
+}
+
+.cta-row,
+.doc-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.58rem 0.85rem;
+  border-radius: 0.68rem;
+  border: 1px solid transparent;
+  font-weight: 600;
+  background: var(--brand);
+  color: #f8fafc;
+}
+
+.button:hover {
+  background: var(--brand-strong);
+}
+
+.button-ghost {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.button-ghost:hover {
+  background: #eef6ff;
+}
+
+.stat-label,
+.slug {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.stat-value {
+  margin-top: 0.35rem;
+  font-family: "Space Grotesk", "IBM Plex Sans", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.control-card {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.control-card input {
+  border: 1px solid var(--border);
+  border-radius: 0.64rem;
+  padding: 0.58rem 0.7rem;
+  font: inherit;
+}
+
+.list-grid,
+.pill-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.list-item {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.pill-grid {
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+.pill-item {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.pill-name {
+  font-weight: 700;
+}
+
+.inline-code,
+.doc-body pre {
+  margin: 0;
+  background: var(--code-bg);
+  color: var(--code-text);
+  border-radius: 0.72rem;
+  padding: 0.7rem 0.82rem;
+  overflow: auto;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.82rem;
+}
+
+.doc-layout {
+  gap: 0.9rem;
+}
+
+.doc-nav {
+  justify-content: space-between;
+}
+
+.not-found {
+  max-width: 680px;
+}
+
+@media (max-width: 900px) {
+  .home-grid,
+  .stats-grid,
+  .footer-row {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-row {
+    display: grid;
+  }
+}
