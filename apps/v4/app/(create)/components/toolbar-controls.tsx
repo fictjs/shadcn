@@ -80,10 +80,10 @@ export function ToolbarControls() {
     const templateFlag = params.template ? ` --template ${params.template}` : ""
     const rtlFlag = params.rtl ? " --rtl" : ""
     return {
-      pnpm: `pnpm dlx shadcn@latest create${rtlFlag} --preset "${url}"${templateFlag}`,
-      npm: `npx shadcn@latest create${rtlFlag} --preset "${url}"${templateFlag}`,
-      yarn: `yarn dlx shadcn@latest create${rtlFlag} --preset "${url}"${templateFlag}`,
-      bun: `bunx --bun shadcn@latest create${rtlFlag} --preset "${url}"${templateFlag}`,
+      pnpm: `pnpm dlx @fictjs/shadcn@latest create${rtlFlag} --preset "${url}"${templateFlag}`,
+      npm: `npx @fictjs/shadcn@latest create${rtlFlag} --preset "${url}"${templateFlag}`,
+      yarn: `yarn dlx @fictjs/shadcn@latest create${rtlFlag} --preset "${url}"${templateFlag}`,
+      bun: `bunx --bun @fictjs/shadcn@latest create${rtlFlag} --preset "${url}"${templateFlag}`,
     }
   }, [
     params.base,
@@ -123,7 +123,7 @@ export function ToolbarControls() {
     setHasCopied(true)
     toast("Command copied to clipboard.", {
       description:
-        "Paste and run the command in your terminal to create a new shadcn/ui project.",
+              "Paste and run the command in your terminal to create a new @fictjs/shadcn project.",
       position: "bottom-center",
       classNames: {
         content: "rounded-xl",
@@ -167,7 +167,7 @@ export function ToolbarControls() {
           <DialogTitle>Create Project</DialogTitle>
           <DialogDescription className="text-balance">
             Select a template and run this command to create a{" "}
-            {selectedTemplate?.title} + shadcn/ui project.
+            {selectedTemplate?.title} + @fictjs/shadcn project.
           </DialogDescription>
         </DialogHeader>
         <FieldGroup className="gap-3">

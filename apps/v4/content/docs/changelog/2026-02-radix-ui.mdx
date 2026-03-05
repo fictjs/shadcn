@@ -22,7 +22,7 @@ This results in a cleaner `package.json` with a single `radix-ui` dependency ins
 If you have an existing project using the `new-york` style, you can migrate to the new `radix-ui` package using the migrate command:
 
 ```bash
-npx shadcn@latest migrate radix
+npx @fictjs/shadcn@latest migrate radix
 ```
 
 This will update all imports in your UI components and add `radix-ui` to your dependencies.
@@ -30,7 +30,7 @@ This will update all imports in your UI components and add `radix-ui` to your de
 To migrate components outside of your `ui` directory, use the `path` argument:
 
 ```bash
-npx shadcn@latest migrate radix src/components/custom
+npx @fictjs/shadcn@latest migrate radix src/components/custom
 ```
 
 Once complete, you can remove any unused `@radix-ui/react-*` packages from your `package.json`.

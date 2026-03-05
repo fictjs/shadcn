@@ -10,7 +10,7 @@ Use the `init` command to initialize configuration and dependencies for a new pr
 The `init` command installs dependencies, adds the `cn` util and configures CSS variables for the project.
 
 ```bash
-npx shadcn@latest init
+npx @fictjs/shadcn@latest init
 ```
 
 **Options**
@@ -45,7 +45,7 @@ Options:
 Use the `add` command to add components and dependencies to your project.
 
 ```bash
-npx shadcn@latest add [component]
+npx @fictjs/shadcn@latest add [component]
 ```
 
 **Options**
@@ -79,19 +79,19 @@ Options:
 Use the `view` command to view items from the registry before installing them.
 
 ```bash
-npx shadcn@latest view [item]
+npx @fictjs/shadcn@latest view [item]
 ```
 
 You can view multiple items at once:
 
 ```bash
-npx shadcn@latest view button card dialog
+npx @fictjs/shadcn@latest view button card dialog
 ```
 
 Or view items from namespaced registries:
 
 ```bash
-npx shadcn@latest view @acme/auth @v0/dashboard
+npx @fictjs/shadcn@latest view @acme/auth @v0/dashboard
 ```
 
 **Options**
@@ -116,25 +116,25 @@ Options:
 Use the `search` command to search for items from registries.
 
 ```bash
-npx shadcn@latest search [registry]
+npx @fictjs/shadcn@latest search [registry]
 ```
 
 You can search with a query:
 
 ```bash
-npx shadcn@latest search @shadcn -q "button"
+npx @fictjs/shadcn@latest search @shadcn -q "button"
 ```
 
 Or search multiple registries at once:
 
 ```bash
-npx shadcn@latest search @shadcn @v0 @acme
+npx @fictjs/shadcn@latest search @shadcn @v0 @acme
 ```
 
 The `list` command is an alias for `search`:
 
 ```bash
-npx shadcn@latest list @acme
+npx @fictjs/shadcn@latest list @acme
 ```
 
 **Options**
@@ -163,7 +163,7 @@ Options:
 Use the `list` command to list all items from a registry.
 
 ```bash
-npx shadcn@latest list @acme
+npx @fictjs/shadcn@latest list @acme
 ```
 
 **Options**
@@ -197,7 +197,7 @@ Arguments:
 Use the `build` command to generate the registry JSON files.
 
 ```bash
-npx shadcn@latest build
+npx @fictjs/shadcn@latest build
 ```
 
 This command reads the `registry.json` file and generates the registry JSON files in the `public/r` directory.
@@ -221,7 +221,7 @@ Options:
 To customize the output directory, use the `--output` option.
 
 ```bash
-npx shadcn@latest build --output ./public/registry
+npx @fictjs/shadcn@latest build --output ./public/registry
 ```
 
 ---
@@ -231,7 +231,7 @@ npx shadcn@latest build --output ./public/registry
 Use the `migrate` command to run migrations on your project.
 
 ```bash
-npx shadcn@latest migrate [migration]
+npx @fictjs/shadcn@latest migrate [migration]
 ```
 
 **Available Migrations**
@@ -267,7 +267,7 @@ Options:
 The `rtl` migration transforms your components to support RTL (right-to-left) languages.
 
 ```bash
-npx shadcn@latest migrate rtl
+npx @fictjs/shadcn@latest migrate rtl
 ```
 
 This will:
@@ -282,10 +282,10 @@ You can migrate specific files or use glob patterns:
 
 ```bash
 # Migrate a specific file
-npx shadcn@latest migrate rtl src/components/ui/button.tsx
+npx @fictjs/shadcn@latest migrate rtl src/components/ui/button.tsx
 
 # Migrate files matching a glob pattern
-npx shadcn@latest migrate rtl "src/components/ui/**"
+npx @fictjs/shadcn@latest migrate rtl "src/components/ui/**"
 ```
 
 If no path is provided, the migration will transform all files in your `ui` directory (from `components.json`).
@@ -297,7 +297,7 @@ If no path is provided, the migration will transform all files in your `ui` dire
 The `radix` migration updates your imports from individual `@radix-ui/react-*` packages to the unified `radix-ui` package.
 
 ```bash
-npx shadcn@latest migrate radix
+npx @fictjs/shadcn@latest migrate radix
 ```
 
 This will:
@@ -324,10 +324,10 @@ You can migrate specific files or use glob patterns:
 
 ```bash
 # Migrate a specific file.
-npx shadcn@latest migrate radix src/components/ui/dialog.tsx
+npx @fictjs/shadcn@latest migrate radix src/components/ui/dialog.tsx
 
 # Migrate files matching a glob pattern.
-npx shadcn@latest migrate radix "src/components/ui/**"
+npx @fictjs/shadcn@latest migrate radix "src/components/ui/**"
 ```
 
 If no path is provided, the migration will transform all files in your `ui` directory (from `components.json`).
