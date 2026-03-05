@@ -895,6 +895,15 @@ function parseDocBody(body: string): {
       continue
     }
 
+    if (/^(-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
+      blocks.push({
+        kind: "hr",
+        text: "",
+      })
+      index += 1
+      continue
+    }
+
     const headingMatch = trimmed.match(/^(#{1,3})\s+(.+)$/)
     if (headingMatch) {
       const level = headingMatch[1]?.length || 1
@@ -924,6 +933,67 @@ function parseDocBody(body: string): {
       continue
     }
 
+    if (/^(?:[-*+])\s+/.test(trimmed)) {
+      const items: string[] = []
+      while (index < lines.length) {
+        const current = (lines[index] || "").trim()
+        const listMatch = current.match(/^(?:[-*+])\s+(.+)$/)
+        if (!listMatch) {
+          break
+        }
+        items.push(cleanInlineMarkdown(listMatch[1] || ""))
+        index += 1
+      }
+
+      blocks.push({
+        kind: "list",
+        text: "",
+        ordered: false,
+        items,
+      })
+      continue
+    }
+
+    if (/^\d+\.\s+/.test(trimmed)) {
+      const items: string[] = []
+      while (index < lines.length) {
+        const current = (lines[index] || "").trim()
+        const listMatch = current.match(/^\d+\.\s+(.+)$/)
+        if (!listMatch) {
+          break
+        }
+        items.push(cleanInlineMarkdown(listMatch[1] || ""))
+        index += 1
+      }
+
+      blocks.push({
+        kind: "list",
+        text: "",
+        ordered: true,
+        items,
+      })
+      continue
+    }
+
+    if (/^>\s?/.test(trimmed)) {
+      const quoteLines: string[] = []
+      while (index < lines.length) {
+        const current = (lines[index] || "").trim()
+        const quoteMatch = current.match(/^>\s?(.*)$/)
+        if (!quoteMatch) {
+          break
+        }
+        quoteLines.push(quoteMatch[1] || "")
+        index += 1
+      }
+
+      blocks.push({
+        kind: "blockquote",
+        text: cleanInlineMarkdown(quoteLines.join(" ")),
+      })
+      continue
+    }
+
     const paragraphLines: string[] = [trimmed]
     index += 1
     while (index < lines.length) {
@@ -932,7 +1002,14 @@ function parseDocBody(body: string): {
       if (!nextTrimmed) {
         break
       }
-      if (nextTrimmed.startsWith("```") || /^(#{1,3})\s+/.test(nextTrimmed)) {
+      if (
+        nextTrimmed.startsWith("```") ||
+        /^(#{1,3})\s+/.test(nextTrimmed) ||
+        /^(?:[-*+])\s+/.test(nextTrimmed) ||
+        /^\d+\.\s+/.test(nextTrimmed) ||
+        /^>\s?/.test(nextTrimmed) ||
+        /^(-{3,}|\*{3,}|_{3,})$/.test(nextTrimmed)
+      ) {
         break
       }
       paragraphLines.push(nextTrimmed)

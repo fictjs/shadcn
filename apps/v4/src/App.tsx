@@ -299,6 +299,24 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
               <pre class="doc-code" key={`code-${index}`}>
                 <code>{block.text}</code>
               </pre>
+            ) : block.kind === "list" ? (
+              block.ordered ? (
+                <ol key={`ol-${index}`}>
+                  {(block.items || []).map((item, itemIndex) => (
+                    <li key={`oli-${index}-${itemIndex}`}>{item}</li>
+                  ))}
+                </ol>
+              ) : (
+                <ul key={`ul-${index}`}>
+                  {(block.items || []).map((item, itemIndex) => (
+                    <li key={`uli-${index}-${itemIndex}`}>{item}</li>
+                  ))}
+                </ul>
+              )
+            ) : block.kind === "blockquote" ? (
+              <blockquote key={`quote-${index}`}>{block.text}</blockquote>
+            ) : block.kind === "hr" ? (
+              <hr key={`hr-${index}`} />
             ) : (
               <p key={`p-${index}`}>{block.text}</p>
             )
