@@ -108,8 +108,8 @@ function HomePage(props: { route: ResolvedRoute }) {
   const themesCount = props.route.themes.length
 
   return (
-    <section class="home-grid">
-      <div class="hero card">
+    <section class="stack-gap">
+      <div class="hero card home-hero-card">
         <p class="eyebrow">Open Source. Open Code.</p>
         <h1>The Foundation for your Design System</h1>
         <p class="lead">
@@ -125,6 +125,30 @@ function HomePage(props: { route: ResolvedRoute }) {
           </a>
         </div>
       </div>
+
+      <nav class="section-nav" aria-label="Home examples navigation">
+        <a class="section-nav-link-active" href="/">
+          Examples
+        </a>
+        {props.route.examplePages.map((showcase) => (
+          <a key={showcase.slug} href={`/examples/${showcase.slug}`}>
+            {showcase.title}
+          </a>
+        ))}
+      </nav>
+
+      <section class="card home-preview-card">
+        <div class="home-preview-images">
+          <figure class="example-preview-card">
+            <img src="/examples/dashboard-light.png" alt="Dashboard light preview" loading="lazy" />
+            <figcaption class="slug">Dashboard light</figcaption>
+          </figure>
+          <figure class="example-preview-card">
+            <img src="/examples/dashboard-dark.png" alt="Dashboard dark preview" loading="lazy" />
+            <figcaption class="slug">Dashboard dark</figcaption>
+          </figure>
+        </div>
+      </section>
 
       <div class="stats-grid">
         <div class="card stat-card">
@@ -420,6 +444,14 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
           A set of beautifully designed components that you can customize, extend, and build on.
           Start here then make it your own. Open Source. Open Code.
         </p>
+        <div class="cta-row">
+          <a class="button" href="/docs/installation">
+            Get Started
+          </a>
+          <a class="button button-ghost" href="/components">
+            View Components
+          </a>
+        </div>
       </div>
 
       <nav class="section-nav" aria-label="Examples navigation">
@@ -516,6 +548,14 @@ function ChartsPage(props: { route: ResolvedRoute }) {
           A collection of ready-to-use chart components. From basic charts to rich data displays,
           copy and paste into your apps.
         </p>
+        <div class="cta-row">
+          <a class="button" href="#charts">
+            Browse Charts
+          </a>
+          <a class="button button-ghost" href="/docs/components/chart">
+            Documentation
+          </a>
+        </div>
       </div>
 
       <nav class="section-nav" aria-label="Charts navigation">
@@ -564,6 +604,14 @@ function BlocksPage(props: { route: ResolvedRoute }) {
         <p class="lead">
           Clean, modern building blocks. Copy and paste into your apps. Open Source. Free forever.
         </p>
+        <div class="cta-row">
+          <a class="button" href="#blocks">
+            Browse Blocks
+          </a>
+          <a class="button button-ghost" href="/docs/blocks">
+            Add a block
+          </a>
+        </div>
       </div>
 
       <nav class="section-nav" aria-label="Blocks navigation">
