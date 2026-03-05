@@ -787,6 +787,16 @@ h1 {
   }
 }
 
+@media (max-width: 1139px) {
+  .docs-layout {
+    grid-template-columns: minmax(180px, 220px) minmax(0, 1fr);
+  }
+
+  .docs-toc {
+    display: none;
+  }
+}
+
 @media (min-width: 861px) {
   .home-mobile-preview {
     display: none;
