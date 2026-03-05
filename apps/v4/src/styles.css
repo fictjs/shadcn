@@ -207,12 +207,49 @@ h1 {
   gap: 0.6rem;
 }
 
+.route-nav-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.route-nav-row .section-nav {
+  flex: 1;
+}
+
 .section-nav-row .section-nav {
   flex: 1;
 }
 
 .section-nav-action {
   white-space: nowrap;
+}
+
+.theme-selector-stub {
+  display: none;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.theme-selector-label {
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+}
+
+.theme-selector-stub select {
+  border: 1px solid var(--border);
+  border-radius: 0.45rem;
+  background: var(--card);
+  color: var(--foreground);
+  padding: 0.3rem 0.45rem;
+  font: inherit;
+  font-size: 0.82rem;
+}
+
+.theme-selector-copy {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.78rem;
 }
 
 .button {
@@ -698,6 +735,10 @@ h1 {
 
   .charts-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .theme-selector-stub {
+    display: inline-flex;
   }
 }
 
