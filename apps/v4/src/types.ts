@@ -5,8 +5,23 @@ export interface DocSummary {
   section: string
 }
 
+export interface DocHeading {
+  id: string
+  title: string
+  level: number
+}
+
+export interface DocContentBlock {
+  kind: "heading" | "paragraph" | "code"
+  text: string
+  id?: string
+  level?: number
+}
+
 export interface DocPage extends DocSummary {
   body: string
+  headings: DocHeading[]
+  blocks: DocContentBlock[]
   sourcePath: string
 }
 
@@ -19,6 +34,14 @@ export interface BlockEntry {
 export interface ThemeEntry {
   name: string
   title: string
+}
+
+export interface ExampleShowcase {
+  slug: string
+  title: string
+  description: string
+  imageLight: string
+  imageDark: string
 }
 
 export interface DocNavItem {
@@ -56,7 +79,16 @@ export interface ResolvedRoute {
   docNext: DocSummary | null
   components: string[]
   examples: string[]
+  examplePages: ExampleShowcase[]
+  activeExample: ExampleShowcase | null
+  exampleSlug: string | null
   charts: string[]
+  chartTypes: string[]
+  activeChartType: string | null
+  chartItems: string[]
+  chartType: string | null
   blocks: BlockEntry[]
+  blockCategories: string[]
+  blockCategory: string | null
   themes: ThemeEntry[]
 }

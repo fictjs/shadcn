@@ -4,9 +4,12 @@ import { fileURLToPath } from "node:url"
 
 import type {
   BlockEntry,
+  DocContentBlock,
+  DocHeading,
   DocNavSection,
   DocPage,
   DocSummary,
+  ExampleShowcase,
   ResolvedRoute,
   ThemeEntry,
 } from "./types"
@@ -33,12 +36,52 @@ const examplesRoot = path.join(appRoot, "registry", "new-york-v4", "examples")
 const chartsRoot = path.join(appRoot, "registry", "new-york-v4", "charts")
 const blocksFile = path.join(appRoot, "registry", "__blocks__.json")
 const themesFile = path.join(appRoot, "registry", "themes.ts")
+const featuredExamplePages: ExampleShowcase[] = [
+  {
+    slug: "dashboard",
+    title: "Dashboard",
+    description: "Admin dashboard example using cards, charts, tables, and sidebar layouts.",
+    imageLight: "/examples/dashboard-light.png",
+    imageDark: "/examples/dashboard-dark.png",
+  },
+  {
+    slug: "tasks",
+    title: "Tasks",
+    description: "Task and issue tracker built with table, filters, and status-driven UI patterns.",
+    imageLight: "/examples/tasks-light.png",
+    imageDark: "/examples/tasks-dark.png",
+  },
+  {
+    slug: "playground",
+    title: "Playground",
+    description: "Prompt playground interface with presets, tabs, and advanced form controls.",
+    imageLight: "/examples/playground-light.png",
+    imageDark: "/examples/playground-dark.png",
+  },
+  {
+    slug: "authentication",
+    title: "Authentication",
+    description: "Authentication screen composition with split panels and production-ready form patterns.",
+    imageLight: "/examples/authentication-light.png",
+    imageDark: "/examples/authentication-dark.png",
+  },
+  {
+    slug: "rtl",
+    title: "RTL",
+    description: "Right-to-left interface examples and direction-aware component behavior.",
+    imageLight: "/examples/cards-light.png",
+    imageDark: "/examples/cards-dark.png",
+  },
+]
+const chartTypeOrder = ["area", "bar", "line", "pie", "radar", "radial", "tooltip"]
 
 let cachedCatalog: SiteCatalog | null = null
 
 export function resolveRoute(rawUrl: string): ResolvedRoute {
   const catalog = getSiteCatalog()
   const pathname = normalizePathname(rawUrl)
+  const chartTypes = getChartTypes(catalog.charts)
+  const blockCategories = getBlockCategories(catalog.blocks)
   const basePayload = {
     docs: catalog.docs,
     doc: null,
@@ -47,8 +90,17 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
     docNext: null,
     components: catalog.components,
     examples: catalog.examples,
+    examplePages: featuredExamplePages,
+    activeExample: null,
+    exampleSlug: null,
     charts: catalog.charts,
+    chartTypes,
+    activeChartType: null,
+    chartItems: [],
+    chartType: null,
     blocks: catalog.blocks,
+    blockCategories,
+    blockCategory: null,
     themes: catalog.themes,
   }
 
@@ -78,8 +130,17 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
       docNext: next,
       components: catalog.components,
       examples: catalog.examples,
+      examplePages: featuredExamplePages,
+      activeExample: null,
+      exampleSlug: null,
       charts: catalog.charts,
+      chartTypes,
+      activeChartType: null,
+      chartItems: [],
+      chartType: null,
       blocks: catalog.blocks,
+      blockCategories,
+      blockCategory: null,
       themes: catalog.themes,
     }
   }
@@ -104,13 +165,51 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
     }
   }
 
+  if (pathname.startsWith("/examples/")) {
+    const exampleSlug = pathname.slice("/examples/".length)
+    const activeExample = getFeaturedExample(exampleSlug)
+    if (activeExample) {
+      return {
+        kind: "examples",
+        status: 200,
+        pathname,
+        pageTitle: `${humanizeSegment(exampleSlug)} - Examples - @fictjs/shadcn`,
+        ...basePayload,
+        activeExample,
+        exampleSlug,
+      }
+    }
+  }
+
   if (pathname === "/charts") {
+    const activeChartType = chartTypes[0] ?? null
+    const chartItems = activeChartType
+      ? getChartsForType(catalog.charts, activeChartType)
+      : []
     return {
       kind: "charts",
       status: 200,
       pathname,
       pageTitle: "Charts - @fictjs/shadcn",
       ...basePayload,
+      activeChartType,
+      chartItems,
+    }
+  }
+
+  if (pathname.startsWith("/charts/")) {
+    const chartType = pathname.slice("/charts/".length)
+    if (chartTypes.includes(chartType)) {
+      return {
+        kind: "charts",
+        status: 200,
+        pathname,
+        pageTitle: `${humanizeSegment(chartType)} Charts - @fictjs/shadcn`,
+        ...basePayload,
+        activeChartType: chartType,
+        chartItems: getChartsForType(catalog.charts, chartType),
+        chartType,
+      }
     }
   }
 
@@ -121,6 +220,21 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
       pathname,
       pageTitle: "Blocks - @fictjs/shadcn",
       ...basePayload,
+    }
+  }
+
+  if (pathname.startsWith("/blocks/")) {
+    const blockCategory = pathname.slice("/blocks/".length)
+    if (blockCategories.includes(blockCategory)) {
+      return {
+        kind: "blocks",
+        status: 200,
+        pathname,
+        pageTitle: `${humanizeSegment(blockCategory)} Blocks - @fictjs/shadcn`,
+        ...basePayload,
+        blocks: filterBlocksByCategory(catalog.blocks, blockCategory),
+        blockCategory,
+      }
     }
   }
 
@@ -479,6 +593,62 @@ function toDocHref(slug: string): string {
   return slug ? `/docs/${slug}` : "/docs"
 }
 
+function getChartTypes(charts: string[]): string[] {
+  const types = new Set<string>()
+  for (const chart of charts) {
+    const match = chart.match(/^chart-([a-z0-9]+)-/)
+    if (match && match[1]) {
+      types.add(match[1])
+    }
+  }
+
+  return Array.from(types).sort((a, b) => {
+    const aIndex = chartTypeOrder.indexOf(a)
+    const bIndex = chartTypeOrder.indexOf(b)
+    if (aIndex === -1 && bIndex === -1) {
+      return a.localeCompare(b)
+    }
+    if (aIndex === -1) {
+      return 1
+    }
+    if (bIndex === -1) {
+      return -1
+    }
+    return aIndex - bIndex
+  })
+}
+
+function getChartsForType(charts: string[], chartType: string): string[] {
+  return charts
+    .filter((chart) => chart.startsWith(`chart-${chartType}-`))
+    .sort((a, b) => a.localeCompare(b))
+}
+
+function getFeaturedExample(slug: string): ExampleShowcase | null {
+  for (const example of featuredExamplePages) {
+    if (example.slug === slug) {
+      return example
+    }
+  }
+
+  return null
+}
+
+function getBlockCategories(blocks: BlockEntry[]): string[] {
+  const categories = new Set<string>()
+  for (const block of blocks) {
+    for (const category of block.categories) {
+      categories.add(category)
+    }
+  }
+
+  return Array.from(categories).sort((a, b) => a.localeCompare(b))
+}
+
+function filterBlocksByCategory(blocks: BlockEntry[], category: string): BlockEntry[] {
+  return blocks.filter((block) => block.categories.includes(category))
+}
+
 function humanizeSegment(value: string): string {
   const normalized = value
     .replace(/\(root\)/g, "")
@@ -518,13 +688,17 @@ function loadDocs(): DocPage[] {
     const title = frontmatter.title || slug
     const description = frontmatter.description || ""
     const section = slug.includes("/") ? slug.split("/")[0] : "overview"
+    const normalizedBody = normalizeMdxBody(body)
+    const { headings, blocks } = parseDocBody(normalizedBody)
 
     docs.push({
       slug,
       title,
       description,
       section,
-      body: normalizeMdxBody(body),
+      body: normalizedBody,
+      headings,
+      blocks,
       sourcePath: relativePath,
     })
   }
@@ -680,6 +854,117 @@ function normalizeMdxBody(body: string): string {
     .replace(/^export\s+const\s+.*$/gm, "")
     .replace(/\n{3,}/g, "\n\n")
     .trim()
+}
+
+function parseDocBody(body: string): {
+  headings: DocHeading[]
+  blocks: DocContentBlock[]
+} {
+  const headings: DocHeading[] = []
+  const blocks: DocContentBlock[] = []
+  const headingIdCounts = new Map<string, number>()
+  const lines = body.split("\n")
+  let index = 0
+
+  while (index < lines.length) {
+    const line = lines[index] || ""
+    const trimmed = line.trim()
+
+    if (!trimmed) {
+      index += 1
+      continue
+    }
+
+    if (trimmed.startsWith("```")) {
+      const codeLines: string[] = []
+      index += 1
+      while (index < lines.length) {
+        const nextLine = lines[index] || ""
+        if (nextLine.trim().startsWith("```")) {
+          index += 1
+          break
+        }
+        codeLines.push(nextLine)
+        index += 1
+      }
+
+      blocks.push({
+        kind: "code",
+        text: codeLines.join("\n").trimEnd(),
+      })
+      continue
+    }
+
+    const headingMatch = trimmed.match(/^(#{1,3})\s+(.+)$/)
+    if (headingMatch) {
+      const level = headingMatch[1]?.length || 1
+      const rawTitle = headingMatch[2] || ""
+      const title = cleanInlineMarkdown(rawTitle)
+      const baseId = toHeadingId(title)
+      const nextCount = (headingIdCounts.get(baseId) || 0) + 1
+      headingIdCounts.set(baseId, nextCount)
+      const id = nextCount === 1 ? baseId : `${baseId}-${nextCount}`
+
+      blocks.push({
+        kind: "heading",
+        text: title,
+        level,
+        id,
+      })
+
+      if (level >= 2 && level <= 3) {
+        headings.push({
+          id,
+          title,
+          level,
+        })
+      }
+
+      index += 1
+      continue
+    }
+
+    const paragraphLines: string[] = [trimmed]
+    index += 1
+    while (index < lines.length) {
+      const nextLine = lines[index] || ""
+      const nextTrimmed = nextLine.trim()
+      if (!nextTrimmed) {
+        break
+      }
+      if (nextTrimmed.startsWith("```") || /^(#{1,3})\s+/.test(nextTrimmed)) {
+        break
+      }
+      paragraphLines.push(nextTrimmed)
+      index += 1
+    }
+
+    blocks.push({
+      kind: "paragraph",
+      text: cleanInlineMarkdown(paragraphLines.join(" ")),
+    })
+  }
+
+  return { headings, blocks }
+}
+
+function cleanInlineMarkdown(value: string): string {
+  return value
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/\*([^*]+)\*/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .trim()
+}
+
+function toHeadingId(value: string): string {
+  const base = value
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+
+  return base || "section"
 }
 
 function normalizePathname(rawUrl: string): string {
