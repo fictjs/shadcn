@@ -400,6 +400,24 @@ h1 {
   gap: 0.45rem;
 }
 
+.doc-header-main {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.doc-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.doc-icon-button {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  font-size: 0.95rem;
+}
+
 .doc-body {
   display: grid;
   gap: 0.8rem;
@@ -739,6 +757,11 @@ h1 {
 
   .theme-selector-stub {
     display: inline-flex;
+  }
+
+  .doc-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
   }
 }
 

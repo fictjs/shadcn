@@ -356,6 +356,13 @@ function DocsIndexPage(props: { docs: DocSummary[] }) {
 function DocDetailPage(props: { route: ResolvedRoute }) {
   const doc = props.route.doc as DocPage
 
+  const copyDocBody = () => {
+    if (typeof navigator === "undefined" || !navigator.clipboard) {
+      return
+    }
+    void navigator.clipboard.writeText(doc.body)
+  }
+
   return (
     <section class="docs-layout">
       <aside class="docs-sidebar card">
@@ -381,10 +388,35 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
 
       <article class="doc-main card">
         <header class="doc-header">
-          <p class="eyebrow">{doc.section || "overview"}</p>
-          <h1>{doc.title}</h1>
-          <p class="lead">{doc.description || "No description provided."}</p>
-          <p class="slug">source: content/docs/{doc.sourcePath}</p>
+          <div class="doc-header-main">
+            <p class="eyebrow">{doc.section || "overview"}</p>
+            <h1>{doc.title}</h1>
+            <p class="lead">{doc.description || "No description provided."}</p>
+            <p class="slug">source: content/docs/{doc.sourcePath}</p>
+          </div>
+          <div class="doc-header-actions">
+            <button type="button" class="button button-ghost" onClick={() => copyDocBody()}>
+              Copy Page
+            </button>
+            {props.route.docPrev ? (
+              <a
+                class="button button-ghost doc-icon-button"
+                href={props.route.docPrev.slug ? `/docs/${props.route.docPrev.slug}` : "/docs"}
+                aria-label="Previous page"
+              >
+                <span aria-hidden="true">&lt;</span>
+              </a>
+            ) : null}
+            {props.route.docNext ? (
+              <a
+                class="button button-ghost doc-icon-button"
+                href={props.route.docNext.slug ? `/docs/${props.route.docNext.slug}` : "/docs"}
+                aria-label="Next page"
+              >
+                <span aria-hidden="true">&gt;</span>
+              </a>
+            ) : null}
+          </div>
         </header>
 
         <div class="doc-body">
