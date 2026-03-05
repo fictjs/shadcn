@@ -506,6 +506,12 @@ h1 {
   gap: 0.35rem;
 }
 
+.themes-preview-card {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
 .doc-nav {
   justify-content: space-between;
 }

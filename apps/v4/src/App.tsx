@@ -699,7 +699,26 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
           Try our hand-picked themes. Copy and paste them into your project. New theme editor coming
           soon.
         </p>
+        <div class="cta-row">
+          <a class="button" href="#themes">
+            Browse Themes
+          </a>
+          <a class="button button-ghost" href="/docs/theming">
+            Documentation
+          </a>
+        </div>
       </div>
+
+      <section class="card themes-preview-card" id="themes">
+        <figure class="example-preview-card">
+          <img src="/examples/cards-light.png" alt="Theme cards light preview" loading="lazy" />
+          <figcaption class="slug">Cards preview (light)</figcaption>
+        </figure>
+        <figure class="example-preview-card">
+          <img src="/examples/cards-dark.png" alt="Theme cards dark preview" loading="lazy" />
+          <figcaption class="slug">Cards preview (dark)</figcaption>
+        </figure>
+      </section>
 
       <div class="card control-card">
         <label for="theme-filter">Filter themes</label>
@@ -735,7 +754,23 @@ function ColorsPage() {
           The complete Tailwind color palette in HEX, RGB, HSL, CSS variables, and classes. Ready to
           copy and paste into your project.
         </p>
+        <div class="cta-row">
+          <a class="button" href="#colors">
+            Browse Colors
+          </a>
+          <a class="button button-ghost" href="/docs/theming">
+            Documentation
+          </a>
+        </div>
       </div>
+
+      <nav class="section-nav" aria-label="Color palettes navigation">
+        {colorPalettes.map((palette) => (
+          <a key={palette.name} href={`#${palette.name}`}>
+            {palette.name}
+          </a>
+        ))}
+      </nav>
 
       <div class="colors-grid" id="colors">
         {colorPalettes.map((palette) => (
