@@ -173,7 +173,7 @@ export function App(props: AppProps) {
 function HomePage(props: { route: ResolvedRoute }) {
   return (
     <section class="stack-gap">
-      <div class="hero card home-hero-card">
+      <div class="home-hero-card route-page-header">
         <AnnouncementBadge />
         <p class="eyebrow">Open Source. Open Code.</p>
         <h1>The Foundation for your Design System</h1>
@@ -586,7 +586,7 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
 
   return (
     <section class="stack-gap">
-      <div>
+      <div class="route-page-header">
         <AnnouncementBadge />
         <p class="eyebrow">Examples</p>
         <h1>The Foundation for your Design System</h1>
@@ -704,7 +704,7 @@ function ChartsPage(props: { route: ResolvedRoute }) {
 
   return (
     <section class="stack-gap">
-      <div>
+      <div class="route-page-header">
         <AnnouncementBadge />
         <p class="eyebrow">Charts</p>
         <h1>Beautiful Charts &amp; Graphs</h1>
@@ -769,7 +769,7 @@ function BlocksPage(props: { route: ResolvedRoute }) {
 
   return (
     <section class="stack-gap">
-      <div>
+      <div class="route-page-header">
         <AnnouncementBadge />
         <p class="eyebrow">Blocks</p>
         <h1>Building Blocks for the Web</h1>
@@ -837,7 +837,7 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
 
   return (
     <section class="stack-gap">
-      <div>
+      <div class="route-page-header">
         <AnnouncementBadge />
         <p class="eyebrow">Themes</p>
         <h1>Pick a Color. Make it yours.</h1>
@@ -911,7 +911,7 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
 function ColorsPage() {
   return (
     <section class="stack-gap">
-      <div>
+      <div class="route-page-header">
         <AnnouncementBadge />
         <p class="eyebrow">Colors</p>
         <h1>Tailwind Colors in Every Format</h1>
