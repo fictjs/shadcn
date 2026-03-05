@@ -179,6 +179,7 @@ function HomePage(props: { route: ResolvedRoute }) {
   return (
     <section class="stack-gap">
       <div class="hero card home-hero-card">
+        <AnnouncementBadge />
         <p class="eyebrow">Open Source. Open Code.</p>
         <h1>The Foundation for your Design System</h1>
         <p class="lead">
@@ -285,6 +286,17 @@ function ThemeSelectorStub() {
         Copy Code
       </button>
     </div>
+  )
+}
+
+function AnnouncementBadge() {
+  return (
+    <a class="announcement-chip" href="/docs/changelog/2026-01-rtl">
+      <span>RTL Support</span>
+      <span class="announcement-chip-arrow" aria-hidden="true">
+        -&gt;
+      </span>
+    </a>
   )
 }
 
@@ -596,6 +608,7 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
   return (
     <section class="stack-gap">
       <div>
+        <AnnouncementBadge />
         <p class="eyebrow">Examples</p>
         <h1>The Foundation for your Design System</h1>
         <p class="lead">
@@ -713,6 +726,7 @@ function ChartsPage(props: { route: ResolvedRoute }) {
   return (
     <section class="stack-gap">
       <div>
+        <AnnouncementBadge />
         <p class="eyebrow">Charts</p>
         <h1>Beautiful Charts &amp; Graphs</h1>
         <p class="lead">
@@ -777,6 +791,7 @@ function BlocksPage(props: { route: ResolvedRoute }) {
   return (
     <section class="stack-gap">
       <div>
+        <AnnouncementBadge />
         <p class="eyebrow">Blocks</p>
         <h1>Building Blocks for the Web</h1>
         <p class="lead">
@@ -844,6 +859,7 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
   return (
     <section class="stack-gap">
       <div>
+        <AnnouncementBadge />
         <p class="eyebrow">Themes</p>
         <h1>Pick a Color. Make it yours.</h1>
         <p class="lead">
@@ -917,6 +933,7 @@ function ColorsPage() {
   return (
     <section class="stack-gap">
       <div>
+        <AnnouncementBadge />
         <p class="eyebrow">Colors</p>
         <h1>Tailwind Colors in Every Format</h1>
         <p class="lead">
