@@ -2,7 +2,6 @@ import { $state } from "fict"
 
 import { colors as tailwindColors } from "../registry/_legacy-colors"
 import type {
-  BlockEntry,
   DocPage,
   DocSummary,
   ResolvedRoute,
