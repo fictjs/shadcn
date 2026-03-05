@@ -507,6 +507,33 @@ h1 {
   overflow: auto;
 }
 
+.docs-cta-card {
+  margin-top: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  padding: 0.8rem;
+  background: color-mix(in oklab, var(--muted) 55%, transparent);
+}
+
+.docs-cta-title {
+  font-size: 0.93rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.docs-cta-copy {
+  margin-top: 0.45rem;
+  color: var(--muted-foreground);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.docs-cta-button {
+  margin-top: 0.6rem;
+  padding: 0.38rem 0.6rem;
+  font-size: 0.78rem;
+}
+
 .toc-level-3 {
   padding-left: 0.75rem;
 }
