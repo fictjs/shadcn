@@ -12,10 +12,12 @@ export interface DocHeading {
 }
 
 export interface DocContentBlock {
-  kind: "heading" | "paragraph" | "code"
+  kind: "heading" | "paragraph" | "code" | "list" | "blockquote" | "hr"
   text: string
   id?: string
   level?: number
+  items?: string[]
+  ordered?: boolean
 }
 
 export interface DocPage extends DocSummary {
