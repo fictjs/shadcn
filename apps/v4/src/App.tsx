@@ -509,9 +509,20 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
               </li>
             ))}
           </ul>
-        ) : (
-          <p class="slug">No headings</p>
-        )}
+        ) : null}
+        <section class="docs-cta-card">
+          <p class="docs-cta-title">Deploy your shadcn/ui app on Vercel</p>
+          <p class="docs-cta-copy">Trusted by OpenAI, Sonos, Adobe, and more.</p>
+          <p class="docs-cta-copy">
+            Vercel provides tools and infrastructure to deploy apps and features at scale.
+          </p>
+          <a
+            class="button docs-cta-button"
+            href="https://vercel.com/new?utm_source=shadcn_site&utm_medium=web&utm_campaign=docs_cta_deploy_now_callout"
+          >
+            Deploy Now
+          </a>
+        </section>
       </aside>
     </section>
   )
