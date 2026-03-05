@@ -172,13 +172,6 @@ export function App(props: AppProps) {
 }
 
 function HomePage(props: { route: ResolvedRoute }) {
-  const docsCount = props.route.docs.length
-  const componentsCount = props.route.components.length
-  const examplesCount = props.route.examples.length
-  const chartsCount = props.route.charts.length
-  const blocksCount = props.route.blocks.length
-  const themesCount = props.route.themes.length
-
   return (
     <section class="stack-gap">
       <div class="hero card home-hero-card">
@@ -223,33 +216,6 @@ function HomePage(props: { route: ResolvedRoute }) {
       <section class="card home-examples-root">
         <ExamplesRootPreview />
       </section>
-
-      <div class="stats-grid">
-        <div class="card stat-card">
-          <p class="stat-label">Docs Pages</p>
-          <p class="stat-value">{docsCount}</p>
-        </div>
-        <div class="card stat-card">
-          <p class="stat-label">UI Components</p>
-          <p class="stat-value">{componentsCount}</p>
-        </div>
-        <div class="card stat-card">
-          <p class="stat-label">Examples</p>
-          <p class="stat-value">{examplesCount}</p>
-        </div>
-        <div class="card stat-card">
-          <p class="stat-label">Charts</p>
-          <p class="stat-value">{chartsCount}</p>
-        </div>
-        <div class="card stat-card">
-          <p class="stat-label">Blocks</p>
-          <p class="stat-value">{blocksCount}</p>
-        </div>
-        <div class="card stat-card">
-          <p class="stat-label">Themes</p>
-          <p class="stat-value">{themesCount}</p>
-        </div>
-      </div>
     </section>
   )
 }
