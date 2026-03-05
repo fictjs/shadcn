@@ -160,7 +160,7 @@ export function App(props: AppProps) {
               Vercel
             </a>
             . The source code is available on{" "}
-            <a href="https://github.com/unovue/shadcn-vue">GitHub</a>.
+            <a href="https://github.com/shadcn-ui/ui">GitHub</a>.
           </p>
         </div>
       </footer>
