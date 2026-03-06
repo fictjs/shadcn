@@ -223,6 +223,10 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".create-command-code")).toContainText("--base radix")
 
     await page.locator(".create-kind-pills").getByRole("button", { name: "Examples" }).click()
+    await page.getByLabel("Search items").fill("task")
+    await expect(page.locator(".create-explorer-list")).toContainText("Tasks Example")
+    await expect(page.locator(".create-explorer-list .create-item-button")).toHaveCount(1)
+
     await page.locator(".create-explorer-list").getByRole("button", { name: /Tasks/ }).click()
     await expect(page.locator(".create-preview-stage .tasks-example")).toBeVisible()
 

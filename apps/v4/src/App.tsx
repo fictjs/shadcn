@@ -937,6 +937,7 @@ function CreatePage() {
   let theme = $state("neutral")
   let font = $state("inter")
   let starterTemplate = $state("next")
+  let itemQuery = $state("")
   let copiedLabel = $state("Share")
   let copiedCommandLabel = $state("Copy Command")
 
@@ -947,10 +948,20 @@ function CreatePage() {
       ? createComponentItems
       : activeKind === "example"
         ? createExampleItems
-        : activeKind === "block"
+      : activeKind === "block"
           ? createBlockItems
           : createChartItems
-  const activeItem = createItemLookup[`${activeKind}:${activeId}`] || createComponentItems[0]
+  const normalizedItemQuery = itemQuery.trim().toLowerCase()
+  const filteredActiveItems = !normalizedItemQuery
+    ? activeItems
+    : activeItems.filter((item) =>
+        `${item.title} ${item.id} ${item.description}`.toLowerCase().includes(normalizedItemQuery)
+      )
+  const activeItem =
+    filteredActiveItems.find((item) => item.id === activeId) ||
+    activeItems.find((item) => item.id === activeId) ||
+    filteredActiveItems[0] ||
+    createComponentItems[0]
 
   const createInstallCommand =
     `pnpm dlx @fictjs/shadcn@latest init --template ${starterTemplate} --base ${base}` +
@@ -964,6 +975,7 @@ function CreatePage() {
     theme = "neutral"
     font = "inter"
     starterTemplate = "next"
+    itemQuery = ""
     copiedLabel = "Share"
     copiedCommandLabel = "Copy Command"
   }
@@ -1031,6 +1043,7 @@ function CreatePage() {
                 theme = "neutral"
                 font = "inter"
                 starterTemplate = "next"
+                itemQuery = ""
                 copiedLabel = "Share"
                 copiedCommandLabel = "Copy Command"
               }}
@@ -1071,7 +1084,27 @@ function CreatePage() {
 
             <div class="card control-card create-search-card">
               <label for="create-item-filter">Search items</label>
-              <input id="create-item-filter" type="text" placeholder="Curated starters below. Search coming next." />
+              <input
+                id="create-item-filter"
+                type="text"
+                value={itemQuery}
+                placeholder="Search by title, id, or description"
+                onInput={(event) => {
+                  const target = event.target as HTMLInputElement | null
+                  const nextQuery = target?.value ?? ""
+                  const nextNormalizedQuery = nextQuery.trim().toLowerCase()
+                  const nextItems = !nextNormalizedQuery
+                    ? activeItems
+                    : activeItems.filter((item) =>
+                        `${item.title} ${item.id} ${item.description}`.toLowerCase().includes(nextNormalizedQuery)
+                      )
+
+                  itemQuery = nextQuery
+                  if (nextItems.length && !nextItems.some((item) => item.id === activeId)) {
+                    activeId = nextItems[0].id
+                  }
+                }}
+              />
             </div>
 
             <div class="create-kind-pills" aria-label="Catalog filters">
@@ -1093,6 +1126,7 @@ function CreatePage() {
                     }
 
                     activeKind = nextKind
+                    itemQuery = ""
                     activeId =
                       nextKind === "component"
                         ? "button"
@@ -1113,10 +1147,10 @@ function CreatePage() {
               <section class="create-explorer-group">
                 <div class="create-explorer-group-head">
                   <h2>{createKindLabels[activeKind]}</h2>
-                  <span>{activeItems.length}</span>
+                  <span>{filteredActiveItems.length}</span>
                 </div>
                 <div class="create-explorer-list">
-                  {activeItems.map((item) => (
+                  {filteredActiveItems.length ? filteredActiveItems.map((item) => (
                     <button
                       type="button"
                       key={item.key}
@@ -1140,7 +1174,9 @@ function CreatePage() {
                       <span class="create-item-title">{item.title}</span>
                       <span class="create-item-description">{item.description}</span>
                     </button>
-                  ))}
+                  )) : (
+                    <p class="create-empty-state">No matching items.</p>
+                  )}
                 </div>
               </section>
             </div>
