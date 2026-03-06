@@ -502,70 +502,50 @@ function PlaygroundExample() {
   return (
     <div class="live-example playground-example">
       <header class="playground-header">
-        <div>
-          <p class="dashboard-section-label">Prompting</p>
-          <h3>Playground</h3>
-        </div>
-        <div class="playground-actions">
-          <button class="playground-ghost-button" type="button">View Code</button>
-          <button class="playground-ghost-button" type="button">Share</button>
-          <button class="playground-primary-button" type="button">Save</button>
+        <h3>Playground</h3>
+        <div class="playground-top-actions">
+          <button
+            class="playground-header-button playground-header-button-wide"
+            type="button"
+            aria-label="Load a preset..."
+            onClick$={() => {
+              const currentPreset = untrack(() => preset)
+              preset = currentPreset === playgroundPresets[0]
+                ? playgroundPresets[1]
+                : currentPreset === playgroundPresets[1]
+                  ? playgroundPresets[2]
+                  : playgroundPresets[0]
+            }}
+          >
+            <span class="playground-header-button-label">Load a preset...</span>
+            <span class="playground-header-button-value">{preset}</span>
+          </button>
+          <button class="playground-header-button" type="button">Save</button>
+          <button class="playground-header-button playground-header-button-icon" type="button">Code</button>
+          <button class="playground-header-button playground-header-button-icon" type="button">Share</button>
+          <button class="playground-header-button playground-header-button-icon" type="button" aria-label="Actions">...</button>
         </div>
       </header>
 
+      <div class="playground-separator" aria-hidden="true"></div>
+
       <div class="playground-shell">
-        <section class="playground-panel">
-          <div class="playground-mode-row" role="tablist" aria-label="Playground modes">
-            {[
-              ["complete", "Complete"],
-              ["insert", "Insert"],
-              ["edit", "Edit"],
-            ].map((entry) => (
-              <button
-                key={entry[0]}
-                type="button"
-                data-mode={entry[0]}
-                role="tab"
-                aria-selected={mode === entry[0]}
-                class={mode === entry[0] ? "playground-tab playground-tab-active" : "playground-tab"}
-                onClick$={(event: MouseEvent) => {
-                  const target = event.currentTarget
-                  if (!(target instanceof HTMLButtonElement)) {
-                    return
-                  }
-
-                  const nextMode = resolvePlaygroundMode(target.dataset.mode)
-                  if (!nextMode) {
-                    return
-                  }
-
-                  mode = nextMode
-                }}
-              >
-                {entry[1]}
-              </button>
-            ))}
-          </div>
-
+        <section class="playground-main-column">
           <div class="playground-editor-grid">
             {mode === "complete" ? (
-              <>
+              <div class="playground-complete-panel">
                 <div class="playground-textarea playground-copy-surface">{preset}</div>
-                <div class="playground-output-card">
-                  <p class="dashboard-section-label">Output</p>
-                  <h4>Draft response</h4>
-                  <p>Turn curious visitors into loyal customers with crisp, delightful copy tuned for product launches.</p>
-                </div>
-              </>
-            ) : mode === "insert" ? (
+              </div>
+            ) : null}
+
+            {mode === "insert" ? (
               <>
-                <div class="playground-textarea playground-copy-surface">We&apos;re writing to [company]. Congrats from OpenAI!</div>
-                <div class="playground-output-card playground-output-muted">
-                  <p class="dashboard-section-label">Insertion Preview</p>
-                  <p>Open the final response preview here after selecting an insertion target.</p>
-                </div>
+                <div class="playground-textarea playground-copy-surface">We&apos;re writing to [inset]. Congrats from OpenAI!</div>
+                <div class="playground-surface-pane playground-surface-pane-muted" aria-label="Insertion preview"></div>
               </>
-            ) : (
+            ) : null}
+
+            {mode === "edit" ? (
               <>
                 <div class="playground-edit-stack">
                   <label class="playground-field">
@@ -577,52 +557,82 @@ function PlaygroundExample() {
                     <div class="playground-textarea playground-textarea-compact playground-copy-surface">Fix the grammar.</div>
                   </label>
                 </div>
-                <div class="playground-output-card">
-                  <p class="dashboard-section-label">Edited Response</p>
-                  <p>We are going to the market.</p>
-                </div>
+                <div class="playground-surface-pane" aria-label="Edit preview"></div>
               </>
-            )}
+            ) : null}
           </div>
 
           <div class="playground-submit-row">
             <button class="playground-primary-button" type="button">Submit</button>
-            <button class="playground-ghost-button" type="button">Reset</button>
+            <button class="playground-ghost-button" type="button" aria-label="Show history">Reset</button>
           </div>
         </section>
 
         <aside class="playground-sidebar-panel">
           <section class="playground-field">
-            <span>Preset</span>
-            <div class="playground-option-group">
-              {playgroundPresets.map((entry) => (
+            <span>Mode</span>
+            <div class="playground-icon-tab-list" role="tablist" aria-label="Playground modes">
+              {[
+                ["complete", "Complete"],
+                ["insert", "Insert"],
+                ["edit", "Edit"],
+              ].map((entry) => (
                 <button
-                  key={entry}
+                  key={entry[0]}
                   type="button"
-                  data-preset={entry}
-                  class={preset === entry ? "playground-option-button playground-option-button-active" : "playground-option-button"}
-                  aria-pressed={preset === entry}
+                  data-mode={entry[0]}
+                  role="tab"
+                  aria-selected={mode === entry[0]}
+                  class={mode === entry[0] ? "playground-tab playground-tab-active" : "playground-tab"}
                   onClick$={(event: MouseEvent) => {
                     const target = event.currentTarget
                     if (!(target instanceof HTMLButtonElement)) {
                       return
                     }
 
-                    const nextPreset = target.dataset.preset
-                    if (!nextPreset) {
+                    const nextMode = resolvePlaygroundMode(target.dataset.mode)
+                    if (!nextMode) {
                       return
                     }
 
-                    preset = nextPreset
+                    mode = nextMode
                   }}
                 >
-                  {entry}
+                  {entry[0] === "complete" ? (
+                    <svg viewBox="0 0 20 20" aria-hidden="true" class="playground-tab-icon">
+                      <rect x="4" y="3" width="12" height="2" rx="1"></rect>
+                      <rect x="4" y="7" width="12" height="2" rx="1"></rect>
+                      <rect x="4" y="11" width="3" height="2" rx="1"></rect>
+                      <rect x="8.5" y="11" width="3" height="2" rx="1"></rect>
+                      <rect x="13" y="11" width="3" height="2" rx="1"></rect>
+                      <rect x="4" y="15" width="3" height="2" rx="1"></rect>
+                      <rect x="8.5" y="15" width="3" height="2" rx="1"></rect>
+                    </svg>
+                  ) : entry[0] === "insert" ? (
+                    <svg viewBox="0 0 20 20" aria-hidden="true" class="playground-tab-icon">
+                      <path d="M10 3.5V10"></path>
+                      <path d="M7 7.5L10 10.5L13 7.5"></path>
+                      <rect x="4" y="15" width="3" height="2" rx="1"></rect>
+                      <rect x="8.5" y="15" width="3" height="2" rx="1"></rect>
+                      <rect x="13" y="15" width="3" height="2" rx="1"></rect>
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 20 20" aria-hidden="true" class="playground-tab-icon">
+                      <rect x="4" y="3" width="12" height="2" rx="1"></rect>
+                      <rect x="4" y="7" width="12" height="2" rx="1"></rect>
+                      <rect x="4" y="11" width="3" height="2" rx="1"></rect>
+                      <rect x="4" y="15" width="4" height="2" rx="1"></rect>
+                      <rect x="8.5" y="11" width="3" height="2" rx="1"></rect>
+                      <path d="M12 16.5L15.5 13L16.8 14.3L13.3 17.8H12Z"></path>
+                    </svg>
+                  )}
+                  <span class="sr-only">{entry[1]}</span>
                 </button>
               ))}
             </div>
           </section>
 
-          <section class="playground-field">
+          <section class="playground-field playground-sidebar-stack">
             <span>Model</span>
             <div class="playground-option-group">
               {playgroundModels.map((entry) => (
@@ -652,11 +662,6 @@ function PlaygroundExample() {
             </div>
           </section>
 
-          <div class="playground-selection-summary">
-            <p class="slug">Preset: {preset}</p>
-            <p class="slug">Model: {model}</p>
-          </div>
-
           <label class="playground-field">
             <span>Temperature</span>
             <input type="range" min="0" max="100" value="56" />
@@ -665,6 +670,11 @@ function PlaygroundExample() {
           <label class="playground-field">
             <span>Max Length</span>
             <input type="range" min="64" max="512" value="256" />
+          </label>
+
+          <label class="playground-field">
+            <span>Top P</span>
+            <input type="range" min="0" max="100" value="90" />
           </label>
         </aside>
       </div>

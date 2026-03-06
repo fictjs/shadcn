@@ -106,14 +106,24 @@ test.describe("shadcn v4 site", () => {
 
     const tabs = page.getByRole("tab")
     const insertTab = page.getByRole("tab", { name: "Insert", exact: true })
+    const editTab = page.getByRole("tab", { name: "Edit", exact: true })
+    const presetButton = page.getByRole("button", { name: "Load a preset..." })
 
     await expect(tabs).toHaveCount(3)
+    await expect(presetButton).toContainText("Explain quantum computing")
     await insertTab.click()
     await expect(insertTab).toHaveClass(/playground-tab-active/)
-    await expect(page.locator(".playground-output-muted")).toContainText("Insertion Preview")
+    await expect(page.locator(".playground-surface-pane-muted")).toBeVisible()
 
     await page.getByRole("button", { name: "gemini-pro" }).click()
-    await expect(page.locator(".playground-selection-summary")).toContainText("Model: gemini-pro")
+    await expect(page.getByRole("button", { name: "gemini-pro" })).toHaveClass(/playground-option-button-active/)
+
+    await presetButton.click()
+    await expect(presetButton).toContainText("Write release notes")
+
+    await editTab.click()
+    await expect(page.locator(".playground-edit-stack")).toContainText("Input")
+    await expect(page.locator(".playground-edit-stack")).toContainText("Instructions")
   })
 
   test("themes route renders the customizer shell", async ({ page }) => {
