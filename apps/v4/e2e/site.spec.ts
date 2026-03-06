@@ -34,6 +34,16 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".dashboard-chart-card")).toContainText("Revenue")
   })
 
+  test("charts route renders styled preview cards instead of placeholders", async ({ page }) => {
+    await page.goto("/charts/area")
+
+    await expect(page.getByRole("heading", { name: "Beautiful Charts & Graphs" })).toBeVisible()
+    await expect(page.locator('.chart-display-card[data-full-width="true"]').first()).toBeVisible()
+    await expect(page.locator(".chart-display-card .chart-preview-stage").first()).toBeVisible()
+    await expect(page.locator(".chart-display-card .chart-preview-svg").first()).toBeVisible()
+    await expect(page.locator(".chart-frame-placeholder")).toHaveCount(0)
+  })
+
   test("tasks example filters rows interactively", async ({ page }) => {
     await page.goto("/examples/tasks")
 

@@ -68,6 +68,104 @@ const examplesRootColumns: ExampleRootColumn[] = [
   },
 ]
 
+const chartDisplayOrder: Record<string, string[]> = {
+  area: [
+    "chart-area-interactive",
+    "chart-area-default",
+    "chart-area-linear",
+    "chart-area-step",
+    "chart-area-legend",
+    "chart-area-stacked",
+    "chart-area-stacked-expand",
+    "chart-area-icons",
+    "chart-area-gradient",
+    "chart-area-axes",
+  ],
+  bar: [
+    "chart-bar-interactive",
+    "chart-bar-default",
+    "chart-bar-horizontal",
+    "chart-bar-multiple",
+    "chart-bar-stacked",
+    "chart-bar-label",
+    "chart-bar-label-custom",
+    "chart-bar-mixed",
+    "chart-bar-active",
+    "chart-bar-negative",
+  ],
+  line: [
+    "chart-line-interactive",
+    "chart-line-default",
+    "chart-line-linear",
+    "chart-line-step",
+    "chart-line-multiple",
+    "chart-line-dots",
+    "chart-line-dots-custom",
+    "chart-line-dots-colors",
+    "chart-line-label",
+    "chart-line-label-custom",
+  ],
+  pie: [
+    "chart-pie-simple",
+    "chart-pie-separator-none",
+    "chart-pie-label",
+    "chart-pie-label-custom",
+    "chart-pie-label-list",
+    "chart-pie-legend",
+    "chart-pie-donut",
+    "chart-pie-donut-active",
+    "chart-pie-donut-text",
+    "chart-pie-stacked",
+    "chart-pie-interactive",
+  ],
+  radar: [
+    "chart-radar-default",
+    "chart-radar-dots",
+    "chart-radar-lines-only",
+    "chart-radar-label-custom",
+    "chart-radar-grid-custom",
+    "chart-radar-grid-none",
+    "chart-radar-grid-circle",
+    "chart-radar-grid-circle-no-lines",
+    "chart-radar-grid-circle-fill",
+    "chart-radar-grid-fill",
+    "chart-radar-multiple",
+    "chart-radar-legend",
+    "chart-radar-icons",
+    "chart-radar-radius",
+  ],
+  radial: [
+    "chart-radial-simple",
+    "chart-radial-label",
+    "chart-radial-grid",
+    "chart-radial-text",
+    "chart-radial-shape",
+    "chart-radial-stacked",
+  ],
+  tooltip: [
+    "chart-tooltip-default",
+    "chart-tooltip-indicator-line",
+    "chart-tooltip-indicator-none",
+    "chart-tooltip-label-custom",
+    "chart-tooltip-label-formatter",
+    "chart-tooltip-label-none",
+    "chart-tooltip-formatter",
+    "chart-tooltip-icons",
+    "chart-tooltip-advanced",
+  ],
+}
+
+const fullWidthChartIds = new Set([
+  "chart-area-interactive",
+  "chart-bar-interactive",
+  "chart-line-interactive",
+])
+
+function formatDisplayLabel(value: string): string {
+  const normalized = value.replace(/[-_]/g, " ").replace(/\s+/g, " ").trim()
+  return normalized
+}
+
 export function App(props: AppProps) {
   const route = props.route
 
@@ -916,12 +1014,265 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
   )
 }
 
+function getChartFamilyLabel(chartId: string): string {
+  if (chartId.includes("chart-area")) {
+    return "Area Chart"
+  }
+  if (chartId.includes("chart-bar")) {
+    return "Bar Chart"
+  }
+  if (chartId.includes("chart-line")) {
+    return "Line Chart"
+  }
+  if (chartId.includes("chart-pie")) {
+    return "Pie Chart"
+  }
+  if (chartId.includes("chart-radar")) {
+    return "Radar Chart"
+  }
+  if (chartId.includes("chart-radial")) {
+    return "Radial Chart"
+  }
+  if (chartId.includes("chart-tooltip")) {
+    return "Tooltip"
+  }
+  return formatDisplayLabel(chartId)
+}
+
+function ChartPreviewSurface(props: { chartId: string }) {
+  return props.chartId.includes("chart-bar") ? (
+    <BarChartPreviewSurface chartId={props.chartId} />
+  ) : props.chartId.includes("chart-pie") ? (
+    <PieChartPreviewSurface chartId={props.chartId} />
+  ) : props.chartId.includes("chart-radar") ? (
+    <RadarChartPreviewSurface chartId={props.chartId} />
+  ) : props.chartId.includes("chart-radial") ? (
+    <RadialChartPreviewSurface chartId={props.chartId} />
+  ) : props.chartId.includes("chart-tooltip") ? (
+    <TooltipChartPreviewSurface chartId={props.chartId} />
+  ) : props.chartId.includes("chart-line") ? (
+    <LineChartPreviewSurface chartId={props.chartId} />
+  ) : (
+    <AreaChartPreviewSurface chartId={props.chartId} />
+  )
+}
+
+function AreaChartPreviewSurface(props: { chartId: string }) {
+  const interactive = props.chartId.endsWith("interactive")
+
+  return (
+    <div class={`chart-preview-stage chart-preview-area${interactive ? " is-interactive" : ""}`}>
+      <div class="chart-preview-header">
+        <div>
+          <p class="chart-preview-heading">Revenue</p>
+          <span>April - June</span>
+        </div>
+        {interactive ? <span class="chart-preview-chip">90 days</span> : null}
+      </div>
+      <svg viewBox="0 0 360 180" class="chart-preview-svg" aria-hidden="true">
+        <path class="chart-grid-line" d="M24 30H336" />
+        <path class="chart-grid-line" d="M24 78H336" />
+        <path class="chart-grid-line" d="M24 126H336" />
+        <path class="chart-area-fill" d="M24 132C64 110 88 60 124 72C158 84 188 146 226 112C262 80 300 36 336 54V160H24Z" />
+        <path class="chart-line-secondary" d="M24 118C58 106 88 92 124 100C160 108 192 132 226 116C262 98 298 88 336 94" />
+        <path class="chart-line-primary" d="M24 132C64 110 88 60 124 72C158 84 188 146 226 112C262 80 300 36 336 54" />
+      </svg>
+      <div class="chart-preview-legend">
+        <span><i class="chart-accent-dot"></i> Desktop</span>
+        <span><i class="chart-muted-dot"></i> Mobile</span>
+      </div>
+    </div>
+  )
+}
+
+function LineChartPreviewSurface(props: { chartId: string }) {
+  const interactive = props.chartId.endsWith("interactive")
+
+  return (
+    <div class={`chart-preview-stage chart-preview-line${interactive ? " is-interactive" : ""}`}>
+      <div class="chart-preview-header">
+        <div>
+          <p class="chart-preview-heading">Visitors</p>
+          <span>Performance trend</span>
+        </div>
+        {interactive ? <span class="chart-preview-chip">Live</span> : null}
+      </div>
+      <svg viewBox="0 0 360 180" class="chart-preview-svg" aria-hidden="true">
+        <path class="chart-grid-line" d="M24 36H336" />
+        <path class="chart-grid-line" d="M24 84H336" />
+        <path class="chart-grid-line" d="M24 132H336" />
+        <path class="chart-line-secondary" d="M24 122L70 104L116 112L162 86L208 102L254 72L300 80L336 64" />
+        <path class="chart-line-primary" d="M24 138L70 88L116 96L162 62L208 118L254 94L300 42L336 58" />
+      </svg>
+      <div class="chart-preview-legend">
+        <span><i class="chart-accent-dot"></i> Desktop</span>
+        <span><i class="chart-muted-dot"></i> Mobile</span>
+      </div>
+    </div>
+  )
+}
+
+function BarChartPreviewSurface(props: { chartId: string }) {
+  const interactive = props.chartId.endsWith("interactive")
+  const bars = interactive
+    ? [84, 56, 73, 92, 61, 78, 48, 67]
+    : [58, 42, 76, 51, 69, 63, 55, 81]
+
+  return (
+    <div class={`chart-preview-stage chart-preview-bar${interactive ? " is-interactive" : ""}`}>
+      <div class="chart-preview-header">
+        <div>
+          <p class="chart-preview-heading">Conversions</p>
+          <span>Weekly totals</span>
+        </div>
+        {interactive ? <span class="chart-preview-chip">Compare</span> : null}
+      </div>
+      <div class="chart-bar-grid" aria-hidden="true">
+        {bars.map((height, index) => (
+          <div class="chart-bar-group" key={`${props.chartId}-${index}`}>
+            <span class="chart-bar chart-bar-muted" style={`--bar-height:${Math.max(26, height - 18)}%`}></span>
+            <span class="chart-bar chart-bar-accent" style={`--bar-height:${height}%`}></span>
+          </div>
+        ))}
+      </div>
+      <div class="chart-preview-legend">
+        <span><i class="chart-accent-dot"></i> Desktop</span>
+        <span><i class="chart-muted-dot"></i> Mobile</span>
+      </div>
+    </div>
+  )
+}
+
+function PieChartPreviewSurface(props: { chartId: string }) {
+  const interactive = props.chartId.endsWith("interactive")
+
+  return (
+    <div class={`chart-preview-stage chart-preview-pie${interactive ? " is-interactive" : ""}`}>
+      <div class="chart-preview-header">
+        <div>
+          <p class="chart-preview-heading">Traffic sources</p>
+          <span>Channel mix</span>
+        </div>
+        {interactive ? <span class="chart-preview-chip">Hover</span> : null}
+      </div>
+      <div class="chart-pie-layout" aria-hidden="true">
+        <div class="chart-pie-ring"></div>
+        <div class="chart-pie-metrics">
+          <strong>64%</strong>
+          <span>Organic</span>
+          <span>22% Referral</span>
+          <span>14% Paid</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function RadarChartPreviewSurface(props: { chartId: string }) {
+  const label = props.chartId.replace(/^chart-radar-/, "").split("-").join(" ")
+
+  return (
+    <div class="chart-preview-stage chart-preview-radar">
+      <div class="chart-preview-header">
+        <div>
+          <p class="chart-preview-heading">Capability score</p>
+          <span>{label}</span>
+        </div>
+      </div>
+      <svg viewBox="0 0 240 180" class="chart-preview-svg chart-preview-radar-svg" aria-hidden="true">
+        <polygon class="chart-radar-grid-shape" points="120,22 196,66 168,150 72,150 44,66" />
+        <polygon class="chart-radar-grid-shape" points="120,48 172,76 154,132 86,132 68,76" />
+        <polygon class="chart-radar-grid-shape" points="120,70 152,86 142,116 98,116 88,86" />
+        <polygon class="chart-radar-fill" points="120,32 180,78 150,138 82,126 58,74" />
+        <polygon class="chart-radar-line" points="120,32 180,78 150,138 82,126 58,74" />
+      </svg>
+    </div>
+  )
+}
+
+function RadialChartPreviewSurface(props: { chartId: string }) {
+  const label = props.chartId.replace(/^chart-radial-/, "").split("-").join(" ")
+
+  return (
+    <div class="chart-preview-stage chart-preview-radial">
+      <div class="chart-preview-header">
+        <div>
+          <p class="chart-preview-heading">Completion</p>
+          <span>{label}</span>
+        </div>
+      </div>
+      <div class="chart-radial-layout" aria-hidden="true">
+        <div class="chart-radial-ring">
+          <div class="chart-radial-center">
+            <strong>78%</strong>
+            <span>Target</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function TooltipChartPreviewSurface(props: { chartId: string }) {
+  const label = props.chartId.replace(/^chart-tooltip-/, "").split("-").join(" ")
+
+  return (
+    <div class="chart-preview-stage chart-preview-tooltip">
+      <div class="chart-preview-header">
+        <div>
+          <p class="chart-preview-heading">Tooltip pattern</p>
+          <span>{label}</span>
+        </div>
+      </div>
+      <div class="chart-tooltip-layout">
+        <svg viewBox="0 0 360 160" class="chart-preview-svg" aria-hidden="true">
+          <path class="chart-grid-line" d="M24 36H336" />
+          <path class="chart-grid-line" d="M24 82H336" />
+          <path class="chart-grid-line" d="M24 128H336" />
+          <path class="chart-line-primary" d="M24 128L82 104L134 116L188 70L244 82L296 46L336 58" />
+        </svg>
+        <div class="chart-tooltip-card">
+          <strong>Tue, Apr 9</strong>
+          <span>Desktop: 409</span>
+          <span>Mobile: 320</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function ChartsPage(props: { route: ResolvedRoute }) {
   const chartTypes = props.route.chartTypes
   const activeType = props.route.activeChartType
-  const activeCharts = props.route.chartItems.slice(0, 12)
+  const visibleCharts = untrack(() => {
+    const orderedCharts: Array<{ id: string; fullWidth: boolean }> = []
+    const seenChartIds = new Set<string>()
+    const preferredCharts = activeType ? chartDisplayOrder[activeType] || [] : []
+
+    for (const chartId of preferredCharts) {
+      if (props.route.chartItems.includes(chartId)) {
+        orderedCharts.push({
+          id: chartId,
+          fullWidth: fullWidthChartIds.has(chartId),
+        })
+        seenChartIds.add(chartId)
+      }
+    }
+
+    for (const chartId of props.route.chartItems) {
+      if (!seenChartIds.has(chartId)) {
+        orderedCharts.push({
+          id: chartId,
+          fullWidth: fullWidthChartIds.has(chartId),
+        })
+        seenChartIds.add(chartId)
+      }
+    }
+
+    return orderedCharts.slice(0, 12)
+  })
   const emptySlots = Array.from(
-    { length: Math.max(0, 12 - activeCharts.length) },
+    { length: Math.max(0, 12 - visibleCharts.length) },
     (_, index) => index,
   )
 
@@ -964,17 +1315,51 @@ function ChartsPage(props: { route: ResolvedRoute }) {
       {activeType ? (
         <div class="card chart-summary-card">
           <p class="eyebrow">{activeType.charAt(0).toUpperCase() + activeType.slice(1)} charts</p>
-          <h2>{activeCharts.length} chart recipes</h2>
-          <p class="slug">route: /charts/{activeType}</p>
+          <h2>{visibleCharts.length} chart recipes</h2>
+          <p class="lead">Curated previews from the v4 registry, ordered like the upstream chart gallery.</p>
         </div>
       ) : null}
 
       <div class="charts-grid" id="charts">
-        {activeCharts.map((chart) => (
-          <article class="card chart-display-card" key={chart}>
-            <p class="pill-name">{chart}</p>
-            <div class="chart-frame-placeholder" />
-            <p class="slug">registry/new-york-v4/charts/{chart}.tsx</p>
+        {visibleCharts.map((chart) => (
+          <article class="card chart-display-card" data-full-width={chart.fullWidth ? "true" : "false"} key={chart.id}>
+            <div class="chart-display-toolbar">
+              <div class="chart-display-title">
+                <p class="pill-name">{getChartFamilyLabel(chart.id)}</p>
+                <p class="slug">{chart.id}</p>
+              </div>
+              <div class="chart-display-actions">
+                <button
+                  type="button"
+                  class="button button-ghost chart-display-button"
+                  data-chart-id={chart.id}
+                  onClick$={(event: MouseEvent) => {
+                    if (typeof navigator === "undefined" || !navigator.clipboard) {
+                      return
+                    }
+
+                    const target = event.currentTarget
+                    if (!(target instanceof HTMLButtonElement)) {
+                      return
+                    }
+
+                    const chartId = target.dataset.chartId
+                    if (!chartId) {
+                      return
+                    }
+
+                    void navigator.clipboard.writeText(`registry/new-york-v4/charts/${chartId}.tsx`)
+                  }}
+                >
+                  Copy Path
+                </button>
+                <a class="button button-ghost chart-display-button" href="/docs/components/chart">
+                  Docs
+                </a>
+              </div>
+            </div>
+            <ChartPreviewSurface chartId={chart.id} />
+            <p class="slug">registry/new-york-v4/charts/{chart.id}.tsx</p>
           </article>
         ))}
         {emptySlots.map((slot) => (
