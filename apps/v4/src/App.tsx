@@ -946,22 +946,12 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
           </div>
           <div class="example-showcase-surface">
             <div class="example-mobile-gallery">
-              <figure class="example-preview-card">
-                <img
-                  src={activeShowcase.imageLight}
-                  alt={`${activeShowcase.title} light preview`}
-                  loading="lazy"
-                />
-                <figcaption class="slug">Light preview</figcaption>
-              </figure>
-              <figure class="example-preview-card">
-                <img
-                  src={activeShowcase.imageDark}
-                  alt={`${activeShowcase.title} dark preview`}
-                  loading="lazy"
-                />
-                <figcaption class="slug">Dark preview</figcaption>
-              </figure>
+              <img
+                class="example-mobile-image"
+                src={activeShowcase.imageLight}
+                alt={`${activeShowcase.title} preview`}
+                loading="lazy"
+              />
             </div>
 
             <div class="example-live-stage">
