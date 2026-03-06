@@ -10,7 +10,7 @@ test.describe("shadcn v4 site", () => {
 
     await page.goto("/docs")
 
-    await expect(page.getByRole("heading", { name: "Docs" })).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Docs", exact: true })).toBeVisible()
     await expect(page.getByLabel("Filter docs")).toBeVisible()
   })
 
@@ -45,10 +45,12 @@ test.describe("shadcn v4 site", () => {
   test("playground example switches modes and updates controls", async ({ page }) => {
     await page.goto("/examples/playground")
 
-    const tabs = page.locator(".playground-tab")
+    const tabs = page.getByRole("tab")
+    const insertTab = page.getByRole("tab", { name: "Insert", exact: true })
+
     await expect(tabs).toHaveCount(3)
-    await tabs.filter({ hasText: "Insert" }).click()
-    await expect(page.locator(".playground-tab[aria-selected='true']")).toContainText("Insert")
+    await insertTab.click()
+    await expect(insertTab).toHaveClass(/playground-tab-active/)
     await expect(page.locator(".playground-output-muted")).toContainText("Insertion Preview")
 
     await page.getByRole("button", { name: "gemini-pro" }).click()
