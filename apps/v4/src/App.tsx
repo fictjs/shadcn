@@ -377,6 +377,7 @@ const createItemLookup: Record<string, CreateCatalogItem> = {
 }
 
 const colorModeStorageKey = "shadcn-v4-color-mode"
+const colorModeEventName = "shadcn-v4-color-mode-change"
 
 function formatDisplayLabel(value: string): string {
   const normalized = value.replace(/[-_]/g, " ").replace(/\s+/g, " ").trim()
@@ -415,6 +416,42 @@ function applyDocumentColorMode(mode: "light" | "dark") {
   document.documentElement.style.colorScheme = mode
 }
 
+function isEditableTarget(target: EventTarget | null): boolean {
+  return (
+    (target instanceof HTMLElement && target.isContentEditable) ||
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    target instanceof HTMLSelectElement
+  )
+}
+
+function dispatchColorModeChange(mode: "light" | "dark") {
+  if (typeof window === "undefined") {
+    return
+  }
+
+  window.dispatchEvent(new CustomEvent(colorModeEventName, { detail: mode }))
+}
+
+function setDocumentColorMode(mode: "light" | "dark", persist: boolean) {
+  applyDocumentColorMode(mode)
+  if (typeof window !== "undefined" && persist) {
+    window.localStorage.setItem(colorModeStorageKey, mode)
+  }
+
+  dispatchColorModeChange(mode)
+}
+
+function toggleDocumentColorMode(): "light" | "dark" {
+  if (typeof document === "undefined") {
+    return "light"
+  }
+
+  const nextMode = document.documentElement.classList.contains("dark") ? "light" : "dark"
+  setDocumentColorMode(nextMode, true)
+  return nextMode
+}
+
 function DarkModeManager() {
   $effect(() => {
     if (typeof window === "undefined") {
@@ -423,7 +460,7 @@ function DarkModeManager() {
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
     const syncMode = () => {
-      applyDocumentColorMode(resolvePreferredColorMode())
+      setDocumentColorMode(resolvePreferredColorMode(), false)
     }
 
     const handleChange = () => {
@@ -434,11 +471,23 @@ function DarkModeManager() {
       syncMode()
     }
 
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const isToggleShortcut = (event.key === "d" || event.key === "D") && !event.metaKey && !event.ctrlKey && !event.altKey
+      if (!isToggleShortcut || isEditableTarget(event.target)) {
+        return
+      }
+
+      event.preventDefault()
+      toggleDocumentColorMode()
+    }
+
     syncMode()
     mediaQuery.addEventListener("change", handleChange)
+    document.addEventListener("keydown", handleKeyDown)
 
     return () => {
       mediaQuery.removeEventListener("change", handleChange)
+      document.removeEventListener("keydown", handleKeyDown)
     }
   })
 
@@ -449,11 +498,19 @@ function ModeToggleControl() {
   let modeLabel = $state("Light")
 
   $effect(() => {
-    if (typeof window === "undefined") {
+    if (typeof document === "undefined" || typeof window === "undefined") {
       return
     }
 
-    modeLabel = resolvePreferredColorMode() === "dark" ? "Dark" : "Light"
+    const syncLabel = () => {
+      modeLabel = document.documentElement.classList.contains("dark") ? "Dark" : "Light"
+    }
+
+    syncLabel()
+    window.addEventListener(colorModeEventName, syncLabel)
+    return () => {
+      window.removeEventListener(colorModeEventName, syncLabel)
+    }
   })
 
   return (
@@ -463,14 +520,7 @@ function ModeToggleControl() {
       aria-label="Toggle color mode"
       aria-pressed={modeLabel === "Dark"}
       onClick$={() => {
-        if (typeof window === "undefined" || typeof document === "undefined") {
-          return
-        }
-
-        const nextMode = document.documentElement.classList.contains("dark") ? "light" : "dark"
-        applyDocumentColorMode(nextMode)
-        window.localStorage.setItem(colorModeStorageKey, nextMode)
-        modeLabel = nextMode === "dark" ? "Dark" : "Light"
+        toggleDocumentColorMode()
       }}
     >
       {modeLabel}

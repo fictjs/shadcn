@@ -69,6 +69,23 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".theme-preview-gallery .color-mode-image-dark")).toBeVisible()
   })
 
+  test("mode shortcut toggles theme outside editable inputs only", async ({ page }) => {
+    await page.goto("/")
+
+    await expect(page.locator("html")).not.toHaveClass(/dark/)
+    await page.keyboard.press("d")
+    await expect(page.locator("html")).toHaveClass(/dark/)
+
+    await page.getByRole("button", { name: "Search documentation" }).click()
+    await page.locator("#site-search-input").press("d")
+    await expect(page.locator("html")).toHaveClass(/dark/)
+
+    await page.keyboard.press("Escape")
+    await expect(page.getByRole("dialog", { name: "Search documentation..." })).toHaveCount(0)
+    await page.keyboard.press("d")
+    await expect(page.locator("html")).not.toHaveClass(/dark/)
+  })
+
   test("docs pages normalize mdx component blocks into readable content", async ({ page }) => {
     await page.goto("/docs/mcp")
 
