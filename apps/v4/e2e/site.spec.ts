@@ -32,6 +32,28 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByRole("button", { name: "Copy Page" })).toBeVisible()
   })
 
+  test("mode toggle switches site theme and preview assets", async ({ page }) => {
+    await page.setViewportSize({ width: 820, height: 900 })
+    await page.goto("/")
+
+    const modeToggle = page.getByRole("button", { name: "Toggle color mode" })
+    await expect(page.locator("html")).not.toHaveClass(/dark/)
+    await expect(page.locator(".home-mobile-preview-card .color-mode-image-light")).toBeVisible()
+    await expect(page.locator(".home-mobile-preview-card .color-mode-image-dark")).toBeHidden()
+
+    await modeToggle.click()
+
+    await expect(page.locator("html")).toHaveClass(/dark/)
+    await expect(page.locator(".home-mobile-preview-card .color-mode-image-light")).toBeHidden()
+    await expect(page.locator(".home-mobile-preview-card .color-mode-image-dark")).toBeVisible()
+
+    await page.goto("/themes")
+
+    await expect(page.locator("html")).toHaveClass(/dark/)
+    await expect(page.locator(".theme-preview-gallery .color-mode-image-light")).toBeHidden()
+    await expect(page.locator(".theme-preview-gallery .color-mode-image-dark")).toBeVisible()
+  })
+
   test("docs pages normalize mdx component blocks into readable content", async ({ page }) => {
     await page.goto("/docs/mcp")
 
@@ -133,7 +155,7 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByRole("heading", { name: "Pick a Color. Make it yours." })).toBeVisible()
     await expect(page.locator(".theme-customizer-scroll .theme-customizer-pill").first()).toBeVisible()
     await expect(page.getByRole("button", { name: "Copy Code" })).toBeVisible()
-    await expect(page.locator(".theme-preview-gallery .example-preview-card")).toHaveCount(2)
+    await expect(page.locator(".theme-preview-gallery .example-preview-card")).toHaveCount(1)
   })
 
   test("colors route renders the wrapped palette grid", async ({ page }) => {
