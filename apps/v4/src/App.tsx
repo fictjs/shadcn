@@ -494,8 +494,195 @@ function ColorModeImage(props: { lightSrc: string; darkSrc: string; alt: string;
   )
 }
 
+interface SiteSearchEntry {
+  href: string
+  title: string
+  kind: string
+  description: string
+  keywords: string
+}
+
+function buildSiteSearchEntries(route: ResolvedRoute): SiteSearchEntry[] {
+  const entries: SiteSearchEntry[] = []
+  const seen = new Set<string>()
+
+  const pushEntry = (entry: SiteSearchEntry) => {
+    const key = `${entry.href}::${entry.title}`
+    if (seen.has(key)) {
+      return
+    }
+
+    seen.add(key)
+    entries.push(entry)
+  }
+
+  pushEntry({
+    href: "/",
+    title: "Home",
+    kind: "Page",
+    description: "Landing page with the design-system overview and featured examples.",
+    keywords: "home root landing page overview",
+  })
+  pushEntry({
+    href: "/docs",
+    title: "Docs",
+    kind: "Page",
+    description: "Browse the full documentation tree.",
+    keywords: "docs documentation getting started installation",
+  })
+  pushEntry({
+    href: "/docs/components",
+    title: "Components",
+    kind: "Page",
+    description: "Browse component documentation.",
+    keywords: "components ui docs registry",
+  })
+  pushEntry({
+    href: "/examples",
+    title: "Examples",
+    kind: "Page",
+    description: "Explore live examples and application shells.",
+    keywords: "examples live dashboard tasks playground authentication rtl",
+  })
+  pushEntry({
+    href: "/charts/area",
+    title: "Charts",
+    kind: "Page",
+    description: "Preview chart blocks and graph styles.",
+    keywords: "charts area bar line pie radar radial tooltip",
+  })
+  pushEntry({
+    href: "/blocks",
+    title: "Blocks",
+    kind: "Page",
+    description: "Browse higher-level UI blocks.",
+    keywords: "blocks layouts auth dashboard sidebar login",
+  })
+  pushEntry({
+    href: "/themes",
+    title: "Themes",
+    kind: "Page",
+    description: "Customize accent colors and preview tokens.",
+    keywords: "themes colors accents customizer",
+  })
+  pushEntry({
+    href: "/colors",
+    title: "Colors",
+    kind: "Page",
+    description: "Inspect the Tailwind color scales.",
+    keywords: "colors palette tailwind oklch hsl rgb hex",
+  })
+  pushEntry({
+    href: "/create",
+    title: "New Project",
+    kind: "Page",
+    description: "Generate a starter project and preview the design system.",
+    keywords: "create new project starter template theme font",
+  })
+
+  for (const doc of route.docs) {
+    const href = doc.slug ? `/docs/${doc.slug}` : "/docs"
+    const isComponentDoc = doc.slug.startsWith("components/")
+    pushEntry({
+      href,
+      title: doc.title,
+      kind: isComponentDoc ? "Component" : "Docs",
+      description: doc.description || doc.section || "Documentation page",
+      keywords: `${doc.title} ${doc.slug} ${doc.section} ${doc.description}`.trim(),
+    })
+  }
+
+  for (const example of route.examples) {
+    pushEntry({
+      href: `/examples/${example}`,
+      title: formatDisplayLabel(example),
+      kind: "Example",
+      description: `Open the ${formatDisplayLabel(example)} example page.`,
+      keywords: `${example} example live demo`,
+    })
+  }
+
+  for (const chartType of route.chartTypes) {
+    pushEntry({
+      href: `/charts/${chartType}`,
+      title: `${formatDisplayLabel(chartType)} charts`,
+      kind: "Chart",
+      description: `Browse ${formatDisplayLabel(chartType)} chart previews.`,
+      keywords: `${chartType} charts graph data visualization`,
+    })
+  }
+
+  return entries
+}
+
+function filterSiteSearchEntries(entries: SiteSearchEntry[], query: string): SiteSearchEntry[] {
+  const normalizedQuery = query.trim().toLowerCase()
+  if (!normalizedQuery) {
+    return entries.slice(0, 10)
+  }
+
+  const filtered = entries.filter((entry) =>
+    `${entry.title} ${entry.kind} ${entry.description} ${entry.keywords}`.toLowerCase().includes(normalizedQuery)
+  )
+
+  return filtered.slice(0, 12)
+}
+
 export function App(props: AppProps) {
   const route = props.route
+  let isSearchOpen = $state(false)
+  let searchQuery = $state("")
+  const searchEntries = buildSiteSearchEntries(route)
+  const visibleSearchEntries = filterSiteSearchEntries(searchEntries, searchQuery)
+
+  $effect(() => {
+    if (typeof document === "undefined") {
+      return
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const isSearchShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k"
+      if (isSearchShortcut) {
+        event.preventDefault()
+        isSearchOpen = true
+        return
+      }
+
+      if (event.key === "Escape") {
+        isSearchOpen = false
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown)
+    }
+  })
+
+  $effect(() => {
+    if (typeof document === "undefined") {
+      return
+    }
+
+    document.body.style.overflow = isSearchOpen ? "hidden" : ""
+    return () => {
+      document.body.style.overflow = ""
+    }
+  })
+
+  $effect(() => {
+    if (!isSearchOpen || typeof document === "undefined") {
+      return
+    }
+
+    queueMicrotask(() => {
+      const input = document.getElementById("site-search-input")
+      if (input instanceof HTMLInputElement) {
+        input.focus()
+        input.select()
+      }
+    })
+  })
 
   return (
     <>
@@ -546,7 +733,16 @@ export function App(props: AppProps) {
             </div>
 
             <div class="header-actions">
-              <button type="button" class="header-search-button" aria-label="Search documentation">
+              <button
+                type="button"
+                class="header-search-button"
+                aria-label="Search documentation"
+                aria-haspopup="dialog"
+                aria-expanded={isSearchOpen}
+                onClick$={() => {
+                  isSearchOpen = true
+                }}
+              >
                 <span class="header-search-copy">Search documentation...</span>
                 <span class="header-search-short">Search...</span>
                 <span class="header-search-kbd" aria-hidden="true">
@@ -580,6 +776,91 @@ export function App(props: AppProps) {
           {route.kind === "colors" ? <ColorsPage /> : null}
           {route.kind === "not-found" ? <NotFoundPage pathname={route.pathname} /> : null}
         </main>
+
+        {isSearchOpen ? (
+          <div
+            class="site-search-overlay"
+            role="presentation"
+            onClick$={(event: MouseEvent) => {
+              if (event.target !== event.currentTarget) {
+                return
+              }
+
+              isSearchOpen = false
+              searchQuery = ""
+            }}
+          >
+            <div class="site-search-dialog" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
+              <div class="site-search-header">
+                <div>
+                  <p class="eyebrow">Search</p>
+                  <h2 id="site-search-title">Search documentation...</h2>
+                </div>
+                <button
+                  type="button"
+                  class="header-icon-link site-search-close"
+                  aria-label="Close search"
+                  onClick$={() => {
+                    isSearchOpen = false
+                    searchQuery = ""
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+
+              <label class="sr-only" for="site-search-input">
+                Search documentation
+              </label>
+              <input
+                id="site-search-input"
+                class="site-search-input"
+                type="text"
+                value={searchQuery}
+                placeholder="Search documentation..."
+                onInput={(event) => {
+                  const target = event.target as HTMLInputElement | null
+                  searchQuery = target?.value ?? ""
+                }}
+              />
+
+              <div class="site-search-status">
+                <p>Jump to docs, examples, charts, and top-level pages.</p>
+                <span class="site-search-shortcut" aria-hidden="true">
+                  ⌘K
+                </span>
+              </div>
+
+              {visibleSearchEntries.length ? (
+                <div class="site-search-results" role="list">
+                  {visibleSearchEntries.map((entry) => (
+                    <a
+                      key={`${entry.href}:${entry.title}`}
+                      class="site-search-result"
+                      href={entry.href}
+                      role="listitem"
+                      onClick$={() => {
+                        isSearchOpen = false
+                        searchQuery = ""
+                      }}
+                    >
+                      <div class="site-search-result-copy">
+                        <div class="site-search-result-topline">
+                          <span class="site-search-kind">{entry.kind}</span>
+                          <span class="site-search-path">{entry.href}</span>
+                        </div>
+                        <strong>{entry.title}</strong>
+                        <p>{entry.description}</p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <div class="site-search-empty">No results found.</div>
+              )}
+            </div>
+          </div>
+        ) : null}
 
         <footer class="site-footer">
           <div class="container footer-row">

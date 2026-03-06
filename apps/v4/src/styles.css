@@ -234,6 +234,121 @@ a {
   font-weight: 600;
 }
 
+.site-search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: start center;
+  padding: 4.5rem 1rem 1rem;
+  background: color-mix(in oklab, var(--background) 65%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.site-search-dialog {
+  width: min(42rem, 100%);
+  display: grid;
+  gap: 0.9rem;
+  border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+  border-radius: 1rem;
+  background: color-mix(in oklab, var(--card) 94%, var(--muted) 6%);
+  box-shadow: 0 28px 80px color-mix(in oklab, var(--foreground) 12%, transparent);
+  padding: 1rem;
+}
+
+.site-search-header,
+.site-search-status,
+.site-search-result-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.site-search-header h2 {
+  margin: 0.15rem 0 0;
+  font-size: 1.05rem;
+}
+
+.site-search-close {
+  white-space: nowrap;
+}
+
+.site-search-input {
+  width: 100%;
+  border: 1px solid color-mix(in oklab, var(--border) 82%, transparent);
+  border-radius: 0.8rem;
+  background: color-mix(in oklab, var(--muted) 30%, var(--card));
+  color: var(--foreground);
+  font: inherit;
+  padding: 0.8rem 0.9rem;
+}
+
+.site-search-status {
+  color: var(--muted-foreground);
+  font-size: 0.85rem;
+}
+
+.site-search-status p,
+.site-search-result-copy p,
+.site-search-empty {
+  margin: 0;
+}
+
+.site-search-shortcut,
+.site-search-kind {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in oklab, var(--border) 82%, transparent);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--muted) 55%, var(--card));
+  padding: 0.15rem 0.55rem;
+  font-size: 0.73rem;
+  font-weight: 700;
+}
+
+.site-search-results {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.site-search-result {
+  display: block;
+  border: 1px solid color-mix(in oklab, var(--border) 84%, transparent);
+  border-radius: 0.9rem;
+  background: color-mix(in oklab, var(--muted) 16%, var(--card));
+  padding: 0.85rem 0.9rem;
+}
+
+.site-search-result:hover {
+  border-color: color-mix(in oklab, var(--foreground) 18%, var(--border));
+  background: color-mix(in oklab, var(--muted) 42%, var(--card));
+}
+
+.site-search-result-copy {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.site-search-result-copy strong {
+  font-size: 0.96rem;
+}
+
+.site-search-result-copy p,
+.site-search-path {
+  color: var(--muted-foreground);
+  font-size: 0.82rem;
+}
+
+.site-search-empty {
+  border: 1px dashed color-mix(in oklab, var(--border) 82%, transparent);
+  border-radius: 0.9rem;
+  padding: 1rem;
+  color: var(--muted-foreground);
+  text-align: center;
+}
+
 .main-content {
   flex: 1;
   padding: 2rem 0 3rem;
