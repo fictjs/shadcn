@@ -28,8 +28,22 @@ interface ColorPalette {
 
 interface ExampleRootCard {
   title: string
-  caption: string
-  image?: string
+  kind:
+    | "field-demo"
+    | "avatars"
+    | "spinner-badge"
+    | "button-group-input"
+    | "field-slider"
+    | "input-group-demo"
+    | "input-group-button"
+    | "item-demo"
+    | "appearance-settings"
+    | "notion-prompt"
+    | "button-group-demo"
+    | "field-checkbox"
+    | "nested-buttons"
+    | "field-hear"
+    | "spinner-empty"
 }
 
 const colorPalettes = buildColorPalettes()
@@ -38,62 +52,69 @@ const examplesRootColumns: ExampleRootCard[][] = [
   [
     {
       title: "Field Demo",
-      caption: "Compound field patterns with labels, hints, and validation states.",
-    },
-    {
-      title: "Input Group Demo",
-      caption: "Dense form controls and grouped actions in a compact shell.",
-    },
-    {
-      title: "Appearance Settings",
-      caption: "Preference cards for color, spacing, and interaction density.",
+      kind: "field-demo",
     },
   ],
   [
     {
       title: "Empty Avatar Group",
-      caption: "Avatar list treatment for empty and partially-loaded user states.",
+      kind: "avatars",
     },
     {
       title: "Spinner Badge",
-      caption: "Status affordances with animated badges and loading cues.",
+      kind: "spinner-badge",
     },
     {
-      title: "Tasks Preview",
-      caption: "Task table and filters inspired by the tasks example page.",
-      image: "/examples/tasks-light.png",
+      title: "Button Group Input Group",
+      kind: "button-group-input",
+    },
+    {
+      title: "Field Slider",
+      kind: "field-slider",
+    },
+    {
+      title: "Input Group Demo",
+      kind: "input-group-demo",
+    },
+  ],
+  [
+    {
+      title: "Input Group Button",
+      kind: "input-group-button",
+    },
+    {
+      title: "Item Demo",
+      kind: "item-demo",
+    },
+    {
+      title: "Appearance Settings",
+      kind: "appearance-settings",
     },
   ],
   [
     {
       title: "Notion Prompt Form",
-      caption: "Prompt builder using grouped inputs and secondary actions.",
+      kind: "notion-prompt",
     },
     {
       title: "Button Group Demo",
-      caption: "Segmented actions for nested and popover-powered controls.",
+      kind: "button-group-demo",
     },
     {
-      title: "Playground Preview",
-      caption: "Preset-driven prompt playground with panel-style composition.",
-      image: "/examples/playground-light.png",
-    },
-  ],
-  [
-    {
-      title: "Cards Preview",
-      caption: "Theme cards and neutral surfaces used by the themes route.",
-      image: "/examples/cards-light.png",
+      title: "Field Checkbox",
+      kind: "field-checkbox",
     },
     {
-      title: "Authentication Preview",
-      caption: "Split authentication layout with media and form composition.",
-      image: "/examples/authentication-light.png",
+      title: "Nested Buttons",
+      kind: "nested-buttons",
     },
     {
-      title: "Dashboard Preview",
-      caption: "Analytics-focused dashboard framing for complex data layouts.",
-      image: "/examples/dashboard-light.png",
+      title: "Field Hear",
+      kind: "field-hear",
+    },
+    {
+      title: "Spinner Empty",
+      kind: "spinner-empty",
     },
   ],
 ]
@@ -250,11 +271,189 @@ function ExamplesRootPreview() {
         <div class="examples-root-column" key={`column-${columnIndex}`}>
           {column.map((card) => (
             <article class="card example-root-card" key={card.title}>
-              {card.image ? (
-                <img src={card.image} alt={`${card.title} preview`} loading="lazy" />
+              <p class="example-root-label">{card.title}</p>
+              {card.kind === "field-demo" ? (
+                <div class="root-preview-shell root-preview-stack">
+                  <div class="root-preview-field">
+                    <span>Name</span>
+                    <strong>shadcn/ui</strong>
+                  </div>
+                  <div class="root-preview-field">
+                    <span>Slug</span>
+                    <strong>open-code-system</strong>
+                  </div>
+                  <div class="root-preview-field">
+                    <span>Status</span>
+                    <strong>Ready to publish</strong>
+                  </div>
+                </div>
               ) : null}
-              <h3>{card.title}</h3>
-              <p>{card.caption}</p>
+
+              {card.kind === "avatars" ? (
+                <div class="root-preview-shell root-preview-stack">
+                  <div class="root-preview-avatar-row" aria-label="Avatar group preview">
+                    <span>AB</span>
+                    <span>CN</span>
+                    <span>JT</span>
+                    <span>+4</span>
+                  </div>
+                  <p class="root-preview-copy">Invite collaborators and keep empty states polished.</p>
+                </div>
+              ) : null}
+
+              {card.kind === "spinner-badge" ? (
+                <div class="root-preview-shell root-preview-stack">
+                  <div class="root-preview-badge-row">
+                    <span class="root-preview-badge root-preview-badge-active">Syncing</span>
+                    <span class="root-preview-badge">Ready</span>
+                  </div>
+                  <div class="root-preview-meter">
+                    <span></span>
+                  </div>
+                </div>
+              ) : null}
+
+              {card.kind === "button-group-input" ? (
+                <div class="root-preview-shell root-preview-stack">
+                  <div class="root-preview-inline-input">
+                    <span>Search registry...</span>
+                    <button type="button">Go</button>
+                  </div>
+                  <div class="root-preview-segmented-row">
+                    <span>npm</span>
+                    <span class="is-active">pnpm</span>
+                    <span>bun</span>
+                  </div>
+                </div>
+              ) : null}
+
+              {card.kind === "field-slider" ? (
+                <div class="root-preview-shell root-preview-stack">
+                  <div class="root-preview-slider-row">
+                    <span>Density</span>
+                    <div class="root-preview-slider-track"><span></span></div>
+                  </div>
+                  <div class="root-preview-slider-row">
+                    <span>Radius</span>
+                    <div class="root-preview-slider-track"><span class="is-wide"></span></div>
+                  </div>
+                </div>
+              ) : null}
+
+              {card.kind === "input-group-demo" ? (
+                <div class="root-preview-shell root-preview-stack">
+                  <div class="root-preview-inline-input root-preview-inline-input-muted">
+                    <span>hello@shadcn.io</span>
+                    <span class="root-preview-inline-addon">@</span>
+                  </div>
+                  <p class="root-preview-copy">Compact input groups with helpful secondary context.</p>
+                </div>
+              ) : null}
+
+              {card.kind === "input-group-button" ? (
+                <div class="root-preview-shell root-preview-stack">
+                  <div class="root-preview-inline-input">
+                    <span>Paste prompt</span>
+                    <button type="button">Run</button>
+                  </div>
+                  <div class="root-preview-badge-row">
+                    <span class="root-preview-badge">AI Ready</span>
+                  </div>
+                </div>
+              ) : null}
+
+              {card.kind === "item-demo" ? (
+                <div class="root-preview-shell root-preview-stack">
+                  {[
+                    ["Overview", "Updated 2m ago"],
+                    ["Docs", "12 sections"],
+                    ["Registry", "206 entries"],
+                  ].map((row) => (
+                    <div class="root-preview-item-row" key={row[0]}>
+                      <strong>{row[0]}</strong>
+                      <span>{row[1]}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              {card.kind === "appearance-settings" ? (
+                <div class="root-preview-shell root-preview-stack">
+                  <div class="root-preview-subtitle">Appearance Settings</div>
+                  <div class="root-preview-badge-row">
+                    <span class="root-preview-badge is-active">Default</span>
+                    <span class="root-preview-badge">Compact</span>
+                    <span class="root-preview-badge">Comfortable</span>
+                  </div>
+                </div>
+              ) : null}
+
+              {card.kind === "notion-prompt" ? (
+                <div class="root-preview-shell root-preview-stack">
+                  {[
+                    ["✦", "Launch checklist"],
+                    ["◎", "Team Directory"],
+                    ["→", "Release Notes"],
+                  ].map((row) => (
+                    <div class="root-preview-item-row" key={row[1]}>
+                      <strong>{row[0]}</strong>
+                      <span>{row[1]}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              {card.kind === "button-group-demo" ? (
+                <div class="root-preview-shell root-preview-stack">
+                  <div class="root-preview-segmented-row">
+                    <span class="is-active">Edit</span>
+                    <span>Share</span>
+                    <span>Export</span>
+                  </div>
+                </div>
+              ) : null}
+
+              {card.kind === "field-checkbox" ? (
+                <div class="root-preview-shell root-preview-stack">
+                  {[
+                    "Enable release notes",
+                    "Include migration guide",
+                    "Ship changelog",
+                  ].map((label) => (
+                    <div class="root-preview-check-row" key={label}>
+                      <span class="root-preview-check"></span>
+                      <span>{label}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              {card.kind === "nested-buttons" ? (
+                <div class="root-preview-shell root-preview-stack">
+                  <div class="root-preview-split-row">
+                    <button type="button">Nested</button>
+                    <button type="button">Popover</button>
+                  </div>
+                  <p class="root-preview-copy">Layered button patterns for dense toolbars.</p>
+                </div>
+              ) : null}
+
+              {card.kind === "field-hear" ? (
+                <div class="root-preview-shell root-preview-stack">
+                  <div class="root-preview-badge-row">
+                    <span class="root-preview-badge is-active">Twitter</span>
+                    <span class="root-preview-badge">GitHub</span>
+                    <span class="root-preview-badge">Docs</span>
+                  </div>
+                </div>
+              ) : null}
+
+              {card.kind === "spinner-empty" ? (
+                <div class="root-preview-shell root-preview-stack root-preview-empty">
+                  <div class="root-preview-spinner"></div>
+                  <p class="root-preview-copy">Create your first project to start building.</p>
+                </div>
+              ) : null}
             </article>
           ))}
         </div>
