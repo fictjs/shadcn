@@ -250,16 +250,20 @@ function HomePage(props: { route: ResolvedRoute }) {
         <ThemeSelectorControl themes={props.route.themes} />
       </div>
 
-      <section class="card home-mobile-preview">
-        <figure class="example-preview-card">
-          <img src="/examples/dashboard-light.png" alt="Dashboard light preview" loading="lazy" />
-          <figcaption class="slug">Dashboard preview</figcaption>
-        </figure>
-      </section>
+      <div class="home-preview-shell">
+        <section class="home-mobile-preview">
+          <figure class="example-preview-card home-mobile-preview-card">
+            <img src="/examples/dashboard-light.png" alt="Dashboard light preview" loading="lazy" />
+            <figcaption class="slug">Dashboard preview</figcaption>
+          </figure>
+        </section>
 
-      <section class="card home-examples-root">
-        <ExamplesRootPreview />
-      </section>
+        <section class="home-examples-root">
+          <div class="home-theme-container">
+            <ExamplesRootPreview />
+          </div>
+        </section>
+      </div>
     </section>
   )
 }

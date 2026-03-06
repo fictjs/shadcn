@@ -713,6 +713,22 @@ h1 {
   display: block;
 }
 
+.home-preview-shell {
+  padding-bottom: 0.5rem;
+}
+
+.home-theme-container {
+  border: 1px solid color-mix(in oklab, var(--border) 50%, transparent);
+  border-radius: 1rem;
+  padding: 1rem;
+  background: color-mix(in oklab, var(--muted) 20%, var(--card));
+}
+
+.home-mobile-preview-card {
+  width: min(160vw, 100% + 8rem);
+  margin-left: -1rem;
+}
+
 .home-examples-root {
   display: none;
 }
@@ -1840,6 +1856,14 @@ h1 {
 
   .home-examples-root {
     display: block;
+  }
+
+  .home-preview-shell {
+    padding-bottom: 0.75rem;
+  }
+
+  .home-theme-container {
+    padding: 1.25rem;
   }
 
   .examples-root-grid {
