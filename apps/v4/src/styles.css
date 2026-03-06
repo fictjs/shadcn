@@ -485,16 +485,17 @@ h1 {
 
 .docs-layout {
   display: grid;
-  gap: 1rem;
-  grid-template-columns: minmax(180px, 220px) minmax(0, 1fr) minmax(180px, 240px);
+  gap: 0;
+  grid-template-columns: minmax(220px, 240px) minmax(0, 1fr) minmax(220px, 288px);
   align-items: start;
 }
 
 .docs-sidebar {
   position: sticky;
-  top: calc(var(--header-height) + 1rem);
-  max-height: calc(100vh - var(--header-height) - 2rem);
+  top: calc(var(--header-height) + 1px);
+  max-height: calc(100vh - var(--header-height) - 1px);
   overflow: auto;
+  padding: 1.5rem 0.75rem 2rem 0;
 }
 
 .docs-sidebar-section {
@@ -537,8 +538,15 @@ h1 {
 }
 
 .doc-main {
+  min-width: 0;
+}
+
+.doc-main-shell {
   display: grid;
   gap: 1rem;
+  width: min(100%, 40rem);
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2rem;
 }
 
 .doc-header {
@@ -891,9 +899,10 @@ h1 {
 
 .docs-toc {
   position: sticky;
-  top: calc(var(--header-height) + 1rem);
-  max-height: calc(100vh - var(--header-height) - 2rem);
+  top: calc(var(--header-height) + 1px);
+  max-height: calc(100vh - var(--header-height) - 1px);
   overflow: auto;
+  padding: 1.5rem 0 2rem 1.5rem;
 }
 
 .docs-cta-card {
@@ -3143,7 +3152,7 @@ h1 {
 
 @media (max-width: 1139px) {
   .docs-layout {
-    grid-template-columns: minmax(180px, 220px) minmax(0, 1fr);
+    grid-template-columns: minmax(220px, 240px) minmax(0, 1fr);
   }
 
   .docs-toc {

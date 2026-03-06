@@ -648,8 +648,8 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
   const doc = props.route.doc as DocPage
 
   return (
-    <section class="docs-layout">
-      <aside class="docs-sidebar card">
+    <section class="docs-layout" data-slot="docs">
+      <aside class="docs-sidebar">
         <p class="eyebrow">Documentation</p>
         {props.route.docNavigation.map((section) => (
           <div class="docs-sidebar-section" key={section.title}>
@@ -670,76 +670,78 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
         ))}
       </aside>
 
-      <article class="doc-main card">
-        <header class="doc-header">
-          <div class="doc-header-main">
-            <p class="eyebrow">{doc.section || "overview"}</p>
-            <h1>{doc.title}</h1>
-            <p class="lead">{doc.description || "No description provided."}</p>
-          </div>
-          <div class="doc-header-actions">
-            <button
-              type="button"
-              class="button button-ghost"
-              onClick$={() => {
-                if (typeof navigator === "undefined" || !navigator.clipboard || !props.route.doc) {
-                  return
-                }
+      <article class="doc-main">
+        <div class="doc-main-shell">
+          <header class="doc-header">
+            <div class="doc-header-main">
+              <p class="eyebrow">{doc.section || "overview"}</p>
+              <h1>{doc.title}</h1>
+              <p class="lead">{doc.description || "No description provided."}</p>
+            </div>
+            <div class="doc-header-actions">
+              <button
+                type="button"
+                class="button button-ghost"
+                onClick$={() => {
+                  if (typeof navigator === "undefined" || !navigator.clipboard || !props.route.doc) {
+                    return
+                  }
 
-                const bodySnapshot = untrack(() => props.route.doc?.body ?? "")
-                void navigator.clipboard.writeText(bodySnapshot)
-              }}
-            >
-              Copy Page
-            </button>
+                  const bodySnapshot = untrack(() => props.route.doc?.body ?? "")
+                  void navigator.clipboard.writeText(bodySnapshot)
+                }}
+              >
+                Copy Page
+              </button>
+              {props.route.docPrev ? (
+                <a
+                  class="button button-ghost doc-icon-button"
+                  href={props.route.docPrev.slug ? `/docs/${props.route.docPrev.slug}` : "/docs"}
+                  aria-label="Previous page"
+                >
+                  <span aria-hidden="true">&lt;</span>
+                </a>
+              ) : null}
+              {props.route.docNext ? (
+                <a
+                  class="button button-ghost doc-icon-button"
+                  href={props.route.docNext.slug ? `/docs/${props.route.docNext.slug}` : "/docs"}
+                  aria-label="Next page"
+                >
+                  <span aria-hidden="true">&gt;</span>
+                </a>
+              ) : null}
+            </div>
+          </header>
+
+          <div class="doc-body">
+            <DocBlockList blocks={doc.blocks} />
+          </div>
+
+          <div class="doc-nav">
             {props.route.docPrev ? (
               <a
-                class="button button-ghost doc-icon-button"
+                class="button button-ghost"
                 href={props.route.docPrev.slug ? `/docs/${props.route.docPrev.slug}` : "/docs"}
-                aria-label="Previous page"
               >
-                <span aria-hidden="true">&lt;</span>
+                &lt;- {props.route.docPrev.title}
               </a>
-            ) : null}
+            ) : (
+              <span />
+            )}
             {props.route.docNext ? (
               <a
-                class="button button-ghost doc-icon-button"
+                class="button button-ghost"
                 href={props.route.docNext.slug ? `/docs/${props.route.docNext.slug}` : "/docs"}
-                aria-label="Next page"
               >
-                <span aria-hidden="true">&gt;</span>
+                {props.route.docNext.title} -&gt;
               </a>
             ) : null}
           </div>
-        </header>
-
-        <div class="doc-body">
-          <DocBlockList blocks={doc.blocks} />
-        </div>
-
-        <div class="doc-nav">
-          {props.route.docPrev ? (
-            <a
-              class="button button-ghost"
-              href={props.route.docPrev.slug ? `/docs/${props.route.docPrev.slug}` : "/docs"}
-            >
-              &lt;- {props.route.docPrev.title}
-            </a>
-          ) : (
-            <span />
-          )}
-          {props.route.docNext ? (
-            <a
-              class="button button-ghost"
-              href={props.route.docNext.slug ? `/docs/${props.route.docNext.slug}` : "/docs"}
-            >
-              {props.route.docNext.title} -&gt;
-            </a>
-          ) : null}
         </div>
       </article>
 
-      <aside class="docs-toc card">
+      <aside class="docs-toc">
         <p class="eyebrow">On this page</p>
         {doc.headings.length > 0 ? (
           <ul>
