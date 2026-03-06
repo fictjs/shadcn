@@ -10,6 +10,7 @@ test.describe("shadcn v4 site", () => {
     await page.goto("/examples/dashboard")
 
     await expect(page.locator(".example-showcase-surface")).toBeVisible()
+    await expect(page.getByRole("navigation", { name: "Examples navigation" }).getByRole("link", { name: "Examples" })).toHaveAttribute("href", "/")
     await expect(page.getByLabel("Filter examples")).toHaveCount(0)
     await expect(page.locator(".pill-grid .pill-item")).toHaveCount(0)
     await expect(page.locator(".example-mobile-gallery figcaption")).toHaveCount(0)

@@ -2207,7 +2207,7 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
 
       <div class="route-nav-row">
         <nav class="section-nav" aria-label="Examples navigation">
-          <a class={props.route.exampleSlug === null ? "section-nav-link-active" : ""} href="/examples">
+          <a class={props.route.exampleSlug === null ? "section-nav-link-active" : ""} href="/">
             Examples
           </a>
           {props.route.examplePages.map((showcase) => (
