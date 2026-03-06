@@ -198,19 +198,52 @@ function TasksExample() {
     <div class="live-example tasks-example">
       <header class="tasks-header">
         <div>
-          <p class="dashboard-section-label">Workspace</p>
-          <h3>Welcome back!</h3>
+          <h2>Welcome back!</h2>
           <p class="tasks-copy">Here&apos;s a list of your tasks for this month.</p>
         </div>
-        <div class="tasks-avatar-stack" aria-label="Team members">
-          <span>JD</span>
-          <span>MK</span>
-          <span>AR</span>
-        </div>
+        <button type="button" class="tasks-user-nav" aria-label="Open user menu">
+          <span class="tasks-user-avatar">JD</span>
+        </button>
       </header>
 
-      <section class="tasks-toolbar-card">
-        <div class="tasks-filter-row">
+      <section class="tasks-table-card">
+        <div class="tasks-table-toolbar">
+          <label class="tasks-search-field">
+            <span class="tasks-search-label">Filter tasks</span>
+            <input
+              type="text"
+              value={query}
+              placeholder="Search issue, title, or team"
+              onInput$={(event: InputEvent) => {
+                const target = event.currentTarget
+                if (!(target instanceof HTMLInputElement)) {
+                  return
+                }
+
+                const nextQuery = target.value
+                query = nextQuery
+                const statusSnapshot = untrack(() => status)
+                const normalized = nextQuery.trim().toLowerCase()
+                const nextRows: TaskRow[] = []
+
+                for (const task of taskRows) {
+                  const matchesStatus = statusSnapshot === "all" ? true : task.status === statusSnapshot
+                  const matchesQuery = normalized.length === 0
+                    ? true
+                    : `${task.id} ${task.title} ${task.team}`.toLowerCase().includes(normalized)
+
+                  if (matchesStatus && matchesQuery) {
+                    nextRows.push(task)
+                  }
+                }
+
+                filteredTasks = nextRows
+              }}
+            />
+          </label>
+
+          <div class="tasks-table-toolbar-actions">
+            <div class="tasks-filter-row">
           {[
             ["all", "All"],
             ["todo", "Todo"],
@@ -255,44 +288,9 @@ function TasksExample() {
               {entry[1]}
             </button>
           ))}
+            </div>
+          </div>
         </div>
-
-        <label class="tasks-search-field">
-          <span class="tasks-search-label">Filter tasks</span>
-          <input
-            type="text"
-            value={query}
-            placeholder="Search issue, title, or team"
-            onInput$={(event: InputEvent) => {
-              const target = event.currentTarget
-              if (!(target instanceof HTMLInputElement)) {
-                return
-              }
-
-              const nextQuery = target.value
-              query = nextQuery
-              const statusSnapshot = untrack(() => status)
-              const normalized = nextQuery.trim().toLowerCase()
-              const nextRows: TaskRow[] = []
-
-              for (const task of taskRows) {
-                const matchesStatus = statusSnapshot === "all" ? true : task.status === statusSnapshot
-                const matchesQuery = normalized.length === 0
-                  ? true
-                  : `${task.id} ${task.title} ${task.team}`.toLowerCase().includes(normalized)
-
-                if (matchesStatus && matchesQuery) {
-                  nextRows.push(task)
-                }
-              }
-
-              filteredTasks = nextRows
-            }}
-          />
-        </label>
-      </section>
-
-      <section class="tasks-table-card">
         <table>
           <thead>
             <tr>
