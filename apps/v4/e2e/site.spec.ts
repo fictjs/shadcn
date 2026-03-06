@@ -122,7 +122,8 @@ test.describe("shadcn v4 site", () => {
   test("authentication and rtl examples stay interactive", async ({ page }) => {
     await page.goto("/examples/authentication")
 
-    await expect(page.locator(".auth-form-shell")).toContainText("Create an account")
+    await expect(page.locator(".auth-login-link")).toContainText("Login")
+    await expect(page.locator(".auth-form-shell h3")).toContainText("Create an account")
     await expect(page.locator(".auth-provider-button")).toHaveCount(2)
     await expect(page.getByPlaceholder("name@example.com")).toBeVisible()
 
