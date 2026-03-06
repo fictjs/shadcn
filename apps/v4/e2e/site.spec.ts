@@ -44,6 +44,15 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".chart-frame-placeholder")).toHaveCount(0)
   })
 
+  test("blocks route renders featured preview displays instead of text lists", async ({ page }) => {
+    await page.goto("/blocks")
+
+    await expect(page.getByRole("heading", { name: "Building Blocks for the Web" })).toBeVisible()
+    await expect(page.locator(".block-display-card").first()).toBeVisible()
+    await expect(page.locator(".block-display-card .block-preview-stage").first()).toBeVisible()
+    await expect(page.locator(".block-display-card .block-preview-image").first()).toBeVisible()
+  })
+
   test("tasks example filters rows interactively", async ({ page }) => {
     await page.goto("/examples/tasks")
 

@@ -2,6 +2,7 @@ import { $state, untrack } from "fict"
 
 import { colors as tailwindColors } from "../registry/_legacy-colors"
 import type {
+  BlockEntry,
   DocPage,
   DocSummary,
   ResolvedRoute,
@@ -1370,9 +1371,54 @@ function ChartsPage(props: { route: ResolvedRoute }) {
   )
 }
 
+function BlockPreviewSurface(props: { block: BlockEntry }) {
+  const blockName = props.block.name
+  const hasImagePreview =
+    blockName.startsWith("dashboard-") || blockName.startsWith("login-") || blockName.startsWith("sidebar-")
+
+  return hasImagePreview ? (
+    <div class="block-preview-stage">
+      <img
+        class="block-preview-image"
+        src={`/r/styles/new-york-v4/${blockName}-light.png`}
+        alt={formatDisplayLabel(blockName)}
+        loading="lazy"
+      />
+    </div>
+  ) : blockName.startsWith("signup-") ? (
+    <div class="block-preview-stage block-preview-fallback block-preview-auth">
+      <div class="block-auth-shell">
+        <div class="block-auth-card">
+          <p class="block-auth-eyebrow">Create account</p>
+          <div class="block-auth-input"></div>
+          <div class="block-auth-input"></div>
+          <div class="block-auth-input"></div>
+          <div class="block-auth-button"></div>
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div class="block-preview-stage block-preview-fallback">
+      <div class="block-generic-shell">
+        <div class="block-generic-rail"></div>
+        <div class="block-generic-body">
+          <div class="block-generic-row"></div>
+          <div class="block-generic-row is-wide"></div>
+          <div class="block-generic-grid">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function BlocksPage(props: { route: ResolvedRoute }) {
   const categories = props.route.blockCategories
   const filteredBlocks = props.route.blocks
+  const isFeaturedRoute = props.route.blockCategory === null
 
   return (
     <section class="stack-gap">
@@ -1413,20 +1459,57 @@ function BlocksPage(props: { route: ResolvedRoute }) {
         </a>
       </div>
 
-      {props.route.blockCategory === null ? (
-        <p class="slug">Showing featured blocks from shadcn v4.</p>
-      ) : null}
-
-      <ul class="list-grid" id="blocks">
+      <div class="blocks-stack" id="blocks">
         {filteredBlocks.map((block) => (
-          <li class="card list-item" key={block.name}>
-            <h3>{block.name}</h3>
-            <p>{block.description}</p>
-            <p class="slug">categories: {block.categories.join(", ") || "uncategorized"}</p>
-            <pre class="inline-code">npx @fictjs/shadcn@latest add {block.name}</pre>
-          </li>
+          <article class="card block-display-card" key={block.name}>
+            <div class="block-display-toolbar">
+              <div class="block-display-title">
+                <p class="pill-name">{formatDisplayLabel(block.name)}</p>
+                <h3>{block.description}</h3>
+                <p class="slug">categories: {block.categories.join(", ") || "uncategorized"}</p>
+              </div>
+              <div class="block-display-actions">
+                <button
+                  type="button"
+                  class="button button-ghost block-display-button"
+                  data-block-name={block.name}
+                  onClick$={(event: MouseEvent) => {
+                    if (typeof navigator === "undefined" || !navigator.clipboard) {
+                      return
+                    }
+
+                    const target = event.currentTarget
+                    if (!(target instanceof HTMLButtonElement)) {
+                      return
+                    }
+
+                    const blockName = target.dataset.blockName
+                    if (!blockName) {
+                      return
+                    }
+
+                    void navigator.clipboard.writeText(`npx @fictjs/shadcn@latest add ${blockName}`)
+                  }}
+                >
+                  Copy Command
+                </button>
+                <a class="button button-ghost block-display-button" href="/docs/blocks">
+                  Docs
+                </a>
+              </div>
+            </div>
+            <BlockPreviewSurface block={block} />
+          </article>
         ))}
-      </ul>
+      </div>
+
+      {isFeaturedRoute ? (
+        <div class="blocks-browse-more">
+          <a class="button button-ghost" href="/blocks/sidebar">
+            Browse more blocks
+          </a>
+        </div>
+      ) : null}
     </section>
   )
 }
