@@ -764,26 +764,232 @@ h1 {
 
 .example-root-card {
   display: grid;
-  gap: 0.5rem;
+  gap: 0.75rem;
   padding: 0.75rem;
 }
 
-.example-root-card h3 {
-  font-size: 0.96rem;
-  line-height: 1.25;
-}
-
-.example-root-card p {
+.example-root-label,
+.root-preview-subtitle,
+.root-preview-field span,
+.root-preview-item-row span,
+.root-preview-copy,
+.root-preview-check-row span {
   color: var(--muted-foreground);
-  font-size: 0.84rem;
-  line-height: 1.45;
 }
 
-.example-root-card img {
-  width: 100%;
-  height: auto;
+.example-root-label {
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.root-preview-subtitle,
+.root-preview-copy,
+.root-preview-field span,
+.root-preview-item-row span,
+.root-preview-check-row span {
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.root-preview-shell,
+.root-preview-stack,
+.root-preview-field,
+.root-preview-item-row,
+.root-preview-slider-row,
+.root-preview-check-row {
+  display: grid;
+}
+
+.root-preview-shell {
+  gap: 0.6rem;
+}
+
+.root-preview-stack {
+  gap: 0.55rem;
+}
+
+.root-preview-field,
+.root-preview-item-row,
+.root-preview-slider-row,
+.root-preview-check-row {
+  gap: 0.2rem;
+}
+
+.root-preview-field,
+.root-preview-inline-input,
+.root-preview-item-row,
+.root-preview-split-row,
+.root-preview-badge-row,
+.root-preview-segmented-row,
+.root-preview-check-row,
+.root-preview-avatar-row {
+  border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+  border-radius: 0.7rem;
+  background: color-mix(in oklab, var(--muted) 28%, var(--card));
+}
+
+.root-preview-field,
+.root-preview-item-row,
+.root-preview-check-row {
+  padding: 0.65rem 0.75rem;
+}
+
+.root-preview-field strong,
+.root-preview-item-row strong,
+.root-preview-inline-input button,
+.root-preview-split-row button,
+.root-preview-badge,
+.root-preview-segmented-row span,
+.root-preview-inline-addon {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.root-preview-field strong,
+.root-preview-item-row strong {
+  color: var(--foreground);
+}
+
+.root-preview-avatar-row {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.root-preview-avatar-row span {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  margin-left: -0.35rem;
+  border: 2px solid var(--card);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--muted) 68%, var(--card));
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.root-preview-avatar-row span:first-child {
+  margin-left: 0;
+}
+
+.root-preview-badge-row,
+.root-preview-segmented-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.45rem;
+}
+
+.root-preview-badge,
+.root-preview-segmented-row span,
+.root-preview-inline-addon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+  border-radius: 0.55rem;
+  padding: 0.32rem 0.55rem;
+  background: var(--card);
+  color: var(--foreground);
+}
+
+.root-preview-badge.is-active,
+.root-preview-segmented-row span.is-active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.root-preview-inline-input,
+.root-preview-split-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+  padding: 0.45rem;
+}
+
+.root-preview-inline-input span:first-child {
+  color: var(--muted-foreground);
+}
+
+.root-preview-inline-input button,
+.root-preview-split-row button {
   border: 1px solid var(--border);
-  border-radius: 0.4rem;
+  border-radius: 0.55rem;
+  background: var(--card);
+  color: var(--foreground);
+  padding: 0.4rem 0.65rem;
+  font: inherit;
+}
+
+.root-preview-inline-input-muted .root-preview-inline-addon {
+  background: color-mix(in oklab, var(--muted) 72%, var(--card));
+}
+
+.root-preview-meter,
+.root-preview-slider-track {
+  height: 0.55rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--muted) 78%, var(--card));
+  overflow: hidden;
+}
+
+.root-preview-meter span,
+.root-preview-slider-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--primary);
+}
+
+.root-preview-meter span {
+  width: 62%;
+}
+
+.root-preview-slider-track span {
+  width: 48%;
+}
+
+.root-preview-slider-track span.is-wide {
+  width: 76%;
+}
+
+.root-preview-check-row {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.root-preview-check {
+  width: 0.95rem;
+  height: 0.95rem;
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  background: var(--card);
+}
+
+.root-preview-empty {
+  place-items: center;
+  text-align: center;
+}
+
+.root-preview-spinner {
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 2px solid color-mix(in oklab, var(--border) 85%, transparent);
+  border-top-color: var(--primary);
+  border-radius: 999px;
+  animation: root-preview-spin 1s linear infinite;
+}
+
+@keyframes root-preview-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .chart-summary-card {
