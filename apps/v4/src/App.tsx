@@ -265,8 +265,6 @@ function ExamplesRootPreview() {
 
 function ThemeSelectorControl(props: { themes: ThemeEntry[] }) {
   const visibleThemes = props.themes.filter((theme) => !hiddenThemeNames.has(theme.name))
-  const initialTheme = visibleThemes[0]?.name || props.themes[0]?.name || "neutral"
-  let selectedTheme = $state(initialTheme)
 
   return (
     <div class="theme-selector-stub">
@@ -277,15 +275,6 @@ function ThemeSelectorControl(props: { themes: ThemeEntry[] }) {
       <select
         id="theme-selector"
         aria-label="Theme selector"
-        value={selectedTheme}
-        onChange$={(event: Event) => {
-          const target = event.currentTarget
-          if (!(target instanceof HTMLSelectElement)) {
-            return
-          }
-
-          selectedTheme = target.value
-        }}
       >
         {visibleThemes.map((theme) => (
           <option key={theme.name} value={theme.name}>
@@ -296,13 +285,24 @@ function ThemeSelectorControl(props: { themes: ThemeEntry[] }) {
       <button
         type="button"
         class="button button-ghost theme-selector-copy"
-        onClick$={() => {
+        onClick$={(event: MouseEvent) => {
           if (typeof navigator === "undefined" || !navigator.clipboard) {
             return
           }
 
+          const target = event.currentTarget
+          if (!(target instanceof HTMLButtonElement)) {
+            return
+          }
+
+          const previous = target.previousElementSibling
+          if (!(previous instanceof HTMLSelectElement)) {
+            return
+          }
+
+          const themeName = previous.value
           void navigator.clipboard.writeText(
-            `pnpm dlx @fictjs/shadcn@latest theme apply ${selectedTheme}`,
+            `pnpm dlx @fictjs/shadcn@latest theme apply ${themeName}`,
           )
         }}
       >
