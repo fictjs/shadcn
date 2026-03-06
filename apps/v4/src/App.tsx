@@ -1090,12 +1090,13 @@ function BlocksPage(props: { route: ResolvedRoute }) {
 }
 
 function ThemesPage(props: { themes: ThemeEntry[] }) {
-  let activeThemeName = $state("neutral")
-  let activeThemeTitle = $state("Neutral")
-  let activeSwatches = $state(getThemeSwatches("neutral"))
+  const visibleThemes = props.themes.filter((theme) => !hiddenThemeNames.has(theme.name))
+  const initialThemeName = visibleThemes[0]?.name || props.themes[0]?.name || "neutral"
+  let activeThemeName = $state(initialThemeName)
+  let activeSwatches = $state(getThemeSwatches(initialThemeName))
 
   return (
-    <section class="stack-gap">
+    <section class="stack-gap themes-route">
       <div class="route-page-header">
         <AnnouncementBadge />
         <h1>Pick a Color. Make it yours.</h1>
@@ -1113,15 +1114,84 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
         </div>
       </div>
 
-      <section class="card theme-customizer-row" id="themes">
-        <div class="theme-name-scroll">
-          {props.themes.map((theme) => (
+      <div class="route-surface-wrapper" id="themes">
+        <div class="theme-customizer-shell">
+          <div class="theme-customizer-bar">
+            <div class="theme-customizer-scroll" aria-label="Theme customizer">
+              <div class="theme-customizer-scroll-inner">
+                {visibleThemes.map((theme) => (
+                  <button
+                    type="button"
+                    key={theme.name}
+                    data-theme-name={theme.name}
+                    data-active={activeThemeName === theme.name}
+                    class="theme-customizer-pill"
+                    onClick$={(event: MouseEvent) => {
+                      const target = event.currentTarget
+                      if (!(target instanceof HTMLButtonElement)) {
+                        return
+                      }
+
+                      const themeName = target.dataset.themeName
+                      if (!themeName) {
+                        return
+                      }
+
+                      const nextTheme = props.themes.find((entry) => entry.name === themeName)
+                      if (!nextTheme) {
+                        return
+                      }
+
+                      activeThemeName = nextTheme.name
+                      activeSwatches = getThemeSwatches(nextTheme.name)
+                    }}
+                  >
+                    {theme.name === "neutral" ? "Default" : theme.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div class="theme-customizer-mobile">
+              <label class="sr-only" for="themes-route-selector">
+                Theme
+              </label>
+              <span class="theme-selector-prefix">Theme:</span>
+              <select
+                id="themes-route-selector"
+                aria-label="Theme selector"
+                onChange$={(event: Event) => {
+                  const target = event.currentTarget
+                  if (!(target instanceof HTMLSelectElement)) {
+                    return
+                  }
+
+                  const nextTheme = props.themes.find((entry) => entry.name === target.value)
+                  if (!nextTheme) {
+                    return
+                  }
+
+                  activeThemeName = nextTheme.name
+                  activeSwatches = getThemeSwatches(nextTheme.name)
+                }}
+              >
+                {visibleThemes.map((theme) => (
+                  <option key={theme.name} value={theme.name}>
+                    {theme.name === "neutral" ? "Default" : theme.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <button
               type="button"
-              key={theme.name}
-              data-theme-name={theme.name}
-              class={activeThemeName === theme.name ? "theme-pill theme-pill-active" : "theme-pill"}
+              class="button button-ghost theme-copy-button"
+              data-theme-name={activeThemeName}
               onClick$={(event: MouseEvent) => {
+                if (typeof navigator === "undefined" || !navigator.clipboard) {
+                  return
+                }
+
                 const target = event.currentTarget
                 if (!(target instanceof HTMLButtonElement)) {
                   return
@@ -1132,56 +1202,36 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
                   return
                 }
 
-                const nextTheme = props.themes.find((entry) => entry.name === themeName)
-                if (!nextTheme) {
-                  return
-                }
-
-                activeThemeName = nextTheme.name
-                activeThemeTitle = nextTheme.title
-                activeSwatches = getThemeSwatches(nextTheme.name)
+                void navigator.clipboard.writeText(
+                  `pnpm dlx @fictjs/shadcn@latest theme apply ${themeName}`,
+                )
               }}
             >
-              {theme.name === "neutral" ? "Default" : theme.name}
+              Copy Code
             </button>
-          ))}
+          </div>
         </div>
-        <button type="button" class="button button-ghost theme-copy-button">
-          Copy Code
-        </button>
-      </section>
+      </div>
 
-      <section class="card theme-preview-panel">
-        <div class="theme-preview-header">
-          <h2>{activeThemeTitle}</h2>
-          <p class="slug">theme: {activeThemeName}</p>
+      <div class="route-surface-wrapper route-surface-soft">
+        <div class="theme-preview-shell">
+          <div
+            class="theme-preview-stage"
+            style={`--theme-accent:${activeSwatches[1] || activeSwatches[0] || "#0f172a"}; --theme-muted:${activeSwatches[4] || activeSwatches[0] || "#e2e8f0"}`}
+          >
+            <div class="theme-preview-gallery">
+              <figure class="example-preview-card">
+                <img src="/examples/cards-light.png" alt="Theme cards light preview" loading="lazy" />
+                <figcaption class="slug">Cards preview (light)</figcaption>
+              </figure>
+              <figure class="example-preview-card">
+                <img src="/examples/cards-dark.png" alt="Theme cards dark preview" loading="lazy" />
+                <figcaption class="slug">Cards preview (dark)</figcaption>
+              </figure>
+            </div>
+          </div>
         </div>
-        <div class="theme-swatch-row">
-          {activeSwatches.map((swatch) => (
-            <span key={`${activeThemeName}-${swatch}`} class="theme-swatch" style={`background:${swatch}`} />
-          ))}
-        </div>
-        <div class="themes-preview-card">
-          <figure class="example-preview-card">
-            <img src="/examples/cards-light.png" alt="Theme cards light preview" loading="lazy" />
-            <figcaption class="slug">Cards preview (light)</figcaption>
-          </figure>
-          <figure class="example-preview-card">
-            <img src="/examples/cards-dark.png" alt="Theme cards dark preview" loading="lazy" />
-            <figcaption class="slug">Cards preview (dark)</figcaption>
-          </figure>
-        </div>
-      </section>
-
-      <ul class="list-grid">
-        {props.themes.map((theme) => (
-          <li class="card list-item" key={theme.name}>
-            <h3>{theme.title}</h3>
-            <p class="slug">name: {theme.name}</p>
-            <pre class="inline-code">npx @fictjs/shadcn@latest theme apply {theme.name}</pre>
-          </li>
-        ))}
-      </ul>
+      </div>
     </section>
   )
 }

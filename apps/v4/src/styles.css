@@ -1052,6 +1052,88 @@ h1 {
   gap: 0.6rem;
 }
 
+.themes-route {
+  gap: 1.25rem;
+}
+
+.route-surface-wrapper {
+  width: 100%;
+}
+
+.route-surface-soft {
+  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  border-radius: 1.1rem;
+  background: color-mix(in oklab, var(--muted) 42%, transparent);
+  padding: 1rem;
+}
+
+.theme-customizer-shell {
+  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  border-radius: 0.95rem;
+  background: var(--card);
+  padding: 0.75rem 0.9rem;
+}
+
+.theme-customizer-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.theme-customizer-scroll {
+  display: none;
+  min-width: 0;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.theme-customizer-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.theme-customizer-scroll-inner {
+  display: flex;
+  align-items: center;
+  min-width: max-content;
+}
+
+.theme-customizer-pill {
+  border: 0;
+  background: transparent;
+  color: var(--muted-foreground);
+  padding: 0.35rem 1rem;
+  font: inherit;
+  font-size: 0.98rem;
+  font-weight: 500;
+  line-height: 1;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.theme-customizer-pill:hover,
+.theme-customizer-pill[data-active="true"] {
+  color: var(--foreground);
+}
+
+.theme-customizer-mobile {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.theme-customizer-mobile select {
+  border: 1px solid var(--border);
+  border-radius: 0.55rem;
+  background: var(--card);
+  color: var(--foreground);
+  min-height: 2.15rem;
+  padding: 0.3rem 0.65rem;
+  font: inherit;
+  font-size: 0.82rem;
+}
+
 .theme-name-scroll {
   display: flex;
   flex-wrap: wrap;
@@ -1080,6 +1162,24 @@ h1 {
 
 .theme-copy-button {
   margin-left: auto;
+}
+
+.theme-preview-shell {
+  display: flex;
+  flex-direction: column;
+}
+
+.theme-preview-stage {
+  border: 1px solid color-mix(in oklab, var(--theme-accent, var(--border)) 22%, var(--border));
+  border-radius: 1rem;
+  background: color-mix(in oklab, var(--theme-muted, var(--muted)) 18%, var(--card));
+  padding: 1rem;
+}
+
+.theme-preview-gallery {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
 .theme-preview-panel {
@@ -1890,6 +1990,22 @@ h1 {
   .doc-header {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: start;
+  }
+
+  .route-surface-soft {
+    padding: 1.25rem;
+  }
+
+  .theme-customizer-shell {
+    padding: 0.85rem 1rem;
+  }
+
+  .theme-customizer-scroll {
+    display: block;
+  }
+
+  .theme-customizer-mobile {
+    display: none;
   }
 }
 

@@ -57,6 +57,15 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".playground-selection-summary")).toContainText("Model: gemini-pro")
   })
 
+  test("themes route renders the customizer shell", async ({ page }) => {
+    await page.goto("/themes")
+
+    await expect(page.getByRole("heading", { name: "Pick a Color. Make it yours." })).toBeVisible()
+    await expect(page.locator(".theme-customizer-scroll .theme-customizer-pill").first()).toBeVisible()
+    await expect(page.getByRole("button", { name: "Copy Code" })).toBeVisible()
+    await expect(page.locator(".theme-preview-gallery .example-preview-card")).toHaveCount(2)
+  })
+
   test("authentication and rtl examples stay interactive", async ({ page }) => {
     await page.goto("/examples/authentication")
 
