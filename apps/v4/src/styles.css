@@ -553,6 +553,15 @@ a {
   line-height: 1.45;
 }
 
+.create-empty-state {
+  margin: 0;
+  border: 1px dashed color-mix(in oklab, var(--border) 82%, transparent);
+  border-radius: 0.9rem;
+  padding: 0.9rem;
+  color: var(--muted-foreground);
+  text-align: center;
+}
+
 .create-preview-header {
   align-items: flex-start;
 }
