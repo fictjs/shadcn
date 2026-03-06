@@ -1990,6 +1990,34 @@ h1 {
   letter-spacing: -0.03em;
 }
 
+.dashboard-example {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  min-height: 48rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  overflow: hidden;
+  background: var(--background);
+}
+
+.dashboard-sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  border-right: 1px solid color-mix(in oklab, var(--border) 92%, transparent);
+  background: color-mix(in oklab, var(--muted) 45%, var(--card));
+  padding: 1rem;
+}
+
+.dashboard-sidebar-top,
+.dashboard-sidebar-bottom,
+.dashboard-user-meta,
+.dashboard-stat-foot {
+  display: grid;
+  gap: 0.9rem;
+}
+
 .dashboard-brand-title {
   font-size: 0.98rem;
   font-weight: 600;
@@ -2001,6 +2029,15 @@ h1 {
 .auth-footnote,
 .dashboard-sale-row p,
 .tasks-empty-state {
+  color: var(--muted-foreground);
+}
+
+.dashboard-user-meta span,
+.dashboard-chart-description,
+.dashboard-outline-footer,
+.dashboard-outline-placeholder,
+.dashboard-outline-table td,
+.dashboard-secondary-link {
   color: var(--muted-foreground);
 }
 
@@ -2017,15 +2054,107 @@ h1 {
 
 .dashboard-nav {
   display: grid;
-  gap: 0.2rem;
+  gap: 0.3rem;
 }
 
 .dashboard-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
   border-radius: 0.65rem;
   padding: 0.7rem 0.8rem;
   color: var(--muted-foreground);
   font-size: 0.9rem;
   font-weight: 500;
+}
+
+.dashboard-nav-icon,
+.dashboard-doc-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+  border-radius: 0.4rem;
+  background: var(--card);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.dashboard-sidebar-section {
+  display: grid;
+  gap: 0.75rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid color-mix(in oklab, var(--border) 92%, transparent);
+}
+
+.dashboard-sidebar-heading {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dashboard-doc-link,
+.dashboard-secondary-link {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 0.65rem;
+  font-size: 0.84rem;
+}
+
+.dashboard-doc-link:hover,
+.dashboard-secondary-link:hover {
+  background: var(--card);
+  color: var(--foreground);
+}
+
+.dashboard-secondary-nav {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.dashboard-user-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+  border-radius: 0.85rem;
+  background: var(--card);
+}
+
+.dashboard-user-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  background: var(--foreground);
+  color: var(--background);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.dashboard-user-meta strong,
+.dashboard-chart-title {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.dashboard-user-meta span,
+.dashboard-chart-description,
+.dashboard-outline-footer,
+.dashboard-outline-placeholder {
+  font-size: 0.82rem;
+  line-height: 1.45;
 }
 
 .dashboard-nav-link-active,
@@ -2088,7 +2217,44 @@ h1 {
   display: grid;
   align-content: start;
   gap: 1.25rem;
-  padding: 1.3rem;
+  padding: 0;
+  background: var(--background);
+}
+
+.dashboard-site-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.5rem;
+  padding: 0 1.25rem;
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 92%, transparent);
+  background: color-mix(in oklab, var(--background) 92%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.dashboard-site-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.dashboard-quick-create {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--foreground);
+  border-radius: 0.65rem;
+  background: var(--foreground);
+  color: var(--background);
+  padding: 0.45rem 0.8rem;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .dashboard-header,
@@ -2163,6 +2329,7 @@ h1 {
   display: grid;
   gap: 0.85rem;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 0 1.25rem;
 }
 
 .dashboard-stat-card,
@@ -2175,7 +2342,74 @@ h1 {
 }
 
 .dashboard-stat-card {
+  display: grid;
+  gap: 0.75rem;
   padding: 1rem;
+}
+
+.dashboard-stat-head,
+.dashboard-outline-toolbar,
+.dashboard-outline-actions,
+.dashboard-view-tabs,
+.dashboard-chart-actions,
+.dashboard-outline-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.dashboard-stat-badge,
+.dashboard-range-chip,
+.dashboard-view-tab,
+.dashboard-outline-button,
+.dashboard-outline-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--muted) 58%, var(--card));
+  color: var(--foreground);
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.dashboard-stat-badge,
+.dashboard-outline-status {
+  padding: 0.28rem 0.55rem;
+}
+
+.dashboard-range-chip,
+.dashboard-view-tab,
+.dashboard-outline-button {
+  padding: 0.45rem 0.75rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.dashboard-stat-badge-negative,
+.dashboard-outline-status-not-started {
+  background: color-mix(in oklab, var(--muted) 72%, var(--card));
+}
+
+.dashboard-outline-status-done {
+  background: color-mix(in oklab, #16a34a 18%, var(--card));
+}
+
+.dashboard-outline-status-in-progress,
+.dashboard-range-chip-active,
+.dashboard-view-tab-active,
+.dashboard-outline-button-primary {
+  background: var(--foreground);
+  border-color: var(--foreground);
+  color: var(--background);
+}
+
+.dashboard-stat-trend {
+  margin: 0;
+  font-size: 0.86rem;
+  font-weight: 600;
 }
 
 .dashboard-stat-label {
@@ -2188,6 +2422,11 @@ h1 {
 .dashboard-chart-head h4 {
   margin-top: 0.4rem;
   font-size: 1.5rem;
+}
+
+.dashboard-chart-card,
+.dashboard-outline-card {
+  margin: 0 1.25rem;
 }
 
 .dashboard-content-grid {
@@ -2212,6 +2451,12 @@ h1 {
   gap: 0.85rem;
 }
 
+.dashboard-chart-actions,
+.dashboard-view-tabs,
+.dashboard-outline-actions {
+  flex-wrap: wrap;
+}
+
 .dashboard-chart-chip {
   display: inline-flex;
   align-items: center;
@@ -2229,6 +2474,60 @@ h1 {
   height: auto;
   margin-top: 1rem;
   color: var(--primary);
+}
+
+.dashboard-outline-card {
+  display: grid;
+  gap: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--card);
+  box-shadow: 0 1px 2px color-mix(in oklab, var(--foreground) 8%, transparent);
+  padding: 1rem;
+}
+
+.dashboard-outline-table-wrap {
+  overflow: auto;
+  border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+  border-radius: 0.9rem;
+}
+
+.dashboard-outline-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dashboard-outline-table th,
+.dashboard-outline-table td {
+  padding: 0.9rem 0.8rem;
+  text-align: left;
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 92%, transparent);
+}
+
+.dashboard-outline-table th {
+  color: var(--muted-foreground);
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: color-mix(in oklab, var(--muted) 52%, var(--card));
+}
+
+.dashboard-outline-table td {
+  font-size: 0.84rem;
+}
+
+.dashboard-outline-footer {
+  padding: 0.85rem 1rem;
+}
+
+.dashboard-outline-placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 12rem;
+  border: 1px dashed color-mix(in oklab, var(--border) 88%, transparent);
+  border-radius: 0.9rem;
+  text-transform: capitalize;
 }
 
 .dashboard-chart-guides line {

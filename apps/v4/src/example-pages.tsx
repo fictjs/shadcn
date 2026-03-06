@@ -13,14 +13,79 @@ interface TaskRow {
 }
 
 type TaskStatusFilter = "all" | TaskRow["status"]
+type DashboardRange = "90d" | "30d" | "7d"
+type DashboardView = "outline" | "past-performance" | "key-personnel" | "focus-documents"
 type PlaygroundMode = "complete" | "insert" | "edit"
 type DirectionMode = "rtl" | "ltr"
 
 const dashboardStats = [
-  { label: "Total Revenue", value: "$45,231.89", delta: "+20.1% from last month" },
-  { label: "Subscriptions", value: "+2,350", delta: "+180.1% from last month" },
-  { label: "Sales", value: "+12,234", delta: "+19% from last month" },
-  { label: "Active Now", value: "+573", delta: "+201 since last hour" },
+  {
+    label: "Total Revenue",
+    value: "$1,250.00",
+    delta: "+12.5%",
+    trend: "Trending up this month",
+    detail: "Visitors for the last 6 months",
+  },
+  {
+    label: "New Customers",
+    value: "1,234",
+    delta: "-20%",
+    trend: "Down 20% this period",
+    detail: "Acquisition needs attention",
+  },
+  {
+    label: "Active Accounts",
+    value: "45,678",
+    delta: "+12.5%",
+    trend: "Strong user retention",
+    detail: "Engagement exceed targets",
+  },
+  {
+    label: "Growth Rate",
+    value: "4.5%",
+    delta: "+4.5%",
+    trend: "Steady performance increase",
+    detail: "Meets growth projections",
+  },
+] as const
+
+const dashboardNavItems = ["Dashboard", "Lifecycle", "Analytics", "Projects", "Team"] as const
+const dashboardDocumentItems = ["Data Library", "Reports", "Word Assistant"] as const
+const dashboardSecondaryItems = ["Settings", "Get Help", "Search"] as const
+const dashboardViewTabs = ["Outline", "Past Performance", "Key Personnel", "Focus Documents"] as const
+const dashboardOutlineRows = [
+  {
+    header: "Executive Summary",
+    type: "Narrative",
+    status: "Done",
+    target: "18",
+    limit: "24",
+    reviewer: "Eddie Lake",
+  },
+  {
+    header: "Technical Approach",
+    type: "Technical Approach",
+    status: "In Progress",
+    target: "12",
+    limit: "18",
+    reviewer: "Jamik Tashpulatov",
+  },
+  {
+    header: "Capabilities",
+    type: "Capabilities",
+    status: "Done",
+    target: "10",
+    limit: "16",
+    reviewer: "Emily Whalen",
+  },
+  {
+    header: "Focus Documents",
+    type: "Focus Documents",
+    status: "Not Started",
+    target: "08",
+    limit: "12",
+    reviewer: "Assign reviewer",
+  },
 ] as const
 
 const taskRows: TaskRow[] = [
@@ -46,6 +111,16 @@ function resolveTaskStatusFilter(value: string | undefined): TaskStatusFilter | 
     : null
 }
 
+function resolveDashboardRange(value: string | undefined): DashboardRange | null {
+  return value === "90d" || value === "30d" || value === "7d" ? value : null
+}
+
+function resolveDashboardView(value: string | undefined): DashboardView | null {
+  return value === "outline" || value === "past-performance" || value === "key-personnel" || value === "focus-documents"
+    ? value
+    : null
+}
+
 function resolvePlaygroundMode(value: string | undefined): PlaygroundMode | null {
   return value === "complete" || value === "insert" || value === "edit" ? value : null
 }
@@ -64,125 +139,221 @@ export function LiveExamplePage(props: LiveExamplePageProps) {
 }
 
 function DashboardExample() {
+  let timeRange = $state<DashboardRange>("90d")
+  let activeView = $state<DashboardView>("outline")
+
+  const chartLabel = timeRange === "90d"
+    ? "Total for the last 3 months"
+    : timeRange === "30d"
+      ? "Total for the last 30 days"
+      : "Total for the last 7 days"
+
   return (
     <div class="live-example dashboard-example">
       <aside class="dashboard-sidebar">
-        <div class="dashboard-brand-row">
-          <div class="dashboard-brand-mark">S</div>
-          <div>
-            <p class="dashboard-brand-title">Acme Inc</p>
-            <p class="dashboard-brand-copy">Enterprise Workspace</p>
+        <div class="dashboard-sidebar-top">
+          <div class="dashboard-brand-row">
+            <div class="dashboard-brand-mark">S</div>
+            <div>
+              <p class="dashboard-brand-title">Acme Inc.</p>
+            </div>
           </div>
+
+          <nav class="dashboard-nav" aria-label="Dashboard sidebar">
+            {dashboardNavItems.map((item, index) => (
+              <a class={index === 0 ? "dashboard-nav-link dashboard-nav-link-active" : "dashboard-nav-link"} href={`#${item.toLowerCase().replace(/\s+/g, "-")}`} key={item}>
+                <span class="dashboard-nav-icon">{item.charAt(0)}</span>
+                <span>{item}</span>
+              </a>
+            ))}
+          </nav>
+
+          <section class="dashboard-sidebar-section">
+            <p class="dashboard-sidebar-heading">Documents</p>
+            <div class="dashboard-sidebar-stack">
+              {dashboardDocumentItems.map((item) => (
+                <a class="dashboard-doc-link" href={`#${item.toLowerCase().replace(/\s+/g, "-")}`} key={item}>
+                  <span class="dashboard-doc-icon">{item.charAt(0)}</span>
+                  <span>{item}</span>
+                </a>
+              ))}
+            </div>
+          </section>
         </div>
 
-        <nav class="dashboard-nav" aria-label="Dashboard sidebar">
-          <a class="dashboard-nav-link dashboard-nav-link-active" href="#dashboard-overview">
-            Overview
-          </a>
-          <a class="dashboard-nav-link" href="#dashboard-reports">
-            Reports
-          </a>
-          <a class="dashboard-nav-link" href="#dashboard-analytics">
-            Analytics
-          </a>
-          <a class="dashboard-nav-link" href="#dashboard-team">
-            Team
-          </a>
-        </nav>
+        <div class="dashboard-sidebar-bottom">
+          <nav class="dashboard-secondary-nav" aria-label="Dashboard utilities">
+            {dashboardSecondaryItems.map((item) => (
+              <a class="dashboard-secondary-link" href={`#${item.toLowerCase().replace(/\s+/g, "-")}`} key={item}>
+                {item}
+              </a>
+            ))}
+          </nav>
 
-        <section class="dashboard-sidebar-card">
-          <p class="dashboard-section-label">Projects</p>
-          <div class="dashboard-sidebar-stack">
-            <div class="dashboard-project-row">
-              <span>Design Engineering</span>
-              <strong>24</strong>
-            </div>
-            <div class="dashboard-project-row">
-              <span>Growth Experiments</span>
-              <strong>16</strong>
-            </div>
-            <div class="dashboard-project-row">
-              <span>Customer Ops</span>
-              <strong>08</strong>
+          <div class="dashboard-user-card">
+            <span class="dashboard-user-avatar">S</span>
+            <div class="dashboard-user-meta">
+              <strong>shadcn</strong>
+              <span>m@example.com</span>
             </div>
           </div>
-        </section>
+        </div>
       </aside>
 
       <div class="dashboard-main">
-        <header class="dashboard-header">
-          <div>
-            <p class="dashboard-section-label">Overview</p>
-            <h3>Dashboard</h3>
-          </div>
-          <div class="dashboard-toolbar">
-            <button class="dashboard-pill dashboard-pill-active" type="button">
-              Overview
-            </button>
-            <button class="dashboard-pill" type="button">
-              Analytics
-            </button>
-            <button class="dashboard-pill" type="button">
-              Export
-            </button>
-          </div>
+        <header class="dashboard-site-header">
+          <h3>Documents</h3>
+          <button class="dashboard-quick-create" type="button">Quick Create</button>
         </header>
 
         <section class="dashboard-stats-grid">
           {dashboardStats.map((stat) => (
             <article class="dashboard-stat-card" key={stat.label}>
-              <p class="dashboard-stat-label">{stat.label}</p>
+              <div class="dashboard-stat-head">
+                <p class="dashboard-stat-label">{stat.label}</p>
+                <span class={stat.delta.startsWith("-") ? "dashboard-stat-badge dashboard-stat-badge-negative" : "dashboard-stat-badge"}>{stat.delta}</span>
+              </div>
               <h4>{stat.value}</h4>
-              <p class="dashboard-stat-copy">{stat.delta}</p>
+              <div class="dashboard-stat-foot">
+                <p class="dashboard-stat-trend">{stat.trend}</p>
+                <p class="dashboard-stat-copy">{stat.detail}</p>
+              </div>
             </article>
           ))}
         </section>
 
-        <section class="dashboard-content-grid">
-          <article class="dashboard-chart-card">
-            <div class="dashboard-chart-head">
-              <div>
-                <p class="dashboard-section-label">Revenue</p>
-                <h4>$84,240.00</h4>
-              </div>
-              <span class="dashboard-chart-chip">+12.4%</span>
+        <article class="dashboard-chart-card">
+          <div class="dashboard-chart-head">
+            <div>
+              <p class="dashboard-chart-title">Total Visitors</p>
+              <p class="dashboard-chart-description">{chartLabel}</p>
             </div>
-            <svg class="dashboard-chart" viewBox="0 0 640 280" role="img" aria-label="Revenue chart">
-              <path d="M40 210 L130 168 L220 184 L310 112 L400 130 L490 72 L580 104 L580 240 L40 240 Z" fill="rgba(15, 23, 42, 0.08)" />
-              <path d="M40 210 L130 168 L220 184 L310 112 L400 130 L490 72 L580 104" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-              <g class="dashboard-chart-guides">
-                <line x1="40" y1="80" x2="580" y2="80" />
-                <line x1="40" y1="140" x2="580" y2="140" />
-                <line x1="40" y1="200" x2="580" y2="200" />
-              </g>
-            </svg>
-          </article>
-
-          <article class="dashboard-table-card">
-            <div class="dashboard-chart-head">
-              <div>
-                <p class="dashboard-section-label">Recent Sales</p>
-                <h4>5 recent conversions</h4>
-              </div>
-            </div>
-            <div class="dashboard-sales-list">
+            <div class="dashboard-chart-actions" role="tablist" aria-label="Dashboard chart range">
               {[
-                ["Olivia Martin", "$1,999.00", "+42%"],
-                ["Jackson Lee", "$39.00", "+18%"],
-                ["Isabella Nguyen", "$299.00", "+27%"],
-                ["William Kim", "$99.00", "+9%"],
-                ["Sofia Davis", "$39.00", "+14%"],
-              ].map((row) => (
-                <div class="dashboard-sale-row" key={row[0]}>
-                  <div>
-                    <strong>{row[0]}</strong>
-                    <p>{row[2]} this week</p>
-                  </div>
-                  <span>{row[1]}</span>
-                </div>
+                ["90d", "Last 3 months"],
+                ["30d", "Last 30 days"],
+                ["7d", "Last 7 days"],
+              ].map((entry) => (
+                <button
+                  type="button"
+                  key={entry[0]}
+                  data-range={entry[0]}
+                  class={timeRange === entry[0] ? "dashboard-range-chip dashboard-range-chip-active" : "dashboard-range-chip"}
+                  onClick$={(event: MouseEvent) => {
+                    const target = event.currentTarget
+                    if (!(target instanceof HTMLButtonElement)) {
+                      return
+                    }
+
+                    const nextRange = resolveDashboardRange(target.dataset.range)
+                    if (!nextRange) {
+                      return
+                    }
+
+                    timeRange = nextRange
+                  }}
+                >
+                  {entry[1]}
+                </button>
               ))}
             </div>
-          </article>
+          </div>
+          <svg class="dashboard-chart" viewBox="0 0 640 280" role="img" aria-label="Visitors chart">
+            <path d="M40 210 L130 168 L220 184 L310 112 L400 130 L490 72 L580 104 L580 240 L40 240 Z" fill="rgba(15, 23, 42, 0.08)" />
+            <path d="M40 210 L130 168 L220 184 L310 112 L400 130 L490 72 L580 104" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            <g class="dashboard-chart-guides">
+              <line x1="40" y1="80" x2="580" y2="80" />
+              <line x1="40" y1="140" x2="580" y2="140" />
+              <line x1="40" y1="200" x2="580" y2="200" />
+            </g>
+          </svg>
+        </article>
+
+        <section class="dashboard-outline-card">
+          <div class="dashboard-outline-toolbar">
+            <div class="dashboard-view-tabs" role="tablist" aria-label="Dashboard views">
+              {dashboardViewTabs.map((tab, index) => {
+                const value = index === 0
+                  ? "outline"
+                  : index === 1
+                    ? "past-performance"
+                    : index === 2
+                      ? "key-personnel"
+                      : "focus-documents"
+
+                return (
+                  <button
+                    type="button"
+                    key={tab}
+                    data-view={value}
+                    class={activeView === value ? "dashboard-view-tab dashboard-view-tab-active" : "dashboard-view-tab"}
+                    onClick$={(event: MouseEvent) => {
+                      const target = event.currentTarget
+                      if (!(target instanceof HTMLButtonElement)) {
+                        return
+                      }
+
+                      const nextView = resolveDashboardView(target.dataset.view)
+                      if (!nextView) {
+                        return
+                      }
+
+                      activeView = nextView
+                    }}
+                  >
+                    {tab}
+                  </button>
+                )
+              })}
+            </div>
+
+            <div class="dashboard-outline-actions">
+              <button type="button" class="dashboard-outline-button">Columns</button>
+              <button type="button" class="dashboard-outline-button dashboard-outline-button-primary">Add Section</button>
+            </div>
+          </div>
+
+          {activeView === "outline" ? (
+            <div class="dashboard-outline-table-wrap">
+              <table class="dashboard-outline-table">
+                <thead>
+                  <tr>
+                    <th>Header</th>
+                    <th>Section Type</th>
+                    <th>Status</th>
+                    <th>Target</th>
+                    <th>Limit</th>
+                    <th>Reviewer</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dashboardOutlineRows.map((row) => (
+                    <tr key={row.header}>
+                      <td>{row.header}</td>
+                      <td>{row.type}</td>
+                      <td>
+                        <span class={`dashboard-outline-status dashboard-outline-status-${row.status.toLowerCase().replace(/\s+/g, "-")}`}>
+                          {row.status}
+                        </span>
+                      </td>
+                      <td>{row.target}</td>
+                      <td>{row.limit}</td>
+                      <td>{row.reviewer}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div class="dashboard-outline-footer">
+                <p>4 proposal sections</p>
+                <p>Page 1 of 1</p>
+              </div>
+            </div>
+          ) : (
+            <div class="dashboard-outline-placeholder">
+              <p>{activeView.replace(/-/g, " ")}</p>
+            </div>
+          )}
         </section>
       </div>
     </div>
