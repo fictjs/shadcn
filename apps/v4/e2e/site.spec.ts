@@ -1,6 +1,20 @@
 import { expect, test } from "@playwright/test"
 
 test.describe("shadcn v4 site", () => {
+  test("examples root keeps catalog controls while detail routes stay focused", async ({ page }) => {
+    await page.goto("/examples")
+
+    await expect(page.getByLabel("Filter examples")).toBeVisible()
+    await expect(page.locator(".pill-grid .pill-item").first()).toBeVisible()
+
+    await page.goto("/examples/dashboard")
+
+    await expect(page.locator(".example-detail-head h2")).toContainText("Dashboard")
+    await expect(page.getByLabel("Filter examples")).toHaveCount(0)
+    await expect(page.locator(".pill-grid .pill-item")).toHaveCount(0)
+    await expect(page.locator(".example-detail-card")).not.toContainText("route:")
+  })
+
   test("home and docs routes render expected chrome", async ({ page }) => {
     await page.goto("/")
 

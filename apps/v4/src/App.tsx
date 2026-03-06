@@ -943,7 +943,6 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
           <div class="example-detail-head">
             <h2>{activeShowcase.title}</h2>
             <p class="lead">{activeShowcase.description}</p>
-            <p class="slug">route: /examples/{activeShowcase.slug}</p>
           </div>
           <div class="example-showcase-surface">
             <div class="example-mobile-gallery">
@@ -987,30 +986,30 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
               </li>
             ))}
           </ul>
+
+          <div class="card control-card">
+            <label for="example-filter">Filter examples</label>
+            <input
+              id="example-filter"
+              type="text"
+              value={query}
+              placeholder="search example name"
+              onInput={(event) => updateFilter(event)}
+            />
+          </div>
+
+          <ul class="pill-grid">
+            {filtered.map((example) => (
+              <li key={example}>
+                <div class="card pill-item">
+                  <p class="pill-name">{example}</p>
+                  <p class="slug">registry/new-york-v4/examples/{example}.tsx</p>
+                </div>
+              </li>
+            ))}
+          </ul>
         </>
       )}
-
-      <div class="card control-card">
-        <label for="example-filter">Filter examples</label>
-        <input
-          id="example-filter"
-          type="text"
-          value={query}
-          placeholder="search example name"
-          onInput={(event) => updateFilter(event)}
-        />
-      </div>
-
-      <ul class="pill-grid">
-        {filtered.map((example) => (
-          <li key={example}>
-            <div class="card pill-item">
-              <p class="pill-name">{example}</p>
-              <p class="slug">registry/new-york-v4/examples/{example}.tsx</p>
-            </div>
-          </li>
-        ))}
-      </ul>
     </section>
   )
 }
