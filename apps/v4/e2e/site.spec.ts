@@ -79,8 +79,8 @@ test.describe("shadcn v4 site", () => {
     await page.goto("/themes")
 
     await expect(page.locator("html")).toHaveClass(/dark/)
-    await expect(page.locator(".theme-preview-gallery .color-mode-image-light")).toBeHidden()
-    await expect(page.locator(".theme-preview-gallery .color-mode-image-dark")).toBeVisible()
+    await expect(page.locator(".theme-preview-stage")).toBeVisible()
+    await expect(page.locator(".theme-cards-demo")).toContainText("Payments")
   })
 
   test("mode shortcut toggles theme outside editable inputs only", async ({ page }) => {
@@ -201,7 +201,9 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByRole("heading", { name: "Pick a Color. Make it yours." })).toBeVisible()
     await expect(page.locator(".theme-customizer-scroll .theme-customizer-pill").first()).toBeVisible()
     await expect(page.getByRole("button", { name: "Copy Code" })).toBeVisible()
-    await expect(page.locator(".theme-preview-gallery .example-preview-card")).toHaveCount(1)
+    await expect(page.locator(".theme-cards-demo")).toBeVisible()
+    await page.locator(".theme-customizer-scroll .theme-customizer-pill", { hasText: "Blue" }).click()
+    await expect(page.locator(".theme-preview-stage")).toHaveAttribute("data-theme-name", "blue")
   })
 
   test("colors route renders the wrapped palette grid", async ({ page }) => {

@@ -3360,6 +3360,106 @@ function BlocksPage(props: { route: ResolvedRoute }) {
   )
 }
 
+function ThemeCardsDemo(props: { themeName: string }) {
+  const themeLabel = props.themeName === "neutral" ? "Default" : formatDisplayLabel(props.themeName)
+
+  return (
+    <div class="theme-cards-demo">
+      <div class="theme-cards-column">
+        <article class="theme-demo-card theme-demo-card-stat">
+          <div class="theme-demo-card-head">
+            <div>
+              <p class="eyebrow">Total Revenue</p>
+              <h3>$15,231.89</h3>
+              <p class="theme-demo-muted">+20.1% from last month</p>
+            </div>
+            <span class="theme-demo-chip">{themeLabel}</span>
+          </div>
+          <div class="theme-demo-chart" aria-hidden="true">
+            {[42, 68, 58, 92, 74, 108, 88].map((height, index) => (
+              <span class="theme-demo-chart-bar" style={`height:${height}px`} key={`bar-${index}`}></span>
+            ))}
+          </div>
+        </article>
+
+        <article class="theme-demo-card">
+          <div class="theme-demo-card-head">
+            <div>
+              <p class="eyebrow">Team Members</p>
+              <h3>Project access</h3>
+            </div>
+          </div>
+          <div class="theme-demo-list">
+            {[
+              ["OM", "Olivia Martin", "Owner"],
+              ["IN", "Isabella Nguyen", "Can edit"],
+              ["SD", "Sofia Davis", "Can view"],
+            ].map((member) => (
+              <div class="theme-demo-member-row" key={member[1]}>
+                <span class="theme-demo-avatar" aria-hidden="true">{member[0]}</span>
+                <div>
+                  <strong>{member[1]}</strong>
+                  <p class="theme-demo-muted">{member[2]}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </article>
+      </div>
+
+      <div class="theme-cards-column theme-cards-column-wide">
+        <article class="theme-demo-card theme-demo-card-payments">
+          <div class="theme-demo-card-head">
+            <div>
+              <p class="eyebrow">Payments</p>
+              <h3>Manage your payments</h3>
+            </div>
+            <button type="button" class="theme-demo-button">Add Payment</button>
+          </div>
+          <div class="theme-demo-table">
+            {[
+              ["success", "ken99@example.com", "$316.00"],
+              ["processing", "monserrat44@example.com", "$837.00"],
+              ["pending", "jason78@example.com", "$450.00"],
+            ].map((row) => (
+              <div class="theme-demo-table-row" key={row[1]}>
+                <span class={`theme-demo-status status-${row[0]}`}>{row[0]}</span>
+                <span class="theme-demo-email">{row[1]}</span>
+                <strong>{row[2]}</strong>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article class="theme-demo-card">
+          <div class="theme-demo-card-head">
+            <div>
+              <p class="eyebrow">Share this document</p>
+              <h3>Anyone with the link can view</h3>
+            </div>
+          </div>
+          <div class="theme-demo-share-row">
+            <div class="theme-demo-input">http://example.com/link/to/document</div>
+            <button type="button" class="theme-demo-button theme-demo-button-ghost">Copy Link</button>
+          </div>
+          <div class="theme-demo-access-list">
+            {[
+              ["Olivia Martin", "Can edit"],
+              ["Isabella Nguyen", "Can edit"],
+              ["Sofia Davis", "Can view"],
+            ].map((person) => (
+              <div class="theme-demo-access-row" key={person[0]}>
+                <span>{person[0]}</span>
+                <span class="theme-demo-muted">{person[1]}</span>
+              </div>
+            ))}
+          </div>
+        </article>
+      </div>
+    </div>
+  )
+}
+
 function ThemesPage(props: { themes: ThemeEntry[] }) {
   const visibleThemes = props.themes.filter((theme) => !hiddenThemeNames.has(theme.name))
   const initialThemeName = visibleThemes[0]?.name || props.themes[0]?.name || "neutral"
@@ -3488,18 +3588,10 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
         <div class="theme-preview-shell">
           <div
             class="theme-preview-stage"
-            style={`--theme-accent:${activeSwatches[1] || activeSwatches[0] || "#0f172a"}; --theme-muted:${activeSwatches[4] || activeSwatches[0] || "#e2e8f0"}`}
+            data-theme-name={activeThemeName}
+            style={`--theme-accent-strong:${activeSwatches[0] || "#0f172a"}; --theme-accent:${activeSwatches[1] || activeSwatches[0] || "#334155"}; --theme-accent-soft:${activeSwatches[2] || activeSwatches[1] || "#64748b"}; --theme-accent-muted:${activeSwatches[3] || activeSwatches[2] || "#94a3b8"}; --theme-muted:${activeSwatches[4] || activeSwatches[0] || "#e2e8f0"}`}
           >
-            <div class="theme-preview-gallery">
-              <figure class="example-preview-card">
-                <ColorModeImage
-                  lightSrc="/examples/cards-light.png"
-                  darkSrc="/examples/cards-dark.png"
-                  alt="Theme cards preview"
-                />
-                <figcaption class="slug">Cards preview</figcaption>
-              </figure>
-            </div>
+            <ThemeCardsDemo themeName={activeThemeName} />
           </div>
         </div>
       </div>

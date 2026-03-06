@@ -2433,10 +2433,163 @@ h1 {
   padding: 1rem;
 }
 
-.theme-preview-gallery {
+.theme-preview-gallery,
+.theme-cards-demo {
   display: grid;
   gap: 0.8rem;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.theme-cards-demo {
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.25fr);
+}
+
+.theme-cards-column {
+  display: grid;
+  align-content: start;
+  gap: 0.8rem;
+}
+
+.theme-demo-card {
+  display: grid;
+  gap: 0.8rem;
+  border: 1px solid color-mix(in oklab, var(--theme-accent-muted, var(--border)) 28%, var(--border));
+  border-radius: 1rem;
+  background: color-mix(in oklab, var(--theme-muted, var(--card)) 12%, var(--card));
+  box-shadow: 0 14px 40px color-mix(in oklab, var(--theme-accent, var(--foreground)) 8%, transparent);
+  padding: 1rem;
+}
+
+.theme-demo-card-head,
+.theme-demo-table-row,
+.theme-demo-share-row,
+.theme-demo-access-row,
+.theme-demo-member-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.theme-demo-card-head {
+  align-items: flex-start;
+}
+
+.theme-demo-card-head h3,
+.theme-demo-table-row strong,
+.theme-demo-member-row strong,
+.theme-demo-access-row span {
+  margin: 0;
+}
+
+.theme-demo-card-head h3 {
+  font-size: 1.1rem;
+}
+
+.theme-demo-chip,
+.theme-demo-status,
+.theme-demo-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.theme-demo-chip,
+.theme-demo-status {
+  border: 1px solid color-mix(in oklab, var(--theme-accent, var(--border)) 26%, var(--border));
+  background: color-mix(in oklab, var(--theme-accent-soft, var(--muted)) 22%, var(--card));
+  color: var(--foreground);
+  padding: 0.25rem 0.65rem;
+  text-transform: capitalize;
+}
+
+.theme-demo-muted,
+.theme-demo-email,
+.theme-demo-input {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.82rem;
+}
+
+.theme-demo-chart {
+  display: flex;
+  align-items: end;
+  gap: 0.45rem;
+  height: 7rem;
+}
+
+.theme-demo-chart-bar {
+  flex: 1;
+  min-width: 0;
+  border-radius: 999px 999px 0 0;
+  background: linear-gradient(180deg, var(--theme-accent-strong, var(--foreground)), var(--theme-accent, var(--foreground)));
+  opacity: 0.92;
+}
+
+.theme-demo-list,
+.theme-demo-table,
+.theme-demo-access-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.theme-demo-avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--theme-accent-soft, var(--muted)) 26%, var(--card));
+  color: var(--foreground);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.theme-demo-member-row {
+  justify-content: flex-start;
+}
+
+.theme-demo-table-row,
+.theme-demo-access-row {
+  border: 1px solid color-mix(in oklab, var(--theme-accent-muted, var(--border)) 20%, var(--border));
+  border-radius: 0.85rem;
+  background: color-mix(in oklab, var(--theme-muted, var(--muted)) 16%, var(--card));
+  padding: 0.7rem 0.8rem;
+}
+
+.theme-demo-status.status-success {
+  background: color-mix(in oklab, #16a34a 18%, var(--card));
+}
+
+.theme-demo-status.status-processing {
+  background: color-mix(in oklab, #2563eb 18%, var(--card));
+}
+
+.theme-demo-status.status-pending {
+  background: color-mix(in oklab, #d97706 18%, var(--card));
+}
+
+.theme-demo-button {
+  border: 1px solid var(--theme-accent, var(--border));
+  background: var(--theme-accent, var(--foreground));
+  color: var(--background);
+  padding: 0.4rem 0.8rem;
+}
+
+.theme-demo-button-ghost {
+  background: transparent;
+  color: var(--foreground);
+}
+
+.theme-demo-input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid color-mix(in oklab, var(--theme-accent-muted, var(--border)) 24%, var(--border));
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--theme-muted, var(--muted)) 18%, var(--card));
+  padding: 0.6rem 0.9rem;
 }
 
 .theme-preview-panel {
@@ -3633,6 +3786,17 @@ h1 {
     display: none;
   }
 
+  .theme-cards-demo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .theme-demo-share-row,
+  .theme-demo-table-row,
+  .theme-demo-access-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .create-nav {
     width: 100%;
   }
@@ -3774,6 +3938,10 @@ h1 {
 
   .docs-toc {
     display: none;
+  }
+
+  .theme-cards-demo {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
