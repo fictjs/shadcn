@@ -1,4 +1,4 @@
-import { $state, untrack } from "fict"
+import { $effect, $state, untrack } from "fict"
 
 import { colors as tailwindColors } from "../registry/_legacy-colors"
 import type {
@@ -376,17 +376,132 @@ const createItemLookup: Record<string, CreateCatalogItem> = {
   "chart:chart-line-interactive": createChartItems[2],
 }
 
+const colorModeStorageKey = "shadcn-v4-color-mode"
+
 function formatDisplayLabel(value: string): string {
   const normalized = value.replace(/[-_]/g, " ").replace(/\s+/g, " ").trim()
   return normalized
+}
+
+function resolveStoredColorMode(): "light" | "dark" | null {
+  if (typeof window === "undefined") {
+    return null
+  }
+
+  const storedMode = window.localStorage.getItem(colorModeStorageKey)
+  return storedMode === "light" || storedMode === "dark" ? storedMode : null
+}
+
+function resolvePreferredColorMode(): "light" | "dark" {
+  if (typeof window === "undefined") {
+    return "light"
+  }
+
+  const storedMode = resolveStoredColorMode()
+  if (storedMode) {
+    return storedMode
+  }
+
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+}
+
+function applyDocumentColorMode(mode: "light" | "dark") {
+  if (typeof document === "undefined") {
+    return
+  }
+
+  document.documentElement.classList.toggle("dark", mode === "dark")
+  document.documentElement.dataset.colorMode = mode
+  document.documentElement.style.colorScheme = mode
+}
+
+function DarkModeManager() {
+  $effect(() => {
+    if (typeof window === "undefined") {
+      return
+    }
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+    const syncMode = () => {
+      applyDocumentColorMode(resolvePreferredColorMode())
+    }
+
+    const handleChange = () => {
+      if (resolveStoredColorMode()) {
+        return
+      }
+
+      syncMode()
+    }
+
+    syncMode()
+    mediaQuery.addEventListener("change", handleChange)
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange)
+    }
+  })
+
+  return null
+}
+
+function ModeToggleControl() {
+  let modeLabel = $state("Light")
+
+  $effect(() => {
+    if (typeof window === "undefined") {
+      return
+    }
+
+    modeLabel = resolvePreferredColorMode() === "dark" ? "Dark" : "Light"
+  })
+
+  return (
+    <button
+      type="button"
+      class="header-icon-link header-mode-toggle"
+      aria-label="Toggle color mode"
+      aria-pressed={modeLabel === "Dark"}
+      onClick$={() => {
+        if (typeof window === "undefined" || typeof document === "undefined") {
+          return
+        }
+
+        const nextMode = document.documentElement.classList.contains("dark") ? "light" : "dark"
+        applyDocumentColorMode(nextMode)
+        window.localStorage.setItem(colorModeStorageKey, nextMode)
+        modeLabel = nextMode === "dark" ? "Dark" : "Light"
+      }}
+    >
+      {modeLabel}
+    </button>
+  )
+}
+
+function ColorModeImage(props: { lightSrc: string; darkSrc: string; alt: string; className?: string; loading?: "lazy" | "eager" }) {
+  const lightClassName = props.className
+    ? `${props.className} color-mode-image color-mode-image-light`
+    : "color-mode-image color-mode-image-light"
+  const darkClassName = props.className
+    ? `${props.className} color-mode-image color-mode-image-dark`
+    : "color-mode-image color-mode-image-dark"
+
+  return (
+    <>
+      <img src={props.lightSrc} alt={props.alt} loading={props.loading || "lazy"} class={lightClassName} />
+      <img src={props.darkSrc} alt={props.alt} loading={props.loading || "lazy"} class={darkClassName} />
+    </>
+  )
 }
 
 export function App(props: AppProps) {
   const route = props.route
 
   return (
-    route.kind === "create" ? <CreatePage /> : (
-      <div class="site-shell">
+    <>
+      <DarkModeManager />
+      {route.kind === "create" ? <CreatePage /> : (
+        <div class="site-shell">
         <header class="site-header">
           <div class="container header-row">
             <div class="header-primary">
@@ -444,9 +559,7 @@ export function App(props: AppProps) {
                 GitHub
               </a>
               <span class="header-divider header-divider-wide" aria-hidden="true"></span>
-              <button type="button" class="header-icon-link" aria-label="Toggle color mode">
-                Light
-              </button>
+              <ModeToggleControl />
               <span class="header-divider" aria-hidden="true"></span>
               <a class="header-create-link" href="/create">
                 New Project
@@ -480,8 +593,9 @@ export function App(props: AppProps) {
             </p>
           </div>
         </footer>
-      </div>
-    )
+        </div>
+      )}
+    </>
   )
 }
 
@@ -575,6 +689,7 @@ function CreatePage() {
           </div>
 
           <div class="create-header-actions">
+            <ModeToggleControl />
             <button
               type="button"
               class="button button-ghost"
@@ -1306,7 +1421,11 @@ function HomePage(props: { route: ResolvedRoute }) {
       <div class="home-preview-shell">
         <section class="home-mobile-preview">
           <figure class="example-preview-card home-mobile-preview-card">
-            <img src="/r/styles/new-york-v4/dashboard-01-light.png" alt="Dashboard" loading="lazy" />
+            <ColorModeImage
+              lightSrc="/r/styles/new-york-v4/dashboard-01-light.png"
+              darkSrc="/r/styles/new-york-v4/dashboard-01-dark.png"
+              alt="Dashboard"
+            />
           </figure>
         </section>
 
@@ -2227,11 +2346,11 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
         <article class="card example-detail-card">
           <div class="example-showcase-surface">
             <div class="example-mobile-gallery">
-              <img
-                class="example-mobile-image"
-                src={activeShowcase.imageLight}
+              <ColorModeImage
+                className="example-mobile-image"
+                lightSrc={activeShowcase.imageLight}
+                darkSrc={activeShowcase.imageDark}
                 alt={`${activeShowcase.title} preview`}
-                loading="lazy"
               />
             </div>
 
@@ -2648,11 +2767,11 @@ function BlockPreviewSurface(props: { block: BlockEntry }) {
 
   return hasImagePreview ? (
     <div class="block-preview-stage">
-      <img
-        class="block-preview-image"
-        src={`/r/styles/new-york-v4/${blockName}-light.png`}
+      <ColorModeImage
+        className="block-preview-image"
+        lightSrc={`/r/styles/new-york-v4/${blockName}-light.png`}
+        darkSrc={`/r/styles/new-york-v4/${blockName}-dark.png`}
         alt={formatDisplayLabel(blockName)}
-        loading="lazy"
       />
     </div>
   ) : blockName.startsWith("signup-") ? (
@@ -2916,12 +3035,12 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
           >
             <div class="theme-preview-gallery">
               <figure class="example-preview-card">
-                <img src="/examples/cards-light.png" alt="Theme cards light preview" loading="lazy" />
-                <figcaption class="slug">Cards preview (light)</figcaption>
-              </figure>
-              <figure class="example-preview-card">
-                <img src="/examples/cards-dark.png" alt="Theme cards dark preview" loading="lazy" />
-                <figcaption class="slug">Cards preview (dark)</figcaption>
+                <ColorModeImage
+                  lightSrc="/examples/cards-light.png"
+                  darkSrc="/examples/cards-dark.png"
+                  alt="Theme cards preview"
+                />
+                <figcaption class="slug">Cards preview</figcaption>
               </figure>
             </div>
           </div>
