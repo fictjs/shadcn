@@ -225,12 +225,18 @@ export function App(props: AppProps) {
                 <span>K</span>
               </span>
             </button>
+            <span class="header-divider" aria-hidden="true"></span>
             <a class="header-icon-link" href="https://github.com/shadcn-ui/ui" aria-label="GitHub repository">
               GitHub
             </a>
+            <span class="header-divider header-divider-wide" aria-hidden="true"></span>
             <button type="button" class="header-icon-link" aria-label="Toggle color mode">
               Light
             </button>
+            <span class="header-divider" aria-hidden="true"></span>
+            <a class="header-create-link" href="/create">
+              New Project
+            </a>
           </div>
         </div>
       </header>
