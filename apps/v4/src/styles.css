@@ -1981,7 +1981,7 @@ h1 {
 .dashboard-brand-title,
 .dashboard-stat-card h4,
 .dashboard-chart-head h4,
-.tasks-header h3,
+.tasks-header h2,
 .playground-header h3,
 .auth-brand-panel h3,
 .auth-form-shell h3,
@@ -2035,7 +2035,6 @@ h1 {
 }
 
 .dashboard-sidebar-card,
-.tasks-toolbar-card,
 .tasks-table-card,
 .playground-panel,
 .playground-sidebar-panel,
@@ -2046,7 +2045,6 @@ h1 {
 }
 
 .dashboard-sidebar-card,
-.tasks-toolbar-card,
 .tasks-table-card,
 .playground-panel,
 .playground-sidebar-panel,
@@ -2104,7 +2102,7 @@ h1 {
 }
 
 .dashboard-header h3,
-.tasks-header h3,
+.tasks-header h2,
 .playground-header h3,
 .auth-brand-panel h3,
 .auth-form-shell h3,
@@ -2200,7 +2198,6 @@ h1 {
 
 .dashboard-chart-card,
 .dashboard-table-card,
-.tasks-toolbar-card,
 .tasks-table-card,
 .playground-panel,
 .playground-sidebar-panel,
@@ -2268,35 +2265,52 @@ h1 {
   align-content: start;
   gap: 1rem;
   padding: 1.25rem;
-  background: color-mix(in oklab, var(--muted) 44%, var(--card));
+  background: var(--card);
 }
 
-.tasks-avatar-stack {
-  display: flex;
+.tasks-user-nav {
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--muted) 46%, var(--card));
+  color: var(--foreground);
+  cursor: pointer;
 }
 
-.tasks-avatar-stack span {
+.tasks-user-avatar {
   display: grid;
   place-items: center;
-  width: 2rem;
-  height: 2rem;
-  margin-left: -0.35rem;
-  border: 2px solid var(--card);
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--muted) 68%, var(--card));
-  font-size: 0.72rem;
+  width: 100%;
+  height: 100%;
+  font-size: 0.78rem;
   font-weight: 700;
-}
-
-.tasks-avatar-stack span:first-child {
-  margin-left: 0;
 }
 
 .tasks-filter-row {
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
+}
+
+.tasks-table-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tasks-table-toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
 }
 
 .tasks-search-field,
@@ -2307,7 +2321,7 @@ h1 {
 }
 
 .tasks-search-field {
-  margin-top: 0.95rem;
+  width: min(100%, 20rem);
 }
 
 .tasks-search-label,
@@ -2686,6 +2700,15 @@ h1 {
 
   .tasks-table-card {
     overflow: auto;
+  }
+
+  .tasks-table-toolbar,
+  .tasks-table-toolbar-actions {
+    align-items: stretch;
+  }
+
+  .tasks-search-field {
+    width: 100%;
   }
 }
 
