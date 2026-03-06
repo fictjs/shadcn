@@ -58,21 +58,67 @@ a {
 }
 
 .header-row {
-  height: var(--header-height);
+  min-height: var(--header-height);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.header-primary,
+.header-actions,
+.brand-link {
+  display: flex;
+  align-items: center;
+}
+
+.header-primary,
+.header-actions {
+  gap: 0.75rem;
+}
+
+.header-primary {
+  min-width: 0;
 }
 
 .brand-link {
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  gap: 0.6rem;
   white-space: nowrap;
 }
 
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: color-mix(in oklab, var(--muted) 50%, var(--card));
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.brand-copy {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
 .site-nav {
-  margin-left: 0.75rem;
+  min-width: 0;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -95,6 +141,66 @@ a {
 .site-nav a.active-nav-link {
   color: var(--foreground);
   background: var(--muted);
+}
+
+.header-actions {
+  margin-left: auto;
+}
+
+.header-search-button,
+.header-icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: color-mix(in oklab, var(--muted) 35%, var(--card));
+  color: var(--foreground);
+  font: inherit;
+  cursor: pointer;
+}
+
+.header-search-button {
+  position: relative;
+  min-width: 13rem;
+  justify-content: flex-start;
+  padding: 0.45rem 3.3rem 0.45rem 0.8rem;
+  color: var(--muted-foreground);
+  font-size: 0.84rem;
+}
+
+.header-search-short {
+  display: none;
+}
+
+.header-search-kbd {
+  position: absolute;
+  top: 50%;
+  right: 0.45rem;
+  display: inline-flex;
+  gap: 0.2rem;
+  transform: translateY(-50%);
+}
+
+.header-search-kbd span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+  border-radius: 0.35rem;
+  background: var(--card);
+  color: var(--muted-foreground);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.header-icon-link {
+  min-height: 2.1rem;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.82rem;
+  font-weight: 500;
 }
 
 .main-content {
@@ -269,24 +375,27 @@ h1 {
   gap: 0.45rem;
 }
 
-.theme-selector-label {
+.theme-selector-prefix {
   font-size: 0.8rem;
   color: var(--muted-foreground);
+  font-weight: 500;
 }
 
 .theme-selector-stub select {
   border: 1px solid var(--border);
-  border-radius: 0.45rem;
-  background: var(--card);
+  border-radius: 0.55rem;
+  background: color-mix(in oklab, var(--muted) 35%, var(--card));
   color: var(--foreground);
-  padding: 0.3rem 0.45rem;
+  min-height: 2.15rem;
+  padding: 0.3rem 0.65rem;
   font: inherit;
   font-size: 0.82rem;
 }
 
 .theme-selector-copy {
-  padding: 0.3rem 0.5rem;
-  font-size: 0.78rem;
+  min-height: 2.15rem;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.8rem;
 }
 
 .button {
@@ -1423,8 +1532,19 @@ h1 {
 }
 
 @media (max-width: 860px) {
+  .header-primary,
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-primary {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .site-nav {
     margin-left: 0;
+    width: 100%;
   }
 
   .header-row {
@@ -1432,6 +1552,23 @@ h1 {
     padding: 0.6rem 0;
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .header-actions {
+    justify-content: space-between;
+  }
+
+  .header-search-button {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .header-search-copy {
+    display: none;
+  }
+
+  .header-search-short {
+    display: inline;
   }
 
   .docs-layout {
@@ -1487,6 +1624,10 @@ h1 {
 }
 
 @media (min-width: 861px) {
+  .header-search-short {
+    display: none;
+  }
+
   .home-mobile-preview {
     display: none;
   }

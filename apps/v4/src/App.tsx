@@ -33,6 +33,7 @@ interface ExampleRootCard {
 }
 
 const colorPalettes = buildColorPalettes()
+const hiddenThemeNames = new Set(["slate", "stone", "gray", "zinc"])
 const examplesRootColumns: ExampleRootCard[][] = [
   [
     {
@@ -104,41 +105,63 @@ export function App(props: AppProps) {
     <div class="site-shell">
       <header class="site-header">
         <div class="container header-row">
-          <a href="/" class="brand-link">
-            shadcn/ui
-          </a>
-          <nav class="site-nav" aria-label="Primary">
-            <a
-              class={route.pathname === "/docs" || route.pathname.startsWith("/docs/") ? "active-nav-link" : ""}
-              href="/docs"
-            >
-              Docs
+          <div class="header-primary">
+            <a href="/" class="brand-link" aria-label="shadcn/ui home">
+              <span class="brand-mark" aria-hidden="true">
+                S
+              </span>
+              <span class="brand-copy">shadcn/ui</span>
             </a>
-            <a
-              class={
-                route.pathname === "/components" ||
-                route.pathname === "/docs/components" ||
-                route.pathname.startsWith("/docs/components/")
-                  ? "active-nav-link"
-                  : ""
-              }
-              href="/docs/components"
-            >
-              Components
+            <nav class="site-nav" aria-label="Primary">
+              <a
+                class={route.pathname === "/docs" || route.pathname.startsWith("/docs/") ? "active-nav-link" : ""}
+                href="/docs"
+              >
+                Docs
+              </a>
+              <a
+                class={
+                  route.pathname === "/components" ||
+                  route.pathname === "/docs/components" ||
+                  route.pathname.startsWith("/docs/components/")
+                    ? "active-nav-link"
+                    : ""
+                }
+                href="/docs/components"
+              >
+                Components
+              </a>
+              <a class={route.pathname === "/blocks" || route.pathname.startsWith("/blocks/") ? "active-nav-link" : ""} href="/blocks">
+                Blocks
+              </a>
+              <a class={route.pathname === "/charts" || route.pathname.startsWith("/charts/") ? "active-nav-link" : ""} href="/charts/area">
+                Charts
+              </a>
+              <a class={route.pathname === "/themes" ? "active-nav-link" : ""} href="/themes">
+                Themes
+              </a>
+              <a class={route.pathname === "/colors" ? "active-nav-link" : ""} href="/colors">
+                Colors
+              </a>
+            </nav>
+          </div>
+
+          <div class="header-actions">
+            <button type="button" class="header-search-button" aria-label="Search documentation">
+              <span class="header-search-copy">Search documentation...</span>
+              <span class="header-search-short">Search...</span>
+              <span class="header-search-kbd" aria-hidden="true">
+                <span>⌘</span>
+                <span>K</span>
+              </span>
+            </button>
+            <a class="header-icon-link" href="https://github.com/shadcn-ui/ui" aria-label="GitHub repository">
+              GitHub
             </a>
-            <a class={route.pathname === "/blocks" || route.pathname.startsWith("/blocks/") ? "active-nav-link" : ""} href="/blocks">
-              Blocks
-            </a>
-            <a class={route.pathname === "/charts" || route.pathname.startsWith("/charts/") ? "active-nav-link" : ""} href="/charts">
-              Charts
-            </a>
-            <a class={route.pathname === "/themes" ? "active-nav-link" : ""} href="/themes">
-              Themes
-            </a>
-            <a class={route.pathname === "/colors" ? "active-nav-link" : ""} href="/colors">
-              Colors
-            </a>
-          </nav>
+            <button type="button" class="header-icon-link" aria-label="Toggle color mode">
+              Light
+            </button>
+          </div>
         </div>
       </header>
 
@@ -203,7 +226,7 @@ function HomePage(props: { route: ResolvedRoute }) {
             </a>
           ))}
         </nav>
-        <ThemeSelectorStub />
+        <ThemeSelectorControl themes={props.route.themes} />
       </div>
 
       <section class="card home-mobile-preview">
@@ -240,18 +263,49 @@ function ExamplesRootPreview() {
   )
 }
 
-function ThemeSelectorStub() {
+function ThemeSelectorControl(props: { themes: ThemeEntry[] }) {
+  const visibleThemes = props.themes.filter((theme) => !hiddenThemeNames.has(theme.name))
+  const initialTheme = visibleThemes[0]?.name || props.themes[0]?.name || "neutral"
+  let selectedTheme = $state(initialTheme)
+
   return (
     <div class="theme-selector-stub">
-      <span class="theme-selector-label">Theme</span>
-      <select aria-label="Theme selector">
-        <option>Default</option>
-        <option>Blue</option>
-        <option>Emerald</option>
-        <option>Rose</option>
-        <option>Zinc</option>
+      <label class="sr-only" for="theme-selector">
+        Theme
+      </label>
+      <span class="theme-selector-prefix">Theme:</span>
+      <select
+        id="theme-selector"
+        aria-label="Theme selector"
+        value={selectedTheme}
+        onChange$={(event: Event) => {
+          const target = event.currentTarget
+          if (!(target instanceof HTMLSelectElement)) {
+            return
+          }
+
+          selectedTheme = target.value
+        }}
+      >
+        {visibleThemes.map((theme) => (
+          <option key={theme.name} value={theme.name}>
+            {theme.title === "Neutral" ? "Default" : theme.title}
+          </option>
+        ))}
       </select>
-      <button type="button" class="button button-ghost theme-selector-copy">
+      <button
+        type="button"
+        class="button button-ghost theme-selector-copy"
+        onClick$={() => {
+          if (typeof navigator === "undefined" || !navigator.clipboard) {
+            return
+          }
+
+          void navigator.clipboard.writeText(
+            `pnpm dlx @fictjs/shadcn@latest theme apply ${selectedTheme}`,
+          )
+        }}
+      >
         Copy Code
       </button>
     </div>
@@ -624,7 +678,7 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
             </a>
           ))}
         </nav>
-        <ThemeSelectorStub />
+        <ThemeSelectorControl themes={props.route.themes} />
       </div>
 
       {activeShowcase ? (
@@ -747,7 +801,7 @@ function ChartsPage(props: { route: ResolvedRoute }) {
             </a>
           ))}
         </nav>
-        <ThemeSelectorStub />
+        <ThemeSelectorControl themes={props.route.themes} />
       </div>
 
       {activeType ? (
