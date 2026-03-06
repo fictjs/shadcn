@@ -26,97 +26,46 @@ interface ColorPalette {
   scales: ColorScaleEntry[]
 }
 
-interface ExampleRootCard {
-  title: string
-  kind:
-    | "field-demo"
-    | "avatars"
-    | "spinner-badge"
-    | "button-group-input"
-    | "field-slider"
-    | "input-group-demo"
-    | "input-group-button"
-    | "item-demo"
-    | "appearance-settings"
-    | "notion-prompt"
-    | "button-group-demo"
-    | "field-checkbox"
-    | "nested-buttons"
-    | "field-hear"
-    | "spinner-empty"
+type ExampleRootCardKind =
+  | "field-demo"
+  | "avatars"
+  | "spinner-badge"
+  | "button-group-input"
+  | "field-slider"
+  | "input-group-demo"
+  | "input-group-button"
+  | "item-demo"
+  | "appearance-separator"
+  | "appearance-settings"
+  | "notion-prompt"
+  | "button-group-demo"
+  | "field-checkbox"
+  | "nested-buttons"
+  | "field-hear"
+  | "spinner-empty";
+
+
+interface ExampleRootColumn {
+  entries: ExampleRootCardKind[]
+  className?: string
 }
 
 const colorPalettes = buildColorPalettes()
 const hiddenThemeNames = new Set(["slate", "stone", "gray", "zinc"])
-const examplesRootColumns: ExampleRootCard[][] = [
-  [
-    {
-      title: "Field Demo",
-      kind: "field-demo",
-    },
-  ],
-  [
-    {
-      title: "Empty Avatar Group",
-      kind: "avatars",
-    },
-    {
-      title: "Spinner Badge",
-      kind: "spinner-badge",
-    },
-    {
-      title: "Button Group Input Group",
-      kind: "button-group-input",
-    },
-    {
-      title: "Field Slider",
-      kind: "field-slider",
-    },
-    {
-      title: "Input Group Demo",
-      kind: "input-group-demo",
-    },
-  ],
-  [
-    {
-      title: "Input Group Button",
-      kind: "input-group-button",
-    },
-    {
-      title: "Item Demo",
-      kind: "item-demo",
-    },
-    {
-      title: "Appearance Settings",
-      kind: "appearance-settings",
-    },
-  ],
-  [
-    {
-      title: "Notion Prompt Form",
-      kind: "notion-prompt",
-    },
-    {
-      title: "Button Group Demo",
-      kind: "button-group-demo",
-    },
-    {
-      title: "Field Checkbox",
-      kind: "field-checkbox",
-    },
-    {
-      title: "Nested Buttons",
-      kind: "nested-buttons",
-    },
-    {
-      title: "Field Hear",
-      kind: "field-hear",
-    },
-    {
-      title: "Spinner Empty",
-      kind: "spinner-empty",
-    },
-  ],
+const examplesRootColumns: ExampleRootColumn[] = [
+  {
+    entries: ["field-demo"],
+  },
+  {
+    entries: ["avatars", "spinner-badge", "button-group-input", "field-slider", "input-group-demo"],
+  },
+  {
+    entries: ["input-group-button", "item-demo", "appearance-separator", "appearance-settings"],
+  },
+  {
+    className: "examples-root-column-last",
+    entries: ["notion-prompt", "button-group-demo", "field-checkbox", "nested-buttons", "field-hear", "spinner-empty"],
+  },
 ]
 
 export function App(props: AppProps) {
@@ -252,8 +201,7 @@ function HomePage(props: { route: ResolvedRoute }) {
       <div class="home-preview-shell">
         <section class="home-mobile-preview">
           <figure class="example-preview-card home-mobile-preview-card">
-            <img src="/examples/dashboard-light.png" alt="Dashboard light preview" loading="lazy" />
-            <figcaption class="slug">Dashboard preview</figcaption>
+            <img src="/r/styles/new-york-v4/dashboard-01-light.png" alt="Dashboard" loading="lazy" />
           </figure>
         </section>
 
@@ -271,11 +219,10 @@ function ExamplesRootPreview() {
   return (
     <div class="examples-root-grid">
       {examplesRootColumns.map((column, columnIndex) => (
-        <div class="examples-root-column" key={`column-${columnIndex}`}>
-          {column.map((card) => (
-            <article class="card example-root-card" key={card.title}>
-              <p class="example-root-label">{card.title}</p>
-              {card.kind === "field-demo" ? (
+        <div class={`examples-root-column${column.className ? ` ${column.className}` : ""}`} key={`column-${columnIndex}`}>
+          {column.entries.map((entry) => (
+            <div class="example-root-panel" key={`${columnIndex}-${entry}`}>
+              {entry === "field-demo" ? (
                 <div class="root-preview-shell root-preview-stack">
                   <div class="root-preview-field">
                     <span>Name</span>
@@ -292,7 +239,7 @@ function ExamplesRootPreview() {
                 </div>
               ) : null}
 
-              {card.kind === "avatars" ? (
+              {entry === "avatars" ? (
                 <div class="root-preview-shell root-preview-stack">
                   <div class="root-preview-avatar-row" aria-label="Avatar group preview">
                     <span>AB</span>
@@ -304,7 +251,7 @@ function ExamplesRootPreview() {
                 </div>
               ) : null}
 
-              {card.kind === "spinner-badge" ? (
+              {entry === "spinner-badge" ? (
                 <div class="root-preview-shell root-preview-stack">
                   <div class="root-preview-badge-row">
                     <span class="root-preview-badge root-preview-badge-active">Syncing</span>
@@ -316,7 +263,7 @@ function ExamplesRootPreview() {
                 </div>
               ) : null}
 
-              {card.kind === "button-group-input" ? (
+              {entry === "button-group-input" ? (
                 <div class="root-preview-shell root-preview-stack">
                   <div class="root-preview-inline-input">
                     <span>Search registry...</span>
@@ -330,7 +277,7 @@ function ExamplesRootPreview() {
                 </div>
               ) : null}
 
-              {card.kind === "field-slider" ? (
+              {entry === "field-slider" ? (
                 <div class="root-preview-shell root-preview-stack">
                   <div class="root-preview-slider-row">
                     <span>Density</span>
@@ -343,7 +290,7 @@ function ExamplesRootPreview() {
                 </div>
               ) : null}
 
-              {card.kind === "input-group-demo" ? (
+              {entry === "input-group-demo" ? (
                 <div class="root-preview-shell root-preview-stack">
                   <div class="root-preview-inline-input root-preview-inline-input-muted">
                     <span>hello@shadcn.io</span>
@@ -353,7 +300,7 @@ function ExamplesRootPreview() {
                 </div>
               ) : null}
 
-              {card.kind === "input-group-button" ? (
+              {entry === "input-group-button" ? (
                 <div class="root-preview-shell root-preview-stack">
                   <div class="root-preview-inline-input">
                     <span>Paste prompt</span>
@@ -365,7 +312,7 @@ function ExamplesRootPreview() {
                 </div>
               ) : null}
 
-              {card.kind === "item-demo" ? (
+              {entry === "item-demo" ? (
                 <div class="root-preview-shell root-preview-stack">
                   {[
                     ["Overview", "Updated 2m ago"],
@@ -380,9 +327,16 @@ function ExamplesRootPreview() {
                 </div>
               ) : null}
 
-              {card.kind === "appearance-settings" ? (
+              {entry === "appearance-separator" ? (
+                <div class="root-preview-separator" aria-hidden="true">
+                  <span></span>
+                  <p>Appearance Settings</p>
+                  <span></span>
+                </div>
+              ) : null}
+
+              {entry === "appearance-settings" ? (
                 <div class="root-preview-shell root-preview-stack">
-                  <div class="root-preview-subtitle">Appearance Settings</div>
                   <div class="root-preview-badge-row">
                     <span class="root-preview-badge is-active">Default</span>
                     <span class="root-preview-badge">Compact</span>
@@ -391,7 +345,7 @@ function ExamplesRootPreview() {
                 </div>
               ) : null}
 
-              {card.kind === "notion-prompt" ? (
+              {entry === "notion-prompt" ? (
                 <div class="root-preview-shell root-preview-stack">
                   {[
                     ["✦", "Launch checklist"],
@@ -406,7 +360,7 @@ function ExamplesRootPreview() {
                 </div>
               ) : null}
 
-              {card.kind === "button-group-demo" ? (
+              {entry === "button-group-demo" ? (
                 <div class="root-preview-shell root-preview-stack">
                   <div class="root-preview-segmented-row">
                     <span class="is-active">Edit</span>
@@ -416,7 +370,7 @@ function ExamplesRootPreview() {
                 </div>
               ) : null}
 
-              {card.kind === "field-checkbox" ? (
+              {entry === "field-checkbox" ? (
                 <div class="root-preview-shell root-preview-stack">
                   {[
                     "Enable release notes",
@@ -431,7 +385,7 @@ function ExamplesRootPreview() {
                 </div>
               ) : null}
 
-              {card.kind === "nested-buttons" ? (
+              {entry === "nested-buttons" ? (
                 <div class="root-preview-shell root-preview-stack">
                   <div class="root-preview-split-row">
                     <button type="button">Nested</button>
@@ -441,7 +395,7 @@ function ExamplesRootPreview() {
                 </div>
               ) : null}
 
-              {card.kind === "field-hear" ? (
+              {entry === "field-hear" ? (
                 <div class="root-preview-shell root-preview-stack">
                   <div class="root-preview-badge-row">
                     <span class="root-preview-badge is-active">Twitter</span>
@@ -451,13 +405,13 @@ function ExamplesRootPreview() {
                 </div>
               ) : null}
 
-              {card.kind === "spinner-empty" ? (
+              {entry === "spinner-empty" ? (
                 <div class="root-preview-shell root-preview-stack root-preview-empty">
                   <div class="root-preview-spinner"></div>
                   <p class="root-preview-copy">Create your first project to start building.</p>
                 </div>
               ) : null}
-            </article>
+            </div>
           ))}
         </div>
       ))}

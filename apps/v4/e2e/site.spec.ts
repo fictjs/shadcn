@@ -7,6 +7,8 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByRole("heading", { name: "The Foundation for your Design System" })).toBeVisible()
     await expect(page.getByRole("navigation", { name: "Primary" })).toContainText("Docs")
     await expect(page.getByRole("link", { name: "Get Started" })).toBeVisible()
+    await expect(page.locator(".home-examples-root .examples-root-grid")).toBeVisible()
+    await expect(page.locator(".root-preview-separator")).toContainText("Appearance Settings")
 
     await page.goto("/docs")
 
