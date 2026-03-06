@@ -506,10 +506,13 @@ function PlaygroundExample() {
 function AuthenticationExample() {
   return (
     <div class="live-example auth-example">
+      <a class="auth-login-link" href="#auth-login">
+        Login
+      </a>
       <section class="auth-brand-panel">
-        <div>
-          <p class="auth-logo-row">Acme Inc</p>
-          <h3>One interface for your entire product system.</h3>
+        <div class="auth-logo-row">
+          <span class="auth-logo-badge">S</span>
+          <span>Acme Inc</span>
         </div>
         <blockquote>
           &ldquo;This library has saved me countless hours of work and helped me deliver stunning designs faster than ever before.&rdquo;
@@ -519,10 +522,9 @@ function AuthenticationExample() {
 
       <section class="auth-form-panel">
         <div class="auth-form-shell">
-          <div>
-            <p class="dashboard-section-label">Create an account</p>
-            <h3>Welcome to shadcn/ui</h3>
-            <p class="tasks-copy">Enter your email below to create your account.</p>
+          <div class="auth-shell-header">
+            <h3>Create an account</h3>
+            <p class="tasks-copy">Enter your email below to create your account</p>
           </div>
 
           <div class="auth-button-stack">
