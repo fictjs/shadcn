@@ -1218,10 +1218,6 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
 
       {activeShowcase ? (
         <article class="card example-detail-card">
-          <div class="example-detail-head">
-            <h2>{activeShowcase.title}</h2>
-            <p class="lead">{activeShowcase.description}</p>
-          </div>
           <div class="example-showcase-surface">
             <div class="example-mobile-gallery">
               <img
