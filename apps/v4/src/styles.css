@@ -636,6 +636,259 @@ h1 {
   text-underline-offset: 3px;
 }
 
+.doc-callout,
+.doc-tabs,
+.doc-component-card {
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: color-mix(in oklab, var(--card) 88%, var(--muted) 12%);
+}
+
+.doc-callout,
+.doc-tabs,
+.doc-component-card {
+  padding: 1rem;
+}
+
+.doc-callout {
+  display: grid;
+  gap: 0.75rem;
+  border-left-width: 4px;
+}
+
+.doc-callout-title {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.doc-callout-body {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.doc-tabs {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.doc-tabs-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.doc-tab-button {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted-foreground);
+  padding: 0.45rem 0.75rem;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.doc-tab-button-active,
+.doc-tab-button:hover {
+  background: var(--foreground);
+  border-color: var(--foreground);
+  color: var(--background);
+}
+
+.doc-tabs-panel {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.doc-component-card {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.doc-component-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.85rem;
+}
+
+.doc-component-copy {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.doc-component-copy h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.doc-component-preview-stage {
+  display: grid;
+  place-items: center;
+  min-height: 12rem;
+  border: 1px solid color-mix(in oklab, var(--border) 82%, transparent);
+  border-radius: 0.9rem;
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--card) 90%, var(--muted) 10%), var(--card)),
+    radial-gradient(circle at top, color-mix(in oklab, var(--primary) 10%, transparent), transparent 48%);
+  padding: 1rem;
+}
+
+.doc-component-snippet,
+.doc-component-source-code {
+  margin: 0;
+}
+
+.doc-preview-avatar-row,
+.doc-preview-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.doc-preview-avatar-row span,
+.doc-preview-chip-row span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+  background: var(--card);
+  color: var(--foreground);
+}
+
+.doc-preview-avatar-row span {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.doc-preview-chip-row span {
+  border-radius: 999px;
+  padding: 0.45rem 0.8rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.doc-preview-chip-row span.is-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.doc-preview-form-stack,
+.doc-preview-nav-shell,
+.doc-preview-type-stack,
+.doc-preview-feedback-shell {
+  display: grid;
+  gap: 0.75rem;
+  width: min(100%, 24rem);
+}
+
+.doc-preview-input-row,
+.doc-preview-table-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  align-items: center;
+  border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+  border-radius: 0.8rem;
+  background: var(--card);
+  padding: 0.75rem 0.85rem;
+}
+
+.doc-preview-input-row span,
+.doc-preview-table-row span,
+.doc-preview-card-shell p,
+.doc-preview-type-stack p {
+  color: var(--muted-foreground);
+}
+
+.doc-preview-input-row strong,
+.doc-preview-table-row strong,
+.doc-preview-card-shell h4,
+.doc-preview-type-stack strong {
+  margin: 0;
+}
+
+.doc-preview-meter {
+  height: 0.55rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--muted) 74%, var(--card));
+  overflow: hidden;
+}
+
+.doc-preview-meter span {
+  display: block;
+  height: 100%;
+  width: 64%;
+  border-radius: inherit;
+  background: var(--primary);
+}
+
+.doc-preview-meter span.is-wide {
+  width: 78%;
+}
+
+.doc-preview-card-shell {
+  display: grid;
+  gap: 0.65rem;
+  width: min(100%, 24rem);
+  border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+  border-radius: 0.9rem;
+  background: var(--card);
+  padding: 1rem;
+}
+
+.doc-preview-card-shell-compact {
+  width: 100%;
+}
+
+.doc-preview-table-shell {
+  display: grid;
+  gap: 0.55rem;
+  width: min(100%, 28rem);
+}
+
+.doc-preview-table-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.doc-preview-table-row-head {
+  background: color-mix(in oklab, var(--muted) 60%, var(--card));
+  font-weight: 600;
+}
+
+.doc-preview-chart {
+  width: min(100%, 24rem);
+  height: auto;
+}
+
+.doc-preview-chart-fill {
+  fill: color-mix(in oklab, var(--primary) 16%, transparent);
+}
+
+.doc-preview-chart-line {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.doc-preview-spinner {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 2px solid color-mix(in oklab, var(--border) 82%, transparent);
+  border-top-color: var(--primary);
+  border-radius: 999px;
+  animation: root-preview-spin 1s linear infinite;
+}
+
 .docs-toc {
   position: sticky;
   top: calc(var(--header-height) + 1rem);

@@ -11,8 +11,25 @@ export interface DocHeading {
   level: number
 }
 
+export interface DocTabPanel {
+  value: string
+  label: string
+  blocks: DocContentBlock[]
+}
+
 export interface DocContentBlock {
-  kind: "heading" | "paragraph" | "code" | "list" | "blockquote" | "hr" | "image"
+  kind:
+    | "heading"
+    | "paragraph"
+    | "code"
+    | "list"
+    | "blockquote"
+    | "hr"
+    | "image"
+    | "callout"
+    | "tabs"
+    | "component-preview"
+    | "component-source"
   text: string
   id?: string
   level?: number
@@ -20,6 +37,14 @@ export interface DocContentBlock {
   ordered?: boolean
   src?: string
   alt?: string
+  title?: string
+  panels?: DocTabPanel[]
+  children?: DocContentBlock[]
+  name?: string
+  filePath?: string
+  code?: string
+  styleName?: string
+  direction?: "ltr" | "rtl"
 }
 
 export interface DocPage extends DocSummary {

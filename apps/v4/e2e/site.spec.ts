@@ -40,6 +40,17 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".doc-body")).not.toContainText("<Callout")
   })
 
+  test("docs pages render structured tabs and registry cards", async ({ page }) => {
+    await page.goto("/docs/components/base/avatar")
+
+    await expect(page.locator(".doc-tabs")).toBeVisible()
+    await expect(page.locator(".doc-component-card").first()).toBeVisible()
+    await expect(page.locator(".doc-component-preview-stage").first()).toBeVisible()
+    await page.getByRole("button", { name: "Manual" }).click()
+    await expect(page.locator(".doc-tabs-panel")).toContainText("Install the following dependencies")
+    await expect(page.locator(".doc-component-card-source .doc-component-source-code").first()).toContainText("Avatar")
+  })
+
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
     await page.goto("/examples/dashboard")
 
