@@ -604,6 +604,19 @@ h1 {
   color: var(--muted-foreground);
 }
 
+.doc-image {
+  margin: 0;
+}
+
+.doc-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  background: color-mix(in oklab, var(--muted) 24%, var(--card));
+}
+
 .doc-body hr {
   border: 0;
   border-top: 1px solid var(--border);
