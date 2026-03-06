@@ -57,7 +57,10 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".example-live-stage .dashboard-example")).toBeVisible()
     await expect(page.locator(".dashboard-stat-card")).toHaveCount(4)
     await expect(page.locator(".example-mobile-gallery")).toBeHidden()
-    await expect(page.locator(".dashboard-chart-card")).toContainText("Revenue")
+    await expect(page.locator(".dashboard-site-header")).toContainText("Documents")
+    await expect(page.getByRole("button", { name: "Quick Create" })).toBeVisible()
+    await expect(page.locator(".dashboard-chart-card")).toContainText("Total Visitors")
+    await expect(page.locator(".dashboard-outline-table")).toBeVisible()
   })
 
   test("charts route renders styled preview cards instead of placeholders", async ({ page }) => {
