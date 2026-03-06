@@ -9,11 +9,11 @@ test.describe("shadcn v4 site", () => {
 
     await page.goto("/examples/dashboard")
 
-    await expect(page.locator(".example-detail-head h2")).toContainText("Dashboard")
+    await expect(page.locator(".example-showcase-surface")).toBeVisible()
     await expect(page.getByLabel("Filter examples")).toHaveCount(0)
     await expect(page.locator(".pill-grid .pill-item")).toHaveCount(0)
     await expect(page.locator(".example-mobile-gallery figcaption")).toHaveCount(0)
-    await expect(page.locator(".example-detail-card")).not.toContainText("route:")
+    await expect(page.locator(".example-detail-card")).not.toContainText("Prompt playground interface")
   })
 
   test("home and docs routes render expected chrome", async ({ page }) => {
