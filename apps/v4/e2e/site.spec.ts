@@ -10,7 +10,7 @@ test.describe("shadcn v4 site", () => {
 
     await page.goto("/docs")
 
-    await expect(page.getByRole("heading", { name: "Introduction", exact: true })).toBeVisible()
+    await expect(page.locator(".doc-header-main > h1")).toContainText("Introduction")
     await expect(page.getByRole("button", { name: "Copy Page" })).toBeVisible()
   })
 
