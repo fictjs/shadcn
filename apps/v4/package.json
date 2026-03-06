@@ -9,7 +9,8 @@
     "build:client": "vite build --outDir dist/client",
     "build:server": "vite build --outDir dist/server --ssr src/entry-server.tsx",
     "start": "NODE_ENV=production node server.js",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "pnpm --dir ../.. exec playwright test -c apps/v4/playwright.config.ts"
   },
   "dependencies": {
     "@fictjs/runtime": "link:../../../packages/runtime",
