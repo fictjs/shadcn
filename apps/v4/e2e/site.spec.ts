@@ -32,6 +32,21 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByRole("button", { name: "Copy Page" })).toBeVisible()
   })
 
+  test("header search opens a command-style route picker", async ({ page }) => {
+    await page.goto("/")
+
+    await page.getByRole("button", { name: "Search documentation" }).click()
+
+    await expect(page.getByRole("dialog", { name: "Search documentation..." })).toBeVisible()
+    await page.locator("#site-search-input").fill("tasks")
+    await expect(page.locator(".site-search-result")).toContainText("Tasks")
+
+    await page.getByRole("link", { name: /Tasks/ }).click()
+
+    await expect(page).toHaveURL(/\/examples\/tasks$/)
+    await expect(page.getByPlaceholder("Search issue, title, or team")).toBeVisible()
+  })
+
   test("mode toggle switches site theme and preview assets", async ({ page }) => {
     await page.setViewportSize({ width: 820, height: 900 })
     await page.goto("/")
