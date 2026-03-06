@@ -552,6 +552,23 @@ interface SiteSearchEntry {
   keywords: string
 }
 
+interface SiteNavLink {
+  href: string
+  label: string
+}
+
+const mobileDocLinks: SiteNavLink[] = [
+  { href: "/docs", label: "Introduction" },
+  { href: "/docs/components", label: "Components" },
+  { href: "/docs/installation", label: "Installation" },
+  { href: "/docs/directory", label: "Directory" },
+  { href: "/docs/rtl", label: "RTL" },
+  { href: "/docs/mcp", label: "MCP Server" },
+  { href: "/docs/registry", label: "Registry" },
+  { href: "/docs/forms", label: "Forms" },
+  { href: "/docs/changelog", label: "Changelog" },
+]
+
 function buildSiteSearchEntries(route: ResolvedRoute): SiteSearchEntry[] {
   const entries: SiteSearchEntry[] = []
   const seen = new Set<string>()
@@ -680,6 +697,15 @@ function filterSiteSearchEntries(entries: SiteSearchEntry[], query: string): Sit
 
 export function App(props: AppProps) {
   const route = props.route
+  const primaryNavLinks: SiteNavLink[] = [
+    { href: "/docs", label: "Docs" },
+    { href: "/docs/components", label: "Components" },
+    { href: "/blocks", label: "Blocks" },
+    { href: "/charts/area", label: "Charts" },
+    { href: "/themes", label: "Themes" },
+    { href: "/colors", label: "Colors" },
+  ]
+  let isMobileNavOpen = $state(false)
   let isSearchOpen = $state(false)
   let searchQuery = $state("")
   const searchEntries = buildSiteSearchEntries(route)
@@ -691,6 +717,10 @@ export function App(props: AppProps) {
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        isMobileNavOpen = false
+      }
+
       const isSearchShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k"
       if (isSearchShortcut) {
         event.preventDefault()
@@ -742,6 +772,21 @@ export function App(props: AppProps) {
         <header class="site-header">
           <div class="container header-row">
             <div class="header-primary">
+              <button
+                type="button"
+                class="mobile-nav-trigger"
+                aria-label="Toggle menu"
+                aria-expanded={isMobileNavOpen}
+                onClick$={() => {
+                  isMobileNavOpen = !isMobileNavOpen
+                }}
+              >
+                <span class="mobile-nav-trigger-icon" aria-hidden="true">
+                  <span class={isMobileNavOpen ? "mobile-nav-line mobile-nav-line-top is-open" : "mobile-nav-line mobile-nav-line-top"}></span>
+                  <span class={isMobileNavOpen ? "mobile-nav-line mobile-nav-line-bottom is-open" : "mobile-nav-line mobile-nav-line-bottom"}></span>
+                </span>
+                <span>Menu</span>
+              </button>
               <a href="/" class="brand-link" aria-label="shadcn/ui home">
                 <span class="brand-mark" aria-hidden="true">
                   S
@@ -749,36 +794,41 @@ export function App(props: AppProps) {
                 <span class="brand-copy">shadcn/ui</span>
               </a>
               <nav class="site-nav" aria-label="Primary">
-                <a
-                  class={route.pathname === "/docs" || route.pathname.startsWith("/docs/") ? "active-nav-link" : ""}
-                  href="/docs"
-                >
-                  Docs
-                </a>
-                <a
-                  class={
-                    route.pathname === "/components" ||
-                    route.pathname === "/docs/components" ||
-                    route.pathname.startsWith("/docs/components/")
-                      ? "active-nav-link"
-                      : ""
-                  }
-                  href="/docs/components"
-                >
-                  Components
-                </a>
-                <a class={route.pathname === "/blocks" || route.pathname.startsWith("/blocks/") ? "active-nav-link" : ""} href="/blocks">
-                  Blocks
-                </a>
-                <a class={route.pathname === "/charts" || route.pathname.startsWith("/charts/") ? "active-nav-link" : ""} href="/charts/area">
-                  Charts
-                </a>
-                <a class={route.pathname === "/themes" ? "active-nav-link" : ""} href="/themes">
-                  Themes
-                </a>
-                <a class={route.pathname === "/colors" ? "active-nav-link" : ""} href="/colors">
-                  Colors
-                </a>
+                {primaryNavLinks.map((link) => (
+                  <a
+                    key={link.href}
+                    class={
+                      link.href === "/docs"
+                        ? route.pathname === "/docs" || route.pathname.startsWith("/docs/")
+                          ? "active-nav-link"
+                          : ""
+                        : link.href === "/docs/components"
+                          ? route.pathname === "/components" ||
+                            route.pathname === "/docs/components" ||
+                            route.pathname.startsWith("/docs/components/")
+                            ? "active-nav-link"
+                            : ""
+                          : link.href === "/blocks"
+                            ? route.pathname === "/blocks" || route.pathname.startsWith("/blocks/")
+                              ? "active-nav-link"
+                              : ""
+                            : link.href === "/charts/area"
+                              ? route.pathname === "/charts" || route.pathname.startsWith("/charts/")
+                                ? "active-nav-link"
+                                : ""
+                              : link.href === "/themes"
+                                ? route.pathname === "/themes"
+                                  ? "active-nav-link"
+                                  : ""
+                                : route.pathname === "/colors"
+                                  ? "active-nav-link"
+                                  : ""
+                    }
+                    href={link.href}
+                  >
+                    {link.label}
+                  </a>
+                ))}
               </nav>
             </div>
 
@@ -826,6 +876,46 @@ export function App(props: AppProps) {
           {route.kind === "colors" ? <ColorsPage /> : null}
           {route.kind === "not-found" ? <NotFoundPage pathname={route.pathname} /> : null}
         </main>
+
+        {isMobileNavOpen ? (
+          <div
+            class="mobile-nav-overlay"
+            role="presentation"
+            onClick$={(event: MouseEvent) => {
+              if (event.target !== event.currentTarget) {
+                return
+              }
+
+              isMobileNavOpen = false
+            }}
+          >
+            <div class="mobile-nav-panel" role="dialog" aria-modal="true" aria-labelledby="mobile-nav-title">
+              <div class="mobile-nav-section">
+                <p id="mobile-nav-title" class="eyebrow">Menu</p>
+                <div class="mobile-nav-links">
+                  <a href="/" onClick$={() => { isMobileNavOpen = false }}>Home</a>
+                  {primaryNavLinks.map((link) => (
+                    <a key={`mobile-${link.href}`} href={link.href} onClick$={() => { isMobileNavOpen = false }}>
+                      {link.label}
+                    </a>
+                  ))}
+                  <a href="/create" onClick$={() => { isMobileNavOpen = false }}>New Project</a>
+                </div>
+              </div>
+
+              <div class="mobile-nav-section">
+                <p class="eyebrow">Sections</p>
+                <div class="mobile-nav-links">
+                  {mobileDocLinks.map((link) => (
+                    <a key={`doc-${link.href}`} href={link.href} onClick$={() => { isMobileNavOpen = false }}>
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null}
 
         {isSearchOpen ? (
           <div

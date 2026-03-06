@@ -47,6 +47,20 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByPlaceholder("Search issue, title, or team")).toBeVisible()
   })
 
+  test("mobile header opens a dedicated menu overlay", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto("/")
+
+    await expect(page.getByRole("button", { name: "Toggle menu" })).toBeVisible()
+    await page.getByRole("button", { name: "Toggle menu" }).click()
+
+    await expect(page.getByRole("dialog", { name: "Menu" })).toBeVisible()
+    await page.getByRole("link", { name: "Installation" }).click()
+
+    await expect(page).toHaveURL(/\/docs\/installation$/)
+    await expect(page.locator(".doc-header-main > h1")).toContainText("Installation")
+  })
+
   test("mode toggle switches site theme and preview assets", async ({ page }) => {
     await page.setViewportSize({ width: 820, height: 900 })
     await page.goto("/")
