@@ -3,6 +3,7 @@ import { $state, untrack } from "fict"
 import { colors as tailwindColors } from "../registry/_legacy-colors"
 import type {
   BlockEntry,
+  DocContentBlock,
   DocPage,
   DocSummary,
   ResolvedRoute,
@@ -713,51 +714,7 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
         </header>
 
         <div class="doc-body">
-          {doc.blocks.map((block, index) => (
-            block.kind === "heading" ? (
-              block.level === 1 ? (
-                <h1 id={block.id} key={`${block.id || "h1"}-${index}`}>
-                  {block.text}
-                </h1>
-              ) : block.level === 2 ? (
-                <h2 id={block.id} key={`${block.id || "h2"}-${index}`}>
-                  {block.text}
-                </h2>
-              ) : (
-                <h3 id={block.id} key={`${block.id || "h3"}-${index}`}>
-                  {block.text}
-                </h3>
-              )
-            ) : block.kind === "code" ? (
-              <pre class="doc-code" key={`code-${index}`}>
-                <code>{block.text}</code>
-              </pre>
-            ) : block.kind === "list" ? (
-              block.ordered ? (
-                <ol key={`ol-${index}`}>
-                  {(block.items || []).map((item, itemIndex) => (
-                    <li key={`oli-${index}-${itemIndex}`}>{item}</li>
-                  ))}
-                </ol>
-              ) : (
-                <ul key={`ul-${index}`}>
-                  {(block.items || []).map((item, itemIndex) => (
-                    <li key={`uli-${index}-${itemIndex}`}>{item}</li>
-                  ))}
-                </ul>
-              )
-            ) : block.kind === "blockquote" ? (
-              <blockquote key={`quote-${index}`}>{block.text}</blockquote>
-            ) : block.kind === "image" ? (
-              <figure class="doc-image" key={`image-${index}`}>
-                <img src={block.src || ""} alt={block.alt || block.text || "Documentation image"} loading="lazy" />
-              </figure>
-            ) : block.kind === "hr" ? (
-              <hr key={`hr-${index}`} />
-            ) : (
-              <p key={`p-${index}`}>{block.text}</p>
-            )
-          ))}
+          <DocBlockList blocks={doc.blocks} />
         </div>
 
         <div class="doc-nav">
@@ -811,6 +768,327 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
       </aside>
     </section>
   )
+}
+
+function DocBlockList(props: { blocks: DocContentBlock[]; keyPrefix?: string }) {
+  const keyPrefix = props.keyPrefix || "doc-block"
+
+  return props.blocks.map((block, index) => renderDocBlock(block, `${keyPrefix}-${index}`))
+}
+
+function renderDocBlock(block: DocContentBlock, key: string) {
+  return block.kind === "heading" ? (
+    block.level === 1 ? (
+      <h1 id={block.id} key={key}>
+        {block.text}
+      </h1>
+    ) : block.level === 2 ? (
+      <h2 id={block.id} key={key}>
+        {block.text}
+      </h2>
+    ) : (
+      <h3 id={block.id} key={key}>
+        {block.text}
+      </h3>
+    )
+  ) : block.kind === "code" ? (
+    <pre class="doc-code" key={key}>
+      <code>{block.text}</code>
+    </pre>
+  ) : block.kind === "list" ? (
+    block.ordered ? (
+      <ol key={key}>
+        {(block.items || []).map((item, itemIndex) => (
+          <li key={`${key}-item-${itemIndex}`}>{item}</li>
+        ))}
+      </ol>
+    ) : (
+      <ul key={key}>
+        {(block.items || []).map((item, itemIndex) => (
+          <li key={`${key}-item-${itemIndex}`}>{item}</li>
+        ))}
+      </ul>
+    )
+  ) : block.kind === "blockquote" ? (
+    <blockquote key={key}>{block.text}</blockquote>
+  ) : block.kind === "image" ? (
+    <figure class="doc-image" key={key}>
+      <img src={block.src || ""} alt={block.alt || block.text || "Documentation image"} loading="lazy" />
+    </figure>
+  ) : block.kind === "hr" ? (
+    <hr key={key} />
+  ) : block.kind === "callout" ? (
+    <section class="doc-callout" key={key}>
+      {block.title ? <p class="doc-callout-title">{block.title}</p> : null}
+      <div class="doc-callout-body">
+        <DocBlockList blocks={untrack(() => block.children || [])} keyPrefix={`${key}-callout`} />
+      </div>
+    </section>
+  ) : block.kind === "tabs" ? (
+    <DocTabsBlock panels={untrack(() => block.panels || [])} blockKey={key} />
+  ) : block.kind === "component-preview" || block.kind === "component-source" ? (
+    <DocComponentBlock block={untrack(() => block)} />
+  ) : (
+    <p key={key}>{block.text}</p>
+  )
+}
+
+function DocTabsBlock(props: { panels: Array<{ value: string; label: string; blocks: DocContentBlock[] }>; blockKey: string }) {
+  const panels = untrack(() => props.panels)
+  let activeValue = $state("")
+
+  const currentValue = activeValue || panels[0]?.value || ""
+  const activePanel = panels.find((panel) => panel.value === currentValue) || panels[0] || null
+
+  return (
+    <section class="doc-tabs">
+      <div class="doc-tabs-list" role="tablist" aria-label="Documentation tabs">
+        {panels.map((panel) => (
+          <button
+            type="button"
+            key={`${props.blockKey}-${panel.value}`}
+            data-value={panel.value}
+            class={panel.value === currentValue ? "doc-tab-button doc-tab-button-active" : "doc-tab-button"}
+            onClick$={(event: MouseEvent) => {
+              const target = event.currentTarget
+              if (!(target instanceof HTMLButtonElement)) {
+                return
+              }
+
+              const nextValue = target.dataset.value || ""
+              if (!nextValue) {
+                return
+              }
+
+              activeValue = nextValue
+            }}
+          >
+            {panel.label}
+          </button>
+        ))}
+      </div>
+
+      <div class="doc-tabs-panel">
+        {activePanel ? <DocBlockList blocks={activePanel.blocks} keyPrefix={`${props.blockKey}-${activePanel.value}`} /> : null}
+      </div>
+    </section>
+  )
+}
+
+function DocComponentBlock(props: { block: DocContentBlock }) {
+  const data = untrack(() => {
+    const block = props.block
+
+    return {
+      kind: block.kind,
+      direction: block.direction || "ltr",
+      filePath: block.filePath || "",
+      code: block.code || "",
+      headingText: block.title || block.filePath || block.text,
+      family: getDocPreviewFamily(block.name || block.text),
+      previewCode: block.code ? truncateDocCode(block.code, 12) : "",
+    }
+  })
+
+  return (
+    <section class={data.kind === "component-preview" ? "doc-component-card" : "doc-component-card doc-component-card-source"}>
+      <div class="doc-component-head">
+        <div class="doc-component-copy">
+          <p class="eyebrow">{data.kind === "component-preview" ? "Preview" : "Source"}</p>
+          <h3>{data.headingText}</h3>
+        </div>
+        {data.filePath ? <p class="slug">{data.filePath}</p> : null}
+      </div>
+
+      {data.kind === "component-preview" ? (
+        <>
+          <div class="doc-component-preview-stage" dir={data.direction}>
+            <DocComponentPreviewSurface family={data.family} />
+          </div>
+          {data.previewCode ? (
+            <pre class="doc-code doc-component-snippet">
+              <code>{data.previewCode}</code>
+            </pre>
+          ) : null}
+        </>
+      ) : data.code ? (
+        <pre class="doc-code doc-component-source-code">
+          <code>{data.code}</code>
+        </pre>
+      ) : (
+        <p>Source is not available for this registry entry yet.</p>
+      )}
+    </section>
+  )
+}
+
+function DocComponentPreviewSurface(props: { family: string }) {
+  const family = untrack(() => props.family)
+
+  return family === "avatar" ? (
+    <div class="doc-preview-avatar-row">
+      <span>CN</span>
+      <span>ER</span>
+      <span>LR</span>
+    </div>
+  ) : family === "button" || family === "button-group" || family === "toggle" || family === "toggle-group" || family === "badge" ? (
+    <div class="doc-preview-chip-row">
+      <span class="is-primary">Primary</span>
+      <span>Outline</span>
+      <span>Ghost</span>
+    </div>
+  ) : family === "input" || family === "input-group" || family === "select" || family === "native-select" || family === "combobox" || family === "textarea" || family === "field" || family === "input-otp" ? (
+    <div class="doc-preview-form-stack">
+      <div class="doc-preview-input-row">
+        <span>Email</span>
+        <strong>name@example.com</strong>
+      </div>
+      <div class="doc-preview-input-row">
+        <span>Status</span>
+        <strong>Ready</strong>
+      </div>
+      <div class="doc-preview-meter">
+        <span></span>
+      </div>
+    </div>
+  ) : family === "card" || family === "alert" || family === "alert-dialog" || family === "dialog" || family === "drawer" || family === "sheet" || family === "popover" || family === "hover-card" ? (
+    <div class="doc-preview-card-shell">
+      <h4>Ready to ship</h4>
+      <p>Compose accessible surfaces with clear hierarchy and actions.</p>
+      <div class="doc-preview-chip-row">
+        <span class="is-primary">Continue</span>
+        <span>Cancel</span>
+      </div>
+    </div>
+  ) : family === "table" || family === "data-table" ? (
+    <div class="doc-preview-table-shell">
+      <div class="doc-preview-table-row doc-preview-table-row-head">
+        <span>Status</span>
+        <span>Team</span>
+        <span>Owner</span>
+      </div>
+      <div class="doc-preview-table-row">
+        <span>Done</span>
+        <span>Design</span>
+        <span>CN</span>
+      </div>
+      <div class="doc-preview-table-row">
+        <span>Review</span>
+        <span>Growth</span>
+        <span>MK</span>
+      </div>
+    </div>
+  ) : family === "chart" ? (
+    <svg class="doc-preview-chart" viewBox="0 0 320 140" role="img" aria-label="Component chart preview">
+      <path d="M20 106 L72 78 L124 90 L176 54 L228 64 L280 34 L280 124 L20 124 Z" class="doc-preview-chart-fill" />
+      <path d="M20 106 L72 78 L124 90 L176 54 L228 64 L280 34" class="doc-preview-chart-line" />
+    </svg>
+  ) : family === "tabs" || family === "accordion" || family === "collapsible" || family === "navigation-menu" || family === "menubar" || family === "context-menu" || family === "dropdown-menu" || family === "breadcrumb" || family === "pagination" || family === "sidebar" ? (
+    <div class="doc-preview-nav-shell">
+      <div class="doc-preview-chip-row">
+        <span class="is-primary">Overview</span>
+        <span>Usage</span>
+        <span>API</span>
+      </div>
+      <div class="doc-preview-card-shell doc-preview-card-shell-compact">
+        <p>Structured navigation and progressive disclosure.</p>
+      </div>
+    </div>
+  ) : family === "typography" || family === "kbd" ? (
+    <div class="doc-preview-type-stack">
+      <strong>The quick brown fox jumps over the lazy dog.</strong>
+      <p>Purposeful type, rhythm, and hierarchy.</p>
+      <div class="doc-preview-chip-row">
+        <span>⌘</span>
+        <span>K</span>
+      </div>
+    </div>
+  ) : family === "empty" || family === "skeleton" || family === "spinner" || family === "progress" || family === "separator" ? (
+    <div class="doc-preview-feedback-shell">
+      <div class="doc-preview-spinner"></div>
+      <div class="doc-preview-meter">
+        <span class="is-wide"></span>
+      </div>
+    </div>
+  ) : (
+    <div class="doc-preview-card-shell">
+      <h4>{formatDisplayLabel(family || "component preview")}</h4>
+      <p>Registry preview surface for this documentation example.</p>
+    </div>
+  )
+}
+
+function getDocPreviewFamily(name: string): string {
+  const normalized = name.replace(/-(rtl|ltr)$/g, "")
+  const families = [
+    "dropdown-menu",
+    "navigation-menu",
+    "context-menu",
+    "button-group",
+    "data-table",
+    "input-group",
+    "native-select",
+    "input-otp",
+    "hover-card",
+    "alert-dialog",
+    "scroll-area",
+    "radio-group",
+    "date-picker",
+    "aspect-ratio",
+    "toggle-group",
+    "collapsible",
+    "combobox",
+    "menubar",
+    "carousel",
+    "accordion",
+    "separator",
+    "typography",
+    "breadcrumb",
+    "checkbox",
+    "pagination",
+    "skeleton",
+    "popover",
+    "progress",
+    "resizable",
+    "textarea",
+    "calendar",
+    "sidebar",
+    "tooltip",
+    "avatar",
+    "button",
+    "switch",
+    "select",
+    "dialog",
+    "drawer",
+    "sheet",
+    "table",
+    "empty",
+    "badge",
+    "field",
+    "input",
+    "label",
+    "alert",
+    "toggle",
+    "tabs",
+    "item",
+    "chart",
+    "card",
+    "mode-toggle",
+    "kbd",
+  ]
+
+  for (const family of families) {
+    if (normalized === family || normalized.startsWith(`${family}-`)) {
+      return family
+    }
+  }
+
+  return normalized
+}
+
+function truncateDocCode(value: string, lineLimit: number): string {
+  const lines = value.split("\n")
+  return lines.length <= lineLimit ? value : `${lines.slice(0, lineLimit).join("\n")}\n...`
 }
 
 function ComponentsPage(props: { components: string[] }) {

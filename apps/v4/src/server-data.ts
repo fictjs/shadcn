@@ -9,6 +9,7 @@ import type {
   DocNavSection,
   DocPage,
   DocSummary,
+  DocTabPanel,
   ExampleShowcase,
   ResolvedRoute,
   ThemeEntry,
@@ -36,6 +37,7 @@ const examplesRoot = path.join(appRoot, "registry", "new-york-v4", "examples")
 const chartsRoot = path.join(appRoot, "registry", "new-york-v4", "charts")
 const blocksFile = path.join(appRoot, "registry", "__blocks__.json")
 const themesFile = path.join(appRoot, "registry", "themes.ts")
+const registryStylesRoot = path.join(appRoot, "public", "r", "styles")
 const featuredExamplePages: ExampleShowcase[] = [
   {
     slug: "dashboard",
@@ -77,6 +79,7 @@ const chartTypeOrder = ["area", "bar", "line", "pie", "radar", "radial", "toolti
 const featuredBlockNames = ["dashboard-01", "sidebar-07", "sidebar-03", "login-03", "login-04"]
 
 let cachedCatalog: SiteCatalog | null = null
+const registryItemCache = new Map<string, { path: string; content: string } | null>()
 
 export function resolveRoute(rawUrl: string): ResolvedRoute {
   const catalog = getSiteCatalog()
@@ -938,9 +941,34 @@ function normalizeMdxBody(body: string): string {
     .replace(/^import\s+.*$/gm, "")
     .replace(/^export\s+const\s+.*$/gm, "")
 
-  return transformOutsideCodeFences(withoutImports, normalizeMdxMarkup)
+  const normalizedStructures = normalizeMdxStructures(withoutImports)
+
+  return transformOutsideCodeFences(normalizedStructures, normalizeMdxMarkup)
     .replace(/\n{3,}/g, "\n\n")
     .trim()
+}
+
+function normalizeMdxStructures(value: string): string {
+  let normalized = value
+
+  normalized = replaceSelfClosingMdxTag(normalized, "ComponentPreview", (attributes) => {
+    const name = readMdxAttribute(attributes, "name") || "component-preview"
+    const styleName = readMdxAttribute(attributes, "styleName") || "new-york-v4"
+    const direction = readMdxAttribute(attributes, "direction") || "ltr"
+    return `\n${createDocMarker("component-preview", { name, styleName, direction })}\n`
+  })
+
+  normalized = replaceSelfClosingMdxTag(normalized, "ComponentSource", (attributes) => {
+    const name = readMdxAttribute(attributes, "name") || "component-source"
+    const title = readMdxAttribute(attributes, "title")
+    const styleName = readMdxAttribute(attributes, "styleName") || "new-york-v4"
+    return `\n${createDocMarker("component-source", { name, title, styleName })}\n`
+  })
+
+  normalized = normalizeTabsMarkup(normalized)
+  normalized = normalizeCalloutMarkup(normalized)
+
+  return normalized
 }
 
 function transformOutsideCodeFences(
@@ -966,41 +994,11 @@ function normalizeMdxMarkup(segment: string): string {
     return `\n![${alt}](${src})\n`
   })
 
-  normalized = replaceSelfClosingMdxTag(normalized, "ComponentPreview", (attributes) => {
-    const name = readMdxAttribute(attributes, "name") || "component-preview"
-    return `\n> Preview: ${humanizeSegment(name)}\n`
-  })
-
-  normalized = replaceSelfClosingMdxTag(normalized, "ComponentSource", (attributes) => {
-    const title = readMdxAttribute(attributes, "title")
-    const name = readMdxAttribute(attributes, "name")
-    return `\n> Source: ${title || name || "component-source"}\n`
-  })
-
-  normalized = normalized.replace(/<TabsList>[\s\S]*?<\/TabsList>/g, "\n")
-  normalized = normalized.replace(/<CodeTabs>/g, "\n")
-  normalized = normalized.replace(/<\/CodeTabs>/g, "\n")
-  normalized = normalized.replace(/<Tabs(?:\s[^>]*)?>/g, "\n")
-  normalized = normalized.replace(/<\/Tabs>/g, "\n")
-  normalized = normalized.replace(/<TabsContent([^>]*)>([\s\S]*?)<\/TabsContent>/g, (_, attributes, content) => {
-    const value = readMdxAttribute(attributes, "value") || "tab"
-    const title = humanizeSegment(value)
-    const inner = normalizeMdxMarkup(content).trim()
-    return `\n### ${title}\n\n${inner}\n`
-  })
-
   normalized = normalized.replace(/<Steps(?:\s[^>]*)?>/g, "\n")
   normalized = normalized.replace(/<\/Steps>/g, "\n")
   normalized = normalized.replace(/<Step>([\s\S]*?)<\/Step>/g, (_, content) => {
     const item = collapseMdxWhitespace(stripResidualMdx(normalizeMdxMarkup(content)))
     return item ? `\n1. ${item}\n` : "\n"
-  })
-
-  normalized = normalized.replace(/<Callout([^>]*)>([\s\S]*?)<\/Callout>/g, (_, attributes, content) => {
-    const title = readMdxAttribute(attributes, "title")
-    const inner = normalizeMdxMarkup(content).trim()
-    const calloutContent = title ? `**${title}**\n\n${inner}` : inner
-    return `\n${toBlockquote(calloutContent)}\n`
   })
 
   normalized = normalized.replace(/<(?:Accordion|AccordionItem|AccordionPrimitive\.Item)(?:\s[^>]*)?>/g, "\n")
@@ -1046,13 +1044,53 @@ function readMdxAttribute(attributes: string, attributeName: string): string {
   return ""
 }
 
-function toBlockquote(content: string): string {
-  return content
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line, index, lines) => line || (index > 0 && index < lines.length - 1))
-    .map((line) => (line ? `> ${line}` : ">"))
-    .join("\n")
+function createDocMarker(markerName: string, attributes: Record<string, string>): string {
+  const serialized = Object.entries(attributes)
+    .filter((entry) => entry[1].trim().length > 0)
+    .map(([key, value]) => `${key}="${escapeDocMarkerValue(value)}"`)
+    .join(" ")
+
+  return `:::${markerName}${serialized ? ` ${serialized}` : ""}`
+}
+
+function escapeDocMarkerValue(value: string): string {
+  return value.replace(/"/g, "'").replace(/\s+/g, " ").trim()
+}
+
+function normalizeTabsMarkup(value: string): string {
+  return value.replace(/<(CodeTabs|Tabs)(?:\s[^>]*)?>([\s\S]*?)<\/(CodeTabs|Tabs)>/g, (_, __, content: string) => {
+    const labels = new Map<string, string>()
+
+    for (const match of content.matchAll(/<TabsTrigger([^>]*)>([\s\S]*?)<\/TabsTrigger>/g)) {
+      const attributes = match[1] || ""
+      const tabValue = readMdxAttribute(attributes, "value") || `tab-${labels.size + 1}`
+      const tabLabel = collapseMdxWhitespace(stripResidualMdx(normalizeMdxMarkup(match[2] || ""))) || humanizeSegment(tabValue)
+      labels.set(tabValue, tabLabel)
+    }
+
+    const panels: string[] = []
+    for (const match of content.matchAll(/<TabsContent([^>]*)>([\s\S]*?)<\/TabsContent>/g)) {
+      const attributes = match[1] || ""
+      const tabValue = readMdxAttribute(attributes, "value") || `tab-${panels.length + 1}`
+      const tabLabel = labels.get(tabValue) || humanizeSegment(tabValue)
+      const inner = normalizeMdxBody(match[2] || "").trim()
+      panels.push(`${createDocMarker("tab", { value: tabValue, label: tabLabel })}\n${inner}\n:::endtab`)
+    }
+
+    if (panels.length === 0) {
+      return "\n"
+    }
+
+    return `\n:::tabs\n${panels.join("\n\n")}\n:::endtabs\n`
+  })
+}
+
+function normalizeCalloutMarkup(value: string): string {
+  return value.replace(/<Callout([^>]*)>([\s\S]*?)<\/Callout>/g, (_, attributes, content) => {
+    const title = readMdxAttribute(attributes, "title")
+    const inner = normalizeMdxBody(content).trim()
+    return `\n${createDocMarker("callout", { title })}\n${inner}\n:::endcallout\n`
+  })
 }
 
 function stripResidualMdx(value: string): string {
@@ -1063,6 +1101,155 @@ function stripResidualMdx(value: string): string {
 
 function collapseMdxWhitespace(value: string): string {
   return value.replace(/\s+/g, " ").trim()
+}
+
+function readDocMarkerAttribute(line: string, attributeName: string): string {
+  return readMdxAttribute(line.replace(/^:::[a-z-]+\s*/, ""), attributeName)
+}
+
+function loadRegistryItem(styleName: string, name: string): { path: string; content: string } | null {
+  const cacheKey = `${styleName}:${name}`
+  const cached = registryItemCache.get(cacheKey)
+  if (cached !== undefined) {
+    return cached
+  }
+
+  for (const candidate of getRegistryLookupCandidates(name)) {
+    const jsonPath = path.join(registryStylesRoot, styleName, `${candidate}.json`)
+    if (fs.existsSync(jsonPath)) {
+      try {
+        const raw = fs.readFileSync(jsonPath, "utf8")
+        const parsed = JSON.parse(raw) as { files?: Array<{ path?: string; content?: string }> }
+        const firstFile = Array.isArray(parsed.files) ? parsed.files.find((file) => file.path && file.content) : null
+        if (firstFile?.path && typeof firstFile.content === "string") {
+          const resolved = { path: firstFile.path, content: firstFile.content }
+          registryItemCache.set(cacheKey, resolved)
+          return resolved
+        }
+      } catch {
+      }
+    }
+  }
+
+  for (const candidate of getRegistryLookupCandidates(name)) {
+    const examplePath = path.join(examplesRoot, `${candidate}.tsx`)
+    if (fs.existsSync(examplePath)) {
+      const content = fs.readFileSync(examplePath, "utf8")
+      const resolved = {
+        path: path.relative(appRoot, examplePath).replace(/\\/g, "/"),
+        content,
+      }
+      registryItemCache.set(cacheKey, resolved)
+      return resolved
+    }
+
+    const componentPath = path.join(componentsRoot, `${candidate}.tsx`)
+    if (fs.existsSync(componentPath)) {
+      const content = fs.readFileSync(componentPath, "utf8")
+      const resolved = {
+        path: path.relative(appRoot, componentPath).replace(/\\/g, "/"),
+        content,
+      }
+      registryItemCache.set(cacheKey, resolved)
+      return resolved
+    }
+  }
+
+  registryItemCache.set(cacheKey, null)
+  return null
+}
+
+function getRegistryLookupCandidates(name: string): string[] {
+  const candidates: string[] = []
+
+  const pushCandidate = (value: string): void => {
+    const normalized = value.trim()
+    if (!normalized || candidates.includes(normalized)) {
+      return
+    }
+    candidates.push(normalized)
+  }
+
+  pushCandidate(name)
+  pushCandidate(name.replace(/-(rtl|ltr)$/g, ""))
+  pushCandidate(name.replace(/-demo$/g, "-example"))
+  pushCandidate(name.replace(/-demo$/g, ""))
+
+  const family = resolvePreviewFamilyName(name)
+  if (family) {
+    pushCandidate(`${family}-example`)
+    pushCandidate(family)
+  }
+
+  return candidates
+}
+
+function resolvePreviewFamilyName(name: string): string {
+  const normalized = name.replace(/-(rtl|ltr)$/g, "")
+  const families = [
+    "dropdown-menu",
+    "navigation-menu",
+    "context-menu",
+    "button-group",
+    "data-table",
+    "input-group",
+    "native-select",
+    "input-otp",
+    "hover-card",
+    "alert-dialog",
+    "scroll-area",
+    "radio-group",
+    "date-picker",
+    "aspect-ratio",
+    "toggle-group",
+    "collapsible",
+    "combobox",
+    "menubar",
+    "carousel",
+    "accordion",
+    "separator",
+    "typography",
+    "breadcrumb",
+    "checkbox",
+    "pagination",
+    "skeleton",
+    "popover",
+    "progress",
+    "resizable",
+    "textarea",
+    "calendar",
+    "sidebar",
+    "tooltip",
+    "avatar",
+    "button",
+    "switch",
+    "select",
+    "dialog",
+    "drawer",
+    "sheet",
+    "table",
+    "empty",
+    "badge",
+    "field",
+    "input",
+    "label",
+    "alert",
+    "toggle",
+    "tabs",
+    "item",
+    "chart",
+    "card",
+    "mode-toggle",
+    "kbd",
+  ]
+
+  for (const family of families) {
+    if (normalized === family || normalized.startsWith(`${family}-`)) {
+      return family
+    }
+  }
+
+  return ""
 }
 
 function parseDocBody(body: string): {
@@ -1080,6 +1267,97 @@ function parseDocBody(body: string): {
     const trimmed = line.trim()
 
     if (!trimmed) {
+      index += 1
+      continue
+    }
+
+    if (trimmed.startsWith(":::callout")) {
+      const title = readDocMarkerAttribute(trimmed, "title")
+      const nestedLines: string[] = []
+      index += 1
+      while (index < lines.length && !(lines[index] || "").trim().startsWith(":::endcallout")) {
+        nestedLines.push(lines[index] || "")
+        index += 1
+      }
+      if (index < lines.length) {
+        index += 1
+      }
+
+      const nestedBody = parseDocBody(nestedLines.join("\n"))
+      blocks.push({
+        kind: "callout",
+        text: title,
+        title: title || undefined,
+        children: nestedBody.blocks,
+      })
+      continue
+    }
+
+    if (trimmed.startsWith(":::tabs")) {
+      const panels: DocTabPanel[] = []
+      index += 1
+
+      while (index < lines.length) {
+        const current = (lines[index] || "").trim()
+        if (current.startsWith(":::endtabs")) {
+          index += 1
+          break
+        }
+
+        if (!current.startsWith(":::tab")) {
+          index += 1
+          continue
+        }
+
+        const value = readDocMarkerAttribute(current, "value") || `tab-${panels.length + 1}`
+        const label = readDocMarkerAttribute(current, "label") || humanizeSegment(value)
+        const panelLines: string[] = []
+        index += 1
+
+        while (index < lines.length && !(lines[index] || "").trim().startsWith(":::endtab")) {
+          panelLines.push(lines[index] || "")
+          index += 1
+        }
+
+        if (index < lines.length) {
+          index += 1
+        }
+
+        const panelBody = parseDocBody(panelLines.join("\n"))
+        panels.push({
+          value,
+          label,
+          blocks: panelBody.blocks,
+        })
+      }
+
+      blocks.push({
+        kind: "tabs",
+        text: "",
+        panels,
+      })
+      continue
+    }
+
+    if (trimmed.startsWith(":::component-preview") || trimmed.startsWith(":::component-source")) {
+      const isPreview = trimmed.startsWith(":::component-preview")
+      const name = readDocMarkerAttribute(trimmed, "name") || (isPreview ? "component-preview" : "component-source")
+      const title = readDocMarkerAttribute(trimmed, "title")
+      const styleName = readDocMarkerAttribute(trimmed, "styleName") || "new-york-v4"
+      const directionValue = readDocMarkerAttribute(trimmed, "direction")
+      const direction = directionValue === "rtl" ? "rtl" : "ltr"
+      const registryItem = loadRegistryItem(styleName, name)
+
+      blocks.push({
+        kind: isPreview ? "component-preview" : "component-source",
+        text: humanizeSegment(name),
+        title: title || undefined,
+        name,
+        styleName,
+        direction,
+        filePath: registryItem?.path,
+        code: registryItem?.content,
+      })
       index += 1
       continue
     }
@@ -1224,6 +1502,7 @@ function parseDocBody(body: string): {
         break
       }
       if (
+        nextTrimmed.startsWith(":::") ||
         nextTrimmed.startsWith("```") ||
         /^(#{1,3})\s+/.test(nextTrimmed) ||
         /^(?:[-*+])\s+/.test(nextTrimmed) ||
