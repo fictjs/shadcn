@@ -1670,6 +1670,14 @@ h1 {
   gap: 0.8rem;
 }
 
+.example-mobile-image {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  background: color-mix(in oklab, var(--muted) 18%, var(--card));
+}
+
 .example-live-stage {
   display: none;
   overflow: hidden;
