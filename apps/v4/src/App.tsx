@@ -1,4 +1,4 @@
-import { $state } from "fict"
+import { $state, untrack } from "fict"
 
 import { colors as tailwindColors } from "../registry/_legacy-colors"
 import type {
@@ -7,6 +7,7 @@ import type {
   ResolvedRoute,
   ThemeEntry,
 } from "./types"
+import { LiveExamplePage } from "./example-pages"
 
 interface AppProps {
   route: ResolvedRoute
@@ -336,13 +337,6 @@ function DocsIndexPage(props: { docs: DocSummary[] }) {
 function DocDetailPage(props: { route: ResolvedRoute }) {
   const doc = props.route.doc as DocPage
 
-  const copyDocBody = () => {
-    if (typeof navigator === "undefined" || !navigator.clipboard) {
-      return
-    }
-    void navigator.clipboard.writeText(doc.body)
-  }
-
   return (
     <section class="docs-layout">
       <aside class="docs-sidebar card">
@@ -375,7 +369,18 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
             <p class="slug">source: content/docs/{doc.sourcePath}</p>
           </div>
           <div class="doc-header-actions">
-            <button type="button" class="button button-ghost" onClick={() => copyDocBody()}>
+            <button
+              type="button"
+              class="button button-ghost"
+              onClick$={() => {
+                if (typeof navigator === "undefined" || !navigator.clipboard || !props.route.doc) {
+                  return
+                }
+
+                const bodySnapshot = untrack(() => props.route.doc?.body ?? "")
+                void navigator.clipboard.writeText(bodySnapshot)
+              }}
+            >
               Copy Page
             </button>
             {props.route.docPrev ? (
@@ -629,23 +634,29 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
             <p class="lead">{activeShowcase.description}</p>
             <p class="slug">route: /examples/{activeShowcase.slug}</p>
           </div>
-          <div class="example-preview-grid">
-            <figure class="example-preview-card">
-              <img
-                src={activeShowcase.imageLight}
-                alt={`${activeShowcase.title} light preview`}
-                loading="lazy"
-              />
-              <figcaption class="slug">Light preview</figcaption>
-            </figure>
-            <figure class="example-preview-card">
-              <img
-                src={activeShowcase.imageDark}
-                alt={`${activeShowcase.title} dark preview`}
-                loading="lazy"
-              />
-              <figcaption class="slug">Dark preview</figcaption>
-            </figure>
+          <div class="example-showcase-surface">
+            <div class="example-mobile-gallery">
+              <figure class="example-preview-card">
+                <img
+                  src={activeShowcase.imageLight}
+                  alt={`${activeShowcase.title} light preview`}
+                  loading="lazy"
+                />
+                <figcaption class="slug">Light preview</figcaption>
+              </figure>
+              <figure class="example-preview-card">
+                <img
+                  src={activeShowcase.imageDark}
+                  alt={`${activeShowcase.title} dark preview`}
+                  loading="lazy"
+                />
+                <figcaption class="slug">Dark preview</figcaption>
+              </figure>
+            </div>
+
+            <div class="example-live-stage">
+              <LiveExamplePage slug={activeShowcase.slug} />
+            </div>
           </div>
         </article>
       ) : (
@@ -829,12 +840,6 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
   let activeThemeTitle = $state("Neutral")
   let activeSwatches = $state(getThemeSwatches("neutral"))
 
-  const setActiveTheme = (theme: ThemeEntry) => {
-    activeThemeName = theme.name
-    activeThemeTitle = theme.title
-    activeSwatches = getThemeSwatches(theme.name)
-  }
-
   return (
     <section class="stack-gap">
       <div class="route-page-header">
@@ -861,8 +866,28 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
             <button
               type="button"
               key={theme.name}
+              data-theme-name={theme.name}
               class={activeThemeName === theme.name ? "theme-pill theme-pill-active" : "theme-pill"}
-              onClick={() => setActiveTheme(theme)}
+              onClick$={(event: MouseEvent) => {
+                const target = event.currentTarget
+                if (!(target instanceof HTMLButtonElement)) {
+                  return
+                }
+
+                const themeName = target.dataset.themeName
+                if (!themeName) {
+                  return
+                }
+
+                const nextTheme = props.themes.find((entry) => entry.name === themeName)
+                if (!nextTheme) {
+                  return
+                }
+
+                activeThemeName = nextTheme.name
+                activeThemeTitle = nextTheme.title
+                activeSwatches = getThemeSwatches(nextTheme.name)
+              }}
             >
               {theme.name === "neutral" ? "Default" : theme.name}
             </button>

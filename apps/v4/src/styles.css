@@ -774,6 +774,650 @@ h1 {
   border: 1px solid var(--border);
 }
 
+.example-showcase-surface {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.example-mobile-gallery {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.example-live-stage {
+  display: none;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  background: var(--card);
+}
+
+.live-example {
+  min-height: 44rem;
+  background: var(--card);
+  color: var(--foreground);
+}
+
+.dashboard-example {
+  display: grid;
+  min-height: 46rem;
+  grid-template-columns: 240px minmax(0, 1fr);
+}
+
+.dashboard-sidebar {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  border-right: 1px solid var(--border);
+  background: color-mix(in oklab, var(--muted) 68%, var(--card));
+  padding: 1.4rem 1rem;
+}
+
+.dashboard-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dashboard-brand-mark {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.75rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.dashboard-brand-title,
+.dashboard-stat-card h4,
+.dashboard-chart-head h4,
+.tasks-header h3,
+.playground-header h3,
+.auth-brand-panel h3,
+.auth-form-shell h3,
+.rtl-header h3 {
+  margin: 0;
+  letter-spacing: -0.03em;
+}
+
+.dashboard-brand-title {
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.dashboard-brand-copy,
+.dashboard-stat-copy,
+.tasks-copy,
+.auth-footnote,
+.dashboard-sale-row p,
+.tasks-empty-state {
+  color: var(--muted-foreground);
+}
+
+.dashboard-brand-copy,
+.dashboard-stat-copy,
+.tasks-copy,
+.dashboard-sale-row p,
+.tasks-empty-state,
+.auth-footnote {
+  margin: 0.2rem 0 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.dashboard-nav {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.dashboard-nav-link {
+  border-radius: 0.65rem;
+  padding: 0.7rem 0.8rem;
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.dashboard-nav-link-active,
+.dashboard-nav-link:hover {
+  background: var(--card);
+  color: var(--foreground);
+}
+
+.dashboard-sidebar-card,
+.tasks-toolbar-card,
+.tasks-table-card,
+.playground-panel,
+.playground-sidebar-panel,
+.rtl-card {
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--card);
+}
+
+.dashboard-sidebar-card,
+.tasks-toolbar-card,
+.tasks-table-card,
+.playground-panel,
+.playground-sidebar-panel,
+.rtl-card,
+.auth-form-shell {
+  box-shadow: 0 1px 2px color-mix(in oklab, var(--foreground) 8%, transparent);
+}
+
+.dashboard-sidebar-card {
+  padding: 1rem;
+}
+
+.dashboard-section-label {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dashboard-sidebar-stack {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.85rem;
+}
+
+.dashboard-project-row,
+.dashboard-sale-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.dashboard-project-row {
+  font-size: 0.88rem;
+}
+
+.dashboard-main {
+  display: grid;
+  align-content: start;
+  gap: 1.25rem;
+  padding: 1.3rem;
+}
+
+.dashboard-header,
+.tasks-header,
+.playground-header,
+.rtl-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.dashboard-header h3,
+.tasks-header h3,
+.playground-header h3,
+.auth-brand-panel h3,
+.auth-form-shell h3,
+.rtl-header h3 {
+  margin-top: 0.25rem;
+  font-size: 1.6rem;
+  line-height: 1.05;
+}
+
+.dashboard-toolbar,
+.rtl-toggle-row,
+.playground-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.dashboard-pill,
+.tasks-chip,
+.playground-tab,
+.playground-ghost-button,
+.playground-primary-button,
+.auth-provider-button {
+  border-radius: 0.7rem;
+  font: inherit;
+  font-size: 0.86rem;
+  cursor: pointer;
+}
+
+.dashboard-pill,
+.tasks-chip,
+.playground-tab,
+.playground-ghost-button,
+.auth-provider-button {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--foreground);
+}
+
+.dashboard-pill,
+.tasks-chip,
+.playground-tab,
+.playground-ghost-button {
+  padding: 0.5rem 0.8rem;
+}
+
+.dashboard-pill-active,
+.tasks-chip-active,
+.playground-tab-active,
+.playground-primary-button {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.dashboard-stats-grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.dashboard-stat-card,
+.dashboard-chart-card,
+.dashboard-table-card {
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--card);
+  box-shadow: 0 1px 2px color-mix(in oklab, var(--foreground) 8%, transparent);
+}
+
+.dashboard-stat-card {
+  padding: 1rem;
+}
+
+.dashboard-stat-label {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.82rem;
+}
+
+.dashboard-stat-card h4,
+.dashboard-chart-head h4 {
+  margin-top: 0.4rem;
+  font-size: 1.5rem;
+}
+
+.dashboard-content-grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.9fr);
+}
+
+.dashboard-chart-card,
+.dashboard-table-card,
+.tasks-toolbar-card,
+.tasks-table-card,
+.playground-panel,
+.playground-sidebar-panel,
+.rtl-card {
+  padding: 1rem;
+}
+
+.dashboard-chart-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.85rem;
+}
+
+.dashboard-chart-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--muted) 72%, var(--card));
+  color: var(--foreground);
+  padding: 0.35rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.dashboard-chart {
+  width: 100%;
+  height: auto;
+  margin-top: 1rem;
+  color: var(--primary);
+}
+
+.dashboard-chart-guides line {
+  stroke: color-mix(in oklab, var(--border) 92%, transparent);
+  stroke-width: 1;
+}
+
+.dashboard-sales-list {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.dashboard-sale-row {
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+}
+
+.dashboard-sale-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.dashboard-sale-row strong,
+.tasks-table-card strong {
+  display: block;
+  font-size: 0.9rem;
+}
+
+.tasks-example,
+.playground-example,
+.rtl-example {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: color-mix(in oklab, var(--muted) 44%, var(--card));
+}
+
+.tasks-avatar-stack {
+  display: flex;
+  align-items: center;
+}
+
+.tasks-avatar-stack span {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  margin-left: -0.35rem;
+  border: 2px solid var(--card);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--muted) 68%, var(--card));
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.tasks-avatar-stack span:first-child {
+  margin-left: 0;
+}
+
+.tasks-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.tasks-search-field,
+.playground-field,
+.auth-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.tasks-search-field {
+  margin-top: 0.95rem;
+}
+
+.tasks-search-label,
+.playground-field span,
+.auth-field span {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.tasks-search-field input,
+.playground-field select,
+.playground-field input,
+.playground-textarea,
+.auth-field input {
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--card);
+  color: var(--foreground);
+  font: inherit;
+}
+
+.tasks-search-field input,
+.playground-field select,
+.playground-field input,
+.auth-field input {
+  min-height: 2.6rem;
+  padding: 0.65rem 0.8rem;
+}
+
+.tasks-table-card table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tasks-table-card th,
+.tasks-table-card td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.8rem 0.5rem;
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+}
+
+.tasks-table-card th {
+  color: var(--muted-foreground);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.tasks-table-card td p {
+  margin-top: 0.25rem;
+  color: var(--muted-foreground);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.tasks-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.73rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.tasks-status-todo {
+  background: color-mix(in oklab, var(--muted) 80%, var(--card));
+}
+
+.tasks-status-in-progress {
+  background: color-mix(in oklab, var(--primary) 14%, var(--card));
+}
+
+.tasks-status-done {
+  background: color-mix(in oklab, #16a34a 18%, var(--card));
+}
+
+.playground-shell {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: minmax(0, 1fr) 250px;
+}
+
+.playground-mode-row {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
+}
+
+.playground-editor-grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.9fr);
+}
+
+.playground-textarea {
+  min-height: 20rem;
+  padding: 1rem;
+  resize: none;
+}
+
+.playground-textarea-compact {
+  min-height: 10rem;
+}
+
+.playground-output-card,
+.playground-output-muted {
+  display: grid;
+  align-content: start;
+  gap: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 0.95rem;
+  background: color-mix(in oklab, var(--muted) 30%, var(--card));
+  min-height: 20rem;
+  padding: 1rem;
+}
+
+.playground-output-muted {
+  place-items: center;
+  text-align: center;
+}
+
+.playground-edit-stack {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.playground-submit-row,
+.auth-button-stack {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.playground-primary-button,
+.auth-submit-button {
+  border: 1px solid var(--primary);
+  padding: 0.7rem 1rem;
+}
+
+.auth-example {
+  display: grid;
+  min-height: 46rem;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.9fr);
+}
+
+.auth-brand-panel {
+  display: grid;
+  align-content: space-between;
+  gap: 2rem;
+  padding: 2rem;
+  background: color-mix(in oklab, var(--primary) 6%, var(--card));
+  border-right: 1px solid var(--border);
+}
+
+.auth-logo-row {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.auth-brand-panel blockquote {
+  margin: 0;
+  max-width: 26rem;
+  line-height: 1.7;
+}
+
+.auth-brand-panel footer {
+  margin-top: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.auth-form-panel {
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+.auth-form-shell {
+  display: grid;
+  gap: 1rem;
+  width: min(100%, 24rem);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--card);
+  padding: 1.4rem;
+}
+
+.auth-provider-button {
+  min-height: 2.75rem;
+  padding: 0.7rem 1rem;
+}
+
+.auth-divider {
+  display: grid;
+  align-items: center;
+  gap: 0.75rem;
+  grid-template-columns: 1fr auto 1fr;
+  color: var(--muted-foreground);
+  font-size: 0.78rem;
+}
+
+.auth-divider span {
+  height: 1px;
+  background: color-mix(in oklab, var(--border) 92%, transparent);
+}
+
+.rtl-preview-frame {
+  border: 1px dashed color-mix(in oklab, var(--border) 92%, transparent);
+  border-radius: 1rem;
+  background: var(--card);
+  padding: 1rem;
+}
+
+.rtl-card {
+  padding: 1rem;
+}
+
+.rtl-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.rtl-stat-grid {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.rtl-stat-card {
+  display: grid;
+  gap: 0.35rem;
+  border: 1px solid color-mix(in oklab, var(--border) 92%, transparent);
+  border-radius: 0.85rem;
+  background: color-mix(in oklab, var(--muted) 32%, var(--card));
+  padding: 0.9rem;
+}
+
+.rtl-stat-card p,
+.rtl-stat-card strong,
+.rtl-stat-card span {
+  margin: 0;
+}
+
+.example-fallback {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: 0.5rem;
+}
+
 .doc-nav {
   justify-content: space-between;
 }
@@ -798,6 +1442,37 @@ h1 {
   .docs-toc {
     position: static;
     max-height: none;
+  }
+
+  .dashboard-example,
+  .auth-example,
+  .playground-shell,
+  .playground-editor-grid,
+  .dashboard-stats-grid,
+  .dashboard-content-grid,
+  .rtl-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-sidebar {
+    display: none;
+  }
+
+  .dashboard-main,
+  .tasks-example,
+  .playground-example,
+  .auth-brand-panel,
+  .auth-form-panel,
+  .rtl-example {
+    padding: 1rem;
+  }
+
+  .auth-brand-panel {
+    display: none;
+  }
+
+  .tasks-table-card {
+    overflow: auto;
   }
 }
 
@@ -831,6 +1506,14 @@ h1 {
 
   .theme-selector-stub {
     display: inline-flex;
+  }
+
+  .example-mobile-gallery {
+    display: none;
+  }
+
+  .example-live-stage {
+    display: block;
   }
 
   .doc-header {
