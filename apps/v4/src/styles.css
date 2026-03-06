@@ -2703,56 +2703,170 @@ h1 {
 
 .playground-shell {
   display: grid;
-  gap: 0.85rem;
+  align-items: start;
+  gap: 1.5rem;
   grid-template-columns: minmax(0, 1fr) 250px;
 }
 
-.playground-mode-row {
-  display: inline-flex;
+.playground-separator {
+  height: 1px;
+  background: color-mix(in oklab, var(--border) 88%, transparent);
+}
+
+.playground-top-actions {
+  display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
-  margin-bottom: 1rem;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.playground-header-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.4rem;
+  border: 1px solid var(--border);
+  border-radius: 0.7rem;
+  background: transparent;
+  color: var(--foreground);
+  padding: 0.55rem 0.8rem;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.playground-header-button-wide {
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-width: min(100%, 18rem);
+}
+
+.playground-header-button-label {
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+
+.playground-header-button-value {
+  max-width: 11rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.playground-header-button-icon {
+  min-width: 2.4rem;
+  padding-inline: 0.6rem;
+}
+
+.playground-main-column,
+.playground-sidebar-panel,
+.playground-sidebar-stack,
+.playground-complete-panel,
+.playground-edit-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.playground-sidebar-panel {
+  align-content: start;
+}
+
+.playground-icon-tab-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+
+.playground-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.6rem;
+  padding: 0.5rem;
+}
+
+.playground-tab-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
 }
 
 .playground-editor-grid {
   display: grid;
-  gap: 0.85rem;
-  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.9fr);
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.playground-textarea,
+.playground-surface-pane {
+  min-height: 25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.95rem;
+  padding: 1rem;
+  background: var(--card);
 }
 
 .playground-textarea {
-  min-height: 20rem;
-  padding: 1rem;
   resize: none;
 }
 
 .playground-textarea-compact {
-  min-height: 10rem;
+  min-height: 9rem;
 }
 
-.playground-output-card,
-.playground-output-muted {
-  display: grid;
-  align-content: start;
-  gap: 0.6rem;
-  border: 1px solid var(--border);
-  border-radius: 0.95rem;
+.playground-copy-surface {
+  color: var(--muted-foreground);
+  line-height: 1.6;
+}
+
+.playground-surface-pane {
   background: color-mix(in oklab, var(--muted) 30%, var(--card));
-  min-height: 20rem;
-  padding: 1rem;
 }
 
-.playground-output-muted {
-  place-items: center;
-  text-align: center;
+.playground-surface-pane-muted {
+  background: color-mix(in oklab, var(--muted) 64%, var(--card));
 }
 
-.playground-edit-stack {
+.playground-submit-row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.playground-primary-button,
+.playground-ghost-button {
+  min-height: 2.5rem;
+}
+
+.playground-option-group {
   display: grid;
-  gap: 0.85rem;
+  gap: 0.45rem;
 }
 
-.playground-submit-row,
+.playground-option-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 2.4rem;
+  border: 1px solid var(--border);
+  border-radius: 0.7rem;
+  background: transparent;
+  color: var(--foreground);
+  padding: 0.55rem 0.8rem;
+  font: inherit;
+  font-size: 0.84rem;
+  cursor: pointer;
+}
+
+.playground-option-button-active {
+  background: color-mix(in oklab, var(--muted) 72%, var(--card));
+  border-color: color-mix(in oklab, var(--foreground) 18%, var(--border));
+}
+
 .auth-button-stack {
   display: grid;
   gap: 0.55rem;
@@ -3009,6 +3123,22 @@ h1 {
   .tasks-search-field {
     width: 100%;
   }
+
+  .playground-header {
+    flex-direction: column;
+  }
+
+  .playground-top-actions {
+    justify-content: stretch;
+  }
+
+  .playground-header-button-wide {
+    min-width: 100%;
+  }
+
+  .playground-submit-row {
+    display: grid;
+  }
 }
 
 @media (max-width: 1139px) {
@@ -3045,6 +3175,10 @@ h1 {
   .examples-root-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
+  }
+
+  .playground-editor-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 0.92fr);
   }
 
   .charts-grid {
