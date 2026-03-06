@@ -3619,8 +3619,6 @@ function ColorsPage() {
         </div>
       </div>
 
-      <div class="colors-nav-shell" aria-hidden="true"></div>
-
       <div class="route-surface-wrapper colors-route-shell">
         <div class="colors-route-grid" id="colors">
           {colorPalettes.map((palette) => (
