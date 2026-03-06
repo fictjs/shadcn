@@ -576,7 +576,6 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
             <p class="eyebrow">{doc.section || "overview"}</p>
             <h1>{doc.title}</h1>
             <p class="lead">{doc.description || "No description provided."}</p>
-            <p class="slug">source: content/docs/{doc.sourcePath}</p>
           </div>
           <div class="doc-header-actions">
             <button
@@ -650,6 +649,10 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
               )
             ) : block.kind === "blockquote" ? (
               <blockquote key={`quote-${index}`}>{block.text}</blockquote>
+            ) : block.kind === "image" ? (
+              <figure class="doc-image" key={`image-${index}`}>
+                <img src={block.src || ""} alt={block.alt || block.text || "Documentation image"} loading="lazy" />
+              </figure>
             ) : block.kind === "hr" ? (
               <hr key={`hr-${index}`} />
             ) : (

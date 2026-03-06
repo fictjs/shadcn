@@ -934,11 +934,135 @@ function normalizeYamlValue(raw: string): string {
 }
 
 function normalizeMdxBody(body: string): string {
-  return body
+  const withoutImports = body
     .replace(/^import\s+.*$/gm, "")
     .replace(/^export\s+const\s+.*$/gm, "")
+
+  return transformOutsideCodeFences(withoutImports, normalizeMdxMarkup)
     .replace(/\n{3,}/g, "\n\n")
     .trim()
+}
+
+function transformOutsideCodeFences(
+  value: string,
+  transform: (segment: string) => string,
+): string {
+  const parts = value.split(/(```[\s\S]*?```)/g)
+  return parts
+    .map((part) => (part.startsWith("```") ? part : transform(part)))
+    .join("")
+}
+
+function normalizeMdxMarkup(segment: string): string {
+  let normalized = segment
+
+  normalized = replaceSelfClosingMdxTag(normalized, "Image", (attributes) => {
+    const src = readMdxAttribute(attributes, "src")
+    const alt = readMdxAttribute(attributes, "alt") || "Image"
+    if (!src) {
+      return ""
+    }
+
+    return `\n![${alt}](${src})\n`
+  })
+
+  normalized = replaceSelfClosingMdxTag(normalized, "ComponentPreview", (attributes) => {
+    const name = readMdxAttribute(attributes, "name") || "component-preview"
+    return `\n> Preview: ${humanizeSegment(name)}\n`
+  })
+
+  normalized = replaceSelfClosingMdxTag(normalized, "ComponentSource", (attributes) => {
+    const title = readMdxAttribute(attributes, "title")
+    const name = readMdxAttribute(attributes, "name")
+    return `\n> Source: ${title || name || "component-source"}\n`
+  })
+
+  normalized = normalized.replace(/<TabsList>[\s\S]*?<\/TabsList>/g, "\n")
+  normalized = normalized.replace(/<CodeTabs>/g, "\n")
+  normalized = normalized.replace(/<\/CodeTabs>/g, "\n")
+  normalized = normalized.replace(/<Tabs(?:\s[^>]*)?>/g, "\n")
+  normalized = normalized.replace(/<\/Tabs>/g, "\n")
+  normalized = normalized.replace(/<TabsContent([^>]*)>([\s\S]*?)<\/TabsContent>/g, (_, attributes, content) => {
+    const value = readMdxAttribute(attributes, "value") || "tab"
+    const title = humanizeSegment(value)
+    const inner = normalizeMdxMarkup(content).trim()
+    return `\n### ${title}\n\n${inner}\n`
+  })
+
+  normalized = normalized.replace(/<Steps(?:\s[^>]*)?>/g, "\n")
+  normalized = normalized.replace(/<\/Steps>/g, "\n")
+  normalized = normalized.replace(/<Step>([\s\S]*?)<\/Step>/g, (_, content) => {
+    const item = collapseMdxWhitespace(stripResidualMdx(normalizeMdxMarkup(content)))
+    return item ? `\n1. ${item}\n` : "\n"
+  })
+
+  normalized = normalized.replace(/<Callout([^>]*)>([\s\S]*?)<\/Callout>/g, (_, attributes, content) => {
+    const title = readMdxAttribute(attributes, "title")
+    const inner = normalizeMdxMarkup(content).trim()
+    const calloutContent = title ? `**${title}**\n\n${inner}` : inner
+    return `\n${toBlockquote(calloutContent)}\n`
+  })
+
+  normalized = normalized.replace(/<(?:Accordion|AccordionItem|AccordionPrimitive\.Item)(?:\s[^>]*)?>/g, "\n")
+  normalized = normalized.replace(/<\/(?:Accordion|AccordionItem|AccordionPrimitive\.Item)>/g, "\n")
+  normalized = normalized.replace(/<AccordionTrigger(?:\s[^>]*)?>([\s\S]*?)<\/AccordionTrigger>/g, (_, content) => {
+    const title = collapseMdxWhitespace(stripResidualMdx(normalizeMdxMarkup(content)))
+    return title ? `\n### ${title}\n` : "\n"
+  })
+  normalized = normalized.replace(/<AccordionContent(?:\s[^>]*)?>([\s\S]*?)<\/AccordionContent>/g, (_, content) => {
+    const inner = normalizeMdxMarkup(content).trim()
+    return inner ? `\n${inner}\n` : "\n"
+  })
+
+  normalized = normalized.replace(/<\/?p(?:\s[^>]*)?>/g, "\n")
+  normalized = normalized.replace(/<br\s*\/?>/g, "\n")
+  normalized = normalized.replace(/<\/?[A-Za-z][A-Za-z0-9_.-]*(?:\s[^>]*)?>/g, "")
+
+  return normalized
+}
+
+function replaceSelfClosingMdxTag(
+  value: string,
+  tagName: string,
+  render: (attributes: string) => string,
+): string {
+  const expression = new RegExp(`<${tagName}([\\s\\S]*?)\\/>`, "g")
+  return value.replace(expression, (_, attributes) => render(attributes || ""))
+}
+
+function readMdxAttribute(attributes: string, attributeName: string): string {
+  const quoted = new RegExp(`${attributeName}\\s*=\\s*"([^"]*)"`)
+  const quotedMatch = attributes.match(quoted)
+  if (quotedMatch?.[1]) {
+    return quotedMatch[1]
+  }
+
+  const wrapped = new RegExp(`${attributeName}\\s*=\\s*\{([^}]*)\}`)
+  const wrappedMatch = attributes.match(wrapped)
+  if (wrappedMatch?.[1]) {
+    return wrappedMatch[1].replace(/^['"]|['"]$/g, "").trim()
+  }
+
+  return ""
+}
+
+function toBlockquote(content: string): string {
+  return content
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line, index, lines) => line || (index > 0 && index < lines.length - 1))
+    .map((line) => (line ? `> ${line}` : ">"))
+    .join("\n")
+}
+
+function stripResidualMdx(value: string): string {
+  return value
+    .replace(/<\/?[A-Za-z][A-Za-z0-9_.-]*(?:\s[^>]*)?>/g, "")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+}
+
+function collapseMdxWhitespace(value: string): string {
+  return value.replace(/\s+/g, " ").trim()
 }
 
 function parseDocBody(body: string): {
@@ -984,6 +1108,18 @@ function parseDocBody(body: string): {
       blocks.push({
         kind: "hr",
         text: "",
+      })
+      index += 1
+      continue
+    }
+
+    const imageMatch = trimmed.match(/^!\[([^\]]*)\]\(([^)]+)\)$/)
+    if (imageMatch) {
+      blocks.push({
+        kind: "image",
+        text: imageMatch[1] || "",
+        alt: imageMatch[1] || "",
+        src: imageMatch[2] || "",
       })
       index += 1
       continue

@@ -16,6 +16,15 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByRole("button", { name: "Copy Page" })).toBeVisible()
   })
 
+  test("docs pages normalize mdx component blocks into readable content", async ({ page }) => {
+    await page.goto("/docs/mcp")
+
+    await expect(page.getByRole("heading", { name: "MCP Server" })).toBeVisible()
+    await expect(page.locator(".doc-body")).toContainText("Claude Code")
+    await expect(page.locator(".doc-body")).not.toContainText("<TabsContent")
+    await expect(page.locator(".doc-body")).not.toContainText("<Callout")
+  })
+
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
     await page.goto("/examples/dashboard")
 
