@@ -115,8 +115,18 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
     }
   }
 
-  if (pathname === "/docs" || pathname.startsWith("/docs/")) {
-    const slug = pathname === "/docs" ? "" : pathname.slice("/docs/".length)
+  if (pathname === "/docs") {
+    return {
+      kind: "docs-index",
+      status: 200,
+      pathname,
+      pageTitle: "Docs - @fictjs/shadcn",
+      ...basePayload,
+    }
+  }
+
+  if (pathname.startsWith("/docs/")) {
+    const slug = pathname.slice("/docs/".length)
     const doc = catalog.docsBySlug.get(slug) ?? null
     const { previous, next } = getDocNeighbors(catalog, slug)
     return {
