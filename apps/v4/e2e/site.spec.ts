@@ -66,6 +66,14 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".theme-preview-gallery .example-preview-card")).toHaveCount(2)
   })
 
+  test("colors route renders the wrapped palette grid", async ({ page }) => {
+    await page.goto("/colors")
+
+    await expect(page.getByRole("heading", { name: "Tailwind Colors in Every Format" })).toBeVisible()
+    await expect(page.locator(".colors-route-grid .color-palette").first()).toBeVisible()
+    await expect(page.locator(".colors-route-grid")).toContainText("amber")
+  })
+
   test("authentication and rtl examples stay interactive", async ({ page }) => {
     await page.goto("/examples/authentication")
 
