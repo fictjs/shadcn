@@ -220,7 +220,6 @@ function HomePage(props: { route: ResolvedRoute }) {
     <section class="stack-gap">
       <div class="home-hero-card route-page-header">
         <AnnouncementBadge />
-        <p class="eyebrow">Open Source. Open Code.</p>
         <h1>The Foundation for your Design System</h1>
         <p class="lead">
           A set of beautifully designed components that you can customize, extend, and build on.
@@ -850,7 +849,6 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
     <section class="stack-gap">
       <div class="route-page-header">
         <AnnouncementBadge />
-        <p class="eyebrow">Examples</p>
         <h1>The Foundation for your Design System</h1>
         <p class="lead">
           A set of beautifully designed components that you can customize, extend, and build on.
@@ -974,11 +972,10 @@ function ChartsPage(props: { route: ResolvedRoute }) {
     <section class="stack-gap">
       <div class="route-page-header">
         <AnnouncementBadge />
-        <p class="eyebrow">Charts</p>
         <h1>Beautiful Charts &amp; Graphs</h1>
         <p class="lead">
-          A collection of ready-to-use chart components. From basic charts to rich data displays,
-          copy and paste into your apps.
+          A collection of ready-to-use chart components built with Recharts. From basic charts to
+          rich data displays, copy and paste into your apps.
         </p>
         <div class="cta-row">
           <a class="button" href="#charts">
@@ -1039,10 +1036,10 @@ function BlocksPage(props: { route: ResolvedRoute }) {
     <section class="stack-gap">
       <div class="route-page-header">
         <AnnouncementBadge />
-        <p class="eyebrow">Blocks</p>
         <h1>Building Blocks for the Web</h1>
         <p class="lead">
-          Clean, modern building blocks. Copy and paste into your apps. Open Source. Free forever.
+          Clean, modern building blocks. Copy and paste into your apps. Works with all React
+          frameworks. Open Source. Free forever.
         </p>
         <div class="cta-row">
           <a class="button" href="#blocks">
@@ -1101,7 +1098,6 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
     <section class="stack-gap">
       <div class="route-page-header">
         <AnnouncementBadge />
-        <p class="eyebrow">Themes</p>
         <h1>Pick a Color. Make it yours.</h1>
         <p class="lead">
           Try our hand-picked themes. Copy and paste them into your project. New theme editor coming
@@ -1195,7 +1191,6 @@ function ColorsPage() {
     <section class="stack-gap">
       <div class="route-page-header">
         <AnnouncementBadge />
-        <p class="eyebrow">Colors</p>
         <h1>Tailwind Colors in Every Format</h1>
         <p class="lead">
           The complete Tailwind color palette in HEX, RGB, HSL, CSS variables, and classes. Ready to
