@@ -1238,7 +1238,7 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
 
 function ColorsPage() {
   return (
-    <section class="stack-gap">
+    <section class="stack-gap colors-route">
       <div class="route-page-header">
         <AnnouncementBadge />
         <h1>Tailwind Colors in Every Format</h1>
@@ -1256,34 +1256,30 @@ function ColorsPage() {
         </div>
       </div>
 
-      <nav class="section-nav" aria-label="Color palettes navigation">
-        {colorPalettes.map((palette) => (
-          <a key={palette.name} href={`#${palette.name}`}>
-            {palette.name}
-          </a>
-        ))}
-      </nav>
+      <div class="colors-nav-shell" aria-hidden="true"></div>
 
-      <div class="colors-grid" id="colors">
-        {colorPalettes.map((palette) => (
-          <section class="card color-palette" key={palette.name} id={palette.name}>
-            <h2>{palette.name}</h2>
-            <div class="color-scales">
-              {palette.scales.map((entry) => (
-                <article class="color-scale" key={`${palette.name}-${entry.scale}`}>
-                  <div class="color-swatch" style={`background:${entry.hex}`}></div>
-                  <div class="color-meta">
-                    <p class="pill-name">{entry.scale}</p>
-                    <p class="slug">{entry.hex}</p>
-                    <p class="slug">{entry.rgb}</p>
-                    <p class="slug">{entry.hsl}</p>
-                    <p class="slug">{entry.oklch}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-        ))}
+      <div class="route-surface-wrapper colors-route-shell">
+        <div class="colors-route-grid" id="colors">
+          {colorPalettes.map((palette) => (
+            <section class="card color-palette" key={palette.name} id={palette.name}>
+              <h2>{palette.name}</h2>
+              <div class="color-scales">
+                {palette.scales.map((entry) => (
+                  <article class="color-scale" key={`${palette.name}-${entry.scale}`}>
+                    <div class="color-swatch" style={`background:${entry.hex}`}></div>
+                    <div class="color-meta">
+                      <p class="pill-name">{entry.scale}</p>
+                      <p class="slug">{entry.hex}</p>
+                      <p class="slug">{entry.rgb}</p>
+                      <p class="slug">{entry.hsl}</p>
+                      <p class="slug">{entry.oklch}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
       </div>
     </section>
   )

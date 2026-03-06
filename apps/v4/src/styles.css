@@ -666,6 +666,23 @@ h1 {
   gap: 1rem;
 }
 
+.colors-route {
+  gap: 1.25rem;
+}
+
+.colors-nav-shell {
+  display: none;
+}
+
+.colors-route-shell {
+  padding-top: 0.25rem;
+}
+
+.colors-route-grid {
+  display: grid;
+  gap: 2rem;
+}
+
 .color-palette {
   display: grid;
   gap: 0.65rem;
@@ -2012,6 +2029,10 @@ h1 {
 @media (min-width: 1140px) {
   .charts-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .colors-route-grid {
+    gap: 5rem;
   }
 
   .chart-empty-slot {
