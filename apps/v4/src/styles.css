@@ -126,6 +126,102 @@ a {
   letter-spacing: -0.01em;
 }
 
+.mobile-nav-trigger,
+.mobile-nav-links {
+  display: none;
+}
+
+.mobile-nav-trigger {
+  align-items: center;
+  gap: 0.65rem;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  font-weight: 600;
+  padding: 0;
+  cursor: pointer;
+}
+
+.mobile-nav-trigger-icon {
+  position: relative;
+  width: 1rem;
+  height: 1rem;
+}
+
+.mobile-nav-line {
+  position: absolute;
+  left: 0;
+  width: 1rem;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transition: transform 120ms ease, top 120ms ease;
+}
+
+.mobile-nav-line-top {
+  top: 0.28rem;
+}
+
+.mobile-nav-line-bottom {
+  top: 0.7rem;
+}
+
+.mobile-nav-line-top.is-open,
+.mobile-nav-line-bottom.is-open {
+  top: 0.5rem;
+}
+
+.mobile-nav-line-top.is-open {
+  transform: rotate(45deg);
+}
+
+.mobile-nav-line-bottom.is-open {
+  transform: rotate(-45deg);
+}
+
+.mobile-nav-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  padding-top: calc(var(--header-height) + 1rem);
+  background: color-mix(in oklab, var(--background) 70%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.mobile-nav-panel {
+  width: min(100% - 1rem, 32rem);
+  margin: 0 auto;
+  display: grid;
+  gap: 1.25rem;
+  border: 1px solid color-mix(in oklab, var(--border) 78%, transparent);
+  border-radius: 1rem;
+  background: color-mix(in oklab, var(--card) 95%, var(--muted) 5%);
+  box-shadow: 0 24px 70px color-mix(in oklab, var(--foreground) 10%, transparent);
+  padding: 1rem;
+}
+
+.mobile-nav-section {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.mobile-nav-links {
+  gap: 0.55rem;
+}
+
+.mobile-nav-links a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid color-mix(in oklab, var(--border) 84%, transparent);
+  border-radius: 0.9rem;
+  background: color-mix(in oklab, var(--muted) 18%, var(--card));
+  padding: 0.85rem 0.95rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
 .site-nav {
   min-width: 0;
   display: flex;
@@ -3488,6 +3584,11 @@ h1 {
 }
 
 @media (max-width: 860px) {
+  .mobile-nav-trigger,
+  .mobile-nav-links {
+    display: flex;
+  }
+
   .create-header-bar,
   .header-primary,
   .header-actions {
@@ -3508,6 +3609,28 @@ h1 {
   .create-header-actions .button,
   .create-header-actions a.button {
     width: 100%;
+  }
+
+  .header-row {
+    align-items: center;
+  }
+
+  .header-primary {
+    justify-content: flex-start;
+  }
+
+  .site-nav,
+  .header-search-button {
+    display: none;
+  }
+
+  .header-actions {
+    justify-content: flex-end;
+  }
+
+  .header-divider,
+  .header-create-link {
+    display: none;
   }
 
   .create-nav {
