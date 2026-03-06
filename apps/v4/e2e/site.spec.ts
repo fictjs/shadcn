@@ -158,4 +158,22 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".rtl-preview-frame")).toHaveAttribute("dir", "ltr")
     await expect(page.locator(".rtl-stat-card")).toHaveCount(3)
   })
+
+  test("create route builds a live starter workspace", async ({ page }) => {
+    await page.goto("/create")
+
+    await expect(page.getByRole("heading", { name: "Customize everything." })).toBeVisible()
+    await expect(page.getByLabel("Search items")).toBeVisible()
+    await expect(page.locator(".create-command-code")).toContainText("--template next")
+    await expect(page.locator(".create-command-code")).toContainText("--base radix")
+
+    await page.locator(".create-kind-pills").getByRole("button", { name: "Examples" }).click()
+    await page.locator(".create-explorer-list").getByRole("button", { name: /Tasks/ }).click()
+    await expect(page.locator(".create-preview-stage .tasks-example")).toBeVisible()
+
+    await page.getByRole("button", { name: "Base UI" }).click()
+    await page.getByRole("button", { name: "Vite" }).click()
+    await expect(page.locator(".create-command-code")).toContainText("--template vite")
+    await expect(page.locator(".create-command-code")).toContainText("--base base")
+  })
 })
