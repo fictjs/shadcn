@@ -163,6 +163,219 @@ const fullWidthChartIds = new Set([
   "chart-line-interactive",
 ])
 
+type CreateCatalogKind = "component" | "example" | "block" | "chart"
+
+interface CreateCatalogItem {
+  key: string
+  id: string
+  title: string
+  description: string
+  kind: CreateCatalogKind
+}
+
+interface CreateOption {
+  name: string
+  title: string
+  description: string
+}
+
+const createBaseOptions: CreateOption[] = [
+  {
+    name: "radix",
+    title: "Radix UI",
+    description: "Optimized for fast development, easy maintenance, and accessibility.",
+  },
+  {
+    name: "base",
+    title: "Base UI",
+    description: "Components for building accessible web apps and design systems.",
+  },
+]
+
+const createStyleOptions: CreateOption[] = [
+  { name: "vega", title: "Vega", description: "Classic shadcn/ui spacing and balance." },
+  { name: "nova", title: "Nova", description: "Compact spacing for denser workspaces." },
+  { name: "maia", title: "Maia", description: "Soft corners and generous breathing room." },
+  { name: "lyra", title: "Lyra", description: "Sharper framing paired with mono-forward rhythm." },
+  { name: "mira", title: "Mira", description: "Purpose-built for compact control-heavy screens." },
+]
+
+const createBaseColorOptions: CreateOption[] = [
+  { name: "neutral", title: "Neutral", description: "Balanced grays that match the default registry." },
+  { name: "stone", title: "Stone", description: "Warmer neutrals with softer contrast." },
+  { name: "zinc", title: "Zinc", description: "Crisp cool grays for UI-heavy layouts." },
+  { name: "gray", title: "Gray", description: "Classic gray tokens for a familiar system feel." },
+]
+
+const createIconOptions: CreateOption[] = [
+  { name: "lucide", title: "Lucide", description: "The default shadcn/ui icon library." },
+  { name: "hugeicons", title: "Hugeicons", description: "Rounded and expressive UI iconography." },
+  { name: "tabler", title: "Tabler", description: "Technical outlines with steady stroke weight." },
+  { name: "phosphor", title: "Phosphor", description: "Friendly shapes with broader personality." },
+]
+
+const createFontOptions: CreateOption[] = [
+  { name: "inter", title: "Inter", description: "Neutral, readable, and close to upstream defaults." },
+  { name: "geist", title: "Geist", description: "Tighter modern spacing with product-grade polish." },
+  { name: "figtree", title: "Figtree", description: "Soft, open letterforms for lighter interfaces." },
+  { name: "jetbrains-mono", title: "JetBrains Mono", description: "Monospaced rhythm for technical surfaces." },
+]
+
+const createRadiusOptions: CreateOption[] = [
+  { name: "default", title: "Default", description: "Matches the standard registry radius." },
+  { name: "none", title: "None", description: "Straight edges for harder layout language." },
+  { name: "small", title: "Small", description: "Tight rounding with restrained softness." },
+  { name: "medium", title: "Medium", description: "Balanced radius for mixed content density." },
+  { name: "large", title: "Large", description: "Softer corners for more atmospheric shells." },
+]
+
+const createTemplateOptions: CreateOption[] = [
+  { name: "next", title: "Next.js", description: "SSR-friendly starter matching the upstream default." },
+  { name: "vite", title: "Vite", description: "Fast client-first setup for focused Fict experiments." },
+  { name: "start", title: "Starter", description: "Minimal baseline with fewer assumptions up front." },
+]
+
+const createVisibleThemes: ThemeEntry[] = [
+  { name: "amber", title: "Amber" },
+  { name: "blue", title: "Blue" },
+  { name: "cyan", title: "Cyan" },
+  { name: "emerald", title: "Emerald" },
+  { name: "fuchsia", title: "Fuchsia" },
+  { name: "green", title: "Green" },
+  { name: "indigo", title: "Indigo" },
+  { name: "lime", title: "Lime" },
+  { name: "neutral", title: "Neutral" },
+  { name: "orange", title: "Orange" },
+  { name: "pink", title: "Pink" },
+  { name: "purple", title: "Purple" },
+  { name: "red", title: "Red" },
+  { name: "rose", title: "Rose" },
+  { name: "sky", title: "Sky" },
+  { name: "teal", title: "Teal" },
+  { name: "violet", title: "Violet" },
+  { name: "yellow", title: "Yellow" },
+]
+
+const createKindOrder: CreateCatalogKind[] = ["component", "example", "block", "chart"]
+
+const createKindLabels: Record<CreateCatalogKind, string> = {
+  component: "Components",
+  example: "Examples",
+  block: "Blocks",
+  chart: "Charts",
+}
+
+const createComponentItems: CreateCatalogItem[] = [
+  {
+    key: "component:button",
+    id: "button",
+    title: "Button",
+    description: "registry/new-york-v4/ui/button.tsx",
+    kind: "component",
+  },
+  {
+    key: "component:input",
+    id: "input",
+    title: "Input",
+    description: "registry/new-york-v4/ui/input.tsx",
+    kind: "component",
+  },
+  {
+    key: "component:dialog",
+    id: "dialog",
+    title: "Dialog",
+    description: "registry/new-york-v4/ui/dialog.tsx",
+    kind: "component",
+  },
+]
+
+const createExampleItems: CreateCatalogItem[] = [
+  {
+    key: "example:dashboard",
+    id: "dashboard",
+    title: "Dashboard",
+    description: "Admin dashboard example using cards, charts, tables, and sidebar layouts.",
+    kind: "example",
+  },
+  {
+    key: "example:tasks",
+    id: "tasks",
+    title: "Tasks",
+    description: "A task and issue tracker build using Tanstack Table.",
+    kind: "example",
+  },
+  {
+    key: "example:playground",
+    id: "playground",
+    title: "Playground",
+    description: "The OpenAI Playground built using the components.",
+    kind: "example",
+  },
+]
+
+const createBlockItems: CreateCatalogItem[] = [
+  {
+    key: "block:dashboard-01",
+    id: "dashboard-01",
+    title: "Dashboard 01",
+    description: "Dense dashboard block with sidebar chrome and analytics surfaces.",
+    kind: "block",
+  },
+  {
+    key: "block:sidebar-07",
+    id: "sidebar-07",
+    title: "Sidebar 07",
+    description: "A navigational shell with projects, teams, and user rails.",
+    kind: "block",
+  },
+  {
+    key: "block:login-03",
+    id: "login-03",
+    title: "Login 03",
+    description: "Authentication block with split-brand layout and simple form framing.",
+    kind: "block",
+  },
+]
+
+const createChartItems: CreateCatalogItem[] = [
+  {
+    key: "chart:chart-area-interactive",
+    id: "chart-area-interactive",
+    title: "Area Chart",
+    description: "Interactive area chart with compact dashboard framing.",
+    kind: "chart",
+  },
+  {
+    key: "chart:chart-bar-interactive",
+    id: "chart-bar-interactive",
+    title: "Bar Chart",
+    description: "Interactive bar chart with grouped metrics and hover states.",
+    kind: "chart",
+  },
+  {
+    key: "chart:chart-line-interactive",
+    id: "chart-line-interactive",
+    title: "Line Chart",
+    description: "Interactive line chart for compact trend inspection.",
+    kind: "chart",
+  },
+]
+
+const createItemLookup: Record<string, CreateCatalogItem> = {
+  "component:button": createComponentItems[0],
+  "component:input": createComponentItems[1],
+  "component:dialog": createComponentItems[2],
+  "example:dashboard": createExampleItems[0],
+  "example:tasks": createExampleItems[1],
+  "example:playground": createExampleItems[2],
+  "block:dashboard-01": createBlockItems[0],
+  "block:sidebar-07": createBlockItems[1],
+  "block:login-03": createBlockItems[2],
+  "chart:chart-area-interactive": createChartItems[0],
+  "chart:chart-bar-interactive": createChartItems[1],
+  "chart:chart-line-interactive": createChartItems[2],
+}
+
 function formatDisplayLabel(value: string): string {
   const normalized = value.replace(/[-_]/g, " ").replace(/\s+/g, " ").trim()
   return normalized
@@ -172,100 +385,886 @@ export function App(props: AppProps) {
   const route = props.route
 
   return (
-    <div class="site-shell">
-      <header class="site-header">
-        <div class="container header-row">
-          <div class="header-primary">
+    route.kind === "create" ? <CreatePage /> : (
+      <div class="site-shell">
+        <header class="site-header">
+          <div class="container header-row">
+            <div class="header-primary">
+              <a href="/" class="brand-link" aria-label="shadcn/ui home">
+                <span class="brand-mark" aria-hidden="true">
+                  S
+                </span>
+                <span class="brand-copy">shadcn/ui</span>
+              </a>
+              <nav class="site-nav" aria-label="Primary">
+                <a
+                  class={route.pathname === "/docs" || route.pathname.startsWith("/docs/") ? "active-nav-link" : ""}
+                  href="/docs"
+                >
+                  Docs
+                </a>
+                <a
+                  class={
+                    route.pathname === "/components" ||
+                    route.pathname === "/docs/components" ||
+                    route.pathname.startsWith("/docs/components/")
+                      ? "active-nav-link"
+                      : ""
+                  }
+                  href="/docs/components"
+                >
+                  Components
+                </a>
+                <a class={route.pathname === "/blocks" || route.pathname.startsWith("/blocks/") ? "active-nav-link" : ""} href="/blocks">
+                  Blocks
+                </a>
+                <a class={route.pathname === "/charts" || route.pathname.startsWith("/charts/") ? "active-nav-link" : ""} href="/charts/area">
+                  Charts
+                </a>
+                <a class={route.pathname === "/themes" ? "active-nav-link" : ""} href="/themes">
+                  Themes
+                </a>
+                <a class={route.pathname === "/colors" ? "active-nav-link" : ""} href="/colors">
+                  Colors
+                </a>
+              </nav>
+            </div>
+
+            <div class="header-actions">
+              <button type="button" class="header-search-button" aria-label="Search documentation">
+                <span class="header-search-copy">Search documentation...</span>
+                <span class="header-search-short">Search...</span>
+                <span class="header-search-kbd" aria-hidden="true">
+                  <span>⌘</span>
+                  <span>K</span>
+                </span>
+              </button>
+              <span class="header-divider" aria-hidden="true"></span>
+              <a class="header-icon-link" href="https://github.com/shadcn-ui/ui" aria-label="GitHub repository">
+                GitHub
+              </a>
+              <span class="header-divider header-divider-wide" aria-hidden="true"></span>
+              <button type="button" class="header-icon-link" aria-label="Toggle color mode">
+                Light
+              </button>
+              <span class="header-divider" aria-hidden="true"></span>
+              <a class="header-create-link" href="/create">
+                New Project
+              </a>
+            </div>
+          </div>
+        </header>
+
+        <main class="container main-content">
+          {route.kind === "home" ? <HomePage route={route} /> : null}
+          {route.kind === "docs-index" ? <DocsIndexPage docs={route.docs} /> : null}
+          {route.kind === "docs-detail" && route.doc ? <DocDetailPage route={route} /> : null}
+          {route.kind === "components" ? <ComponentsPage components={route.components} /> : null}
+          {route.kind === "examples" ? <ExamplesPage route={route} /> : null}
+          {route.kind === "charts" ? <ChartsPage route={route} /> : null}
+          {route.kind === "blocks" ? <BlocksPage route={route} /> : null}
+          {route.kind === "themes" ? <ThemesPage themes={route.themes} /> : null}
+          {route.kind === "colors" ? <ColorsPage /> : null}
+          {route.kind === "not-found" ? <NotFoundPage pathname={route.pathname} /> : null}
+        </main>
+
+        <footer class="site-footer">
+          <div class="container footer-row">
+            <p>
+              Built by <a href="https://x.com/shadcn">shadcn</a> at{" "}
+              <a href="https://vercel.com/new?utm_source=shadcn_site&utm_medium=web&utm_campaign=docs_cta_deploy_now_callout">
+                Vercel
+              </a>
+              . The source code is available on{" "}
+              <a href="https://github.com/shadcn-ui/ui">GitHub</a>.
+            </p>
+          </div>
+        </footer>
+      </div>
+    )
+  )
+}
+
+function CreatePage() {
+  let activeKind = $state<CreateCatalogKind>("component")
+  let activeId = $state("button")
+  let base = $state("radix")
+  let theme = $state("neutral")
+  let font = $state("inter")
+  let starterTemplate = $state("next")
+  let copiedLabel = $state("Share")
+  let copiedCommandLabel = $state("Copy Command")
+
+  const visibleThemes = createVisibleThemes
+
+  const activeItems =
+    activeKind === "component"
+      ? createComponentItems
+      : activeKind === "example"
+        ? createExampleItems
+        : activeKind === "block"
+          ? createBlockItems
+          : createChartItems
+  const activeItem = createItemLookup[`${activeKind}:${activeId}`] || createComponentItems[0]
+
+  const createInstallCommand =
+    `pnpm dlx @fictjs/shadcn@latest init --template ${starterTemplate} --base ${base}` +
+    `\npnpm dlx @fictjs/shadcn@latest theme apply ${theme}` +
+    `\npnpm dlx @fictjs/shadcn@latest add ${activeItem.kind === "example" ? `registry/new-york-v4/examples/${activeItem.id}` : activeItem.id} --font ${font}`
+
+  const resetCreatePage = () => {
+    activeKind = "component"
+    activeId = "button"
+    base = "radix"
+    theme = "neutral"
+    font = "inter"
+    starterTemplate = "next"
+    copiedLabel = "Share"
+    copiedCommandLabel = "Copy Command"
+  }
+
+  const copyShareUrl = () => {
+    if (typeof window === "undefined" || typeof navigator === "undefined" || !navigator.clipboard || !activeItem) {
+      return
+    }
+
+    void navigator.clipboard.writeText(window.location.href)
+    copiedLabel = "Copied"
+  }
+
+  const copyInstallCommand = (event: MouseEvent) => {
+    if (typeof navigator === "undefined" || !navigator.clipboard) {
+      return
+    }
+
+    const target = event.currentTarget
+    if (!(target instanceof HTMLButtonElement)) {
+      return
+    }
+
+    const card = target.closest(".create-command-card")
+    const code = card?.querySelector("code")
+    const command = code?.textContent?.trim()
+    if (!command) {
+      return
+    }
+
+    void navigator.clipboard.writeText(command)
+    copiedCommandLabel = "Copied"
+  }
+
+  return (
+    <div class="create-route-shell">
+      <header class="create-header">
+        <div class="create-header-bar">
+          <div class="create-header-main">
             <a href="/" class="brand-link" aria-label="shadcn/ui home">
               <span class="brand-mark" aria-hidden="true">
                 S
               </span>
               <span class="brand-copy">shadcn/ui</span>
             </a>
-            <nav class="site-nav" aria-label="Primary">
-              <a
-                class={route.pathname === "/docs" || route.pathname.startsWith("/docs/") ? "active-nav-link" : ""}
-                href="/docs"
-              >
-                Docs
-              </a>
-              <a
-                class={
-                  route.pathname === "/components" ||
-                  route.pathname === "/docs/components" ||
-                  route.pathname.startsWith("/docs/components/")
-                    ? "active-nav-link"
-                    : ""
-                }
-                href="/docs/components"
-              >
-                Components
-              </a>
-              <a class={route.pathname === "/blocks" || route.pathname.startsWith("/blocks/") ? "active-nav-link" : ""} href="/blocks">
-                Blocks
-              </a>
-              <a class={route.pathname === "/charts" || route.pathname.startsWith("/charts/") ? "active-nav-link" : ""} href="/charts/area">
-                Charts
-              </a>
-              <a class={route.pathname === "/themes" ? "active-nav-link" : ""} href="/themes">
-                Themes
-              </a>
-              <a class={route.pathname === "/colors" ? "active-nav-link" : ""} href="/colors">
-                Colors
-              </a>
+            <nav class="site-nav create-nav" aria-label="Create navigation">
+              <a href="/docs">Docs</a>
+              <a href="/docs/components">Components</a>
+              <a href="/blocks">Blocks</a>
+              <a href="/charts/area">Charts</a>
+              <a href="/themes">Themes</a>
+              <a href="/colors">Colors</a>
             </nav>
           </div>
 
-          <div class="header-actions">
-            <button type="button" class="header-search-button" aria-label="Search documentation">
-              <span class="header-search-copy">Search documentation...</span>
-              <span class="header-search-short">Search...</span>
-              <span class="header-search-kbd" aria-hidden="true">
-                <span>⌘</span>
-                <span>K</span>
-              </span>
+          <div class="create-header-actions">
+            <button
+              type="button"
+              class="button button-ghost"
+              onClick$={() => {
+                activeKind = "component"
+                activeId = "button"
+                base = "radix"
+                theme = "neutral"
+                font = "inter"
+                starterTemplate = "next"
+                copiedLabel = "Share"
+                copiedCommandLabel = "Copy Command"
+              }}
+            >
+              Reset
             </button>
-            <span class="header-divider" aria-hidden="true"></span>
-            <a class="header-icon-link" href="https://github.com/shadcn-ui/ui" aria-label="GitHub repository">
-              GitHub
-            </a>
-            <span class="header-divider header-divider-wide" aria-hidden="true"></span>
-            <button type="button" class="header-icon-link" aria-label="Toggle color mode">
-              Light
+            <button
+              type="button"
+              class="button button-ghost"
+              onClick$={() => {
+                if (typeof window === "undefined" || typeof navigator === "undefined" || !navigator.clipboard) {
+                  return
+                }
+
+                void navigator.clipboard.writeText(window.location.href)
+                copiedLabel = "Copied"
+              }}
+            >
+              {copiedLabel}
             </button>
-            <span class="header-divider" aria-hidden="true"></span>
-            <a class="header-create-link" href="/create">
-              New Project
+            <a class="button" href="/docs/installation">
+              Install
             </a>
           </div>
         </div>
       </header>
+      <main class="create-main-shell">
+        <section class="create-workspace">
+          <aside class="create-explorer-panel">
+            <div class="create-panel-head">
+              <p class="eyebrow">New Project</p>
+              <h1>Customize everything.</h1>
+              <p class="lead create-lead">
+                Pick your component library, base color, theme, fonts, icons, and starter item to shape your own
+                version of shadcn/ui.
+              </p>
+            </div>
 
-      <main class="container main-content">
-        {route.kind === "home" ? <HomePage route={route} /> : null}
-        {route.kind === "docs-index" ? <DocsIndexPage docs={route.docs} /> : null}
-        {route.kind === "docs-detail" && route.doc ? <DocDetailPage route={route} /> : null}
-        {route.kind === "components" ? <ComponentsPage components={route.components} /> : null}
-        {route.kind === "examples" ? <ExamplesPage route={route} /> : null}
-        {route.kind === "charts" ? <ChartsPage route={route} /> : null}
-        {route.kind === "blocks" ? <BlocksPage route={route} /> : null}
-        {route.kind === "themes" ? <ThemesPage themes={route.themes} /> : null}
-        {route.kind === "colors" ? <ColorsPage /> : null}
-        {route.kind === "not-found" ? <NotFoundPage pathname={route.pathname} /> : null}
+            <div class="card control-card create-search-card">
+              <label for="create-item-filter">Search items</label>
+              <input id="create-item-filter" type="text" placeholder="Curated starters below. Search coming next." />
+            </div>
+
+            <div class="create-kind-pills" aria-label="Catalog filters">
+              {createKindOrder.map((kind) => (
+                <button
+                  type="button"
+                  key={kind}
+                  data-kind={kind}
+                  class={activeKind === kind ? "create-kind-pill is-active" : "create-kind-pill"}
+                  onClick$={(event: MouseEvent) => {
+                    const target = event.currentTarget
+                    if (!(target instanceof HTMLButtonElement)) {
+                      return
+                    }
+
+                    const nextKind = target.dataset.kind as CreateCatalogKind | undefined
+                    if (!nextKind) {
+                      return
+                    }
+
+                    activeKind = nextKind
+                    activeId =
+                      nextKind === "component"
+                        ? "button"
+                        : nextKind === "example"
+                          ? "dashboard"
+                          : nextKind === "block"
+                            ? "dashboard-01"
+                            : "chart-area-interactive"
+                    copiedCommandLabel = "Copy Command"
+                  }}
+                >
+                  {createKindLabels[kind]}
+                </button>
+              ))}
+            </div>
+
+            <div class="create-explorer-groups">
+              <section class="create-explorer-group">
+                <div class="create-explorer-group-head">
+                  <h2>{createKindLabels[activeKind]}</h2>
+                  <span>{activeItems.length}</span>
+                </div>
+                <div class="create-explorer-list">
+                  {activeItems.map((item) => (
+                    <button
+                      type="button"
+                      key={item.key}
+                      data-item-id={item.id}
+                      class={activeItem.key === item.key ? "create-item-button is-active" : "create-item-button"}
+                      onClick$={(event: MouseEvent) => {
+                        const target = event.currentTarget
+                        if (!(target instanceof HTMLButtonElement)) {
+                          return
+                        }
+
+                        const nextItemId = target.dataset.itemId
+                        if (!nextItemId) {
+                          return
+                        }
+
+                        activeId = nextItemId
+                        copiedCommandLabel = "Copy Command"
+                      }}
+                    >
+                      <span class="create-item-title">{item.title}</span>
+                      <span class="create-item-description">{item.description}</span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            </div>
+          </aside>
+
+          <section class="create-preview-panel">
+            <div class="create-preview-header">
+              <div>
+                <p class="eyebrow">Preview</p>
+                <h2>{activeItem.title}</h2>
+                <p class="lead create-preview-copy">{activeItem.description}</p>
+              </div>
+              <div class="create-preview-badges" aria-label="Active configuration">
+                <span>{base}</span>
+                <span>{theme}</span>
+                <span>{font}</span>
+                <span>{starterTemplate}</span>
+              </div>
+            </div>
+
+            <div class="create-preview-stage-shell">
+              <CreatePreviewStage kind={activeKind} itemId={activeId} />
+            </div>
+
+            <div class="create-command-card">
+              <div class="create-command-copy">
+                <p class="eyebrow">CLI</p>
+                <h3>Bootstrap this system</h3>
+              </div>
+              <pre class="doc-code create-command-code">
+                <code>{createInstallCommand}</code>
+              </pre>
+              <div class="create-command-actions">
+                <button
+                  type="button"
+                  class="button button-ghost"
+                  onClick$={(event: MouseEvent) => {
+                    if (typeof navigator === "undefined" || !navigator.clipboard) {
+                      return
+                    }
+
+                    const target = event.currentTarget
+                    if (!(target instanceof HTMLButtonElement)) {
+                      return
+                    }
+
+                    const card = target.closest(".create-command-card")
+                    const code = card?.querySelector("code")
+                    const command = code?.textContent?.trim()
+                    if (!command) {
+                      return
+                    }
+
+                    void navigator.clipboard.writeText(command)
+                    copiedCommandLabel = "Copied"
+                  }}
+                >
+                  {copiedCommandLabel}
+                </button>
+                <a class="button button-ghost" href="/docs/installation">
+                  View Docs
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <aside class="create-customizer-panel">
+            <div class="create-panel-head create-panel-head-compact">
+              <p class="eyebrow">Customizer</p>
+              <h2>Design system settings</h2>
+              <p class="lead create-customizer-copy">
+                Tune the same surface areas the upstream create flow highlights, then copy the command when the system
+                feels right.
+              </p>
+            </div>
+
+            <section class="create-option-group">
+              <div class="create-option-group-head">
+                <h3>Base</h3>
+              </div>
+              <div class="create-option-grid">
+                {createBaseOptions.map((option) => (
+                  <button
+                    type="button"
+                    key={option.name}
+                    data-value={option.name}
+                    class={base === option.name ? "create-option-card is-active" : "create-option-card"}
+                    onClick$={(event: MouseEvent) => {
+                      const target = event.currentTarget
+                      if (!(target instanceof HTMLButtonElement)) {
+                        return
+                      }
+
+                      const nextValue = target.dataset.value
+                      if (!nextValue) {
+                        return
+                      }
+
+                      base = nextValue
+                    }}
+                  >
+                    <span class="create-option-title">{option.title}</span>
+                    <span class="create-option-description">{option.description}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <section class="create-option-group">
+              <div class="create-option-group-head">
+                <h3>Theme</h3>
+              </div>
+              <div class="create-option-grid">
+                {visibleThemes.map((entry) => (
+                  <button
+                    type="button"
+                    key={entry.name}
+                    data-value={entry.name}
+                    class={theme === entry.name ? "create-option-card is-active" : "create-option-card"}
+                    onClick$={(event: MouseEvent) => {
+                      const target = event.currentTarget
+                      if (!(target instanceof HTMLButtonElement)) {
+                        return
+                      }
+
+                      const nextValue = target.dataset.value
+                      if (!nextValue) {
+                        return
+                      }
+
+                      theme = nextValue
+                    }}
+                  >
+                    <span class="create-option-title">{entry.title === "Neutral" ? "Default" : entry.title}</span>
+                    <span class="create-option-description">{entry.title} token set</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <section class="create-option-group">
+              <div class="create-option-group-head">
+                <h3>Font</h3>
+              </div>
+              <div class="create-option-grid">
+                {createFontOptions.map((option) => (
+                  <button
+                    type="button"
+                    key={option.name}
+                    data-value={option.name}
+                    class={font === option.name ? "create-option-card is-active" : "create-option-card"}
+                    onClick$={(event: MouseEvent) => {
+                      const target = event.currentTarget
+                      if (!(target instanceof HTMLButtonElement)) {
+                        return
+                      }
+
+                      const nextValue = target.dataset.value
+                      if (!nextValue) {
+                        return
+                      }
+
+                      font = nextValue
+                    }}
+                  >
+                    <span class="create-option-title">{option.title}</span>
+                    <span class="create-option-description">{option.description}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <section class="create-option-group">
+              <div class="create-option-group-head">
+                <h3>Template</h3>
+              </div>
+              <div class="create-option-grid">
+                {createTemplateOptions.map((option) => (
+                  <button
+                    type="button"
+                    key={option.name}
+                    data-value={option.name}
+                    class={starterTemplate === option.name ? "create-option-card is-active" : "create-option-card"}
+                    onClick$={(event: MouseEvent) => {
+                      const target = event.currentTarget
+                      if (!(target instanceof HTMLButtonElement)) {
+                        return
+                      }
+
+                      const nextValue = target.dataset.value
+                      if (!nextValue) {
+                        return
+                      }
+
+                      starterTemplate = nextValue
+                    }}
+                  >
+                    <span class="create-option-title">{option.title}</span>
+                    <span class="create-option-description">{option.description}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+          </aside>
+        </section>
       </main>
+    </div>
+  )
+}
 
-      <footer class="site-footer">
-        <div class="container footer-row">
-          <p>
-            Built by <a href="https://x.com/shadcn">shadcn</a> at{" "}
-            <a href="https://vercel.com/new?utm_source=shadcn_site&utm_medium=web&utm_campaign=docs_cta_deploy_now_callout">
-              Vercel
-            </a>
-            . The source code is available on{" "}
-            <a href="https://github.com/shadcn-ui/ui">GitHub</a>.
-          </p>
+function CreateHeader(props: { copiedLabel: string; onReset: () => void; onShare: () => void }) {
+  return (
+    <header class="create-header">
+      <div class="create-header-bar">
+        <div class="create-header-main">
+          <a href="/" class="brand-link" aria-label="shadcn/ui home">
+            <span class="brand-mark" aria-hidden="true">
+              S
+            </span>
+            <span class="brand-copy">shadcn/ui</span>
+          </a>
+          <nav class="site-nav create-nav" aria-label="Create navigation">
+            <a href="/docs">Docs</a>
+            <a href="/docs/components">Components</a>
+            <a href="/blocks">Blocks</a>
+            <a href="/charts/area">Charts</a>
+            <a href="/themes">Themes</a>
+            <a href="/colors">Colors</a>
+          </nav>
         </div>
-      </footer>
+
+        <div class="create-header-actions">
+          <button type="button" class="button button-ghost" onClick$={() => props.onReset()}>
+            Reset
+          </button>
+          <button type="button" class="button button-ghost" onClick$={() => props.onShare()}>
+            {props.copiedLabel}
+          </button>
+          <a class="button" href="/docs/installation">
+            Install
+          </a>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function CreateExplorerPanel(props: {
+  activeKind: CreateCatalogKind
+  activeItems: CreateCatalogItem[]
+  activeItemKey: string
+  onKindSelect: (kind: CreateCatalogKind) => void
+  onItemSelect: (itemId: string) => void
+}) {
+  return (
+    <aside class="create-explorer-panel">
+      <div class="create-panel-head">
+        <p class="eyebrow">New Project</p>
+        <h1>Customize everything.</h1>
+        <p class="lead create-lead">
+          Pick your component library, base color, theme, fonts, icons, and starter item to shape your own
+          version of shadcn/ui.
+        </p>
+      </div>
+
+      <div class="card control-card create-search-card">
+        <label for="create-item-filter">Search items</label>
+        <input id="create-item-filter" type="text" placeholder="Curated starters below. Search coming next." />
+      </div>
+
+      <div class="create-kind-pills" aria-label="Catalog filters">
+        {createKindOrder.map((kind) => (
+          <button
+            type="button"
+            key={kind}
+            data-kind={kind}
+            class={props.activeKind === kind ? "create-kind-pill is-active" : "create-kind-pill"}
+            onClick$={(event: MouseEvent) => {
+              const target = event.currentTarget
+              if (!(target instanceof HTMLButtonElement)) {
+                return
+              }
+
+              const nextKind = target.dataset.kind as CreateCatalogKind | undefined
+              if (!nextKind) {
+                return
+              }
+
+              props.onKindSelect(nextKind)
+            }}
+          >
+            {createKindLabels[kind]}
+          </button>
+        ))}
+      </div>
+
+      <div class="create-explorer-groups">
+        <section class="create-explorer-group">
+          <div class="create-explorer-group-head">
+            <h2>{createKindLabels[props.activeKind]}</h2>
+            <span>{props.activeItems.length}</span>
+          </div>
+          <div class="create-explorer-list">
+            {props.activeItems.map((item) => (
+              <button
+                type="button"
+                key={item.key}
+                data-item-id={item.id}
+                class={props.activeItemKey === item.key ? "create-item-button is-active" : "create-item-button"}
+                onClick$={(event: MouseEvent) => {
+                  const target = event.currentTarget
+                  if (!(target instanceof HTMLButtonElement)) {
+                    return
+                  }
+
+                  const nextItemId = target.dataset.itemId
+                  if (!nextItemId) {
+                    return
+                  }
+
+                  props.onItemSelect(nextItemId)
+                }}
+              >
+                <span class="create-item-title">{item.title}</span>
+                <span class="create-item-description">{item.description}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      </div>
+    </aside>
+  )
+}
+
+function CreatePreviewPanel(props: {
+  blocks: BlockEntry[]
+  activeKind: CreateCatalogKind
+  activeId: string
+  activeItem: CreateCatalogItem
+  base: string
+  theme: string
+  font: string
+  starterTemplate: string
+  createInstallCommand: string
+  copiedCommandLabel: string
+  onCopyCommand: (event: MouseEvent) => void
+}) {
+  return (
+    <section class="create-preview-panel">
+      <div class="create-preview-header">
+        <div>
+          <p class="eyebrow">Preview</p>
+          <h2>{props.activeItem.title}</h2>
+          <p class="lead create-preview-copy">{props.activeItem.description}</p>
+        </div>
+        <div class="create-preview-badges" aria-label="Active configuration">
+          <span>{props.base}</span>
+          <span>{props.theme}</span>
+          <span>{props.font}</span>
+          <span>{props.starterTemplate}</span>
+        </div>
+      </div>
+
+      <div class="create-preview-stage-shell">
+        <CreatePreviewStage kind={props.activeKind} itemId={props.activeId} />
+      </div>
+
+      <div class="create-command-card">
+        <div class="create-command-copy">
+          <p class="eyebrow">CLI</p>
+          <h3>Bootstrap this system</h3>
+        </div>
+        <pre class="doc-code create-command-code">
+          <code>{props.createInstallCommand}</code>
+        </pre>
+        <div class="create-command-actions">
+          <button type="button" class="button button-ghost" onClick$={(event: MouseEvent) => props.onCopyCommand(event)}>
+            {props.copiedCommandLabel}
+          </button>
+          <a class="button button-ghost" href="/docs/installation">
+            View Docs
+          </a>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function CreateCustomizerPanel(props: {
+  base: string
+  theme: string
+  font: string
+  starterTemplate: string
+  visibleThemes: ThemeEntry[]
+  onBaseSelect: (value: string) => void
+  onThemeSelect: (value: string) => void
+  onFontSelect: (value: string) => void
+  onTemplateSelect: (value: string) => void
+}) {
+  return (
+    <aside class="create-customizer-panel">
+      <div class="create-panel-head create-panel-head-compact">
+        <p class="eyebrow">Customizer</p>
+        <h2>Design system settings</h2>
+        <p class="lead create-customizer-copy">
+          Tune the same surface areas the upstream create flow highlights, then copy the command when the system
+          feels right.
+        </p>
+      </div>
+
+      <section class="create-option-group">
+        <div class="create-option-group-head">
+          <h3>Base</h3>
+        </div>
+        <div class="create-option-grid">
+          {createBaseOptions.map((option) => (
+            <button
+              type="button"
+              key={option.name}
+              data-value={option.name}
+              class={props.base === option.name ? "create-option-card is-active" : "create-option-card"}
+              onClick$={(event: MouseEvent) => {
+                const target = event.currentTarget
+                if (!(target instanceof HTMLButtonElement)) {
+                  return
+                }
+
+                const nextValue = target.dataset.value
+                if (!nextValue) {
+                  return
+                }
+
+                props.onBaseSelect(nextValue)
+              }}
+            >
+              <span class="create-option-title">{option.title}</span>
+              <span class="create-option-description">{option.description}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section class="create-option-group">
+        <div class="create-option-group-head">
+          <h3>Theme</h3>
+        </div>
+        <div class="create-option-grid">
+          {props.visibleThemes.map((entry) => (
+            <button
+              type="button"
+              key={entry.name}
+              data-value={entry.name}
+              class={props.theme === entry.name ? "create-option-card is-active" : "create-option-card"}
+              onClick$={(event: MouseEvent) => {
+                const target = event.currentTarget
+                if (!(target instanceof HTMLButtonElement)) {
+                  return
+                }
+
+                const nextValue = target.dataset.value
+                if (!nextValue) {
+                  return
+                }
+
+                props.onThemeSelect(nextValue)
+              }}
+            >
+              <span class="create-option-title">{entry.title === "Neutral" ? "Default" : entry.title}</span>
+              <span class="create-option-description">{entry.title} token set</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section class="create-option-group">
+        <div class="create-option-group-head">
+          <h3>Font</h3>
+        </div>
+        <div class="create-option-grid">
+          {createFontOptions.map((option) => (
+            <button
+              type="button"
+              key={option.name}
+              data-value={option.name}
+              class={props.font === option.name ? "create-option-card is-active" : "create-option-card"}
+              onClick$={(event: MouseEvent) => {
+                const target = event.currentTarget
+                if (!(target instanceof HTMLButtonElement)) {
+                  return
+                }
+
+                const nextValue = target.dataset.value
+                if (!nextValue) {
+                  return
+                }
+
+                props.onFontSelect(nextValue)
+              }}
+            >
+              <span class="create-option-title">{option.title}</span>
+              <span class="create-option-description">{option.description}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section class="create-option-group">
+        <div class="create-option-group-head">
+          <h3>Template</h3>
+        </div>
+        <div class="create-option-grid">
+          {createTemplateOptions.map((option) => (
+            <button
+              type="button"
+              key={option.name}
+              data-value={option.name}
+              class={props.starterTemplate === option.name ? "create-option-card is-active" : "create-option-card"}
+              onClick$={(event: MouseEvent) => {
+                const target = event.currentTarget
+                if (!(target instanceof HTMLButtonElement)) {
+                  return
+                }
+
+                const nextValue = target.dataset.value
+                if (!nextValue) {
+                  return
+                }
+
+                props.onTemplateSelect(nextValue)
+              }}
+            >
+              <span class="create-option-title">{option.title}</span>
+              <span class="create-option-description">{option.description}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+    </aside>
+  )
+}
+
+function CreatePreviewStage(props: { kind: CreateCatalogKind; itemId: string }) {
+  const block =
+    props.kind === "block"
+      ? {
+          name: props.itemId,
+          description: "",
+          categories: [],
+        }
+      : null
+
+  return props.kind === "component" ? (
+    <div class="create-preview-stage create-preview-stage-component">
+      <DocComponentPreviewSurface family={props.itemId} />
+    </div>
+  ) : props.kind === "example" ? (
+    <div class="create-preview-stage create-preview-stage-example">
+      <LiveExamplePage slug={props.itemId} />
+    </div>
+  ) : props.kind === "block" && block ? (
+    <div class="create-preview-stage create-preview-stage-block">
+      <BlockPreviewSurface block={block} />
+    </div>
+  ) : props.kind === "block" ? (
+    <div class="example-fallback">
+      <h3>Block preview unavailable</h3>
+    </div>
+  ) : (
+    <div class="create-preview-stage create-preview-stage-chart">
+      <ChartPreviewSurface chartId={props.itemId} />
     </div>
   )
 }

@@ -86,6 +86,7 @@ export interface DocNavSection {
 
 export type RouteKind =
   | "home"
+  | "create"
   | "docs-index"
   | "docs-detail"
   | "components"

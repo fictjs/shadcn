@@ -232,6 +232,283 @@ a {
   border-top: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
 }
 
+.create-route-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, color-mix(in oklab, var(--primary) 9%, transparent), transparent 36%),
+    linear-gradient(180deg, color-mix(in oklab, var(--muted) 35%, var(--background)), var(--background) 22%);
+}
+
+.create-header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  backdrop-filter: blur(16px);
+  background: color-mix(in oklab, var(--background) 88%, transparent);
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 72%, transparent);
+}
+
+.create-header-bar,
+.create-header-main,
+.create-header-actions,
+.create-preview-header,
+.create-preview-badges,
+.create-command-actions,
+.create-explorer-group-head,
+.create-option-group-head {
+  display: flex;
+  align-items: center;
+}
+
+.create-header-bar {
+  width: min(1540px, 100% - 2rem);
+  min-height: calc(var(--header-height) + 0.5rem);
+  margin: 0 auto;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.4rem 0;
+}
+
+.create-header-main,
+.create-header-actions {
+  gap: 0.75rem;
+}
+
+.create-header-main {
+  min-width: 0;
+}
+
+.create-nav {
+  min-width: 0;
+}
+
+.create-main-shell {
+  width: min(1540px, 100% - 2rem);
+  margin: 0 auto;
+  padding: 1.25rem 0 2rem;
+}
+
+.create-workspace {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.create-explorer-panel,
+.create-preview-panel,
+.create-customizer-panel {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  border: 1px solid color-mix(in oklab, var(--border) 82%, transparent);
+  border-radius: 1.1rem;
+  background: color-mix(in oklab, var(--card) 90%, var(--muted) 10%);
+  box-shadow: 0 24px 60px color-mix(in oklab, var(--foreground) 5%, transparent);
+  overflow: hidden;
+}
+
+.create-explorer-panel,
+.create-customizer-panel {
+  padding: 1rem;
+}
+
+.create-preview-panel {
+  padding: 1rem;
+}
+
+.create-panel-head {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.create-panel-head-compact h2,
+.create-preview-header h2,
+.create-explorer-group-head h2,
+.create-command-copy h3,
+.create-option-group-head h3 {
+  margin: 0;
+}
+
+.create-lead,
+.create-customizer-copy,
+.create-preview-copy {
+  max-width: 56ch;
+}
+
+.create-search-card {
+  background: color-mix(in oklab, var(--muted) 42%, var(--card));
+}
+
+.create-kind-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.create-kind-pill,
+.create-item-button,
+.create-option-card {
+  border: 1px solid color-mix(in oklab, var(--border) 86%, transparent);
+  background: color-mix(in oklab, var(--muted) 16%, var(--card));
+  color: var(--foreground);
+  font: inherit;
+}
+
+.create-kind-pill {
+  border-radius: 999px;
+  padding: 0.42rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.create-kind-pill.is-active,
+.create-item-button.is-active,
+.create-option-card.is-active {
+  border-color: color-mix(in oklab, var(--foreground) 24%, var(--border));
+  background: color-mix(in oklab, var(--primary) 12%, var(--card));
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--primary) 18%, transparent);
+}
+
+.create-explorer-groups,
+.create-explorer-group,
+.create-explorer-list,
+.create-option-group,
+.create-option-grid,
+.create-command-card,
+.create-command-copy {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.create-explorer-group {
+  padding-top: 0.2rem;
+}
+
+.create-explorer-group + .create-explorer-group {
+  border-top: 1px solid color-mix(in oklab, var(--border) 72%, transparent);
+  padding-top: 1rem;
+}
+
+.create-explorer-group-head,
+.create-option-group-head,
+.create-preview-header {
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.create-explorer-group-head span {
+  color: var(--muted-foreground);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.create-item-button,
+.create-option-card {
+  display: grid;
+  gap: 0.25rem;
+  width: 100%;
+  border-radius: 0.85rem;
+  padding: 0.8rem 0.9rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.create-item-title,
+.create-option-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.create-item-description,
+.create-option-description {
+  color: var(--muted-foreground);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.create-preview-header {
+  align-items: flex-start;
+}
+
+.create-preview-badges {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+
+.create-preview-badges span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--border) 86%, transparent);
+  background: color-mix(in oklab, var(--muted) 48%, var(--card));
+  padding: 0.32rem 0.65rem;
+  color: var(--muted-foreground);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.create-preview-stage-shell {
+  border: 1px solid color-mix(in oklab, var(--border) 82%, transparent);
+  border-radius: 1rem;
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--card) 95%, var(--muted) 5%), color-mix(in oklab, var(--card) 90%, var(--muted) 10%)),
+    radial-gradient(circle at top, color-mix(in oklab, var(--primary) 10%, transparent), transparent 48%);
+  overflow: hidden;
+}
+
+.create-preview-stage {
+  min-height: 26rem;
+  padding: 1rem;
+}
+
+.create-preview-stage-component,
+.create-preview-stage-chart {
+  display: grid;
+  place-items: center;
+}
+
+.create-preview-stage-example {
+  padding: 0;
+}
+
+.create-preview-stage-example > * {
+  min-height: 26rem;
+}
+
+.create-preview-stage-block .block-preview-stage,
+.create-preview-stage-block .block-preview-fallback {
+  min-height: 22rem;
+}
+
+.create-preview-stage-block .block-preview-stage,
+.create-preview-stage-chart .chart-preview-stage {
+  margin: 0 auto;
+}
+
+.create-command-card {
+  padding: 1rem;
+  border: 1px solid color-mix(in oklab, var(--border) 82%, transparent);
+  border-radius: 1rem;
+  background: color-mix(in oklab, var(--muted) 26%, var(--card));
+}
+
+.create-command-code {
+  margin: 0;
+}
+
+.create-command-actions {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.create-option-grid {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
 .footer-row {
   min-height: var(--footer-height);
   display: flex;
@@ -3064,9 +3341,54 @@ h1 {
 }
 
 @media (max-width: 860px) {
+  .create-header-bar,
   .header-primary,
   .header-actions {
     width: 100%;
+  }
+
+  .create-header-bar,
+  .create-header-main,
+  .create-header-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .create-header-actions {
+    width: 100%;
+  }
+
+  .create-header-actions .button,
+  .create-header-actions a.button {
+    width: 100%;
+  }
+
+  .create-nav {
+    width: 100%;
+  }
+
+  .create-main-shell {
+    width: min(100% - 1rem, 100%);
+    padding-top: 0.85rem;
+  }
+
+  .create-explorer-panel,
+  .create-preview-panel,
+  .create-customizer-panel {
+    padding: 0.9rem;
+  }
+
+  .create-preview-badges {
+    justify-content: flex-start;
+  }
+
+  .create-preview-stage {
+    min-height: 18rem;
+    padding: 0.85rem;
+  }
+
+  .create-preview-stage-example > * {
+    min-height: 18rem;
   }
 
   .header-primary {
@@ -3186,6 +3508,14 @@ h1 {
 }
 
 @media (min-width: 861px) {
+  .create-workspace {
+    grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
+  }
+
+  .create-customizer-panel {
+    grid-column: 1 / -1;
+  }
+
   .header-search-short {
     display: none;
   }
@@ -3262,6 +3592,23 @@ h1 {
 }
 
 @media (min-width: 1140px) {
+  .create-workspace {
+    grid-template-columns: minmax(280px, 320px) minmax(0, 1fr) minmax(300px, 360px);
+    align-items: start;
+  }
+
+  .create-explorer-panel,
+  .create-customizer-panel {
+    position: sticky;
+    top: calc(var(--header-height) + 1rem);
+    max-height: calc(100vh - var(--header-height) - 2rem);
+    overflow: auto;
+  }
+
+  .create-customizer-panel {
+    grid-column: auto;
+  }
+
   .examples-root-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }

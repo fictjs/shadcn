@@ -118,6 +118,16 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
     }
   }
 
+  if (pathname === "/create") {
+    return {
+      kind: "create",
+      status: 200,
+      pathname,
+      pageTitle: "New Project - @fictjs/shadcn",
+      ...basePayload,
+    }
+  }
+
   if (pathname === "/docs") {
     const doc = catalog.docsBySlug.get("") ?? null
     const { previous, next } = getDocNeighbors(catalog, "")
