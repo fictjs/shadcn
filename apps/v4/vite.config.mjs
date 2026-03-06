@@ -6,7 +6,7 @@ export default defineConfig({
     fict({
       resumable: true,
       autoExtractHandlers: true,
-      autoExtractThreshold: 3,
+      autoExtractThreshold: 0,
     }),
   ],
   build: {

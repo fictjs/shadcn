@@ -12,13 +12,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@fictjs/runtime": "^0.16.0",
-    "@fictjs/ssr": "^0.16.0",
+    "@fictjs/runtime": "link:../../../packages/runtime",
+    "@fictjs/ssr": "link:../../../packages/ssr",
     "express": "^5.1.0",
-    "fict": "^0.16.0"
+    "fict": "link:../../../packages/fict"
   },
   "devDependencies": {
-    "@fictjs/vite-plugin": "^0.16.0",
+    "@fictjs/vite-plugin": "link:../../../packages/vite-plugin",
     "@types/express": "^5.0.5",
     "@types/node": "^24.3.0",
     "typescript": "^5.9.3",
