@@ -116,6 +116,37 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
   }
 
   if (pathname === "/docs") {
+    const doc = catalog.docsBySlug.get("") ?? null
+    const { previous, next } = getDocNeighbors(catalog, "")
+
+    if (doc) {
+      return {
+        kind: "docs-detail",
+        status: 200,
+        pathname,
+        pageTitle: `${doc.title} - Docs - @fictjs/shadcn`,
+        docs: catalog.docs,
+        doc,
+        docNavigation: catalog.docNavigation,
+        docPrev: previous,
+        docNext: next,
+        components: catalog.components,
+        examples: catalog.examples,
+        examplePages: featuredExamplePages,
+        activeExample: null,
+        exampleSlug: null,
+        charts: catalog.charts,
+        chartTypes,
+        activeChartType: null,
+        chartItems: [],
+        chartType: null,
+        blocks: catalog.blocks,
+        blockCategories,
+        blockCategory: null,
+        themes: catalog.themes,
+      }
+    }
+
     return {
       kind: "docs-index",
       status: 200,

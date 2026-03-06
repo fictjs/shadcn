@@ -10,8 +10,8 @@ test.describe("shadcn v4 site", () => {
 
     await page.goto("/docs")
 
-    await expect(page.getByRole("heading", { name: "Docs", exact: true })).toBeVisible()
-    await expect(page.getByLabel("Filter docs")).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Introduction", exact: true })).toBeVisible()
+    await expect(page.getByRole("button", { name: "Copy Page" })).toBeVisible()
   })
 
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
