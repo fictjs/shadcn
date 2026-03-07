@@ -385,8 +385,8 @@ function TasksExample() {
               type="text"
               value={query}
               placeholder="Search issue, title, or team"
-              onInput$={(event: InputEvent) => {
-                const target = event.currentTarget
+              onInput={(event) => {
+                const target = event.target
                 if (!(target instanceof HTMLInputElement)) {
                   return
                 }
