@@ -981,30 +981,54 @@ h1 {
 .theme-selector-stub {
   display: none;
   align-items: center;
-  gap: 0.45rem;
-}
-
-.theme-selector-prefix {
-  font-size: 0.8rem;
-  color: var(--muted-foreground);
-  font-weight: 500;
+  gap: 0.5rem;
 }
 
 .theme-selector-stub select {
   border: 1px solid var(--border);
-  border-radius: 0.55rem;
-  background: color-mix(in oklab, var(--muted) 35%, var(--card));
+  border-radius: 0.7rem;
+  background: var(--card);
   color: var(--foreground);
   min-height: 2.15rem;
-  padding: 0.3rem 0.65rem;
+  min-width: 8.5rem;
+  padding: 0.3rem 0.7rem;
   font: inherit;
   font-size: 0.82rem;
 }
 
 .theme-selector-copy {
   min-height: 2.15rem;
-  padding: 0.3rem 0.65rem;
-  font-size: 0.8rem;
+  width: 2.15rem;
+  min-width: 2.15rem;
+  padding: 0;
+}
+
+.theme-selector-copy-icon {
+  position: relative;
+  display: inline-block;
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.theme-selector-copy-icon span {
+  position: absolute;
+  display: block;
+  width: 0.58rem;
+  height: 0.58rem;
+  border: 1.5px solid currentColor;
+  border-radius: 0.18rem;
+}
+
+.theme-selector-copy-icon span:first-child {
+  top: 0.14rem;
+  left: 0.08rem;
+  background: var(--card);
+}
+
+.theme-selector-copy-icon span:last-child {
+  top: 0;
+  right: 0.02rem;
+  background: transparent;
 }
 
 .button {

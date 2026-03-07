@@ -44,6 +44,8 @@ test.describe("shadcn v4 site", () => {
       "/docs/changelog/2026-03-cli-v4"
     )
     await expect(page.getByRole("main").getByRole("link", { name: "New Project" })).toHaveAttribute("href", "/create")
+    await expect(page.locator("body")).toHaveAttribute("data-active-theme", "neutral")
+    await expect(page.getByLabel("Theme selector")).toHaveValue("neutral")
     await expect(page.locator(".home-examples-root .examples-root-grid")).toBeVisible()
     await expect(page.locator(".home-examples-root")).toContainText("Payment Method")
     await expect(page.locator(".home-examples-root")).toContainText("Two-factor authentication")
