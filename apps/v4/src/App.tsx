@@ -815,7 +815,7 @@ export function App(props: AppProps) {
               <ModeToggleControl />
               <span class="header-divider" aria-hidden="true"></span>
               <a class="header-create-link header-create-link-desktop" href="/create">
-                New Project
+                Create Project
               </a>
               <a class="header-create-link header-create-link-mobile" href="/create">
                 New
