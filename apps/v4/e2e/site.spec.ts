@@ -1,4 +1,8 @@
-import { expect, test } from "@playwright/test"
+import { expect, test, type Page } from "@playwright/test"
+
+async function waitForClientReady(page: Page) {
+  await expect(page.locator("html")).toHaveAttribute("data-client-ready", "true")
+}
 
 test.describe("shadcn v4 site", () => {
   test("routes use shadcn/ui page titles", async ({ page }) => {
@@ -82,7 +86,7 @@ test.describe("shadcn v4 site", () => {
 
     await expect(page.getByRole("button", { name: "Search documentation..." })).toBeVisible()
     await expect(page.getByRole("link", { name: "108k" })).toHaveAttribute("href", "https://github.com/shadcn-ui/ui")
-    await expect(page.getByRole("button", { name: "Toggle layout" })).toBeVisible()
+    await expect(page.getByRole("button", { name: "Toggle layout" })).toHaveCount(0)
     await expect(page.getByRole("button", { name: "Toggle theme" })).toBeVisible()
     await expect(page.getByRole("banner").getByRole("link", { name: "Create Project" })).toHaveAttribute("href", "/create")
   })
@@ -95,6 +99,7 @@ test.describe("shadcn v4 site", () => {
     const mainContainer = page.locator("main.container")
     const layoutToggle = page.getByRole("button", { name: "Toggle layout" })
 
+    await expect(layoutToggle).toBeVisible()
     await expect(html).toHaveAttribute("data-layout", "full")
     const fullWidth = await mainContainer.evaluate((element) => element.getBoundingClientRect().width)
 
@@ -232,6 +237,7 @@ test.describe("shadcn v4 site", () => {
 
   test("tasks example filters rows interactively", async ({ page }) => {
     await page.goto("/examples/tasks")
+    await waitForClientReady(page)
 
     const searchInput = page.getByPlaceholder("Search issue, title, or team")
     await expect(searchInput).toBeVisible()
@@ -287,6 +293,7 @@ test.describe("shadcn v4 site", () => {
 
   test("active theme selector drives preview routes and persists across navigation", async ({ page }) => {
     await page.goto("/")
+    await waitForClientReady(page)
 
     await page.getByLabel("Theme selector").selectOption("blue")
     await expect(page.locator("body")).toHaveAttribute("data-active-theme", "blue")

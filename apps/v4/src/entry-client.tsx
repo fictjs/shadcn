@@ -41,6 +41,7 @@ async function initResumableClient(): Promise<void> {
   wireThemeExperience()
   wireCreateRoute()
   wireClientFilters()
+  document.documentElement.dataset.clientReady = "true"
 }
 
 function wireDocTabsFallback(): void {
