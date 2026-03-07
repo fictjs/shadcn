@@ -23,6 +23,7 @@ test.describe("shadcn v4 site", () => {
 
     await expect(page.getByLabel("Filter examples")).toBeVisible()
     await expect(page.locator(".pill-grid .pill-item").first()).toBeVisible()
+    await expect(page.getByRole("link", { name: "RTL New" })).toBeVisible()
 
     await page.goto("/examples/dashboard")
 
@@ -46,6 +47,7 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByRole("main").getByRole("link", { name: "New Project" })).toHaveAttribute("href", "/create")
     await expect(page.locator("body")).toHaveAttribute("data-active-theme", "neutral")
     await expect(page.getByLabel("Theme selector")).toHaveValue("neutral")
+    await expect(page.getByRole("link", { name: "RTL New" })).toBeVisible()
     await expect(page.locator(".home-examples-root .examples-root-grid")).toBeVisible()
     await expect(page.locator(".home-examples-root")).toContainText("Payment Method")
     await expect(page.locator(".home-examples-root")).toContainText("Two-factor authentication")

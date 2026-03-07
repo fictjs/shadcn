@@ -1867,6 +1867,7 @@ function HomePage(props: { route: ResolvedRoute; activeThemeName: string; onThem
           {props.route.examplePages.map((showcase) => (
             <a key={showcase.slug} href={`/examples/${showcase.slug}`}>
               {showcase.title}
+              {showcase.slug === "rtl" ? <span class="section-nav-badge" title="New" aria-label="New"></span> : null}
             </a>
           ))}
         </nav>
@@ -2948,6 +2949,7 @@ function ExamplesPage(props: { route: ResolvedRoute; activeThemeName: string; on
               href={`/examples/${showcase.slug}`}
             >
               {showcase.title}
+              {showcase.slug === "rtl" ? <span class="section-nav-badge" title="New" aria-label="New"></span> : null}
             </a>
           ))}
         </nav>
