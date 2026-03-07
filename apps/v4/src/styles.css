@@ -1697,6 +1697,23 @@ h1 {
   line-height: 1.4;
 }
 
+.root-preview-section,
+.root-preview-grid {
+  display: grid;
+}
+
+.root-preview-section {
+  gap: 0.2rem;
+}
+
+.root-preview-grid {
+  gap: 0.55rem;
+}
+
+.root-preview-grid-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .root-preview-shell,
 .root-preview-stack,
 .root-preview-field,
@@ -1831,6 +1848,99 @@ h1 {
   font: inherit;
 }
 
+.root-preview-button-row,
+.root-preview-counter-controls,
+.root-preview-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.root-preview-button,
+.root-preview-counter-controls button,
+.root-preview-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+  border-radius: 0.55rem;
+  background: var(--card);
+  color: var(--foreground);
+  padding: 0.38rem 0.65rem;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.root-preview-button-primary,
+.root-preview-pill.is-active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.root-preview-button-secondary {
+  background: color-mix(in oklab, var(--muted) 40%, var(--card));
+}
+
+.root-preview-radio-card,
+.root-preview-counter-row {
+  position: relative;
+  border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+  border-radius: 0.7rem;
+  background: color-mix(in oklab, var(--muted) 22%, var(--card));
+}
+
+.root-preview-radio-card {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.75rem 2.5rem 0.75rem 0.85rem;
+}
+
+.root-preview-radio-card.is-active {
+  border-color: color-mix(in oklab, var(--primary) 60%, var(--border));
+}
+
+.root-preview-radio-indicator {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.85rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.root-preview-counter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem;
+}
+
+.root-preview-counter-value {
+  min-width: 2ch;
+  text-align: center;
+  font-family: "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.root-preview-toggle {
+  display: inline-flex;
+  width: 1.9rem;
+  height: 1.1rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--muted) 88%, var(--card));
+  border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+}
+
+.root-preview-toggle.is-active {
+  background: color-mix(in oklab, var(--primary) 65%, var(--card));
+  border-color: color-mix(in oklab, var(--primary) 60%, var(--border));
+}
+
 .root-preview-inline-input-muted .root-preview-inline-addon {
   background: color-mix(in oklab, var(--muted) 72%, var(--card));
 }
@@ -1870,11 +1980,19 @@ h1 {
 }
 
 .root-preview-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 0.95rem;
   height: 0.95rem;
   border: 1px solid var(--border);
   border-radius: 0.3rem;
   background: var(--card);
+}
+
+.root-preview-check.is-active {
+  background: color-mix(in oklab, var(--primary) 72%, var(--card));
+  border-color: color-mix(in oklab, var(--primary) 60%, var(--border));
 }
 
 .root-preview-empty {

@@ -1817,6 +1817,299 @@ function HomePage(props: { route: ResolvedRoute; activeThemeName: string; onThem
   )
 }
 
+function RootFieldDemoPreview() {
+  return (
+    <div class="root-preview-shell root-preview-stack">
+      <div class="root-preview-section">
+        <strong>Payment Method</strong>
+        <span>All transactions are secure and encrypted</span>
+      </div>
+      <div class="root-preview-field">
+        <span>Name on Card</span>
+        <strong>Evil Rabbit</strong>
+      </div>
+      <div class="root-preview-field">
+        <span>Card Number</span>
+        <strong>1234 5678 9012 3456</strong>
+        <span>Enter your 16-digit card number</span>
+      </div>
+      <div class="root-preview-grid root-preview-grid-three">
+        <div class="root-preview-field">
+          <span>Month</span>
+          <strong>MM</strong>
+        </div>
+        <div class="root-preview-field">
+          <span>Year</span>
+          <strong>YYYY</strong>
+        </div>
+        <div class="root-preview-field">
+          <span>CVV</span>
+          <strong>123</strong>
+        </div>
+      </div>
+      <div class="root-preview-section">
+        <strong>Billing Address</strong>
+        <span>The billing address associated with your payment method</span>
+      </div>
+      <div class="root-preview-check-row">
+        <span class="root-preview-check is-active"></span>
+        <span>Same as shipping address</span>
+      </div>
+      <div class="root-preview-field">
+        <span>Comments</span>
+        <strong>Add any additional comments</strong>
+      </div>
+      <div class="root-preview-button-row">
+        <button class="root-preview-button root-preview-button-primary" type="button">Submit</button>
+        <button class="root-preview-button root-preview-button-secondary" type="button">Cancel</button>
+      </div>
+    </div>
+  )
+}
+
+function RootAvatarEmptyPreview() {
+  return (
+    <div class="root-preview-shell root-preview-stack">
+      <div class="root-preview-avatar-row" aria-label="Avatar group preview">
+        <span>CN</span>
+        <span>LR</span>
+        <span>ER</span>
+      </div>
+      <div class="root-preview-section">
+        <strong>No Team Members</strong>
+        <span>Invite your team to collaborate on this project.</span>
+      </div>
+      <div class="root-preview-button-row">
+        <button class="root-preview-button root-preview-button-primary" type="button">Invite Members</button>
+      </div>
+    </div>
+  )
+}
+
+function RootSpinnerBadgePreview() {
+  return (
+    <div class="root-preview-shell root-preview-stack">
+      <div class="root-preview-badge-row">
+        <span class="root-preview-badge is-active">Syncing</span>
+        <span class="root-preview-badge">Updating</span>
+        <span class="root-preview-badge">Loading</span>
+      </div>
+    </div>
+  )
+}
+
+function RootButtonGroupInputPreview() {
+  return (
+    <div class="root-preview-shell root-preview-stack">
+      <div class="root-preview-inline-input">
+        <button type="button">+</button>
+        <span>Send a message...</span>
+        <button type="button">Voice</button>
+      </div>
+    </div>
+  )
+}
+
+function RootFieldSliderPreview() {
+  return (
+    <div class="root-preview-shell root-preview-stack">
+      <div class="root-preview-section">
+        <strong>Price Range</strong>
+        <span>Set your budget range ($200 - 800).</span>
+      </div>
+      <div class="root-preview-slider-track" aria-hidden="true"><span class="is-wide"></span></div>
+    </div>
+  )
+}
+
+function RootInputGroupDemoPreview() {
+  return (
+    <div class="root-preview-shell root-preview-stack">
+      <div class="root-preview-inline-input">
+        <span>Search...</span>
+        <span class="root-preview-inline-addon">12 results</span>
+      </div>
+      <div class="root-preview-inline-input root-preview-inline-input-muted">
+        <span class="root-preview-inline-addon">https://</span>
+        <span>example.com</span>
+      </div>
+      <div class="root-preview-inline-input root-preview-inline-input-muted">
+        <button type="button">Auto</button>
+        <span class="root-preview-inline-addon">52% used</span>
+        <button type="button">Send</button>
+      </div>
+    </div>
+  )
+}
+
+function RootInputGroupButtonPreview() {
+  return (
+    <div class="root-preview-shell root-preview-stack">
+      <div class="root-preview-inline-input root-preview-inline-input-muted">
+        <span class="root-preview-inline-addon">https://</span>
+        <span>Input Secure</span>
+      </div>
+      <div class="root-preview-section">
+        <strong>Your connection is not secure.</strong>
+        <span>You should not enter any sensitive information on this site.</span>
+      </div>
+      <div class="root-preview-inline-input">
+        <span>Type to search...</span>
+        <button type="button">Search</button>
+      </div>
+    </div>
+  )
+}
+
+function RootItemDemoPreview() {
+  return (
+    <div class="root-preview-shell root-preview-stack">
+      <div class="root-preview-item-row">
+        <strong>Basic Item</strong>
+        <span>Action</span>
+      </div>
+      <p class="root-preview-copy">A simple item with title and description.</p>
+      <div class="root-preview-item-row">
+        <strong>Your profile has been verified.</strong>
+        <span>&gt;</span>
+      </div>
+    </div>
+  )
+}
+
+function RootAppearanceSettingsPreview() {
+  let gpuCount = $state(8)
+
+  return (
+    <div class="root-preview-shell root-preview-stack">
+      <div class="root-preview-section">
+        <strong>Compute Environment</strong>
+        <span>Select the compute environment for your cluster.</span>
+      </div>
+      <div class="root-preview-radio-card is-active">
+        <strong>Kubernetes</strong>
+        <span>Run GPU workloads on a K8s configured cluster. This is the default.</span>
+        <span class="root-preview-radio-indicator" aria-hidden="true"></span>
+      </div>
+      <div class="root-preview-radio-card">
+        <strong>Virtual Machine</strong>
+        <span>Access a VM configured cluster to run workloads. (Coming soon)</span>
+      </div>
+      <div class="root-preview-counter-row">
+        <div class="root-preview-section">
+          <strong>Number of GPUs</strong>
+          <span>You can add more later.</span>
+        </div>
+        <div class="root-preview-counter-controls">
+          <button type="button" onClick$={() => { gpuCount = Math.max(1, gpuCount - 1) }}>-</button>
+          <span class="root-preview-counter-value">{gpuCount}</span>
+          <button type="button" onClick$={() => { gpuCount = Math.min(99, gpuCount + 1) }}>+</button>
+        </div>
+      </div>
+      <div class="root-preview-counter-row">
+        <div class="root-preview-section">
+          <strong>Wallpaper Tinting</strong>
+          <span>Allow the wallpaper to be tinted.</span>
+        </div>
+        <span class="root-preview-toggle is-active" aria-hidden="true"></span>
+      </div>
+    </div>
+  )
+}
+
+function RootPromptPreview() {
+  return (
+    <div class="root-preview-shell root-preview-stack">
+      <div class="root-preview-section">
+        <strong>Prompt</strong>
+      </div>
+      <div class="root-preview-inline-input root-preview-inline-input-muted">
+        <button type="button">Add context</button>
+        <span class="root-preview-inline-addon">Auto</span>
+        <span class="root-preview-inline-addon">All Sources</span>
+      </div>
+      <div class="root-preview-badge-row">
+        <span class="root-preview-badge">Archive</span>
+        <span class="root-preview-badge">Report</span>
+        <span class="root-preview-badge">Snooze</span>
+      </div>
+    </div>
+  )
+}
+
+function RootButtonGroupDemoPreview() {
+  return (
+    <div class="root-preview-shell root-preview-stack">
+      <div class="root-preview-badge-row">
+        <span class="root-preview-badge">Archive</span>
+        <span class="root-preview-badge">Report</span>
+        <span class="root-preview-badge">Snooze</span>
+      </div>
+    </div>
+  )
+}
+
+function RootFieldCheckboxPreview() {
+  return (
+    <div class="root-preview-shell root-preview-stack">
+      <div class="root-preview-check-row">
+        <span class="root-preview-check is-active"></span>
+        <span>I agree to the terms and conditions</span>
+      </div>
+    </div>
+  )
+}
+
+function RootNestedButtonsPreview() {
+  return (
+    <div class="root-preview-shell root-preview-stack">
+      <div class="root-preview-split-row">
+        <div class="root-preview-segmented-row">
+          <span class="is-active">1</span>
+          <span>2</span>
+          <span>3</span>
+        </div>
+        <div class="root-preview-inline-input">
+          <button type="button">Copilot</button>
+          <button type="button">v</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function RootFieldHearPreview() {
+  return (
+    <div class="root-preview-shell root-preview-stack">
+      <div class="root-preview-section">
+        <strong>How did you hear about us?</strong>
+        <span>Select the option that best describes how you heard about us.</span>
+      </div>
+      <div class="root-preview-pill-row">
+        <span class="root-preview-pill is-active">Social Media</span>
+        <span class="root-preview-pill">Search Engine</span>
+        <span class="root-preview-pill">Referral</span>
+        <span class="root-preview-pill">Other</span>
+      </div>
+    </div>
+  )
+}
+
+function RootSpinnerEmptyPreview() {
+  return (
+    <div class="root-preview-shell root-preview-stack root-preview-empty">
+      <div class="root-preview-spinner"></div>
+      <div class="root-preview-section">
+        <strong>Processing your request</strong>
+        <span>Please wait while we process your request. Do not refresh the page.</span>
+      </div>
+      <div class="root-preview-button-row">
+        <button class="root-preview-button root-preview-button-secondary" type="button">Cancel</button>
+      </div>
+    </div>
+  )
+}
+
 function ExamplesRootPreview() {
   return (
     <div class="examples-root-grid">
@@ -1824,110 +2117,21 @@ function ExamplesRootPreview() {
         <div class={`examples-root-column${column.className ? ` ${column.className}` : ""}`} key={`column-${columnIndex}`}>
           {column.entries.map((entry) => (
             <div class="example-root-panel" key={`${columnIndex}-${entry}`}>
-              {entry === "field-demo" ? (
-                <div class="root-preview-shell root-preview-stack">
-                  <div class="root-preview-field">
-                    <span>Name</span>
-                    <strong>shadcn/ui</strong>
-                  </div>
-                  <div class="root-preview-field">
-                    <span>Slug</span>
-                    <strong>open-code-system</strong>
-                  </div>
-                  <div class="root-preview-field">
-                    <span>Status</span>
-                    <strong>Ready to publish</strong>
-                  </div>
-                </div>
-              ) : null}
+              {entry === "field-demo" ? <RootFieldDemoPreview /> : null}
 
-              {entry === "avatars" ? (
-                <div class="root-preview-shell root-preview-stack">
-                  <div class="root-preview-avatar-row" aria-label="Avatar group preview">
-                    <span>AB</span>
-                    <span>CN</span>
-                    <span>JT</span>
-                    <span>+4</span>
-                  </div>
-                  <p class="root-preview-copy">Invite collaborators and keep empty states polished.</p>
-                </div>
-              ) : null}
+              {entry === "avatars" ? <RootAvatarEmptyPreview /> : null}
 
-              {entry === "spinner-badge" ? (
-                <div class="root-preview-shell root-preview-stack">
-                  <div class="root-preview-badge-row">
-                    <span class="root-preview-badge root-preview-badge-active">Syncing</span>
-                    <span class="root-preview-badge">Ready</span>
-                  </div>
-                  <div class="root-preview-meter">
-                    <span></span>
-                  </div>
-                </div>
-              ) : null}
+              {entry === "spinner-badge" ? <RootSpinnerBadgePreview /> : null}
 
-              {entry === "button-group-input" ? (
-                <div class="root-preview-shell root-preview-stack">
-                  <div class="root-preview-inline-input">
-                    <span>Search registry...</span>
-                    <button type="button">Go</button>
-                  </div>
-                  <div class="root-preview-segmented-row">
-                    <span>npm</span>
-                    <span class="is-active">pnpm</span>
-                    <span>bun</span>
-                  </div>
-                </div>
-              ) : null}
+              {entry === "button-group-input" ? <RootButtonGroupInputPreview /> : null}
 
-              {entry === "field-slider" ? (
-                <div class="root-preview-shell root-preview-stack">
-                  <div class="root-preview-slider-row">
-                    <span>Density</span>
-                    <div class="root-preview-slider-track"><span></span></div>
-                  </div>
-                  <div class="root-preview-slider-row">
-                    <span>Radius</span>
-                    <div class="root-preview-slider-track"><span class="is-wide"></span></div>
-                  </div>
-                </div>
-              ) : null}
+              {entry === "field-slider" ? <RootFieldSliderPreview /> : null}
 
-              {entry === "input-group-demo" ? (
-                <div class="root-preview-shell root-preview-stack">
-                  <div class="root-preview-inline-input root-preview-inline-input-muted">
-                    <span>hello@shadcn.io</span>
-                    <span class="root-preview-inline-addon">@</span>
-                  </div>
-                  <p class="root-preview-copy">Compact input groups with helpful secondary context.</p>
-                </div>
-              ) : null}
+              {entry === "input-group-demo" ? <RootInputGroupDemoPreview /> : null}
 
-              {entry === "input-group-button" ? (
-                <div class="root-preview-shell root-preview-stack">
-                  <div class="root-preview-inline-input">
-                    <span>Paste prompt</span>
-                    <button type="button">Run</button>
-                  </div>
-                  <div class="root-preview-badge-row">
-                    <span class="root-preview-badge">AI Ready</span>
-                  </div>
-                </div>
-              ) : null}
+              {entry === "input-group-button" ? <RootInputGroupButtonPreview /> : null}
 
-              {entry === "item-demo" ? (
-                <div class="root-preview-shell root-preview-stack">
-                  {[
-                    ["Overview", "Updated 2m ago"],
-                    ["Docs", "12 sections"],
-                    ["Registry", "206 entries"],
-                  ].map((row) => (
-                    <div class="root-preview-item-row" key={row[0]}>
-                      <strong>{row[0]}</strong>
-                      <span>{row[1]}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : null}
+              {entry === "item-demo" ? <RootItemDemoPreview /> : null}
 
               {entry === "appearance-separator" ? (
                 <div class="root-preview-separator" aria-hidden="true">
@@ -1937,82 +2141,19 @@ function ExamplesRootPreview() {
                 </div>
               ) : null}
 
-              {entry === "appearance-settings" ? (
-                <div class="root-preview-shell root-preview-stack">
-                  <div class="root-preview-badge-row">
-                    <span class="root-preview-badge is-active">Default</span>
-                    <span class="root-preview-badge">Compact</span>
-                    <span class="root-preview-badge">Comfortable</span>
-                  </div>
-                </div>
-              ) : null}
+              {entry === "appearance-settings" ? <RootAppearanceSettingsPreview /> : null}
 
-              {entry === "notion-prompt" ? (
-                <div class="root-preview-shell root-preview-stack">
-                  {[
-                    ["✦", "Launch checklist"],
-                    ["◎", "Team Directory"],
-                    ["→", "Release Notes"],
-                  ].map((row) => (
-                    <div class="root-preview-item-row" key={row[1]}>
-                      <strong>{row[0]}</strong>
-                      <span>{row[1]}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : null}
+              {entry === "notion-prompt" ? <RootPromptPreview /> : null}
 
-              {entry === "button-group-demo" ? (
-                <div class="root-preview-shell root-preview-stack">
-                  <div class="root-preview-segmented-row">
-                    <span class="is-active">Edit</span>
-                    <span>Share</span>
-                    <span>Export</span>
-                  </div>
-                </div>
-              ) : null}
+              {entry === "button-group-demo" ? <RootButtonGroupDemoPreview /> : null}
 
-              {entry === "field-checkbox" ? (
-                <div class="root-preview-shell root-preview-stack">
-                  {[
-                    "Enable release notes",
-                    "Include migration guide",
-                    "Ship changelog",
-                  ].map((label) => (
-                    <div class="root-preview-check-row" key={label}>
-                      <span class="root-preview-check"></span>
-                      <span>{label}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : null}
+              {entry === "field-checkbox" ? <RootFieldCheckboxPreview /> : null}
 
-              {entry === "nested-buttons" ? (
-                <div class="root-preview-shell root-preview-stack">
-                  <div class="root-preview-split-row">
-                    <button type="button">Nested</button>
-                    <button type="button">Popover</button>
-                  </div>
-                  <p class="root-preview-copy">Layered button patterns for dense toolbars.</p>
-                </div>
-              ) : null}
+              {entry === "nested-buttons" ? <RootNestedButtonsPreview /> : null}
 
-              {entry === "field-hear" ? (
-                <div class="root-preview-shell root-preview-stack">
-                  <div class="root-preview-badge-row">
-                    <span class="root-preview-badge is-active">Twitter</span>
-                    <span class="root-preview-badge">GitHub</span>
-                    <span class="root-preview-badge">Docs</span>
-                  </div>
-                </div>
-              ) : null}
+              {entry === "field-hear" ? <RootFieldHearPreview /> : null}
 
-              {entry === "spinner-empty" ? (
-                <div class="root-preview-shell root-preview-stack root-preview-empty">
-                  <div class="root-preview-spinner"></div>
-                  <p class="root-preview-copy">Create your first project to start building.</p>
-                </div>
-              ) : null}
+              {entry === "spinner-empty" ? <RootSpinnerEmptyPreview /> : null}
             </div>
           ))}
         </div>
