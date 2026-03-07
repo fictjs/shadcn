@@ -1857,6 +1857,13 @@ h1 {
   gap: 0.65rem;
 }
 
+.root-preview-item-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
 .root-preview-field strong,
 .root-preview-item-row strong,
 .root-preview-inline-input button,
@@ -1907,6 +1914,35 @@ h1 {
   border: 1.5px solid currentColor;
   border-bottom: 0;
   border-radius: 0.3rem 0.3rem 0 0;
+}
+
+.root-preview-item-media-verified {
+  width: 1.55rem;
+  height: 1.55rem;
+}
+
+.root-preview-item-media-verified span {
+  width: 0.4rem;
+  height: 0.72rem;
+  border: 0;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  border-radius: 0;
+  transform: rotate(40deg);
+  color: var(--muted-foreground);
+}
+
+.root-preview-item-media-verified span::before {
+  content: none;
+}
+
+.root-preview-item-arrow {
+  flex-shrink: 0;
+  width: 0.42rem;
+  height: 0.42rem;
+  border-top: 1.5px solid var(--muted-foreground);
+  border-right: 1.5px solid var(--muted-foreground);
+  transform: rotate(45deg);
 }
 
 .root-preview-avatar-row {
