@@ -108,6 +108,10 @@ a {
   white-space: nowrap;
 }
 
+.desktop-brand-link {
+  display: inline-flex;
+}
+
 .brand-mark {
   display: grid;
   place-items: center;
@@ -319,6 +323,10 @@ a {
   font-weight: 500;
 }
 
+.header-github-link {
+  min-width: 3rem;
+}
+
 .header-create-link {
   min-height: 1.95rem;
   border-radius: 0.65rem;
@@ -328,6 +336,29 @@ a {
   color: var(--background);
   font-size: 0.82rem;
   font-weight: 600;
+}
+
+.header-create-link-mobile {
+  display: none;
+}
+
+.header-mode-toggle {
+  width: 2.1rem;
+  min-height: 2.1rem;
+  padding: 0;
+}
+
+.header-mode-toggle-icon {
+  display: inline-flex;
+  width: 0.95rem;
+  height: 0.95rem;
+  border: 1.5px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
+}
+
+.dark .header-mode-toggle-icon {
+  background: currentColor;
 }
 
 .site-search-overlay {
@@ -937,18 +968,6 @@ h1 {
   min-height: 2.15rem;
   padding: 0.3rem 0.65rem;
   font-size: 0.8rem;
-}
-
-.mode-toggle-label-dark {
-  display: none;
-}
-
-.dark .mode-toggle-label-light {
-  display: none;
-}
-
-.dark .mode-toggle-label-dark {
-  display: inline;
 }
 
 .button {
@@ -3763,9 +3782,7 @@ h1 {
     display: flex;
   }
 
-  .create-header-bar,
-  .header-primary,
-  .header-actions {
+  .create-header-bar {
     width: 100%;
   }
 
@@ -3787,9 +3804,12 @@ h1 {
 
   .header-row {
     align-items: center;
+    flex-direction: row;
+    padding: 0.5rem 0;
   }
 
   .header-primary {
+    width: auto;
     justify-content: flex-start;
   }
 
@@ -3799,12 +3819,18 @@ h1 {
   }
 
   .header-actions {
+    width: auto;
     justify-content: flex-end;
   }
 
   .header-divider,
-  .header-create-link {
+  .header-create-link-desktop,
+  .desktop-brand-link {
     display: none;
+  }
+
+  .header-create-link-mobile {
+    display: inline-flex;
   }
 
   .theme-cards-demo {
@@ -3846,21 +3872,10 @@ h1 {
     min-height: 18rem;
   }
 
-  .header-primary {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .site-nav {
-    margin-left: 0;
-    width: 100%;
-  }
-
   .header-row {
     height: auto;
-    padding: 0.6rem 0;
-    align-items: flex-start;
-    flex-direction: column;
+    align-items: center;
+    flex-direction: row;
   }
 
   .header-actions {
@@ -3868,8 +3883,13 @@ h1 {
   }
 
   .header-divider,
-  .header-create-link {
+  .header-create-link-desktop,
+  .desktop-brand-link {
     display: none;
+  }
+
+  .header-create-link-mobile {
+    display: inline-flex;
   }
 
   .header-search-button {

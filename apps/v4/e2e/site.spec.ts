@@ -49,10 +49,31 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByRole("button", { name: "Copy Page" })).toBeVisible()
   })
 
+  test("desktop header matches upstream shadcn chrome", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 960 })
+    await page.goto("/")
+
+    const primaryNav = page.getByRole("navigation", { name: "Primary" })
+    await expect(primaryNav).toBeVisible()
+    await expect(primaryNav.getByRole("link")).toHaveText([
+      "Docs",
+      "Components",
+      "Blocks",
+      "Charts",
+      "Directory",
+      "Create",
+    ])
+
+    await expect(page.getByRole("button", { name: "Search documentation..." })).toBeVisible()
+    await expect(page.getByRole("link", { name: "108k" })).toHaveAttribute("href", "https://github.com/shadcn-ui/ui")
+    await expect(page.getByRole("button", { name: "Toggle theme" })).toBeVisible()
+    await expect(page.getByRole("link", { name: "New Project" })).toHaveAttribute("href", "/create")
+  })
+
   test("header search opens a command-style route picker", async ({ page }) => {
     await page.goto("/")
 
-    await page.getByRole("button", { name: "Search documentation" }).click()
+    await page.getByRole("button", { name: "Search documentation..." }).click()
 
     await expect(page.getByRole("dialog", { name: "Search documentation..." })).toBeVisible()
     await page.locator("#site-search-input").fill("tasks")
@@ -82,7 +103,7 @@ test.describe("shadcn v4 site", () => {
     await page.setViewportSize({ width: 820, height: 900 })
     await page.goto("/")
 
-    const modeToggle = page.getByRole("button", { name: "Toggle color mode" })
+    const modeToggle = page.getByRole("button", { name: "Toggle theme" })
     await expect(page.locator("html")).not.toHaveClass(/dark/)
     await expect(page.locator(".home-mobile-preview-card .color-mode-image-light")).toBeVisible()
     await expect(page.locator(".home-mobile-preview-card .color-mode-image-dark")).toBeHidden()
@@ -107,7 +128,7 @@ test.describe("shadcn v4 site", () => {
     await page.keyboard.press("d")
     await expect(page.locator("html")).toHaveClass(/dark/)
 
-    await page.getByRole("button", { name: "Search documentation" }).click()
+    await page.getByRole("button", { name: "Search documentation..." }).click()
     await page.locator("#site-search-input").press("d")
     await expect(page.locator("html")).toHaveClass(/dark/)
 
