@@ -508,13 +508,12 @@ function ModeToggleControl() {
     <button
       type="button"
       class="header-icon-link header-mode-toggle"
-      aria-label="Toggle color mode"
+      aria-label="Toggle theme"
       onClick$={() => {
         toggleDocumentColorMode()
       }}
     >
-      <span class="mode-toggle-label mode-toggle-label-light">Light</span>
-      <span class="mode-toggle-label mode-toggle-label-dark">Dark</span>
+      <span class="header-mode-toggle-icon" aria-hidden="true"></span>
     </button>
   )
 }
@@ -546,6 +545,30 @@ interface SiteSearchEntry {
 interface SiteNavLink {
   href: string
   label: string
+}
+
+function isPrimaryNavActive(pathname: string, href: string): boolean {
+  if (href === "/docs/installation") {
+    return pathname === "/docs" || pathname.startsWith("/docs/")
+  }
+
+  if (href === "/docs/components") {
+    return pathname === "/components" || pathname === "/docs/components" || pathname.startsWith("/docs/components/")
+  }
+
+  if (href === "/blocks") {
+    return pathname === "/blocks" || pathname.startsWith("/blocks/")
+  }
+
+  if (href === "/charts/area") {
+    return pathname === "/charts" || pathname.startsWith("/charts/")
+  }
+
+  if (href === "/docs/directory") {
+    return pathname === "/docs/directory" || pathname.startsWith("/docs/directory/")
+  }
+
+  return pathname === href
 }
 
 const mobileDocLinks: SiteNavLink[] = [
@@ -690,12 +713,12 @@ export function App(props: AppProps) {
   const route = props.route
   const routeSnapshot = untrack(() => props.route)
   const primaryNavLinks: SiteNavLink[] = [
-    { href: "/docs", label: "Docs" },
+    { href: "/docs/installation", label: "Docs" },
     { href: "/docs/components", label: "Components" },
     { href: "/blocks", label: "Blocks" },
     { href: "/charts/area", label: "Charts" },
-    { href: "/themes", label: "Themes" },
-    { href: "/colors", label: "Colors" },
+    { href: "/docs/directory", label: "Directory" },
+    { href: "/create", label: "Create" },
   ]
   let isMobileNavOpen = $state(false)
   let isSearchOpen = $state(false)
@@ -747,7 +770,7 @@ export function App(props: AppProps) {
                 </span>
                 <span>Menu</span>
               </button>
-              <a href="/" class="brand-link" aria-label="shadcn/ui home">
+              <a href="/" class="brand-link desktop-brand-link" aria-label="shadcn/ui home">
                 <span class="brand-mark" aria-hidden="true">
                   S
                 </span>
@@ -757,33 +780,7 @@ export function App(props: AppProps) {
                 {primaryNavLinks.map((link) => (
                   <a
                     key={link.href}
-                    class={
-                      link.href === "/docs"
-                        ? route.pathname === "/docs" || route.pathname.startsWith("/docs/")
-                          ? "active-nav-link"
-                          : ""
-                        : link.href === "/docs/components"
-                          ? route.pathname === "/components" ||
-                            route.pathname === "/docs/components" ||
-                            route.pathname.startsWith("/docs/components/")
-                            ? "active-nav-link"
-                            : ""
-                          : link.href === "/blocks"
-                            ? route.pathname === "/blocks" || route.pathname.startsWith("/blocks/")
-                              ? "active-nav-link"
-                              : ""
-                            : link.href === "/charts/area"
-                              ? route.pathname === "/charts" || route.pathname.startsWith("/charts/")
-                                ? "active-nav-link"
-                                : ""
-                              : link.href === "/themes"
-                                ? route.pathname === "/themes"
-                                  ? "active-nav-link"
-                                  : ""
-                                : route.pathname === "/colors"
-                                  ? "active-nav-link"
-                                  : ""
-                    }
+                    class={isPrimaryNavActive(route.pathname, link.href) ? "active-nav-link" : ""}
                     href={link.href}
                   >
                     {link.label}
@@ -796,7 +793,7 @@ export function App(props: AppProps) {
               <button
                 type="button"
                 class="header-search-button"
-                aria-label="Search documentation"
+                aria-label="Search documentation..."
                 aria-haspopup="dialog"
                 aria-expanded={isSearchOpen}
                 onClick$={() => {
@@ -811,14 +808,17 @@ export function App(props: AppProps) {
                 </span>
               </button>
               <span class="header-divider" aria-hidden="true"></span>
-              <a class="header-icon-link" href="https://github.com/shadcn-ui/ui" aria-label="GitHub repository">
-                GitHub
+              <a class="header-icon-link header-github-link" href="https://github.com/shadcn-ui/ui" aria-label="108k">
+                108k
               </a>
               <span class="header-divider header-divider-wide" aria-hidden="true"></span>
               <ModeToggleControl />
               <span class="header-divider" aria-hidden="true"></span>
-              <a class="header-create-link" href="/create">
+              <a class="header-create-link header-create-link-desktop" href="/create">
                 New Project
+              </a>
+              <a class="header-create-link header-create-link-mobile" href="/create">
+                New
               </a>
             </div>
           </div>
