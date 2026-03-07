@@ -1776,6 +1776,12 @@ h1 {
   gap: 0.2rem;
 }
 
+.root-preview-item-card {
+  border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+  border-radius: 0.7rem;
+  background: color-mix(in oklab, var(--muted) 28%, var(--card));
+}
+
 .root-preview-field,
 .root-preview-inline-input,
 .root-preview-item-row,
@@ -1789,10 +1795,31 @@ h1 {
   background: color-mix(in oklab, var(--muted) 28%, var(--card));
 }
 
+.root-preview-item-card .root-preview-item-row {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
 .root-preview-field,
 .root-preview-item-row,
 .root-preview-check-row {
   padding: 0.65rem 0.75rem;
+}
+
+.root-preview-item-row-split {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.root-preview-item-row-split .root-preview-section {
+  flex: 1;
+}
+
+.root-preview-item-row-compact {
+  gap: 0.65rem;
 }
 
 .root-preview-field strong,
@@ -1809,6 +1836,42 @@ h1 {
 .root-preview-field strong,
 .root-preview-item-row strong {
   color: var(--foreground);
+}
+
+.root-preview-item-action {
+  flex-shrink: 0;
+}
+
+.root-preview-item-media {
+  display: grid;
+  place-items: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+  border-radius: 999px;
+  background: var(--card);
+}
+
+.root-preview-item-media span {
+  display: block;
+  width: 0.8rem;
+  height: 0.7rem;
+  border: 1.5px solid currentColor;
+  border-radius: 0.22rem 0.22rem 0.28rem 0.28rem;
+  color: var(--muted-foreground);
+  position: relative;
+}
+
+.root-preview-item-media span::before {
+  content: "";
+  position: absolute;
+  left: 0.12rem;
+  right: 0.12rem;
+  top: -0.28rem;
+  height: 0.22rem;
+  border: 1.5px solid currentColor;
+  border-bottom: 0;
+  border-radius: 0.3rem 0.3rem 0 0;
 }
 
 .root-preview-avatar-row {
