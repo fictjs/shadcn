@@ -75,8 +75,33 @@ test.describe("shadcn v4 site", () => {
 
     await expect(page.getByRole("button", { name: "Search documentation..." })).toBeVisible()
     await expect(page.getByRole("link", { name: "108k" })).toHaveAttribute("href", "https://github.com/shadcn-ui/ui")
+    await expect(page.getByRole("button", { name: "Toggle layout" })).toBeVisible()
     await expect(page.getByRole("button", { name: "Toggle theme" })).toBeVisible()
     await expect(page.getByRole("banner").getByRole("link", { name: "Create Project" })).toHaveAttribute("href", "/create")
+  })
+
+  test("layout toggle switches between full and fixed containers", async ({ page }) => {
+    await page.setViewportSize({ width: 1800, height: 1000 })
+    await page.goto("/")
+
+    const html = page.locator("html")
+    const mainContainer = page.locator("main.container")
+    const layoutToggle = page.getByRole("button", { name: "Toggle layout" })
+
+    await expect(html).toHaveAttribute("data-layout", "full")
+    const fullWidth = await mainContainer.evaluate((element) => element.getBoundingClientRect().width)
+
+    await layoutToggle.click()
+
+    await expect(html).toHaveAttribute("data-layout", "fixed")
+    await expect(html).toHaveClass(/layout-fixed/)
+    const fixedWidth = await mainContainer.evaluate((element) => element.getBoundingClientRect().width)
+    expect(fixedWidth).toBeLessThan(fullWidth - 150)
+
+    await page.reload()
+    await expect(html).toHaveAttribute("data-layout", "fixed")
+    const persistedWidth = await mainContainer.evaluate((element) => element.getBoundingClientRect().width)
+    expect(Math.round(persistedWidth)).toBe(Math.round(fixedWidth))
   })
 
   test("header search opens a command-style route picker", async ({ page }) => {

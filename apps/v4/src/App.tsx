@@ -382,6 +382,9 @@ const createItemLookup: Record<string, CreateCatalogItem> = {
 const colorModeStorageKey = "shadcn-v4-color-mode"
 const colorModeEventName = "shadcn-v4-color-mode-change"
 const routeThemeStorageKey = "shadcn-v4-active-theme"
+const layoutStorageKey = "layout"
+
+type SiteLayoutMode = "fixed" | "full"
 
 function formatDisplayLabel(value: string): string {
   const normalized = value.replace(/[-_]/g, " ").replace(/\s+/g, " ").trim()
@@ -497,6 +500,42 @@ function buildRouteThemeStyleValue(swatches: string[]): string {
     `--accent:${accentSoft}`,
     `--accent-foreground:${accentStrong}`,
   ].join("; ")
+}
+
+function resolveStoredLayout(): SiteLayoutMode | null {
+  if (typeof window === "undefined" || !window.localStorage) {
+    return null
+  }
+
+  const storedLayout = window.localStorage.getItem(layoutStorageKey)
+  return storedLayout === "fixed" || storedLayout === "full" ? storedLayout : null
+}
+
+function applyDocumentLayout(layout: SiteLayoutMode) {
+  if (typeof document === "undefined") {
+    return
+  }
+
+  document.documentElement.classList.toggle("layout-fixed", layout === "fixed")
+  document.documentElement.classList.toggle("layout-full", layout === "full")
+  document.documentElement.dataset.layout = layout
+}
+
+function setDocumentLayout(layout: SiteLayoutMode, persist: boolean) {
+  applyDocumentLayout(layout)
+  if (typeof window !== "undefined" && persist) {
+    window.localStorage.setItem(layoutStorageKey, layout)
+  }
+}
+
+function toggleDocumentLayout(): SiteLayoutMode {
+  if (typeof document === "undefined") {
+    return "full"
+  }
+
+  const nextLayout = document.documentElement.classList.contains("layout-fixed") ? "full" : "fixed"
+  setDocumentLayout(nextLayout, true)
+  return nextLayout
 }
 
 function DarkModeManager() {
@@ -722,6 +761,7 @@ export function App(props: AppProps) {
   ]
   let isMobileNavOpen = $state(false)
   let isSearchOpen = $state(false)
+  let activeLayout = $state<SiteLayoutMode>(untrack(() => resolveStoredLayout() || "full"))
   let activeThemeName = $state(
     untrack(() => {
       const themes = props.route.themes
@@ -744,6 +784,22 @@ export function App(props: AppProps) {
       window.localStorage[routeThemeStorageKey] = themeName
     }
   }
+  $effect(() => {
+    if (typeof document === "undefined") {
+      return
+    }
+
+    if (activeLayout === "fixed") {
+      document.documentElement.classList.add("layout-fixed")
+      document.documentElement.classList.remove("layout-full")
+      document.documentElement.dataset.layout = "fixed"
+      return
+    }
+
+    document.documentElement.classList.add("layout-full")
+    document.documentElement.classList.remove("layout-fixed")
+    document.documentElement.dataset.layout = "full"
+  })
   const searchEntries = buildSiteSearchEntries(routeSnapshot)
   const visibleSearchEntries = searchEntries.slice(0, 24)
 
@@ -812,6 +868,19 @@ export function App(props: AppProps) {
                 108k
               </a>
               <span class="header-divider header-divider-wide" aria-hidden="true"></span>
+              <button
+                type="button"
+                class="header-icon-link header-layout-toggle"
+                aria-label="Toggle layout"
+                title="Toggle layout"
+                data-layout-mode={activeLayout}
+              >
+                <span class="header-layout-toggle-icon" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                </span>
+              </button>
+              <span class="header-divider" aria-hidden="true"></span>
               <ModeToggleControl />
               <span class="header-divider" aria-hidden="true"></span>
               <a class="header-create-link header-create-link-desktop" href="/create">

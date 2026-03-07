@@ -22,6 +22,7 @@ async function loadManifest(): Promise<void> {
 
 async function initResumableClient(): Promise<void> {
   wireColorModeManager()
+  wireLayoutManager()
   wireSiteChrome()
   wireDocTabsFallback()
 
@@ -115,6 +116,7 @@ function wireClientFilters(): void {
 
 const colorModeStorageKey = "shadcn-v4-color-mode"
 const routeThemeStorageKey = "shadcn-v4-active-theme"
+const layoutStorageKey = "layout"
 
 type CreateCatalogKind = "component" | "example" | "block" | "chart"
 
@@ -236,6 +238,13 @@ function wireSiteChrome(): void {
     if (target.closest(".mobile-nav-trigger")) {
       event.preventDefault()
       openMobileMenuOverlay()
+      return
+    }
+
+    if (target.closest(".header-layout-toggle")) {
+      event.preventDefault()
+      toggleDocumentLayout()
+      syncLayoutToggleButtons()
       return
     }
 
@@ -676,6 +685,15 @@ function resolveStoredColorMode(): "light" | "dark" | null {
   return storedMode === "light" || storedMode === "dark" ? storedMode : null
 }
 
+function resolveStoredLayout(): "fixed" | "full" | null {
+  if (!window.localStorage) {
+    return null
+  }
+
+  const storedLayout = window.localStorage.getItem(layoutStorageKey)
+  return storedLayout === "fixed" || storedLayout === "full" ? storedLayout : null
+}
+
 function resolvePreferredColorMode(): "light" | "dark" {
   const storedMode = resolveStoredColorMode()
   if (storedMode) {
@@ -691,10 +709,34 @@ function applyDocumentColorMode(mode: "light" | "dark"): void {
   document.documentElement.style.colorScheme = mode
 }
 
+function applyDocumentLayout(layout: "fixed" | "full"): void {
+  document.documentElement.classList.toggle("layout-fixed", layout === "fixed")
+  document.documentElement.classList.toggle("layout-full", layout === "full")
+  document.documentElement.dataset.layout = layout
+}
+
 function toggleDocumentColorMode(): void {
   const nextMode = document.documentElement.classList.contains("dark") ? "light" : "dark"
   applyDocumentColorMode(nextMode)
   window.localStorage.setItem(colorModeStorageKey, nextMode)
+}
+
+function wireLayoutManager(): void {
+  applyDocumentLayout(resolveStoredLayout() || "full")
+  syncLayoutToggleButtons()
+}
+
+function syncLayoutToggleButtons(): void {
+  const layout = document.documentElement.classList.contains("layout-fixed") ? "fixed" : "full"
+  document.querySelectorAll<HTMLElement>(".header-layout-toggle").forEach((button) => {
+    button.dataset.layoutMode = layout
+  })
+}
+
+function toggleDocumentLayout(): void {
+  const nextLayout = document.documentElement.classList.contains("layout-fixed") ? "full" : "fixed"
+  applyDocumentLayout(nextLayout)
+  window.localStorage.setItem(layoutStorageKey, nextLayout)
 }
 
 function isEditableTarget(target: EventTarget | null): boolean {
