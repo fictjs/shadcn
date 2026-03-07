@@ -62,6 +62,10 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".home-examples-root")).toContainText("Compute Environment")
     await expect(page.locator(".home-examples-root")).toContainText("How did you hear about us?")
     await expect(page.locator(".home-examples-root")).toContainText("Processing your request")
+    await expect(page.getByRole("contentinfo").getByRole("link", { name: "shadcn" })).toHaveAttribute(
+      "href",
+      "https://twitter.com/shadcn",
+    )
 
     await page.goto("/docs")
 
