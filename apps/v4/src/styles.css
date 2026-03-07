@@ -889,6 +889,19 @@ h1 {
   flex: 1;
 }
 
+.route-theme-container {
+  display: grid;
+  gap: 1rem;
+}
+
+.route-theme-container .home-theme-container,
+.route-theme-container .example-detail-card,
+.route-theme-container .chart-summary-card,
+.route-theme-container .chart-display-card {
+  border-color: color-mix(in oklab, var(--route-theme-accent, var(--border)) 18%, var(--border));
+  box-shadow: 0 18px 40px color-mix(in oklab, var(--route-theme-accent, var(--foreground)) 8%, transparent);
+}
+
 .section-nav-row .section-nav {
   flex: 1;
 }
@@ -924,6 +937,18 @@ h1 {
   min-height: 2.15rem;
   padding: 0.3rem 0.65rem;
   font-size: 0.8rem;
+}
+
+.mode-toggle-label-dark {
+  display: none;
+}
+
+.dark .mode-toggle-label-light {
+  display: none;
+}
+
+.dark .mode-toggle-label-dark {
+  display: inline;
 }
 
 .button {

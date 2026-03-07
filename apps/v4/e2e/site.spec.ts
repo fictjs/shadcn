@@ -206,6 +206,23 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".theme-preview-stage")).toHaveAttribute("data-theme-name", "blue")
   })
 
+  test("active theme selector drives preview routes and persists across navigation", async ({ page }) => {
+    await page.goto("/")
+
+    await page.getByLabel("Theme selector").selectOption("blue")
+    await expect(page.locator("body")).toHaveAttribute("data-active-theme", "blue")
+    await expect(page.locator(".home-preview-shell")).toHaveAttribute("data-theme-name", "blue")
+
+    await page.goto("/examples/dashboard")
+    await expect(page.locator("body")).toHaveAttribute("data-active-theme", "blue")
+    await expect(page.locator(".route-theme-container")).toHaveAttribute("data-theme-name", "blue")
+
+    await page.goto("/charts/area")
+    await expect(page.locator("body")).toHaveAttribute("data-active-theme", "blue")
+    await expect(page.locator(".route-theme-container")).toHaveAttribute("data-theme-name", "blue")
+    await expect(page.locator(".chart-display-card .chart-accent-dot").first()).toBeVisible()
+  })
+
   test("colors route renders the wrapped palette grid", async ({ page }) => {
     await page.goto("/colors")
 
