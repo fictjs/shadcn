@@ -78,6 +78,10 @@ const featuredExamplePages: ExampleShowcase[] = [
 const chartTypeOrder = ["area", "bar", "line", "pie", "radar", "radial", "tooltip"]
 const featuredBlockNames = ["dashboard-01", "sidebar-07", "sidebar-03", "login-03", "login-04"]
 
+function withSiteTitle(title: string): string {
+  return `${title} - shadcn/ui`
+}
+
 let cachedCatalog: SiteCatalog | null = null
 const registryItemCache = new Map<string, { path: string; content: string } | null>()
 
@@ -113,7 +117,7 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
       kind: "home",
       status: 200,
       pathname,
-      pageTitle: "@fictjs/shadcn v4 - Fict SSR Website",
+      pageTitle: withSiteTitle("The Foundation for your Design System"),
       ...basePayload,
     }
   }
@@ -123,7 +127,7 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
       kind: "create",
       status: 200,
       pathname,
-      pageTitle: "New Project - @fictjs/shadcn",
+      pageTitle: withSiteTitle("New Project"),
       ...basePayload,
     }
   }
@@ -137,7 +141,7 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
         kind: "docs-detail",
         status: 200,
         pathname,
-        pageTitle: `${doc.title} - Docs - @fictjs/shadcn`,
+        pageTitle: withSiteTitle(doc.title),
         docs: catalog.docs,
         doc,
         docNavigation: catalog.docNavigation,
@@ -164,7 +168,7 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
       kind: "docs-index",
       status: 200,
       pathname,
-      pageTitle: "Docs - @fictjs/shadcn",
+      pageTitle: withSiteTitle("Documentation"),
       ...basePayload,
     }
   }
@@ -177,7 +181,7 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
       kind: doc ? "docs-detail" : "not-found",
       status: doc ? 200 : 404,
       pathname,
-      pageTitle: doc ? `${doc.title} - Docs - @fictjs/shadcn` : "Not Found - @fictjs/shadcn",
+      pageTitle: doc ? withSiteTitle(doc.title) : withSiteTitle("Page not found"),
       docs: catalog.docs,
       doc,
       docNavigation: catalog.docNavigation,
@@ -208,7 +212,7 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
         kind: "docs-detail",
         status: 200,
         pathname,
-        pageTitle: `${doc.title} - Docs - @fictjs/shadcn`,
+        pageTitle: withSiteTitle(doc.title),
         docs: catalog.docs,
         doc,
         docNavigation: catalog.docNavigation,
@@ -235,7 +239,7 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
       kind: "not-found",
       status: 404,
       pathname,
-      pageTitle: "Not Found - @fictjs/shadcn",
+      pageTitle: withSiteTitle("Page not found"),
       ...basePayload,
     }
   }
@@ -245,7 +249,7 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
       kind: "examples",
       status: 200,
       pathname,
-      pageTitle: "Examples - @fictjs/shadcn",
+      pageTitle: withSiteTitle("The Foundation for your Design System"),
       ...basePayload,
     }
   }
@@ -258,7 +262,7 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
         kind: "examples",
         status: 200,
         pathname,
-        pageTitle: `${humanizeSegment(exampleSlug)} - Examples - @fictjs/shadcn`,
+        pageTitle: withSiteTitle(activeExample.title),
         ...basePayload,
         activeExample,
         exampleSlug,
@@ -275,7 +279,7 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
       kind: "charts",
       status: 200,
       pathname,
-      pageTitle: "Charts - @fictjs/shadcn",
+      pageTitle: withSiteTitle("Beautiful Charts & Graphs"),
       ...basePayload,
       activeChartType,
       chartItems,
@@ -289,7 +293,7 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
         kind: "charts",
         status: 200,
         pathname,
-        pageTitle: `${humanizeSegment(chartType)} Charts - @fictjs/shadcn`,
+        pageTitle: withSiteTitle(`${humanizeSegment(chartType)} Charts`),
         ...basePayload,
         activeChartType: chartType,
         chartItems: getChartsForType(catalog.charts, chartType),
@@ -303,7 +307,7 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
       kind: "blocks",
       status: 200,
       pathname,
-      pageTitle: "Blocks - @fictjs/shadcn",
+      pageTitle: withSiteTitle("Building Blocks for the Web"),
       ...basePayload,
       blocks: getFeaturedBlocks(catalog.blocks),
     }
@@ -316,7 +320,7 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
         kind: "blocks",
         status: 200,
         pathname,
-        pageTitle: `${humanizeSegment(blockCategory)} Blocks - @fictjs/shadcn`,
+        pageTitle: withSiteTitle(`${humanizeSegment(blockCategory)} Blocks`),
         ...basePayload,
         blocks: filterBlocksByCategory(catalog.blocks, blockCategory),
         blockCategory,
@@ -329,7 +333,7 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
       kind: "themes",
       status: 200,
       pathname,
-      pageTitle: "Themes - @fictjs/shadcn",
+      pageTitle: withSiteTitle("Pick a Color. Make it yours."),
       ...basePayload,
     }
   }
@@ -339,7 +343,7 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
       kind: "colors",
       status: 200,
       pathname,
-      pageTitle: "Colors - @fictjs/shadcn",
+      pageTitle: withSiteTitle("Tailwind Colors in Every Format"),
       ...basePayload,
     }
   }
@@ -348,7 +352,7 @@ export function resolveRoute(rawUrl: string): ResolvedRoute {
     kind: "not-found",
     status: 404,
     pathname,
-    pageTitle: "Not Found - @fictjs/shadcn",
+    pageTitle: withSiteTitle("Page not found"),
     ...basePayload,
   }
 }
