@@ -76,7 +76,7 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByRole("button", { name: "Search documentation..." })).toBeVisible()
     await expect(page.getByRole("link", { name: "108k" })).toHaveAttribute("href", "https://github.com/shadcn-ui/ui")
     await expect(page.getByRole("button", { name: "Toggle theme" })).toBeVisible()
-    await expect(page.getByRole("banner").getByRole("link", { name: "New Project" })).toHaveAttribute("href", "/create")
+    await expect(page.getByRole("banner").getByRole("link", { name: "Create Project" })).toHaveAttribute("href", "/create")
   })
 
   test("header search opens a command-style route picker", async ({ page }) => {
