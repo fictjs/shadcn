@@ -2033,14 +2033,22 @@ function RootInputGroupButtonPreview() {
 function RootItemDemoPreview() {
   return (
     <div class="root-preview-shell root-preview-stack">
-      <div class="root-preview-item-row">
-        <strong>Basic Item</strong>
-        <span>Action</span>
+      <div class="root-preview-item-card">
+        <div class="root-preview-item-row root-preview-item-row-split">
+          <div class="root-preview-section">
+            <strong>Two-factor authentication</strong>
+            <span>Verify via email or phone number.</span>
+          </div>
+          <button type="button" class="root-preview-button root-preview-button-secondary root-preview-item-action">
+            Enable
+          </button>
+        </div>
       </div>
-      <p class="root-preview-copy">A simple item with title and description.</p>
-      <div class="root-preview-item-row">
-        <strong>Your profile has been verified.</strong>
-        <span>&gt;</span>
+      <div class="root-preview-item-row root-preview-item-row-split root-preview-item-row-compact">
+        <div class="root-preview-item-media" aria-hidden="true">
+          <span></span>
+        </div>
+        <strong>Your order has been shipped.</strong>
       </div>
     </div>
   )
