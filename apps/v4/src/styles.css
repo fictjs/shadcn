@@ -353,9 +353,14 @@ a {
 }
 
 .header-layout-toggle {
+  display: none;
   width: 2.1rem;
   min-height: 2.1rem;
   padding: 0;
+}
+
+.header-divider-layout {
+  display: none;
 }
 
 .header-layout-toggle-icon {
@@ -4405,5 +4410,15 @@ h1 {
 
   .examples-root-column-last {
     display: grid;
+  }
+}
+
+@media (min-width: 1800px) {
+  .header-layout-toggle {
+    display: inline-flex;
+  }
+
+  .header-divider-layout {
+    display: block;
   }
 }

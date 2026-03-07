@@ -888,7 +888,7 @@ export function App(props: AppProps) {
                   <span></span>
                 </span>
               </button>
-              <span class="header-divider" aria-hidden="true"></span>
+              <span class="header-divider header-divider-layout" aria-hidden="true"></span>
               <ModeToggleControl />
               <span class="header-divider" aria-hidden="true"></span>
               <a class="header-create-link header-create-link-desktop" href="/create">
