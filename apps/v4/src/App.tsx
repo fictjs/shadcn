@@ -2054,10 +2054,13 @@ function RootItemDemoPreview() {
         </div>
       </div>
       <div class="root-preview-item-row root-preview-item-row-split root-preview-item-row-compact">
-        <div class="root-preview-item-media" aria-hidden="true">
-          <span></span>
+        <div class="root-preview-item-inline">
+          <div class="root-preview-item-media root-preview-item-media-verified" aria-hidden="true">
+            <span></span>
+          </div>
+          <strong>Your profile has been verified.</strong>
         </div>
-        <strong>Your order has been shipped.</strong>
+        <span class="root-preview-item-arrow" aria-hidden="true"></span>
       </div>
     </div>
   )
