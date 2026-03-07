@@ -45,7 +45,12 @@ test.describe("shadcn v4 site", () => {
     )
     await expect(page.getByRole("main").getByRole("link", { name: "New Project" })).toHaveAttribute("href", "/create")
     await expect(page.locator(".home-examples-root .examples-root-grid")).toBeVisible()
+    await expect(page.locator(".home-examples-root")).toContainText("Payment Method")
+    await expect(page.locator(".home-examples-root")).toContainText("Invite Members")
     await expect(page.locator(".root-preview-separator")).toContainText("Appearance Settings")
+    await expect(page.locator(".home-examples-root")).toContainText("Compute Environment")
+    await expect(page.locator(".home-examples-root")).toContainText("How did you hear about us?")
+    await expect(page.locator(".home-examples-root")).toContainText("Processing your request")
 
     await page.goto("/docs")
 
