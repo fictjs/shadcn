@@ -39,7 +39,11 @@ test.describe("shadcn v4 site", () => {
 
     await expect(page.getByRole("heading", { name: "The Foundation for your Design System" })).toBeVisible()
     await expect(page.getByRole("navigation", { name: "Primary" })).toContainText("Docs")
-    await expect(page.getByRole("link", { name: "Get Started" })).toBeVisible()
+    await expect(page.getByRole("link", { name: "shadcn/skills, presets and more" })).toHaveAttribute(
+      "href",
+      "/docs/changelog/2026-03-cli-v4"
+    )
+    await expect(page.getByRole("main").getByRole("link", { name: "New Project" })).toHaveAttribute("href", "/create")
     await expect(page.locator(".home-examples-root .examples-root-grid")).toBeVisible()
     await expect(page.locator(".root-preview-separator")).toContainText("Appearance Settings")
 
@@ -67,7 +71,7 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByRole("button", { name: "Search documentation..." })).toBeVisible()
     await expect(page.getByRole("link", { name: "108k" })).toHaveAttribute("href", "https://github.com/shadcn-ui/ui")
     await expect(page.getByRole("button", { name: "Toggle theme" })).toBeVisible()
-    await expect(page.getByRole("link", { name: "New Project" })).toHaveAttribute("href", "/create")
+    await expect(page.getByRole("banner").getByRole("link", { name: "New Project" })).toHaveAttribute("href", "/create")
   })
 
   test("header search opens a command-style route picker", async ({ page }) => {

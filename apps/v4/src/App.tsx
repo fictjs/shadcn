@@ -1773,8 +1773,8 @@ function HomePage(props: { route: ResolvedRoute; activeThemeName: string; onThem
           Start here then make it your own. Open Source. Open Code.
         </p>
         <div class="cta-row">
-          <a class="button" href="/docs/installation">
-            Get Started
+          <a class="button" href="/create">
+            New Project
           </a>
           <a class="button button-ghost" href="/docs/components">
             View Components
@@ -2081,8 +2081,8 @@ function ThemeSelectorControl(props: { themes: ThemeEntry[]; activeThemeName: st
 
 function AnnouncementBadge() {
   return (
-    <a class="announcement-chip" href="/docs/changelog/2026-01-rtl">
-      <span>RTL Support</span>
+    <a class="announcement-chip" href="/docs/changelog/2026-03-cli-v4">
+      <span>shadcn/skills, presets and more</span>
       <span class="announcement-chip-arrow" aria-hidden="true">
         -&gt;
       </span>
