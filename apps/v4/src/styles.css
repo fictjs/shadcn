@@ -926,11 +926,22 @@ h1 {
 }
 
 .section-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   border-radius: 0.45rem;
   padding: 0.35rem 0.6rem;
   font-size: 0.84rem;
   font-weight: 500;
   color: var(--muted-foreground);
+}
+
+.section-nav-badge {
+  display: inline-flex;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: #3b82f6;
 }
 
 .section-nav a:hover,
