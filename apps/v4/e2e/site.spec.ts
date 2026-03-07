@@ -1,6 +1,23 @@
 import { expect, test } from "@playwright/test"
 
 test.describe("shadcn v4 site", () => {
+  test("routes use shadcn/ui page titles", async ({ page }) => {
+    await page.goto("/")
+    await expect(page).toHaveTitle("The Foundation for your Design System - shadcn/ui")
+
+    await page.goto("/docs")
+    await expect(page).toHaveTitle("Introduction - shadcn/ui")
+
+    await page.goto("/blocks")
+    await expect(page).toHaveTitle("Building Blocks for the Web - shadcn/ui")
+
+    await page.goto("/themes")
+    await expect(page).toHaveTitle("Pick a Color. Make it yours. - shadcn/ui")
+
+    await page.goto("/create")
+    await expect(page).toHaveTitle("New Project - shadcn/ui")
+  })
+
   test("examples root keeps catalog controls while detail routes stay focused", async ({ page }) => {
     await page.goto("/examples")
 
