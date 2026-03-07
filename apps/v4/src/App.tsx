@@ -53,6 +53,9 @@ interface ExampleRootColumn {
 }
 
 const colorPalettes = buildColorPalettes()
+const defaultThemeSwatches = ["#0f172a", "#334155", "#64748b", "#94a3b8", "#cbd5e1"]
+const themeSwatchLookup = buildThemeSwatchLookup()
+const routeThemeStyleLookup = buildRouteThemeStyleLookup()
 const hiddenThemeNames = new Set(["slate", "stone", "gray", "zinc"])
 const examplesRootColumns: ExampleRootColumn[] = [
   {
@@ -300,7 +303,7 @@ const createExampleItems: CreateCatalogItem[] = [
   {
     key: "example:tasks",
     id: "tasks",
-    title: "Tasks",
+    title: "Tasks Example",
     description: "A task and issue tracker build using Tanstack Table.",
     kind: "example",
   },
@@ -378,6 +381,7 @@ const createItemLookup: Record<string, CreateCatalogItem> = {
 
 const colorModeStorageKey = "shadcn-v4-color-mode"
 const colorModeEventName = "shadcn-v4-color-mode-change"
+const routeThemeStorageKey = "shadcn-v4-active-theme"
 
 function formatDisplayLabel(value: string): string {
   const normalized = value.replace(/[-_]/g, " ").replace(/\s+/g, " ").trim()
@@ -452,78 +456,65 @@ function toggleDocumentColorMode(): "light" | "dark" {
   return nextMode
 }
 
+function getVisibleThemes(themes: ThemeEntry[]): ThemeEntry[] {
+  return themes.filter((theme) => !hiddenThemeNames.has(theme.name))
+}
+
+function resolveStoredRouteTheme(themes: ThemeEntry[]): string | null {
+  if (typeof window === "undefined") {
+    return null
+  }
+
+  const storedTheme = window.localStorage[routeThemeStorageKey]
+  if (!storedTheme) {
+    return null
+  }
+
+  return getVisibleThemes(themes).some((theme) => theme.name === storedTheme) ? storedTheme : null
+}
+
+function buildRouteThemeStyleValue(swatches: string[]): string {
+  const accentStrong = swatches[0] || defaultThemeSwatches[0]
+  const accent = swatches[1] || accentStrong
+  const accentSoft = swatches[2] || accent
+  const accentMuted = swatches[3] || accentSoft
+  const muted = swatches[4] || defaultThemeSwatches[4]
+
+  return [
+    `--route-theme-accent-strong:${accentStrong}`,
+    `--route-theme-accent:${accent}`,
+    `--route-theme-accent-soft:${accentSoft}`,
+    `--route-theme-accent-muted:${accentMuted}`,
+    `--route-theme-muted:${muted}`,
+    `--theme-accent-strong:${accentStrong}`,
+    `--theme-accent:${accent}`,
+    `--theme-accent-soft:${accentSoft}`,
+    `--theme-accent-muted:${accentMuted}`,
+    `--theme-muted:${muted}`,
+    `--primary:${accent}`,
+    `--primary-foreground:#ffffff`,
+    `--ring:${accent}`,
+    `--accent:${accentSoft}`,
+    `--accent-foreground:${accentStrong}`,
+  ].join("; ")
+}
+
 function DarkModeManager() {
-  $effect(() => {
-    if (typeof window === "undefined") {
-      return
-    }
-
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
-    const syncMode = () => {
-      setDocumentColorMode(resolvePreferredColorMode(), false)
-    }
-
-    const handleChange = () => {
-      if (resolveStoredColorMode()) {
-        return
-      }
-
-      syncMode()
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const isToggleShortcut = (event.key === "d" || event.key === "D") && !event.metaKey && !event.ctrlKey && !event.altKey
-      if (!isToggleShortcut || isEditableTarget(event.target)) {
-        return
-      }
-
-      event.preventDefault()
-      toggleDocumentColorMode()
-    }
-
-    syncMode()
-    mediaQuery.addEventListener("change", handleChange)
-    document.addEventListener("keydown", handleKeyDown)
-
-    return () => {
-      mediaQuery.removeEventListener("change", handleChange)
-      document.removeEventListener("keydown", handleKeyDown)
-    }
-  })
-
   return null
 }
 
 function ModeToggleControl() {
-  let modeLabel = $state("Light")
-
-  $effect(() => {
-    if (typeof document === "undefined" || typeof window === "undefined") {
-      return
-    }
-
-    const syncLabel = () => {
-      modeLabel = document.documentElement.classList.contains("dark") ? "Dark" : "Light"
-    }
-
-    syncLabel()
-    window.addEventListener(colorModeEventName, syncLabel)
-    return () => {
-      window.removeEventListener(colorModeEventName, syncLabel)
-    }
-  })
-
   return (
     <button
       type="button"
       class="header-icon-link header-mode-toggle"
       aria-label="Toggle color mode"
-      aria-pressed={modeLabel === "Dark"}
       onClick$={() => {
         toggleDocumentColorMode()
       }}
     >
-      {modeLabel}
+      <span class="mode-toggle-label mode-toggle-label-light">Light</span>
+      <span class="mode-toggle-label mode-toggle-label-dark">Dark</span>
     </button>
   )
 }
@@ -697,6 +688,7 @@ function filterSiteSearchEntries(entries: SiteSearchEntry[], query: string): Sit
 
 export function App(props: AppProps) {
   const route = props.route
+  const routeSnapshot = untrack(() => props.route)
   const primaryNavLinks: SiteNavLink[] = [
     { href: "/docs", label: "Docs" },
     { href: "/docs/components", label: "Components" },
@@ -707,62 +699,30 @@ export function App(props: AppProps) {
   ]
   let isMobileNavOpen = $state(false)
   let isSearchOpen = $state(false)
-  let searchQuery = $state("")
-  const searchEntries = buildSiteSearchEntries(route)
-  const visibleSearchEntries = filterSiteSearchEntries(searchEntries, searchQuery)
+  let activeThemeName = $state(
+    untrack(() => {
+      const themes = props.route.themes
+      const storage = typeof window !== "undefined" ? window.localStorage : null
+      const storedTheme = storage?.getItem(routeThemeStorageKey)
+      const visibleThemeNames = themes
+        .filter((theme) => !hiddenThemeNames.has(theme.name))
+        .map((theme) => theme.name)
 
-  $effect(() => {
-    if (typeof document === "undefined") {
-      return
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        isMobileNavOpen = false
+      if (storedTheme && visibleThemeNames.includes(storedTheme)) {
+        return storedTheme
       }
 
-      const isSearchShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k"
-      if (isSearchShortcut) {
-        event.preventDefault()
-        isSearchOpen = true
-        return
-      }
-
-      if (event.key === "Escape") {
-        isSearchOpen = false
-      }
-    }
-
-    document.addEventListener("keydown", handleKeyDown)
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown)
-    }
-  })
-
-  $effect(() => {
-    if (typeof document === "undefined") {
-      return
-    }
-
-    document.body.style.overflow = isSearchOpen ? "hidden" : ""
-    return () => {
-      document.body.style.overflow = ""
-    }
-  })
-
-  $effect(() => {
-    if (!isSearchOpen || typeof document === "undefined") {
-      return
-    }
-
-    queueMicrotask(() => {
-      const input = document.getElementById("site-search-input")
-      if (input instanceof HTMLInputElement) {
-        input.focus()
-        input.select()
-      }
+      return visibleThemeNames[0] || themes[0]?.name || "neutral"
     })
-  })
+  )
+  const handleThemeChange = (themeName: string) => {
+    activeThemeName = themeName
+    if (typeof window !== "undefined") {
+      window.localStorage[routeThemeStorageKey] = themeName
+    }
+  }
+  const searchEntries = buildSiteSearchEntries(routeSnapshot)
+  const visibleSearchEntries = searchEntries.slice(0, 24)
 
   return (
     <>
@@ -865,14 +825,14 @@ export function App(props: AppProps) {
         </header>
 
         <main class="container main-content">
-          {route.kind === "home" ? <HomePage route={route} /> : null}
+          {route.kind === "home" ? <HomePage route={route} activeThemeName={activeThemeName} onThemeChange={handleThemeChange} /> : null}
           {route.kind === "docs-index" ? <DocsIndexPage docs={route.docs} /> : null}
           {route.kind === "docs-detail" && route.doc ? <DocDetailPage route={route} /> : null}
           {route.kind === "components" ? <ComponentsPage components={route.components} /> : null}
-          {route.kind === "examples" ? <ExamplesPage route={route} /> : null}
-          {route.kind === "charts" ? <ChartsPage route={route} /> : null}
+          {route.kind === "examples" ? <ExamplesPage route={route} activeThemeName={activeThemeName} onThemeChange={handleThemeChange} /> : null}
+          {route.kind === "charts" ? <ChartsPage route={route} activeThemeName={activeThemeName} onThemeChange={handleThemeChange} /> : null}
           {route.kind === "blocks" ? <BlocksPage route={route} /> : null}
-          {route.kind === "themes" ? <ThemesPage themes={route.themes} /> : null}
+          {route.kind === "themes" ? <ThemesPage themes={route.themes} activeThemeName={activeThemeName} onThemeChange={handleThemeChange} /> : null}
           {route.kind === "colors" ? <ColorsPage /> : null}
           {route.kind === "not-found" ? <NotFoundPage pathname={route.pathname} /> : null}
         </main>
@@ -927,7 +887,6 @@ export function App(props: AppProps) {
               }
 
               isSearchOpen = false
-              searchQuery = ""
             }}
           >
             <div class="site-search-dialog" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
@@ -942,7 +901,6 @@ export function App(props: AppProps) {
                   aria-label="Close search"
                   onClick$={() => {
                     isSearchOpen = false
-                    searchQuery = ""
                   }}
                 >
                   Close
@@ -956,12 +914,7 @@ export function App(props: AppProps) {
                 id="site-search-input"
                 class="site-search-input"
                 type="text"
-                value={searchQuery}
                 placeholder="Search documentation..."
-                onInput={(event) => {
-                  const target = event.target as HTMLInputElement | null
-                  searchQuery = target?.value ?? ""
-                }}
               />
 
               <div class="site-search-status">
@@ -971,17 +924,15 @@ export function App(props: AppProps) {
                 </span>
               </div>
 
-              {visibleSearchEntries.length ? (
-                <div class="site-search-results" role="list">
+              <div class="site-search-results" role="list">
                   {visibleSearchEntries.map((entry) => (
                     <a
                       key={`${entry.href}:${entry.title}`}
                       class="site-search-result"
+                      data-search-text={`${entry.title} ${entry.kind} ${entry.description} ${entry.keywords}`.toLowerCase()}
                       href={entry.href}
-                      role="listitem"
                       onClick$={() => {
                         isSearchOpen = false
-                        searchQuery = ""
                       }}
                     >
                       <div class="site-search-result-copy">
@@ -995,9 +946,7 @@ export function App(props: AppProps) {
                     </a>
                   ))}
                 </div>
-              ) : (
-                <div class="site-search-empty">No results found.</div>
-              )}
+              <div class="site-search-empty" hidden>No results found.</div>
             </div>
           </div>
         ) : null}
@@ -1027,7 +976,6 @@ function CreatePage() {
   let theme = $state("neutral")
   let font = $state("inter")
   let starterTemplate = $state("next")
-  let itemQuery = $state("")
   let copiedLabel = $state("Share")
   let copiedCommandLabel = $state("Copy Command")
 
@@ -1041,17 +989,7 @@ function CreatePage() {
       : activeKind === "block"
           ? createBlockItems
           : createChartItems
-  const normalizedItemQuery = itemQuery.trim().toLowerCase()
-  const filteredActiveItems = !normalizedItemQuery
-    ? activeItems
-    : activeItems.filter((item) =>
-        `${item.title} ${item.id} ${item.description}`.toLowerCase().includes(normalizedItemQuery)
-      )
-  const activeItem =
-    filteredActiveItems.find((item) => item.id === activeId) ||
-    activeItems.find((item) => item.id === activeId) ||
-    filteredActiveItems[0] ||
-    createComponentItems[0]
+  const activeItem = createItemLookup[`${activeKind}:${activeId}`] || activeItems[0] || createComponentItems[0]
 
   const createInstallCommand =
     `pnpm dlx @fictjs/shadcn@latest init --template ${starterTemplate} --base ${base}` +
@@ -1065,7 +1003,6 @@ function CreatePage() {
     theme = "neutral"
     font = "inter"
     starterTemplate = "next"
-    itemQuery = ""
     copiedLabel = "Share"
     copiedCommandLabel = "Copy Command"
   }
@@ -1133,7 +1070,6 @@ function CreatePage() {
                 theme = "neutral"
                 font = "inter"
                 starterTemplate = "next"
-                itemQuery = ""
                 copiedLabel = "Share"
                 copiedCommandLabel = "Copy Command"
               }}
@@ -1177,23 +1113,7 @@ function CreatePage() {
               <input
                 id="create-item-filter"
                 type="text"
-                value={itemQuery}
                 placeholder="Search by title, id, or description"
-                onInput={(event) => {
-                  const target = event.target as HTMLInputElement | null
-                  const nextQuery = target?.value ?? ""
-                  const nextNormalizedQuery = nextQuery.trim().toLowerCase()
-                  const nextItems = !nextNormalizedQuery
-                    ? activeItems
-                    : activeItems.filter((item) =>
-                        `${item.title} ${item.id} ${item.description}`.toLowerCase().includes(nextNormalizedQuery)
-                      )
-
-                  itemQuery = nextQuery
-                  if (nextItems.length && !nextItems.some((item) => item.id === activeId)) {
-                    activeId = nextItems[0].id
-                  }
-                }}
               />
             </div>
 
@@ -1216,7 +1136,6 @@ function CreatePage() {
                     }
 
                     activeKind = nextKind
-                    itemQuery = ""
                     activeId =
                       nextKind === "component"
                         ? "button"
@@ -1237,10 +1156,10 @@ function CreatePage() {
               <section class="create-explorer-group">
                 <div class="create-explorer-group-head">
                   <h2>{createKindLabels[activeKind]}</h2>
-                  <span>{filteredActiveItems.length}</span>
+                  <span>{activeItems.length}</span>
                 </div>
                 <div class="create-explorer-list">
-                  {filteredActiveItems.length ? filteredActiveItems.map((item) => (
+                  {activeItems.length ? activeItems.map((item) => (
                     <button
                       type="button"
                       key={item.key}
@@ -1841,7 +1760,9 @@ function CreatePreviewStage(props: { kind: CreateCatalogKind; itemId: string }) 
   )
 }
 
-function HomePage(props: { route: ResolvedRoute }) {
+function HomePage(props: { route: ResolvedRoute; activeThemeName: string; onThemeChange: (themeName: string) => void }) {
+  const routeThemeStyle = routeThemeStyleLookup[props.activeThemeName] || routeThemeStyleLookup.neutral || routeThemeStyleLookup.blue || ""
+
   return (
     <section class="stack-gap">
       <div class="home-hero-card route-page-header">
@@ -1872,10 +1793,10 @@ function HomePage(props: { route: ResolvedRoute }) {
             </a>
           ))}
         </nav>
-        <ThemeSelectorControl themes={props.route.themes} />
+        <ThemeSelectorControl themes={props.route.themes} activeThemeName={props.activeThemeName} onThemeSelect={props.onThemeChange} />
       </div>
 
-      <div class="home-preview-shell">
+      <div class="home-preview-shell route-theme-container" data-theme-name={props.activeThemeName} style={routeThemeStyle}>
         <section class="home-mobile-preview">
           <figure class="example-preview-card home-mobile-preview-card">
             <ColorModeImage
@@ -2100,8 +2021,8 @@ function ExamplesRootPreview() {
   )
 }
 
-function ThemeSelectorControl(props: { themes: ThemeEntry[] }) {
-  const visibleThemes = props.themes.filter((theme) => !hiddenThemeNames.has(theme.name))
+function ThemeSelectorControl(props: { themes: ThemeEntry[]; activeThemeName: string; onThemeSelect: (themeName: string) => void }) {
+  const visibleThemes = untrack(() => props.themes.filter((theme) => !hiddenThemeNames.has(theme.name)))
 
   return (
     <div class="theme-selector-stub">
@@ -2112,9 +2033,18 @@ function ThemeSelectorControl(props: { themes: ThemeEntry[] }) {
       <select
         id="theme-selector"
         aria-label="Theme selector"
+        data-active-theme={props.activeThemeName}
+        onChange$={(event: Event) => {
+          const target = event.currentTarget
+          if (!(target instanceof HTMLSelectElement)) {
+            return
+          }
+
+          props.onThemeSelect(target.value)
+        }}
       >
         {visibleThemes.map((theme) => (
-          <option key={theme.name} value={theme.name}>
+          <option key={theme.name} value={theme.name} selected={theme.name === props.activeThemeName}>
             {theme.title === "Neutral" ? "Default" : theme.title}
           </option>
         ))}
@@ -2122,6 +2052,7 @@ function ThemeSelectorControl(props: { themes: ThemeEntry[] }) {
       <button
         type="button"
         class="button button-ghost theme-selector-copy"
+        data-theme-name={props.activeThemeName}
         onClick$={(event: MouseEvent) => {
           if (typeof navigator === "undefined" || !navigator.clipboard) {
             return
@@ -2132,12 +2063,11 @@ function ThemeSelectorControl(props: { themes: ThemeEntry[] }) {
             return
           }
 
-          const previous = target.previousElementSibling
-          if (!(previous instanceof HTMLSelectElement)) {
+          const themeName = target.dataset.themeName
+          if (!themeName) {
             return
           }
 
-          const themeName = previous.value
           void navigator.clipboard.writeText(
             `pnpm dlx @fictjs/shadcn@latest theme apply ${themeName}`,
           )
@@ -2418,33 +2348,18 @@ function renderDocBlock(block: DocContentBlock, key: string) {
 
 function DocTabsBlock(props: { panels: Array<{ value: string; label: string; blocks: DocContentBlock[] }>; blockKey: string }) {
   const panels = untrack(() => props.panels)
-  let activeValue = $state("")
-
-  const currentValue = activeValue || panels[0]?.value || ""
-  const activePanel = panels.find((panel) => panel.value === currentValue) || panels[0] || null
 
   return (
     <section class="doc-tabs">
       <div class="doc-tabs-list" role="tablist" aria-label="Documentation tabs">
-        {panels.map((panel) => (
+        {panels.map((panel, panelIndex) => (
           <button
             type="button"
             key={`${props.blockKey}-${panel.value}`}
-            data-value={panel.value}
-            class={panel.value === currentValue ? "doc-tab-button doc-tab-button-active" : "doc-tab-button"}
-            onClick$={(event: MouseEvent) => {
-              const target = event.currentTarget
-              if (!(target instanceof HTMLButtonElement)) {
-                return
-              }
-
-              const nextValue = target.dataset.value || ""
-              if (!nextValue) {
-                return
-              }
-
-              activeValue = nextValue
-            }}
+            data-index={String(panelIndex)}
+            data-panel-value={panel.value}
+            class={panelIndex === 0 ? "doc-tab-button doc-tab-button-active" : "doc-tab-button"}
+            aria-selected={panelIndex === 0 ? "true" : "false"}
           >
             {panel.label}
           </button>
@@ -2452,7 +2367,16 @@ function DocTabsBlock(props: { panels: Array<{ value: string; label: string; blo
       </div>
 
       <div class="doc-tabs-panel">
-        {activePanel ? <DocBlockList blocks={activePanel.blocks} keyPrefix={`${props.blockKey}-${activePanel.value}`} /> : null}
+        {panels.map((panel, panelIndex) => (
+          <div
+            key={`${props.blockKey}-${panel.value}-panel`}
+            class="doc-tab-panel-section"
+            data-panel-value={panel.value}
+            hidden={panelIndex !== 0}
+          >
+            <DocBlockList blocks={panel.blocks} keyPrefix={`${props.blockKey}-${panel.value}`} />
+          </div>
+        ))}
       </div>
     </section>
   )
@@ -2735,8 +2659,9 @@ function ComponentsPage(props: { components: string[] }) {
   )
 }
 
-function ExamplesPage(props: { route: ResolvedRoute }) {
+function ExamplesPage(props: { route: ResolvedRoute; activeThemeName: string; onThemeChange: (themeName: string) => void }) {
   const activeShowcase = props.route.activeExample
+  const routeThemeStyle = routeThemeStyleLookup[props.activeThemeName] || routeThemeStyleLookup.neutral || routeThemeStyleLookup.blue || ""
   let query = $state("")
   let filtered: string[] = $state(props.route.examples)
 
@@ -2796,9 +2721,10 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
             </a>
           ))}
         </nav>
-        <ThemeSelectorControl themes={props.route.themes} />
+        <ThemeSelectorControl themes={props.route.themes} activeThemeName={props.activeThemeName} onThemeSelect={props.onThemeChange} />
       </div>
 
+      <div class="route-theme-container" data-theme-name={props.activeThemeName} style={routeThemeStyle}>
       {activeShowcase ? (
         <article class="card example-detail-card">
           <div class="example-showcase-surface">
@@ -2857,6 +2783,7 @@ function ExamplesPage(props: { route: ResolvedRoute }) {
           </ul>
         </>
       )}
+      </div>
     </section>
   )
 }
@@ -3088,9 +3015,10 @@ function TooltipChartPreviewSurface(props: { chartId: string }) {
   )
 }
 
-function ChartsPage(props: { route: ResolvedRoute }) {
+function ChartsPage(props: { route: ResolvedRoute; activeThemeName: string; onThemeChange: (themeName: string) => void }) {
   const chartTypes = props.route.chartTypes
   const activeType = props.route.activeChartType
+  const routeThemeStyle = routeThemeStyleLookup[props.activeThemeName] || routeThemeStyleLookup.neutral || routeThemeStyleLookup.blue || ""
   const visibleCharts = untrack(() => {
     const orderedCharts: Array<{ id: string; fullWidth: boolean }> = []
     const seenChartIds = new Set<string>()
@@ -3156,9 +3084,10 @@ function ChartsPage(props: { route: ResolvedRoute }) {
             </a>
           ))}
         </nav>
-        <ThemeSelectorControl themes={props.route.themes} />
+        <ThemeSelectorControl themes={props.route.themes} activeThemeName={props.activeThemeName} onThemeSelect={props.onThemeChange} />
       </div>
 
+      <div class="route-theme-container" data-theme-name={props.activeThemeName} style={routeThemeStyle}>
       {activeType ? (
         <div class="card chart-summary-card">
           <p class="eyebrow">{activeType.charAt(0).toUpperCase() + activeType.slice(1)} charts</p>
@@ -3212,6 +3141,7 @@ function ChartsPage(props: { route: ResolvedRoute }) {
         {emptySlots.map((slot) => (
           <div class="chart-empty-slot" key={`empty-${slot}`} />
         ))}
+      </div>
       </div>
     </section>
   )
@@ -3361,7 +3291,10 @@ function BlocksPage(props: { route: ResolvedRoute }) {
 }
 
 function ThemeCardsDemo(props: { themeName: string }) {
-  const themeLabel = props.themeName === "neutral" ? "Default" : formatDisplayLabel(props.themeName)
+  const themeLabel =
+    props.themeName === "neutral"
+      ? "Default"
+      : props.themeName.replace(/[-_]/g, " ").replace(/\s+/g, " ").trim()
 
   return (
     <div class="theme-cards-demo">
@@ -3460,11 +3393,9 @@ function ThemeCardsDemo(props: { themeName: string }) {
   )
 }
 
-function ThemesPage(props: { themes: ThemeEntry[] }) {
-  const visibleThemes = props.themes.filter((theme) => !hiddenThemeNames.has(theme.name))
-  const initialThemeName = visibleThemes[0]?.name || props.themes[0]?.name || "neutral"
-  let activeThemeName = $state(initialThemeName)
-  let activeSwatches = $state(getThemeSwatches(initialThemeName))
+function ThemesPage(props: { themes: ThemeEntry[]; activeThemeName: string; onThemeChange: (themeName: string) => void }) {
+  const visibleThemes = untrack(() => props.themes.filter((theme) => !hiddenThemeNames.has(theme.name)))
+  const activeSwatches = themeSwatchLookup[props.activeThemeName] || defaultThemeSwatches
 
   return (
     <section class="stack-gap themes-route">
@@ -3495,7 +3426,7 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
                     type="button"
                     key={theme.name}
                     data-theme-name={theme.name}
-                    data-active={activeThemeName === theme.name}
+                    data-active={props.activeThemeName === theme.name}
                     class="theme-customizer-pill"
                     onClick$={(event: MouseEvent) => {
                       const target = event.currentTarget
@@ -3513,8 +3444,7 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
                         return
                       }
 
-                      activeThemeName = nextTheme.name
-                      activeSwatches = getThemeSwatches(nextTheme.name)
+                      props.onThemeChange(nextTheme.name)
                     }}
                   >
                     {theme.name === "neutral" ? "Default" : theme.name}
@@ -3531,6 +3461,7 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
               <select
                 id="themes-route-selector"
                 aria-label="Theme selector"
+                data-active-theme={props.activeThemeName}
                 onChange$={(event: Event) => {
                   const target = event.currentTarget
                   if (!(target instanceof HTMLSelectElement)) {
@@ -3542,12 +3473,11 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
                     return
                   }
 
-                  activeThemeName = nextTheme.name
-                  activeSwatches = getThemeSwatches(nextTheme.name)
+                  props.onThemeChange(nextTheme.name)
                 }}
               >
                 {visibleThemes.map((theme) => (
-                  <option key={theme.name} value={theme.name}>
+                  <option key={theme.name} value={theme.name} selected={theme.name === props.activeThemeName}>
                     {theme.name === "neutral" ? "Default" : theme.name}
                   </option>
                 ))}
@@ -3557,7 +3487,7 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
             <button
               type="button"
               class="button button-ghost theme-copy-button"
-              data-theme-name={activeThemeName}
+              data-theme-name={props.activeThemeName}
               onClick$={(event: MouseEvent) => {
                 if (typeof navigator === "undefined" || !navigator.clipboard) {
                   return
@@ -3588,10 +3518,10 @@ function ThemesPage(props: { themes: ThemeEntry[] }) {
         <div class="theme-preview-shell">
           <div
             class="theme-preview-stage"
-            data-theme-name={activeThemeName}
+            data-theme-name={props.activeThemeName}
             style={`--theme-accent-strong:${activeSwatches[0] || "#0f172a"}; --theme-accent:${activeSwatches[1] || activeSwatches[0] || "#334155"}; --theme-accent-soft:${activeSwatches[2] || activeSwatches[1] || "#64748b"}; --theme-accent-muted:${activeSwatches[3] || activeSwatches[2] || "#94a3b8"}; --theme-muted:${activeSwatches[4] || activeSwatches[0] || "#e2e8f0"}`}
           >
-            <ThemeCardsDemo themeName={activeThemeName} />
+            <ThemeCardsDemo themeName={props.activeThemeName} />
           </div>
         </div>
       </div>
@@ -3664,26 +3594,41 @@ function NotFoundPage(props: { pathname: string }) {
   )
 }
 
-function getThemeSwatches(themeName: string): string[] {
-  const palette = colorPalettes.find((entry) => entry.name === themeName) || colorPalettes[0]
-  if (!palette) {
-    return ["#0f172a", "#334155", "#64748b", "#94a3b8", "#cbd5e1"]
-  }
-
+function buildThemeSwatchLookup(): Record<string, string[]> {
+  const lookup: Record<string, string[]> = {}
   const preferredScales = [950, 700, 500, 300, 100]
-  const swatches: string[] = []
-  for (const scale of preferredScales) {
-    const match = palette.scales.find((entry) => entry.scale === scale)
-    if (match) {
-      swatches.push(match.hex)
+
+  for (const palette of colorPalettes) {
+    const swatches: string[] = []
+    for (const scale of preferredScales) {
+      const match = palette.scales.find((entry) => entry.scale === scale)
+      if (match) {
+        swatches.push(match.hex)
+      }
     }
+
+    lookup[palette.name] = swatches.length > 0 ? swatches : palette.scales.slice(0, 5).map((entry) => entry.hex)
   }
 
-  if (swatches.length > 0) {
-    return swatches
+  if (!lookup.neutral) {
+    lookup.neutral = defaultThemeSwatches
   }
 
-  return palette.scales.slice(0, 5).map((entry) => entry.hex)
+  return lookup
+}
+
+function buildRouteThemeStyleLookup(): Record<string, string> {
+  const lookup: Record<string, string> = {}
+
+  for (const [themeName, swatches] of Object.entries(themeSwatchLookup)) {
+    lookup[themeName] = buildRouteThemeStyleValue(swatches)
+  }
+
+  if (!lookup.neutral) {
+    lookup.neutral = buildRouteThemeStyleValue(defaultThemeSwatches)
+  }
+
+  return lookup
 }
 
 function buildColorPalettes(): ColorPalette[] {
