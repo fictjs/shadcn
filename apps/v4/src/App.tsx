@@ -538,6 +538,22 @@ function toggleDocumentLayout(): SiteLayoutMode {
   return nextLayout
 }
 
+function resolveInitialActiveTheme(themes: ThemeEntry[], storedTheme: string | null | undefined): string {
+  const visibleThemeNames = themes
+    .filter((theme) => !hiddenThemeNames.has(theme.name))
+    .map((theme) => theme.name)
+
+  if (storedTheme && visibleThemeNames.includes(storedTheme)) {
+    return storedTheme
+  }
+
+  if (visibleThemeNames.includes("neutral")) {
+    return "neutral"
+  }
+
+  return visibleThemeNames[0] || themes[0]?.name || "neutral"
+}
+
 function DarkModeManager() {
   return null
 }
@@ -767,15 +783,7 @@ export function App(props: AppProps) {
       const themes = props.route.themes
       const storage = typeof window !== "undefined" ? window.localStorage : null
       const storedTheme = storage?.getItem(routeThemeStorageKey)
-      const visibleThemeNames = themes
-        .filter((theme) => !hiddenThemeNames.has(theme.name))
-        .map((theme) => theme.name)
-
-      if (storedTheme && visibleThemeNames.includes(storedTheme)) {
-        return storedTheme
-      }
-
-      return visibleThemeNames[0] || themes[0]?.name || "neutral"
+      return resolveInitialActiveTheme(themes, storedTheme)
     })
   )
   const handleThemeChange = (themeName: string) => {
@@ -2247,7 +2255,6 @@ function ThemeSelectorControl(props: { themes: ThemeEntry[]; activeThemeName: st
       <label class="sr-only" for="theme-selector">
         Theme
       </label>
-      <span class="theme-selector-prefix">Theme:</span>
       <select
         id="theme-selector"
         aria-label="Theme selector"
@@ -2263,13 +2270,15 @@ function ThemeSelectorControl(props: { themes: ThemeEntry[]; activeThemeName: st
       >
         {visibleThemes.map((theme) => (
           <option key={theme.name} value={theme.name} selected={theme.name === props.activeThemeName}>
-            {theme.title === "Neutral" ? "Default" : theme.title}
+            {theme.title}
           </option>
         ))}
       </select>
       <button
         type="button"
         class="button button-ghost theme-selector-copy"
+        aria-label="Copy Code"
+        title="Copy Code"
         data-theme-name={props.activeThemeName}
         onClick$={(event: MouseEvent) => {
           if (typeof navigator === "undefined" || !navigator.clipboard) {
@@ -2291,7 +2300,10 @@ function ThemeSelectorControl(props: { themes: ThemeEntry[]; activeThemeName: st
           )
         }}
       >
-        Copy Code
+        <span class="theme-selector-copy-icon" aria-hidden="true">
+          <span></span>
+          <span></span>
+        </span>
       </button>
     </div>
   )
