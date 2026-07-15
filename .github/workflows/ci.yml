@@ -17,6 +17,29 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  compiler-consumer:
+    name: Published Rust compiler consumer
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Use Node.js 22.18.0
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+          cache: pnpm
+          cache-dependency-path: apps/v4/pnpm-lock.yaml
+      - name: Install isolated consumer
+        run: pnpm --dir apps/v4 install --frozen-lockfile
+      - name: Verify Rust-default compiler
+        run: pnpm --dir apps/v4 verify:compiler
+      - name: Typecheck isolated consumer
+        run: pnpm --dir apps/v4 typecheck
+      - name: Build isolated consumer
+        run: pnpm --dir apps/v4 build
+
   quality:
     runs-on: ubuntu-latest
 
