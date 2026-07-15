@@ -364,6 +364,13 @@ const createChartItems: CreateCatalogItem[] = [
   },
 ]
 
+const createCatalogItems: CreateCatalogItem[] = [
+  ...createComponentItems,
+  ...createExampleItems,
+  ...createBlockItems,
+  ...createChartItems,
+]
+
 const createItemLookup: Record<string, CreateCatalogItem> = {
   "component:button": createComponentItems[0],
   "component:input": createComponentItems[1],
@@ -932,7 +939,7 @@ export function App(props: AppProps) {
                 <div class="mobile-nav-links">
                   <a href="/" onClick$={() => { isMobileNavOpen = false }}>Home</a>
                   {primaryNavLinks.map((link) => (
-                    <a key={`mobile-${link.href}`} href={link.href} onClick$={() => { isMobileNavOpen = false }}>
+                    <a key={`mobile-${link.href}`} href={link.href} onClick={() => { isMobileNavOpen = false }}>
                       {link.label}
                     </a>
                   ))}
@@ -944,7 +951,7 @@ export function App(props: AppProps) {
                 <p class="eyebrow">Sections</p>
                 <div class="mobile-nav-links">
                   {mobileDocLinks.map((link) => (
-                    <a key={`doc-${link.href}`} href={link.href} onClick$={() => { isMobileNavOpen = false }}>
+                    <a key={`doc-${link.href}`} href={link.href} onClick={() => { isMobileNavOpen = false }}>
                       {link.label}
                     </a>
                   ))}
@@ -1008,9 +1015,6 @@ export function App(props: AppProps) {
                       class="site-search-result"
                       data-search-text={`${entry.title} ${entry.kind} ${entry.description} ${entry.keywords}`.toLowerCase()}
                       href={entry.href}
-                      onClick$={() => {
-                        isSearchOpen = false
-                      }}
                     >
                       <div class="site-search-result-copy">
                         <div class="site-search-result-topline">
@@ -1055,8 +1059,6 @@ function CreatePage() {
   let starterTemplate = $state("next")
   let copiedLabel = $state("Share")
   let copiedCommandLabel = $state("Copy Command")
-
-  const visibleThemes = createVisibleThemes
 
   const activeItems =
     activeKind === "component"
@@ -1201,7 +1203,7 @@ function CreatePage() {
                   key={kind}
                   data-kind={kind}
                   class={activeKind === kind ? "create-kind-pill is-active" : "create-kind-pill"}
-                  onClick$={(event: MouseEvent) => {
+                  onClick={(event: MouseEvent) => {
                     const target = event.currentTarget
                     if (!(target instanceof HTMLButtonElement)) {
                       return
@@ -1236,13 +1238,14 @@ function CreatePage() {
                   <span>{activeItems.length}</span>
                 </div>
                 <div class="create-explorer-list">
-                  {activeItems.length ? activeItems.map((item) => (
+                  {createCatalogItems.map((item) => (
                     <button
                       type="button"
                       key={item.key}
                       data-item-id={item.id}
+                      hidden={item.kind !== activeKind}
                       class={activeItem.key === item.key ? "create-item-button is-active" : "create-item-button"}
-                      onClick$={(event: MouseEvent) => {
+                      onClick={(event: MouseEvent) => {
                         const target = event.currentTarget
                         if (!(target instanceof HTMLButtonElement)) {
                           return
@@ -1260,9 +1263,7 @@ function CreatePage() {
                       <span class="create-item-title">{item.title}</span>
                       <span class="create-item-description">{item.description}</span>
                     </button>
-                  )) : (
-                    <p class="create-empty-state">No matching items.</p>
-                  )}
+                  ))}
                 </div>
               </section>
             </div>
@@ -1350,7 +1351,7 @@ function CreatePage() {
                     key={option.name}
                     data-value={option.name}
                     class={base === option.name ? "create-option-card is-active" : "create-option-card"}
-                    onClick$={(event: MouseEvent) => {
+                    onClick={(event: MouseEvent) => {
                       const target = event.currentTarget
                       if (!(target instanceof HTMLButtonElement)) {
                         return
@@ -1376,13 +1377,13 @@ function CreatePage() {
                 <h3>Theme</h3>
               </div>
               <div class="create-option-grid">
-                {visibleThemes.map((entry) => (
+                {createVisibleThemes.map((entry) => (
                   <button
                     type="button"
                     key={entry.name}
                     data-value={entry.name}
                     class={theme === entry.name ? "create-option-card is-active" : "create-option-card"}
-                    onClick$={(event: MouseEvent) => {
+                    onClick={(event: MouseEvent) => {
                       const target = event.currentTarget
                       if (!(target instanceof HTMLButtonElement)) {
                         return
@@ -1414,7 +1415,7 @@ function CreatePage() {
                     key={option.name}
                     data-value={option.name}
                     class={font === option.name ? "create-option-card is-active" : "create-option-card"}
-                    onClick$={(event: MouseEvent) => {
+                    onClick={(event: MouseEvent) => {
                       const target = event.currentTarget
                       if (!(target instanceof HTMLButtonElement)) {
                         return
@@ -1446,7 +1447,7 @@ function CreatePage() {
                     key={option.name}
                     data-value={option.name}
                     class={starterTemplate === option.name ? "create-option-card is-active" : "create-option-card"}
-                    onClick$={(event: MouseEvent) => {
+                    onClick={(event: MouseEvent) => {
                       const target = event.currentTarget
                       if (!(target instanceof HTMLButtonElement)) {
                         return
@@ -1495,10 +1496,10 @@ function CreateHeader(props: { copiedLabel: string; onReset: () => void; onShare
         </div>
 
         <div class="create-header-actions">
-          <button type="button" class="button button-ghost" onClick$={() => props.onReset()}>
+          <button type="button" class="button button-ghost" onClick={() => props.onReset()}>
             Reset
           </button>
-          <button type="button" class="button button-ghost" onClick$={() => props.onShare()}>
+          <button type="button" class="button button-ghost" onClick={() => props.onShare()}>
             {props.copiedLabel}
           </button>
           <a class="button" href="/docs/installation">
@@ -1517,6 +1518,10 @@ function CreateExplorerPanel(props: {
   onKindSelect: (kind: CreateCatalogKind) => void
   onItemSelect: (itemId: string) => void
 }) {
+  const activeItems = untrack(() => props.activeItems)
+  const activeItemKey = untrack(() => props.activeItemKey)
+  const onItemSelect = untrack(() => props.onItemSelect)
+
   return (
     <aside class="create-explorer-panel">
       <div class="create-panel-head">
@@ -1540,7 +1545,7 @@ function CreateExplorerPanel(props: {
             key={kind}
             data-kind={kind}
             class={props.activeKind === kind ? "create-kind-pill is-active" : "create-kind-pill"}
-            onClick$={(event: MouseEvent) => {
+            onClick={(event: MouseEvent) => {
               const target = event.currentTarget
               if (!(target instanceof HTMLButtonElement)) {
                 return
@@ -1566,13 +1571,13 @@ function CreateExplorerPanel(props: {
             <span>{props.activeItems.length}</span>
           </div>
           <div class="create-explorer-list">
-            {props.activeItems.map((item) => (
+            {activeItems.map((item) => (
               <button
                 type="button"
                 key={item.key}
                 data-item-id={item.id}
-                class={props.activeItemKey === item.key ? "create-item-button is-active" : "create-item-button"}
-                onClick$={(event: MouseEvent) => {
+                class={activeItemKey === item.key ? "create-item-button is-active" : "create-item-button"}
+                onClick={(event: MouseEvent) => {
                   const target = event.currentTarget
                   if (!(target instanceof HTMLButtonElement)) {
                     return
@@ -1583,7 +1588,7 @@ function CreateExplorerPanel(props: {
                     return
                   }
 
-                  props.onItemSelect(nextItemId)
+                  onItemSelect(nextItemId)
                 }}
               >
                 <span class="create-item-title">{item.title}</span>
@@ -1639,7 +1644,7 @@ function CreatePreviewPanel(props: {
           <code>{props.createInstallCommand}</code>
         </pre>
         <div class="create-command-actions">
-          <button type="button" class="button button-ghost" onClick$={(event: MouseEvent) => props.onCopyCommand(event)}>
+          <button type="button" class="button button-ghost" onClick={(event: MouseEvent) => props.onCopyCommand(event)}>
             {props.copiedCommandLabel}
           </button>
           <a class="button button-ghost" href="/docs/installation">
@@ -1662,6 +1667,10 @@ function CreateCustomizerPanel(props: {
   onFontSelect: (value: string) => void
   onTemplateSelect: (value: string) => void
 }) {
+  const visibleThemes = untrack(() => props.visibleThemes)
+  const theme = untrack(() => props.theme)
+  const onThemeSelect = untrack(() => props.onThemeSelect)
+
   return (
     <aside class="create-customizer-panel">
       <div class="create-panel-head create-panel-head-compact">
@@ -1684,7 +1693,7 @@ function CreateCustomizerPanel(props: {
               key={option.name}
               data-value={option.name}
               class={props.base === option.name ? "create-option-card is-active" : "create-option-card"}
-              onClick$={(event: MouseEvent) => {
+              onClick={(event: MouseEvent) => {
                 const target = event.currentTarget
                 if (!(target instanceof HTMLButtonElement)) {
                   return
@@ -1710,13 +1719,13 @@ function CreateCustomizerPanel(props: {
           <h3>Theme</h3>
         </div>
         <div class="create-option-grid">
-          {props.visibleThemes.map((entry) => (
+          {visibleThemes.map((entry) => (
             <button
               type="button"
               key={entry.name}
               data-value={entry.name}
-              class={props.theme === entry.name ? "create-option-card is-active" : "create-option-card"}
-              onClick$={(event: MouseEvent) => {
+              class={theme === entry.name ? "create-option-card is-active" : "create-option-card"}
+              onClick={(event: MouseEvent) => {
                 const target = event.currentTarget
                 if (!(target instanceof HTMLButtonElement)) {
                   return
@@ -1727,7 +1736,7 @@ function CreateCustomizerPanel(props: {
                   return
                 }
 
-                props.onThemeSelect(nextValue)
+                onThemeSelect(nextValue)
               }}
             >
               <span class="create-option-title">{entry.title === "Neutral" ? "Default" : entry.title}</span>
@@ -1748,7 +1757,7 @@ function CreateCustomizerPanel(props: {
               key={option.name}
               data-value={option.name}
               class={props.font === option.name ? "create-option-card is-active" : "create-option-card"}
-              onClick$={(event: MouseEvent) => {
+              onClick={(event: MouseEvent) => {
                 const target = event.currentTarget
                 if (!(target instanceof HTMLButtonElement)) {
                   return
@@ -1780,7 +1789,7 @@ function CreateCustomizerPanel(props: {
               key={option.name}
               data-value={option.name}
               class={props.starterTemplate === option.name ? "create-option-card is-active" : "create-option-card"}
-              onClick$={(event: MouseEvent) => {
+              onClick={(event: MouseEvent) => {
                 const target = event.currentTarget
                 if (!(target instanceof HTMLButtonElement)) {
                   return
@@ -2252,8 +2261,6 @@ function ExamplesRootPreview() {
 }
 
 function ThemeSelectorControl(props: { themes: ThemeEntry[]; activeThemeName: string; onThemeSelect: (themeName: string) => void }) {
-  const visibleThemes = untrack(() => props.themes.filter((theme) => !hiddenThemeNames.has(theme.name)))
-
   return (
     <div class="theme-selector-stub">
       <label class="sr-only" for="theme-selector">
@@ -2262,8 +2269,9 @@ function ThemeSelectorControl(props: { themes: ThemeEntry[]; activeThemeName: st
       <select
         id="theme-selector"
         aria-label="Theme selector"
+        value={props.activeThemeName}
         data-active-theme={props.activeThemeName}
-        onChange$={(event: Event) => {
+        onChange={(event: Event) => {
           const target = event.currentTarget
           if (!(target instanceof HTMLSelectElement)) {
             return
@@ -2272,8 +2280,8 @@ function ThemeSelectorControl(props: { themes: ThemeEntry[]; activeThemeName: st
           props.onThemeSelect(target.value)
         }}
       >
-        {visibleThemes.map((theme) => (
-          <option key={theme.name} value={theme.name} selected={theme.name === props.activeThemeName}>
+        {createVisibleThemes.map((theme) => (
+          <option key={theme.name} value={theme.name}>
             {theme.title}
           </option>
         ))}
@@ -2582,6 +2590,7 @@ function renderDocBlock(block: DocContentBlock, key: string) {
 
 function DocTabsBlock(props: { panels: Array<{ value: string; label: string; blocks: DocContentBlock[] }>; blockKey: string }) {
   const panels = untrack(() => props.panels)
+  const blockKey = untrack(() => props.blockKey)
 
   return (
     <section class="doc-tabs">
@@ -2589,7 +2598,7 @@ function DocTabsBlock(props: { panels: Array<{ value: string; label: string; blo
         {panels.map((panel, panelIndex) => (
           <button
             type="button"
-            key={`${props.blockKey}-${panel.value}`}
+            key={`${blockKey}-${panel.value}`}
             data-index={String(panelIndex)}
             data-panel-value={panel.value}
             class={panelIndex === 0 ? "doc-tab-button doc-tab-button-active" : "doc-tab-button"}
@@ -2603,12 +2612,12 @@ function DocTabsBlock(props: { panels: Array<{ value: string; label: string; blo
       <div class="doc-tabs-panel">
         {panels.map((panel, panelIndex) => (
           <div
-            key={`${props.blockKey}-${panel.value}-panel`}
+            key={`${blockKey}-${panel.value}-panel`}
             class="doc-tab-panel-section"
             data-panel-value={panel.value}
             hidden={panelIndex !== 0}
           >
-            <DocBlockList blocks={panel.blocks} keyPrefix={`${props.blockKey}-${panel.value}`} />
+            <DocBlockList blocks={panel.blocks} keyPrefix={`${blockKey}-${panel.value}`} />
           </div>
         ))}
       </div>
@@ -2894,7 +2903,8 @@ function ComponentsPage(props: { components: string[] }) {
 }
 
 function ExamplesPage(props: { route: ResolvedRoute; activeThemeName: string; onThemeChange: (themeName: string) => void }) {
-  const activeShowcase = props.route.activeExample
+  const routeSnapshot = untrack(() => props.route)
+  const activeShowcase = routeSnapshot.activeExample
   const routeThemeStyle = routeThemeStyleLookup[props.activeThemeName] || routeThemeStyleLookup.neutral || routeThemeStyleLookup.blue || ""
   let query = $state("")
   let filtered: string[] = $state(props.route.examples)
@@ -2945,10 +2955,10 @@ function ExamplesPage(props: { route: ResolvedRoute; activeThemeName: string; on
           <a class={props.route.exampleSlug === null ? "section-nav-link-active" : ""} href="/">
             Examples
           </a>
-          {props.route.examplePages.map((showcase) => (
+          {routeSnapshot.examplePages.map((showcase) => (
             <a
               key={showcase.slug}
-              class={props.route.exampleSlug === showcase.slug ? "section-nav-link-active" : ""}
+              class={routeSnapshot.exampleSlug === showcase.slug ? "section-nav-link-active" : ""}
               href={`/examples/${showcase.slug}`}
             >
               {showcase.title}
@@ -3122,7 +3132,8 @@ function LineChartPreviewSurface(props: { chartId: string }) {
 }
 
 function BarChartPreviewSurface(props: { chartId: string }) {
-  const interactive = props.chartId.endsWith("interactive")
+  const chartId = untrack(() => props.chartId)
+  const interactive = chartId.endsWith("interactive")
   const bars = interactive
     ? [84, 56, 73, 92, 61, 78, 48, 67]
     : [58, 42, 76, 51, 69, 63, 55, 81]
@@ -3138,7 +3149,7 @@ function BarChartPreviewSurface(props: { chartId: string }) {
       </div>
       <div class="chart-bar-grid" aria-hidden="true">
         {bars.map((height, index) => (
-          <div class="chart-bar-group" key={`${props.chartId}-${index}`}>
+          <div class="chart-bar-group" key={`${chartId}-${index}`}>
             <span class="chart-bar chart-bar-muted" style={`--bar-height:${Math.max(26, height - 18)}%`}></span>
             <span class="chart-bar chart-bar-accent" style={`--bar-height:${height}%`}></span>
           </div>
@@ -3430,6 +3441,7 @@ function BlocksPage(props: { route: ResolvedRoute }) {
   const categories = props.route.blockCategories
   const filteredBlocks = props.route.blocks
   const isFeaturedRoute = props.route.blockCategory === null
+  const activeBlockCategory = untrack(() => props.route.blockCategory)
 
   return (
     <section class="stack-gap">
@@ -3452,13 +3464,13 @@ function BlocksPage(props: { route: ResolvedRoute }) {
 
       <div class="section-nav-row">
         <nav class="section-nav" aria-label="Blocks navigation">
-          <a class={props.route.blockCategory === null ? "section-nav-link-active" : ""} href="/blocks">
+          <a class={activeBlockCategory === null ? "section-nav-link-active" : ""} href="/blocks">
             Featured
           </a>
           {categories.map((category) => (
             <a
               key={category}
-              class={props.route.blockCategory === category ? "section-nav-link-active" : ""}
+              class={activeBlockCategory === category ? "section-nav-link-active" : ""}
               href={`/blocks/${category}`}
             >
               {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -3629,7 +3641,6 @@ function ThemeCardsDemo(props: { themeName: string }) {
 }
 
 function ThemesPage(props: { themes: ThemeEntry[]; activeThemeName: string; onThemeChange: (themeName: string) => void }) {
-  const visibleThemes = untrack(() => props.themes.filter((theme) => !hiddenThemeNames.has(theme.name)))
   const activeSwatches = themeSwatchLookup[props.activeThemeName] || defaultThemeSwatches
 
   return (
@@ -3656,14 +3667,14 @@ function ThemesPage(props: { themes: ThemeEntry[]; activeThemeName: string; onTh
           <div class="theme-customizer-bar">
             <div class="theme-customizer-scroll" aria-label="Theme customizer">
               <div class="theme-customizer-scroll-inner">
-                {visibleThemes.map((theme) => (
+                {createVisibleThemes.map((theme) => (
                   <button
                     type="button"
                     key={theme.name}
                     data-theme-name={theme.name}
                     data-active={props.activeThemeName === theme.name}
                     class="theme-customizer-pill"
-                    onClick$={(event: MouseEvent) => {
+                    onClick={(event: MouseEvent) => {
                       const target = event.currentTarget
                       if (!(target instanceof HTMLButtonElement)) {
                         return
@@ -3674,7 +3685,7 @@ function ThemesPage(props: { themes: ThemeEntry[]; activeThemeName: string; onTh
                         return
                       }
 
-                      const nextTheme = props.themes.find((entry) => entry.name === themeName)
+                      const nextTheme = createVisibleThemes.find((entry) => entry.name === themeName)
                       if (!nextTheme) {
                         return
                       }
@@ -3696,14 +3707,15 @@ function ThemesPage(props: { themes: ThemeEntry[]; activeThemeName: string; onTh
               <select
                 id="themes-route-selector"
                 aria-label="Theme selector"
+                value={props.activeThemeName}
                 data-active-theme={props.activeThemeName}
-                onChange$={(event: Event) => {
+                onChange={(event: Event) => {
                   const target = event.currentTarget
                   if (!(target instanceof HTMLSelectElement)) {
                     return
                   }
 
-                  const nextTheme = props.themes.find((entry) => entry.name === target.value)
+                  const nextTheme = createVisibleThemes.find((entry) => entry.name === target.value)
                   if (!nextTheme) {
                     return
                   }
@@ -3711,8 +3723,8 @@ function ThemesPage(props: { themes: ThemeEntry[]; activeThemeName: string; onTh
                   props.onThemeChange(nextTheme.name)
                 }}
               >
-                {visibleThemes.map((theme) => (
-                  <option key={theme.name} value={theme.name} selected={theme.name === props.activeThemeName}>
+                {createVisibleThemes.map((theme) => (
+                  <option key={theme.name} value={theme.name}>
                     {theme.name === "neutral" ? "Default" : theme.name}
                   </option>
                 ))}

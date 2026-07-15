@@ -1,4 +1,4 @@
-import { installResumableLoader } from "@fictjs/runtime/loader"
+import { installResumableLoader } from "@fictjs/runtime/experimental/loader"
 
 import "./App"
 import "./styles.css"
