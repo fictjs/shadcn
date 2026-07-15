@@ -13,13 +13,13 @@
     "test:e2e": "pnpm --dir ../.. exec playwright test -c apps/v4/playwright.config.ts"
   },
   "dependencies": {
-    "@fictjs/runtime": "link:../../../packages/runtime",
-    "@fictjs/ssr": "link:../../../packages/ssr",
+    "@fictjs/runtime": "0.30.0",
+    "@fictjs/ssr": "0.28.2",
     "express": "^5.1.0",
-    "fict": "link:../../../packages/fict"
+    "fict": "0.30.0"
   },
   "devDependencies": {
-    "@fictjs/vite-plugin": "link:../../../packages/vite-plugin",
+    "@fictjs/vite-plugin": "0.30.0",
     "@types/express": "^5.0.5",
     "@types/node": "^24.3.0",
     "typescript": "^5.9.3",

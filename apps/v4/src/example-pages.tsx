@@ -239,7 +239,7 @@ function DashboardExample() {
                   key={entry[0]}
                   data-range={entry[0]}
                   class={timeRange === entry[0] ? "dashboard-range-chip dashboard-range-chip-active" : "dashboard-range-chip"}
-                  onClick$={(event: MouseEvent) => {
+                  onClick={(event: MouseEvent) => {
                     const target = event.currentTarget
                     if (!(target instanceof HTMLButtonElement)) {
                       return
@@ -287,7 +287,7 @@ function DashboardExample() {
                     key={tab}
                     data-view={value}
                     class={activeView === value ? "dashboard-view-tab dashboard-view-tab-active" : "dashboard-view-tab"}
-                    onClick$={(event: MouseEvent) => {
+                    onClick={(event: MouseEvent) => {
                       const target = event.currentTarget
                       if (!(target instanceof HTMLButtonElement)) {
                         return
@@ -382,6 +382,7 @@ function TasksExample() {
           <label class="tasks-search-field">
             <span class="tasks-search-label">Filter tasks</span>
             <input
+              id="tasks-filter"
               type="text"
               value={query}
               placeholder="Search issue, title, or team"
@@ -426,7 +427,7 @@ function TasksExample() {
               key={entry[0]}
               data-status={entry[0]}
               class={status === entry[0] ? "tasks-chip tasks-chip-active" : "tasks-chip"}
-              onClick$={(event: MouseEvent) => {
+              onClick={(event: MouseEvent) => {
                 const target = event.currentTarget
                 if (!(target instanceof HTMLButtonElement)) {
                   return
@@ -438,8 +439,10 @@ function TasksExample() {
                 }
 
                 status = nextStatus
-                const querySnapshot = untrack(() => query)
-                const normalized = querySnapshot.trim().toLowerCase()
+                const queryInput = document.getElementById("tasks-filter")
+                const normalized = queryInput instanceof HTMLInputElement
+                  ? queryInput.value.trim().toLowerCase()
+                  : ""
                 const nextRows: TaskRow[] = []
 
                 for (const task of taskRows) {
@@ -584,7 +587,7 @@ function PlaygroundExample() {
                   role="tab"
                   aria-selected={mode === entry[0]}
                   class={mode === entry[0] ? "playground-tab playground-tab-active" : "playground-tab"}
-                  onClick$={(event: MouseEvent) => {
+                  onClick={(event: MouseEvent) => {
                     const target = event.currentTarget
                     if (!(target instanceof HTMLButtonElement)) {
                       return
@@ -642,7 +645,7 @@ function PlaygroundExample() {
                   data-model={entry}
                   class={model === entry ? "playground-option-button playground-option-button-active" : "playground-option-button"}
                   aria-pressed={model === entry}
-                  onClick$={(event: MouseEvent) => {
+                  onClick={(event: MouseEvent) => {
                     const target = event.currentTarget
                     if (!(target instanceof HTMLButtonElement)) {
                       return
