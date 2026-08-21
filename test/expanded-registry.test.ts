@@ -138,7 +138,7 @@ describe('expanded registry entries', () => {
 
     const diff = await runDiff({ cwd, components: ['alert'] })
     expect(diff.changed).toContain('alert')
-    expect(diff.patches.join('\n')).toContain('registry/alert@0.3.0')
+    expect(diff.patches.join('\n')).toContain('registry/alert@0.4.0')
 
     const guardedUpdate = await runUpdate({ cwd, components: ['alert'], skipInstall: true })
     expect(guardedUpdate.skipped).toContain('alert')

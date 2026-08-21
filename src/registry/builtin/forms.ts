@@ -3,7 +3,7 @@ import type { RegistryEntry } from '../types'
 export const formComponentRegistry: RegistryEntry[] = [
   {
     name: 'checkbox',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Checkbox primitive wrapper',
     dependencies: ['@fictjs/radix-ui'],
@@ -45,7 +45,7 @@ export function Checkbox(props: CheckboxProps) {
   },
   {
     name: 'radio-group',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Radio group primitives with style wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -96,7 +96,7 @@ export function RadioGroupItem(props: ItemProps) {
   },
   {
     name: 'switch',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Switch primitive wrapper',
     dependencies: ['@fictjs/radix-ui'],
@@ -139,7 +139,7 @@ export function Switch(props: SwitchProps) {
   },
   {
     name: 'select',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Select primitive wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -214,7 +214,7 @@ export function SelectItem(props: GenericProps) {
   },
   {
     name: 'combobox',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Filterable combobox with controlled value and open state',
     dependencies: [],
@@ -399,7 +399,7 @@ export function ComboboxItem(props: ComboboxItemProps) {
   },
   {
     name: 'slider',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Slider primitive wrapper',
     dependencies: ['@fictjs/radix-ui'],
@@ -441,7 +441,7 @@ export function Slider(props: SliderProps) {
   },
   {
     name: 'toggle',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Toggle primitive wrapper',
     dependencies: ['@fictjs/radix-ui', 'class-variance-authority'],
@@ -497,7 +497,7 @@ export { toggleVariants }
   },
   {
     name: 'toggle-group',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Toggle group wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -547,7 +547,7 @@ export function ToggleGroupItem(props: ItemProps) {
   },
   {
     name: 'form',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Form field structure wrappers',
     dependencies: ['@fictjs/radix-ui'],

@@ -3,7 +3,7 @@ import type { RegistryEntry } from '../types'
 export const overlayComponentRegistry: RegistryEntry[] = [
   {
     name: 'dialog',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Dialog primitives with styled wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -78,7 +78,7 @@ export const DialogClose = DialogPrimitive.Close
   },
   {
     name: 'alert-dialog',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Alert dialog wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -159,7 +159,7 @@ export function AlertDialogCancel(props: GenericProps) {
   },
   {
     name: 'popover',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Popover primitive wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -197,7 +197,7 @@ export function PopoverContent(props: PopoverContentProps) {
   },
   {
     name: 'tooltip',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Tooltip primitive wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -235,7 +235,7 @@ export function TooltipContent(props: TooltipContentProps) {
   },
   {
     name: 'hover-card',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Hover card primitive wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -273,7 +273,7 @@ export function HoverCardContent(props: HoverCardContentProps) {
   },
   {
     name: 'sheet',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Drawer-style sheet based on dialog primitives',
     dependencies: ['@fictjs/radix-ui', 'class-variance-authority'],

@@ -3,7 +3,7 @@ import type { RegistryEntry } from '../types'
 export const feedbackComponentRegistry: RegistryEntry[] = [
   {
     name: 'toast',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Accessible toast queue and presentation components',
     dependencies: [],
@@ -166,7 +166,7 @@ export function Toaster() {
   },
   {
     name: 'progress',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Progress primitive wrapper',
     dependencies: ['@fictjs/radix-ui'],

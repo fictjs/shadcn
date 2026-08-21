@@ -147,7 +147,7 @@ export function CardFooter(props: DivProps) {
   },
   {
     name: 'separator',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Visual separator based on primitives',
     dependencies: ['@fictjs/radix-ui'],
@@ -216,7 +216,7 @@ export function AvatarFallback(props: DivProps) {
   },
   {
     name: 'aspect-ratio',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Aspect ratio primitive wrapper',
     dependencies: ['@fictjs/radix-ui'],
@@ -233,7 +233,7 @@ export const AspectRatio = AspectRatioPrimitive.Root
   },
   {
     name: 'skeleton',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Skeleton placeholder',
     dependencies: [],
@@ -262,7 +262,7 @@ export function Skeleton(props: SkeletonProps) {
   },
   {
     name: 'label',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Form label wrapper',
     dependencies: ['@fictjs/radix-ui'],

@@ -3,7 +3,7 @@ import type { RegistryEntry } from '../types'
 export const navigationComponentRegistry: RegistryEntry[] = [
   {
     name: 'dropdown-menu',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Dropdown menu wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -110,7 +110,7 @@ export function DropdownMenuSubContent(props: GenericProps) {
   },
   {
     name: 'context-menu',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Context menu wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -178,7 +178,7 @@ export function ContextMenuSubContent(props: GenericProps) {
   },
   {
     name: 'menubar',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Menubar wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -234,7 +234,7 @@ export function MenubarItem(props: GenericProps) {
   },
   {
     name: 'tabs',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Tabs wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -279,7 +279,7 @@ export function TabsContent(props: GenericProps) {
   },
   {
     name: 'accordion',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Accordion wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -324,7 +324,7 @@ export function AccordionContent(props: GenericProps) {
   },
   {
     name: 'collapsible',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Collapsible wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -359,7 +359,7 @@ export function CollapsibleContent(props: GenericProps) {
   },
   {
     name: 'navigation-menu',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Navigation menu wrappers',
     dependencies: ['@fictjs/radix-ui'],

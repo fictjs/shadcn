@@ -1,6 +1,6 @@
 import type { RegistryEntry, TemplateContext } from '../types'
 
-const EXPANDED_COMPONENT_VERSION = '0.3.0'
+const EXPANDED_COMPONENT_VERSION = '0.4.0'
 const EXPANDED_BLOCK_VERSION = '0.3.0'
 const EXPANDED_THEME_VERSION = '0.3.0'
 
