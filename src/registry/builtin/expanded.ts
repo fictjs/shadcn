@@ -45,7 +45,8 @@ function toTitleCase(value: string): string {
     .join(' ')
 }
 
-const alertTemplate: TemplateFn = context => `import { cva, type VariantProps } from 'class-variance-authority'
+const alertTemplate: TemplateFn =
+  context => `import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '${context.imports.cn}'
 
@@ -134,7 +135,8 @@ export function BreadcrumbEllipsis(props: SpanProps) {
 }
 `
 
-const buttonGroupTemplate: TemplateFn = context => `import { cva, type VariantProps } from 'class-variance-authority'
+const buttonGroupTemplate: TemplateFn =
+  context => `import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '${context.imports.cn}'
 
@@ -163,28 +165,283 @@ export function ButtonGroup(props: ButtonGroupProps) {
 }
 `
 
-const calendarTemplate: TemplateFn = context => `import {
-  Calendar as PrimitiveCalendar,
-  CalendarGrid,
-  CalendarHeader,
-  CalendarNextButton,
-  CalendarPrevButton,
-  CalendarTitle,
-} from '@fictjs/ui-primitives'
+const calendarTemplate: TemplateFn = context => `import { createContext, useContext } from 'fict'
+import { createSignal } from 'fict/advanced'
 
 import { cn } from '${context.imports.cn}'
 
+type DateLike = Date | string | null | undefined
+type MaybeAccessor<T> = T | (() => T)
+
 type CalendarProps = {
   class?: string
+  value?: MaybeAccessor<DateLike>
+  defaultValue?: DateLike
+  onValueChange?: (value: Date | null) => void
+  month?: MaybeAccessor<DateLike>
+  defaultMonth?: DateLike
+  onMonthChange?: (month: Date) => void
+  locale?: MaybeAccessor<string>
+  weekStartsOn?: MaybeAccessor<number>
+  showOutsideDays?: MaybeAccessor<boolean>
+  disabled?: (date: Date) => boolean
+  children?: unknown
   [key: string]: unknown
 }
 
-export function Calendar(props: CalendarProps) {
-  const { class: className, ...rest } = props
-  return <PrimitiveCalendar class={cn('rounded-lg border p-3', className)} {...rest} />
+type CalendarContextValue = {
+  value: () => Date | null
+  setValue: (value: Date) => void
+  month: () => Date
+  setMonth: (month: Date) => void
+  locale: () => string
+  weekStartsOn: () => number
+  showOutsideDays: () => boolean
+  disabled: (date: Date) => boolean
 }
 
-export { CalendarGrid, CalendarHeader, CalendarNextButton, CalendarPrevButton, CalendarTitle }
+type GenericProps = {
+  class?: string
+  children?: unknown
+  [key: string]: unknown
+}
+
+type CalendarGridProps = GenericProps & {
+  showOutsideDays?: MaybeAccessor<boolean>
+  onDaySelect?: (day: Date, event: MouseEvent) => void
+}
+
+const CalendarContext = createContext<CalendarContextValue | null>(null)
+
+function read<T>(value: MaybeAccessor<T> | undefined, fallback: T): T {
+  if (typeof value === 'function') return (value as () => T)()
+  return value ?? fallback
+}
+
+function toDate(value: DateLike): Date | null {
+  if (value === null || value === undefined) return null
+  const date = value instanceof Date ? new Date(value.getTime()) : new Date(value)
+  return Number.isNaN(date.getTime()) ? null : date
+}
+
+function normalizeDate(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate())
+}
+
+function normalizeMonth(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), 1)
+}
+
+function isSameDay(left: Date | null, right: Date): boolean {
+  return Boolean(
+    left &&
+      left.getFullYear() === right.getFullYear() &&
+      left.getMonth() === right.getMonth() &&
+      left.getDate() === right.getDate(),
+  )
+}
+
+function isSameMonth(left: Date, right: Date): boolean {
+  return left.getFullYear() === right.getFullYear() && left.getMonth() === right.getMonth()
+}
+
+function addMonths(month: Date, offset: number): Date {
+  return new Date(month.getFullYear(), month.getMonth() + offset, 1)
+}
+
+function visibleDays(month: Date, weekStartsOn: number): Date[] {
+  const offset = (month.getDay() - weekStartsOn + 7) % 7
+  const start = new Date(month.getFullYear(), month.getMonth(), 1 - offset)
+  return Array.from({ length: 42 }, (_, index) =>
+    normalizeDate(new Date(start.getFullYear(), start.getMonth(), start.getDate() + index)),
+  )
+}
+
+function useCalendar(): CalendarContextValue {
+  const context = useContext(CalendarContext)
+  if (!context) throw new Error('Calendar parts must be used inside Calendar')
+  return context
+}
+
+export function Calendar(props: CalendarProps) {
+  const initialValue = toDate(props.defaultValue)
+  const internalValue = createSignal<Date | null>(initialValue ? normalizeDate(initialValue) : null)
+  const internalMonth = createSignal(
+    normalizeMonth(toDate(props.defaultMonth) ?? toDate(read(props.month, null)) ?? initialValue ?? new Date()),
+  )
+
+  const currentValue = () => {
+    const controlled = props.value === undefined ? null : toDate(read(props.value, null))
+    return props.value === undefined ? internalValue() : controlled ? normalizeDate(controlled) : null
+  }
+  const currentMonth = () => {
+    const controlled = props.month === undefined ? null : toDate(read(props.month, null))
+    return props.month === undefined ? internalMonth() : normalizeMonth(controlled ?? internalMonth())
+  }
+  const contextValue: CalendarContextValue = {
+    value: currentValue,
+    setValue: value => {
+      const next = normalizeDate(value)
+      if (props.value === undefined) internalValue(next)
+      props.onValueChange?.(next)
+    },
+    month: currentMonth,
+    setMonth: value => {
+      const next = normalizeMonth(value)
+      if (props.month === undefined) internalMonth(next)
+      props.onMonthChange?.(next)
+    },
+    locale: () => read(props.locale, 'en-US'),
+    weekStartsOn: () => Math.min(6, Math.max(0, Math.floor(read(props.weekStartsOn, 0)))),
+    showOutsideDays: () => read(props.showOutsideDays, true),
+    disabled: date => props.disabled?.(date) ?? false,
+  }
+
+  const {
+    class: className,
+    children,
+    value,
+    defaultValue,
+    onValueChange,
+    month,
+    defaultMonth,
+    onMonthChange,
+    locale,
+    weekStartsOn,
+    showOutsideDays,
+    disabled,
+    ...rest
+  } = props
+
+  return (
+    <CalendarContext.Provider value={contextValue}>
+      <div data-slot='calendar' class={cn('rounded-lg border p-3', className)} {...rest}>
+        {children ?? (
+          <>
+            <CalendarHeader>
+              <CalendarPrevButton>Previous month</CalendarPrevButton>
+              <CalendarTitle />
+              <CalendarNextButton>Next month</CalendarNextButton>
+            </CalendarHeader>
+            <CalendarGrid />
+          </>
+        )}
+      </div>
+    </CalendarContext.Provider>
+  )
+}
+
+export function CalendarHeader(props: GenericProps) {
+  const { class: className, ...rest } = props
+  return <div data-slot='calendar-header' class={cn('mb-3 flex items-center justify-between gap-2', className)} {...rest} />
+}
+
+export function CalendarTitle(props: GenericProps) {
+  const context = useCalendar()
+  const { class: className, children, ...rest } = props
+  return (
+    <span data-slot='calendar-title' class={cn('text-sm font-medium', className)} {...rest}>
+      {children ?? (() => new Intl.DateTimeFormat(context.locale(), { month: 'long', year: 'numeric' }).format(context.month()))}
+    </span>
+  )
+}
+
+export function CalendarPrevButton(props: GenericProps) {
+  const context = useCalendar()
+  const { class: className, children, onClick, ...rest } = props
+  return (
+    <button
+      type='button'
+      aria-label='Previous month'
+      data-slot='calendar-prev'
+      class={cn('rounded-md border px-2 py-1 text-xs hover:bg-accent', className)}
+      onClick={(event: MouseEvent) => {
+        ;(onClick as ((event: MouseEvent) => void) | undefined)?.(event)
+        if (!event.defaultPrevented) context.setMonth(addMonths(context.month(), -1))
+      }}
+      {...rest}
+    >
+      {children ?? '‹'}
+    </button>
+  )
+}
+
+export function CalendarNextButton(props: GenericProps) {
+  const context = useCalendar()
+  const { class: className, children, onClick, ...rest } = props
+  return (
+    <button
+      type='button'
+      aria-label='Next month'
+      data-slot='calendar-next'
+      class={cn('rounded-md border px-2 py-1 text-xs hover:bg-accent', className)}
+      onClick={(event: MouseEvent) => {
+        ;(onClick as ((event: MouseEvent) => void) | undefined)?.(event)
+        if (!event.defaultPrevented) context.setMonth(addMonths(context.month(), 1))
+      }}
+      {...rest}
+    >
+      {children ?? '›'}
+    </button>
+  )
+}
+
+export function CalendarGrid(props: CalendarGridProps) {
+  const context = useCalendar()
+  const { class: className, children, showOutsideDays, onDaySelect, ...rest } = props
+  return () => {
+    if (children) {
+      return <div role='grid' data-slot='calendar-grid' class={cn('grid grid-cols-7 gap-1', className)} {...rest}>{children}</div>
+    }
+
+    const month = context.month()
+    const weekStartsOn = context.weekStartsOn()
+    const labels = Array.from({ length: 7 }, (_, index) => {
+      const date = new Date(2026, 0, 4 + ((weekStartsOn + index) % 7))
+      return new Intl.DateTimeFormat(context.locale(), { weekday: 'short' }).format(date)
+    })
+
+    return (
+      <div role='grid' data-slot='calendar-grid' class={cn('grid grid-cols-7 gap-1', className)} {...rest}>
+        {labels.map(label => (
+          <span role='columnheader' class='py-1 text-center text-xs text-muted-foreground'>{label}</span>
+        ))}
+        {visibleDays(month, weekStartsOn).map(day => {
+          const outside = !isSameMonth(day, month)
+          const hidden = !read(showOutsideDays, context.showOutsideDays()) && outside
+          const selected = isSameDay(context.value(), day)
+          const dayDisabled = context.disabled(day)
+
+          return hidden ? (
+            <span aria-hidden='true' />
+          ) : (
+            <button
+              type='button'
+              role='gridcell'
+              aria-selected={selected}
+              disabled={dayDisabled}
+              data-state={selected ? 'selected' : 'idle'}
+              data-outside-month={outside ? 'true' : undefined}
+              class={cn(
+                'h-8 rounded-md text-sm hover:bg-accent disabled:pointer-events-none disabled:opacity-40',
+                selected && 'bg-primary text-primary-foreground hover:bg-primary',
+                outside && 'text-muted-foreground opacity-60',
+              )}
+              onClick={(event: MouseEvent) => {
+                onDaySelect?.(day, event)
+                if (event.defaultPrevented || dayDisabled) return
+                context.setValue(day)
+                context.setMonth(day)
+              }}
+            >
+              {String(day.getDate())}
+            </button>
+          )
+        })}
+      </div>
+    )
+  }
+}
 `
 
 const carouselTemplate: TemplateFn = context => `import { cn } from '${context.imports.cn}'
@@ -336,25 +593,11 @@ export function ChartLegend(props: LegendProps) {
 }
 `
 
-const commandTemplate: TemplateFn = context => `import {
-  CommandPaletteClose,
-  CommandPaletteContent as PrimitiveCommandContent,
-  CommandPaletteEmpty as PrimitiveCommandEmpty,
-  CommandPaletteGroup as PrimitiveCommandGroup,
-  CommandPaletteInput as PrimitiveCommandInput,
-  CommandPaletteItem as PrimitiveCommandItem,
-  CommandPaletteList as PrimitiveCommandList,
-  CommandPaletteRoot,
-  CommandPaletteSeparator as PrimitiveCommandSeparator,
-  CommandPaletteTrigger,
-} from '@fictjs/ui-primitives'
+const commandTemplate: TemplateFn =
+  context => `import { createContext, onDestroy, onMount, useContext } from 'fict'
+import { createSignal } from 'fict/advanced'
 
 import { cn } from '${context.imports.cn}'
-
-export const Command = CommandPaletteRoot
-export const CommandDialog = PrimitiveCommandContent
-export const CommandTrigger = CommandPaletteTrigger
-export const CommandClose = CommandPaletteClose
 
 type GenericProps = {
   class?: string
@@ -362,11 +605,166 @@ type GenericProps = {
   [key: string]: unknown
 }
 
-export function CommandInput(props: GenericProps) {
-  const { class: className, ...rest } = props
+type MaybeAccessor<T> = T | (() => T)
+
+type CommandProps = GenericProps & {
+  value?: MaybeAccessor<string>
+  defaultValue?: string
+  onValueChange?: (value: string) => void
+  query?: MaybeAccessor<string>
+  defaultQuery?: string
+  onQueryChange?: (query: string) => void
+}
+
+type CommandItemProps = GenericProps & {
+  value?: string
+  keywords?: string[]
+  keepOpen?: boolean
+  onSelect?: (value: string, event: MouseEvent) => void
+}
+
+type CommandRecord = {
+  value: string
+  text: string
+  keywords: string[]
+}
+
+type CommandContextValue = {
+  value: () => string
+  setValue: (value: string) => void
+  query: () => string
+  setQuery: (query: string) => void
+  open: () => boolean
+  setOpen: (open: boolean) => void
+  register: (record: CommandRecord) => () => void
+  matches: (record: CommandRecord) => boolean
+  hasMatches: () => boolean
+}
+
+const CommandContext = createContext<CommandContextValue | null>(null)
+
+function read<T>(value: MaybeAccessor<T> | undefined, fallback: T): T {
+  if (typeof value === 'function') return (value as () => T)()
+  return value ?? fallback
+}
+
+function matchesQuery(query: string, record: CommandRecord): boolean {
+  const normalized = query.trim().toLowerCase()
+  if (!normalized) return true
+  return [record.value, record.text, ...record.keywords].join(' ').toLowerCase().includes(normalized)
+}
+
+function useCommand(): CommandContextValue {
+  const context = useContext(CommandContext)
+  if (!context) throw new Error('Command parts must be used inside Command')
+  return context
+}
+
+export function Command(props: CommandProps) {
+  const internalValue = createSignal(props.defaultValue ?? '')
+  const internalQuery = createSignal(props.defaultQuery ?? '')
+  const open = createSignal(true)
+  const records = createSignal<CommandRecord[]>([])
+
+  const contextValue: CommandContextValue = {
+    value: () => read(props.value, internalValue()),
+    setValue: value => {
+      if (props.value === undefined) internalValue(value)
+      props.onValueChange?.(value)
+    },
+    query: () => read(props.query, internalQuery()),
+    setQuery: query => {
+      if (props.query === undefined) internalQuery(query)
+      props.onQueryChange?.(query)
+    },
+    open,
+    setOpen: value => {
+      open(value)
+    },
+    register: record => {
+      records([...records(), record])
+      return () => {
+        records(records().filter(item => item !== record))
+      }
+    },
+    matches: record => matchesQuery(read(props.query, internalQuery()), record),
+    hasMatches: () =>
+      records().some(record => matchesQuery(read(props.query, internalQuery()), record)),
+  }
+
+  const {
+    class: className,
+    children,
+    value,
+    defaultValue,
+    onValueChange,
+    query,
+    defaultQuery,
+    onQueryChange,
+    ...rest
+  } = props
+
   return (
-    <PrimitiveCommandInput
+    <CommandContext.Provider value={contextValue}>
+      <div data-slot='command' class={cn('flex flex-col overflow-hidden bg-popover text-popover-foreground', className)} {...rest}>
+        {children}
+      </div>
+    </CommandContext.Provider>
+  )
+}
+
+export function CommandDialog(props: GenericProps) {
+  const { class: className, ...rest } = props
+  return <div role='dialog' data-slot='command-dialog' class={cn('overflow-hidden rounded-lg border bg-popover shadow-md', className)} {...rest} />
+}
+
+export function CommandTrigger(props: GenericProps) {
+  const context = useCommand()
+  const { onClick, ...rest } = props
+  return (
+    <button
+      type='button'
+      aria-haspopup='dialog'
+      aria-expanded={() => context.open()}
+      onClick={(event: MouseEvent) => {
+        ;(onClick as ((event: MouseEvent) => void) | undefined)?.(event)
+        if (!event.defaultPrevented) context.setOpen(true)
+      }}
+      {...rest}
+    />
+  )
+}
+
+export function CommandClose(props: GenericProps) {
+  const context = useCommand()
+  const { onClick, ...rest } = props
+  return (
+    <button
+      type='button'
+      onClick={(event: MouseEvent) => {
+        ;(onClick as ((event: MouseEvent) => void) | undefined)?.(event)
+        if (!event.defaultPrevented) context.setOpen(false)
+      }}
+      {...rest}
+    />
+  )
+}
+
+export function CommandInput(props: GenericProps) {
+  const context = useCommand()
+  const { class: className, onInput, ...rest } = props
+  return (
+    <input
+      type='text'
+      role='combobox'
+      aria-autocomplete='list'
+      value={() => context.query()}
+      data-slot='command-input'
       class={cn('flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none placeholder:text-muted-foreground', className)}
+      onInput={(event: Event) => {
+        ;(onInput as ((event: Event) => void) | undefined)?.(event)
+        if (!event.defaultPrevented) context.setQuery((event.currentTarget as HTMLInputElement).value)
+      }}
       {...rest}
     />
   )
@@ -374,37 +772,74 @@ export function CommandInput(props: GenericProps) {
 
 export function CommandList(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveCommandList class={cn('max-h-80 overflow-y-auto p-1', className)} {...rest} />
+  return <div role='listbox' data-slot='command-list' class={cn('max-h-80 overflow-y-auto p-1', className)} {...rest} />
 }
 
-export function CommandItem(props: GenericProps) {
-  const { class: className, ...rest } = props
-  return (
-    <PrimitiveCommandItem
-      class={cn('flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[state=selected]:bg-accent data-[state=selected]:text-accent-foreground', className)}
-      {...rest}
-    />
-  )
+export function CommandItem(props: CommandItemProps) {
+  const context = useCommand()
+  const { class: className, children, value = String(children ?? ''), keywords = [], keepOpen, onSelect, onClick, ...rest } = props
+  const record: CommandRecord = {
+    value,
+    text: typeof children === 'string' ? children : value,
+    keywords,
+  }
+
+  let unregister: (() => void) | undefined
+  onMount(() => {
+    unregister = context.register(record)
+  })
+  onDestroy(() => unregister?.())
+
+  return () =>
+    context.matches(record) ? (
+      <button
+        type='button'
+        role='option'
+        aria-selected={() => context.value() === value}
+        data-slot='command-item'
+        data-state={() => (context.value() === value ? 'selected' : 'idle')}
+        class={cn('flex w-full cursor-default items-center rounded-sm px-2 py-1.5 text-left text-sm outline-none data-[state=selected]:bg-accent data-[state=selected]:text-accent-foreground', className)}
+        onClick={(event: MouseEvent) => {
+          ;(onClick as ((event: MouseEvent) => void) | undefined)?.(event)
+          onSelect?.(value, event)
+          if (event.defaultPrevented) return
+          context.setValue(value)
+          if (!keepOpen) context.setOpen(false)
+        }}
+        {...rest}
+      >
+        {children}
+      </button>
+    ) : null
 }
 
 export function CommandGroup(props: GenericProps) {
-  const { class: className, ...rest } = props
-  return <PrimitiveCommandGroup class={cn('overflow-hidden p-1 text-foreground', className)} {...rest} />
+  const { class: className, children, heading, ...rest } = props
+  return (
+    <div role='group' data-slot='command-group' class={cn('overflow-hidden p-1 text-foreground', className)} {...rest}>
+      {heading ? <div data-slot='command-group-heading' class='px-2 py-1.5 text-xs font-medium text-muted-foreground'>{heading}</div> : null}
+      {children}
+    </div>
+  )
 }
 
 export function CommandSeparator(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveCommandSeparator class={cn('my-1 h-px bg-border', className)} {...rest} />
+  return <div role='separator' data-slot='command-separator' class={cn('my-1 h-px bg-border', className)} {...rest} />
 }
 
 export function CommandEmpty(props: GenericProps) {
+  const context = useCommand()
   const { class: className, ...rest } = props
-  return <PrimitiveCommandEmpty class={cn('py-6 text-center text-sm text-muted-foreground', className)} {...rest} />
+  return () =>
+    context.hasMatches() ? null : (
+      <div data-slot='command-empty' class={cn('py-6 text-center text-sm text-muted-foreground', className)} {...rest} />
+    )
 }
 
 export function CommandContent(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveCommandContent class={cn('overflow-hidden rounded-lg border bg-popover shadow-md', className)} {...rest} />
+  return <div data-slot='command-content' class={cn('overflow-hidden rounded-lg border bg-popover shadow-md', className)} {...rest} />
 }
 `
 
@@ -803,13 +1238,7 @@ export function RangeCalendar(props: RangeCalendarProps) {
 }
 `
 
-const resizableTemplate: TemplateFn = context => `import {
-  ResizableHandle as PrimitiveResizableHandle,
-  ResizablePanel as PrimitiveResizablePanel,
-  ResizablePanelGroup as PrimitiveResizablePanelGroup,
-} from '@fictjs/ui-primitives'
-
-import { cn } from '${context.imports.cn}'
+const resizableTemplate: TemplateFn = context => `import { cn } from '${context.imports.cn}'
 
 type GenericProps = {
   class?: string
@@ -817,21 +1246,115 @@ type GenericProps = {
   [key: string]: unknown
 }
 
+function clamp(value: number, minimum: number, maximum: number): number {
+  return Math.min(maximum, Math.max(minimum, value))
+}
+
+function readPanelLimit(panel: HTMLElement, name: 'minSize' | 'maxSize', fallback: number): number {
+  const value = Number(panel.dataset[name])
+  return Number.isFinite(value) ? value : fallback
+}
+
+function beginResize(event: PointerEvent): void {
+  const handle = event.currentTarget as HTMLElement
+  const group = handle.closest('[data-slot="resizable-panel-group"]') as HTMLElement | null
+  const previous = handle.previousElementSibling as HTMLElement | null
+  const next = handle.nextElementSibling as HTMLElement | null
+  if (!group || !previous || !next) return
+
+  const horizontal = group.dataset.direction !== 'vertical'
+  const groupRect = group.getBoundingClientRect()
+  const groupSize = horizontal ? groupRect.width : groupRect.height
+  if (groupSize <= 0) return
+
+  const previousRect = previous.getBoundingClientRect()
+  const nextRect = next.getBoundingClientRect()
+  const previousStart = ((horizontal ? previousRect.width : previousRect.height) / groupSize) * 100
+  const nextStart = ((horizontal ? nextRect.width : nextRect.height) / groupSize) * 100
+  const pairSize = previousStart + nextStart
+  const start = horizontal ? event.clientX : event.clientY
+  const minPrevious = readPanelLimit(previous, 'minSize', 5)
+  const maxPrevious = readPanelLimit(previous, 'maxSize', 95)
+  const minNext = readPanelLimit(next, 'minSize', 5)
+  const maxNext = readPanelLimit(next, 'maxSize', 95)
+
+  const onPointerMove = (moveEvent: PointerEvent) => {
+    const position = horizontal ? moveEvent.clientX : moveEvent.clientY
+    const delta = ((position - start) / groupSize) * 100
+    const lowerBound = Math.max(minPrevious, pairSize - maxNext)
+    const upperBound = Math.min(maxPrevious, pairSize - minNext)
+    const previousSize = clamp(previousStart + delta, lowerBound, upperBound)
+    const nextSize = pairSize - previousSize
+
+    previous.style.flexBasis = String(previousSize) + '%'
+    next.style.flexBasis = String(nextSize) + '%'
+    handle.setAttribute('aria-valuenow', String(Math.round(previousSize)))
+  }
+
+  const stopResize = () => {
+    window.removeEventListener('pointermove', onPointerMove)
+    window.removeEventListener('pointerup', stopResize)
+    window.removeEventListener('pointercancel', stopResize)
+    handle.removeAttribute('data-resizing')
+  }
+
+  event.preventDefault()
+  handle.setAttribute('data-resizing', 'true')
+  window.addEventListener('pointermove', onPointerMove)
+  window.addEventListener('pointerup', stopResize, { once: true })
+  window.addEventListener('pointercancel', stopResize, { once: true })
+}
+
 export function ResizablePanelGroup(props: GenericProps) {
-  const { class: className, ...rest } = props
-  return <PrimitiveResizablePanelGroup class={cn('flex h-full w-full rounded-lg border', className)} {...rest} />
+  const { class: className, direction = 'horizontal', style, ...rest } = props
+  return (
+    <div
+      data-slot='resizable-panel-group'
+      data-direction={direction}
+      class={cn('flex h-full w-full rounded-lg border', direction === 'vertical' && 'flex-col', className)}
+      style={{
+        display: 'flex',
+        flexDirection: direction === 'vertical' ? 'column' : 'row',
+        ...(typeof style === 'object' && style ? style : {}),
+      }}
+      {...rest}
+    />
+  )
 }
 
 export function ResizablePanel(props: GenericProps) {
-  const { class: className, ...rest } = props
-  return <PrimitiveResizablePanel class={cn('overflow-auto p-4', className)} {...rest} />
+  const { class: className, defaultSize = 50, minSize = 5, maxSize = 95, style, ...rest } = props
+  return (
+    <div
+      data-slot='resizable-panel'
+      data-min-size={minSize}
+      data-max-size={maxSize}
+      class={cn('overflow-auto p-4', className)}
+      style={{
+        flexBasis: String(defaultSize) + '%',
+        flexGrow: 0,
+        flexShrink: 0,
+        ...(typeof style === 'object' && style ? style : {}),
+      }}
+      {...rest}
+    />
+  )
 }
 
 export function ResizableHandle(props: GenericProps) {
-  const { class: className, ...rest } = props
+  const { class: className, onPointerDown, ...rest } = props
   return (
-    <PrimitiveResizableHandle
+    <div
+      role='separator'
+      tabIndex={0}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      data-slot='resizable-handle'
       class={cn('relative bg-border after:absolute after:inset-0 after:m-auto after:h-10 after:w-1 after:rounded-full after:bg-muted-foreground/30', className)}
+      onPointerDown={(event: PointerEvent) => {
+        ;(onPointerDown as ((event: PointerEvent) => void) | undefined)?.(event)
+        if (!event.defaultPrevented) beginResize(event)
+      }}
       {...rest}
     />
   )
@@ -947,7 +1470,8 @@ const sonnerTemplate: TemplateFn = context => `export {
 } from '${context.uiImport('toast')}'
 `
 
-const spinnerTemplate: TemplateFn = context => `import { cva, type VariantProps } from 'class-variance-authority'
+const spinnerTemplate: TemplateFn =
+  context => `import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '${context.imports.cn}'
 
@@ -1039,8 +1563,7 @@ export const expandedComponentRegistry: RegistryEntry[] = [
   }),
   createComponentEntry({
     name: 'calendar',
-    description: 'Styled wrappers for calendar primitives',
-    dependencies: ['@fictjs/ui-primitives'],
+    description: 'Accessible date grid with controlled selection and month navigation',
     content: calendarTemplate,
   }),
   createComponentEntry({
@@ -1055,8 +1578,7 @@ export const expandedComponentRegistry: RegistryEntry[] = [
   }),
   createComponentEntry({
     name: 'command',
-    description: 'Command palette wrappers with styling defaults',
-    dependencies: ['@fictjs/ui-primitives'],
+    description: 'Filterable command palette with controlled selection',
     content: commandTemplate,
   }),
   createComponentEntry({
@@ -1122,8 +1644,7 @@ export const expandedComponentRegistry: RegistryEntry[] = [
   }),
   createComponentEntry({
     name: 'resizable',
-    description: 'Resizable panel wrappers with default styling',
-    dependencies: ['@fictjs/ui-primitives'],
+    description: 'Pointer-resizable panel group with size constraints',
     content: resizableTemplate,
   }),
   createComponentEntry({
@@ -1299,7 +1820,14 @@ const expandedBlockNames = [
   'sidebar-06',
 ] as const
 
-type ExpandedBlockKind = 'calendar' | 'chart' | 'dashboard' | 'sidebar' | 'login' | 'otp' | 'showcase'
+type ExpandedBlockKind =
+  | 'calendar'
+  | 'chart'
+  | 'dashboard'
+  | 'sidebar'
+  | 'login'
+  | 'otp'
+  | 'showcase'
 
 function getExpandedBlockKind(name: string): ExpandedBlockKind {
   if (name.startsWith('calendar-')) return 'calendar'
@@ -1625,7 +2153,9 @@ function createExpandedBlockEntry(name: string): RegistryEntry {
   }
 }
 
-export const expandedBlockRegistry: RegistryEntry[] = expandedBlockNames.map(name => createExpandedBlockEntry(name))
+export const expandedBlockRegistry: RegistryEntry[] = expandedBlockNames.map(name =>
+  createExpandedBlockEntry(name),
+)
 
 export const expandedThemeRegistry: RegistryEntry[] = [
   {

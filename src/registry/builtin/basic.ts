@@ -234,23 +234,25 @@ export function AvatarFallback(props: DivProps) {
     version: '0.1.0',
     type: 'ui-component',
     description: 'Skeleton placeholder',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: [],
     registryDependencies: [],
     files: [
       {
         path: '{{componentsDir}}/skeleton.tsx',
-        content: context => `import { Skeleton as PrimitiveSkeleton } from '@fictjs/ui-primitives'
+        content: context => `import { cn } from '${context.imports.cn}'
 
-import { cn } from '${context.imports.cn}'
-
-type SkeletonProps = {
-  class?: string
-  [key: string]: unknown
-}
+type SkeletonProps = JSX.IntrinsicElements['div']
 
 export function Skeleton(props: SkeletonProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveSkeleton class={cn('animate-pulse rounded-md bg-muted', className)} {...rest} />
+  return (
+    <div
+      aria-hidden='true'
+      data-slot='skeleton'
+      class={cn('animate-pulse rounded-md bg-muted', className)}
+      {...rest}
+    />
+  )
 }
 `,
       },

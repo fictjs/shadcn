@@ -51,7 +51,8 @@ export function Checkbox(props: CheckboxProps) {
     files: [
       {
         path: '{{componentsDir}}/radio-group.tsx',
-        content: context => `import { RadioGroup as PrimitiveRadioGroup, RadioItem as PrimitiveRadioItem } from '@fictjs/ui-primitives'
+        content:
+          context => `import { RadioGroup as PrimitiveRadioGroup, RadioItem as PrimitiveRadioItem } from '@fictjs/ui-primitives'
 
 import { cn } from '${context.imports.cn}'
 
@@ -100,7 +101,8 @@ export function RadioGroupItem(props: ItemProps) {
     files: [
       {
         path: '{{componentsDir}}/switch.tsx',
-        content: context => `import { Switch as PrimitiveSwitch, SwitchThumb } from '@fictjs/ui-primitives'
+        content:
+          context => `import { Switch as PrimitiveSwitch, SwitchThumb } from '@fictjs/ui-primitives'
 
 import { cn } from '${context.imports.cn}'
 
@@ -213,22 +215,16 @@ export function SelectItem(props: GenericProps) {
     name: 'combobox',
     version: '0.1.0',
     type: 'ui-component',
-    description: 'Combobox primitive wrappers',
-    dependencies: ['@fictjs/ui-primitives'],
+    description: 'Filterable combobox with controlled value and open state',
+    dependencies: [],
     registryDependencies: ['input'],
     files: [
       {
         path: '{{componentsDir}}/combobox.tsx',
-        content: context => `import {
-  ComboboxRoot,
-  ComboboxInput as PrimitiveComboboxInput,
-  ComboboxList as PrimitiveComboboxList,
-  ComboboxItem as PrimitiveComboboxItem,
-} from '@fictjs/ui-primitives'
+        content: context => `import { createContext, useContext } from 'fict'
+import { createSignal } from 'fict/advanced'
 
 import { cn } from '${context.imports.cn}'
-
-export const Combobox = ComboboxRoot
 
 type GenericProps = {
   class?: string
@@ -236,39 +232,165 @@ type GenericProps = {
   [key: string]: unknown
 }
 
-export function ComboboxInput(props: GenericProps) {
-  const { class: className, ...rest } = props
+type MaybeAccessor<T> = T | (() => T)
+
+type ComboboxProps = GenericProps & {
+  value?: MaybeAccessor<string>
+  defaultValue?: string
+  onValueChange?: (value: string) => void
+  open?: MaybeAccessor<boolean>
+  defaultOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+}
+
+type ComboboxItemProps = GenericProps & {
+  value: string
+}
+
+type ComboboxContextValue = {
+  value: () => string
+  setValue: (value: string) => void
+  open: () => boolean
+  setOpen: (open: boolean) => void
+  query: () => string
+  setQuery: (query: string) => void
+}
+
+const ComboboxContext = createContext<ComboboxContextValue | null>(null)
+
+function read<T>(value: MaybeAccessor<T> | undefined, fallback: T): T {
+  if (typeof value === 'function') return (value as () => T)()
+  return value ?? fallback
+}
+
+function useCombobox(): ComboboxContextValue {
+  const context = useContext(ComboboxContext)
+  if (!context) throw new Error('Combobox components must be used inside Combobox')
+  return context
+}
+
+export function Combobox(props: ComboboxProps) {
+  const internalValue = createSignal(props.defaultValue ?? '')
+  const internalOpen = createSignal(props.defaultOpen ?? false)
+  const query = createSignal('')
+
+  const setValue = (value: string) => {
+    if (props.value === undefined) internalValue(value)
+    props.onValueChange?.(value)
+  }
+  const setOpen = (open: boolean) => {
+    if (props.open === undefined) internalOpen(open)
+    props.onOpenChange?.(open)
+  }
+  const contextValue: ComboboxContextValue = {
+    value: () => read(props.value, internalValue()),
+    setValue,
+    open: () => read(props.open, internalOpen()),
+    setOpen,
+    query,
+    setQuery: value => {
+      query(value)
+    },
+  }
+
+  const {
+    class: className,
+    children,
+    value,
+    defaultValue,
+    onValueChange,
+    open,
+    defaultOpen,
+    onOpenChange,
+    ...rest
+  } = props
+
   return (
-    <PrimitiveComboboxInput
+    <ComboboxContext.Provider value={contextValue}>
+      <div data-slot='combobox' class={cn('relative', className)} {...rest}>
+        {children}
+      </div>
+    </ComboboxContext.Provider>
+  )
+}
+
+export function ComboboxInput(props: GenericProps) {
+  const context = useCombobox()
+  const { class: className, onFocus, onInput, ...rest } = props
+  return (
+    <input
+      type='text'
+      role='combobox'
+      aria-autocomplete='list'
+      aria-expanded={() => context.open()}
+      value={() => context.query() || context.value()}
+      data-slot='combobox-input'
       class={cn(
         'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
         className,
       )}
+      onFocus={(event: FocusEvent) => {
+        ;(onFocus as ((event: FocusEvent) => void) | undefined)?.(event)
+        if (!event.defaultPrevented) context.setOpen(true)
+      }}
+      onInput={(event: Event) => {
+        ;(onInput as ((event: Event) => void) | undefined)?.(event)
+        if (event.defaultPrevented) return
+        const target = event.currentTarget as HTMLInputElement
+        context.setQuery(target.value)
+        context.setOpen(true)
+      }}
       {...rest}
     />
   )
 }
 
 export function ComboboxList(props: GenericProps) {
-  const { class: className, ...rest } = props
-  return (
-    <PrimitiveComboboxList
-      class={cn('mt-1 max-h-64 overflow-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md', className)}
-      {...rest}
-    />
-  )
+  const context = useCombobox()
+  const { class: className, children, forceMount, ...rest } = props
+  return () =>
+    context.open() || forceMount ? (
+      <div
+        role='listbox'
+        data-slot='combobox-list'
+        class={cn('mt-1 max-h-64 overflow-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md', className)}
+        {...rest}
+      >
+        {children}
+      </div>
+    ) : null
 }
 
-export function ComboboxItem(props: GenericProps) {
-  const { class: className, children, ...rest } = props
-  return (
-    <PrimitiveComboboxItem
-      class={cn('relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground', className)}
-      {...rest}
-    >
-      {children}
-    </PrimitiveComboboxItem>
-  )
+export function ComboboxItem(props: ComboboxItemProps) {
+  const context = useCombobox()
+  const { class: className, children, value, onClick, ...rest } = props
+  const matches = () => {
+    const query = context.query().trim().toLowerCase()
+    const label = typeof children === 'string' ? children : value
+    return !query || label.toLowerCase().includes(query)
+  }
+
+  return () =>
+    matches() ? (
+      <button
+        type='button'
+        role='option'
+        aria-selected={() => context.value() === value}
+        data-slot='combobox-item'
+        data-state={() => (context.value() === value ? 'selected' : 'idle')}
+        class={cn('relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-left text-sm outline-none hover:bg-accent hover:text-accent-foreground', className)}
+        onClick={(event: MouseEvent) => {
+          ;(onClick as ((event: MouseEvent) => void) | undefined)?.(event)
+          if (event.defaultPrevented) return
+          context.setValue(value)
+          context.setQuery(value)
+          context.setOpen(false)
+        }}
+        {...rest}
+      >
+        {children}
+      </button>
+    ) : null
 }
 `,
       },
@@ -367,7 +489,8 @@ export { toggleVariants }
     files: [
       {
         path: '{{componentsDir}}/toggle-group.tsx',
-        content: context => `import { ToggleGroup as PrimitiveToggleGroup, ToggleGroupItem as PrimitiveToggleGroupItem } from '@fictjs/ui-primitives'
+        content:
+          context => `import { ToggleGroup as PrimitiveToggleGroup, ToggleGroupItem as PrimitiveToggleGroupItem } from '@fictjs/ui-primitives'
 
 import { cn } from '${context.imports.cn}'
 import { toggleVariants } from '${context.uiImport('toggle')}'

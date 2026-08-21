@@ -24,7 +24,18 @@ describe('expanded registry entries', () => {
 
     const addResult = await runAdd({
       cwd,
-      components: ['alert', 'calendar', 'chart', 'command', 'data-table', 'drawer', 'input-otp', 'sidebar', 'sonner', 'utils'],
+      components: [
+        'alert',
+        'calendar',
+        'chart',
+        'command',
+        'data-table',
+        'drawer',
+        'input-otp',
+        'sidebar',
+        'sonner',
+        'utils',
+      ],
       skipInstall: true,
     })
 
@@ -45,7 +56,8 @@ describe('expanded registry entries', () => {
     const utilsSource = await readFile(path.join(cwd, 'src/lib/utils.ts'), 'utf8')
 
     expect(alertSource).toContain('export function AlertTitle')
-    expect(commandSource).toContain('CommandPaletteRoot')
+    expect(commandSource).toContain('export function Command')
+    expect(commandSource).not.toContain('@fictjs/ui-primitives')
     expect(inputOtpSource).toContain('export function InputOTPSlot')
     expect(chartSource).toContain('export interface ChartPoint')
     expect(drawerSource).toContain('Sheet as Drawer')
@@ -58,7 +70,14 @@ describe('expanded registry entries', () => {
 
     const blockResult = await runBlocksInstall({
       cwd,
-      blocks: ['calendar-01', 'chart-area-default', 'dashboard-01', 'login-01', 'otp-01', 'sidebar-01'],
+      blocks: [
+        'calendar-01',
+        'chart-area-default',
+        'dashboard-01',
+        'login-01',
+        'otp-01',
+        'sidebar-01',
+      ],
       skipInstall: true,
     })
 
@@ -69,9 +88,18 @@ describe('expanded registry entries', () => {
     expect(blockResult.added).toContain('otp-01')
     expect(blockResult.added).toContain('sidebar-01')
 
-    const calendarBlock = await readFile(path.join(cwd, 'src/components/blocks/calendar-01.tsx'), 'utf8')
-    const chartBlock = await readFile(path.join(cwd, 'src/components/blocks/chart-area-default.tsx'), 'utf8')
-    const dashboardBlock = await readFile(path.join(cwd, 'src/components/blocks/dashboard-01.tsx'), 'utf8')
+    const calendarBlock = await readFile(
+      path.join(cwd, 'src/components/blocks/calendar-01.tsx'),
+      'utf8',
+    )
+    const chartBlock = await readFile(
+      path.join(cwd, 'src/components/blocks/chart-area-default.tsx'),
+      'utf8',
+    )
+    const dashboardBlock = await readFile(
+      path.join(cwd, 'src/components/blocks/dashboard-01.tsx'),
+      'utf8',
+    )
 
     expect(calendarBlock).toContain('export function Calendar01Block')
     expect(chartBlock).toContain('export function ChartAreaDefaultBlock')
@@ -115,7 +143,12 @@ describe('expanded registry entries', () => {
     const guardedUpdate = await runUpdate({ cwd, components: ['alert'], skipInstall: true })
     expect(guardedUpdate.skipped).toContain('alert')
 
-    const forcedUpdate = await runUpdate({ cwd, components: ['alert'], force: true, skipInstall: true })
+    const forcedUpdate = await runUpdate({
+      cwd,
+      components: ['alert'],
+      force: true,
+      skipInstall: true,
+    })
     expect(forcedUpdate.updated).toContain('alert')
 
     const refreshedAlert = await readFile(alertPath, 'utf8')
