@@ -121,10 +121,6 @@ function resolveDashboardView(value: string | undefined): DashboardView | null {
     : null
 }
 
-function resolvePlaygroundMode(value: string | undefined): PlaygroundMode | null {
-  return value === "complete" || value === "insert" || value === "edit" ? value : null
-}
-
 function resolveDirectionMode(value: string | undefined): DirectionMode | null {
   return value === "rtl" || value === "ltr" ? value : null
 }
@@ -147,6 +143,13 @@ function DashboardExample() {
     : timeRange === "30d"
       ? "Total for the last 30 days"
       : "Total for the last 7 days"
+  const activeViewLabel = activeView === "past-performance"
+    ? "past performance"
+    : activeView === "key-personnel"
+      ? "key personnel"
+      : activeView === "focus-documents"
+        ? "focus documents"
+        : "outline"
 
   return (
     <div class="live-example dashboard-example">
@@ -351,7 +354,7 @@ function DashboardExample() {
             </div>
           ) : (
             <div class="dashboard-outline-placeholder">
-              <p>{activeView.replace(/-/g, " ")}</p>
+              <p>{activeViewLabel}</p>
             </div>
           )}
         </section>
@@ -363,7 +366,7 @@ function DashboardExample() {
 function TasksExample() {
   let query = $state("")
   let status = $state<TaskStatusFilter>("all")
-  let filteredTasks: TaskRow[] = $state(taskRows)
+  let filteredTasks = $state<TaskRow[]>(taskRows)
 
   return (
     <div class="live-example tasks-example">
@@ -482,7 +485,9 @@ function TasksExample() {
                   <p>{task.title}</p>
                 </td>
                 <td>
-                  <span class={`tasks-status tasks-status-${task.status}`}>{task.status.replace("-", " ")}</span>
+                  <span class={`tasks-status tasks-status-${task.status}`}>
+                    {task.status === "in-progress" ? "in progress" : task.status}
+                  </span>
                 </td>
                 <td>{task.priority}</td>
                 <td>{task.team}</td>
@@ -575,93 +580,109 @@ function PlaygroundExample() {
           <section class="playground-field">
             <span>Mode</span>
             <div class="playground-icon-tab-list" role="tablist" aria-label="Playground modes">
-              {[
-                ["complete", "Complete"],
-                ["insert", "Insert"],
-                ["edit", "Edit"],
-              ].map((entry) => (
-                <button
-                  key={entry[0]}
-                  type="button"
-                  data-mode={entry[0]}
-                  role="tab"
-                  aria-selected={mode === entry[0]}
-                  class={mode === entry[0] ? "playground-tab playground-tab-active" : "playground-tab"}
-                  onClick={(event: MouseEvent) => {
-                    const target = event.currentTarget
-                    if (!(target instanceof HTMLButtonElement)) {
-                      return
-                    }
-
-                    const nextMode = resolvePlaygroundMode(target.dataset.mode)
-                    if (!nextMode) {
-                      return
-                    }
-
-                    mode = nextMode
-                  }}
-                >
-                  {entry[0] === "complete" ? (
-                    <svg viewBox="0 0 20 20" aria-hidden="true" class="playground-tab-icon">
-                      <rect x="4" y="3" width="12" height="2" rx="1"></rect>
-                      <rect x="4" y="7" width="12" height="2" rx="1"></rect>
-                      <rect x="4" y="11" width="3" height="2" rx="1"></rect>
-                      <rect x="8.5" y="11" width="3" height="2" rx="1"></rect>
-                      <rect x="13" y="11" width="3" height="2" rx="1"></rect>
-                      <rect x="4" y="15" width="3" height="2" rx="1"></rect>
-                      <rect x="8.5" y="15" width="3" height="2" rx="1"></rect>
-                    </svg>
-                  ) : entry[0] === "insert" ? (
-                    <svg viewBox="0 0 20 20" aria-hidden="true" class="playground-tab-icon">
-                      <path d="M10 3.5V10"></path>
-                      <path d="M7 7.5L10 10.5L13 7.5"></path>
-                      <rect x="4" y="15" width="3" height="2" rx="1"></rect>
-                      <rect x="8.5" y="15" width="3" height="2" rx="1"></rect>
-                      <rect x="13" y="15" width="3" height="2" rx="1"></rect>
-                    </svg>
-                  ) : (
-                    <svg viewBox="0 0 20 20" aria-hidden="true" class="playground-tab-icon">
-                      <rect x="4" y="3" width="12" height="2" rx="1"></rect>
-                      <rect x="4" y="7" width="12" height="2" rx="1"></rect>
-                      <rect x="4" y="11" width="3" height="2" rx="1"></rect>
-                      <rect x="4" y="15" width="4" height="2" rx="1"></rect>
-                      <rect x="8.5" y="11" width="3" height="2" rx="1"></rect>
-                      <path d="M12 16.5L15.5 13L16.8 14.3L13.3 17.8H12Z"></path>
-                    </svg>
-                  )}
-                  <span class="sr-only">{entry[1]}</span>
-                </button>
-              ))}
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mode === "complete"}
+                class={mode === "complete" ? "playground-tab playground-tab-active" : "playground-tab"}
+                onClick={() => {
+                  mode = "complete"
+                }}
+              >
+                <svg viewBox="0 0 20 20" aria-hidden="true" class="playground-tab-icon">
+                  <rect x="4" y="3" width="12" height="2" rx="1"></rect>
+                  <rect x="4" y="7" width="12" height="2" rx="1"></rect>
+                  <rect x="4" y="11" width="3" height="2" rx="1"></rect>
+                  <rect x="8.5" y="11" width="3" height="2" rx="1"></rect>
+                  <rect x="13" y="11" width="3" height="2" rx="1"></rect>
+                  <rect x="4" y="15" width="3" height="2" rx="1"></rect>
+                  <rect x="8.5" y="15" width="3" height="2" rx="1"></rect>
+                </svg>
+                <span class="sr-only">Complete</span>
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mode === "insert"}
+                class={mode === "insert" ? "playground-tab playground-tab-active" : "playground-tab"}
+                onClick={() => {
+                  mode = "insert"
+                }}
+              >
+                <svg viewBox="0 0 20 20" aria-hidden="true" class="playground-tab-icon">
+                  <path d="M10 3.5V10"></path>
+                  <path d="M7 7.5L10 10.5L13 7.5"></path>
+                  <rect x="4" y="15" width="3" height="2" rx="1"></rect>
+                  <rect x="8.5" y="15" width="3" height="2" rx="1"></rect>
+                  <rect x="13" y="15" width="3" height="2" rx="1"></rect>
+                </svg>
+                <span class="sr-only">Insert</span>
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mode === "edit"}
+                class={mode === "edit" ? "playground-tab playground-tab-active" : "playground-tab"}
+                onClick={() => {
+                  mode = "edit"
+                }}
+              >
+                <svg viewBox="0 0 20 20" aria-hidden="true" class="playground-tab-icon">
+                  <rect x="4" y="3" width="12" height="2" rx="1"></rect>
+                  <rect x="4" y="7" width="12" height="2" rx="1"></rect>
+                  <rect x="4" y="11" width="3" height="2" rx="1"></rect>
+                  <rect x="4" y="15" width="4" height="2" rx="1"></rect>
+                  <rect x="8.5" y="11" width="3" height="2" rx="1"></rect>
+                  <path d="M12 16.5L15.5 13L16.8 14.3L13.3 17.8H12Z"></path>
+                </svg>
+                <span class="sr-only">Edit</span>
+              </button>
             </div>
           </section>
 
           <section class="playground-field playground-sidebar-stack">
             <span>Model</span>
             <div class="playground-option-group">
-              {playgroundModels.map((entry) => (
-                <button
-                  key={entry}
-                  type="button"
-                  data-model={entry}
-                  class={model === entry ? "playground-option-button playground-option-button-active" : "playground-option-button"}
-                  aria-pressed={model === entry}
-                  onClick={(event: MouseEvent) => {
-                    const target = event.currentTarget
-                    if (!(target instanceof HTMLButtonElement)) {
-                      return
-                    }
-
-                    const nextModel = target.dataset.model
-                    if (!nextModel) {
-                      return
-                    }
-
-                    model = nextModel
-                  }}
-                >
-                  {entry}
-                </button>
-              ))}
+              <button
+                type="button"
+                class={model === "gpt-4.1" ? "playground-option-button playground-option-button-active" : "playground-option-button"}
+                aria-pressed={model === "gpt-4.1"}
+                onClick={() => {
+                  model = "gpt-4.1"
+                }}
+              >
+                gpt-4.1
+              </button>
+              <button
+                type="button"
+                class={model === "gpt-4o-mini" ? "playground-option-button playground-option-button-active" : "playground-option-button"}
+                aria-pressed={model === "gpt-4o-mini"}
+                onClick={() => {
+                  model = "gpt-4o-mini"
+                }}
+              >
+                gpt-4o-mini
+              </button>
+              <button
+                type="button"
+                class={model === "claude-sonnet" ? "playground-option-button playground-option-button-active" : "playground-option-button"}
+                aria-pressed={model === "claude-sonnet"}
+                onClick={() => {
+                  model = "claude-sonnet"
+                }}
+              >
+                claude-sonnet
+              </button>
+              <button
+                type="button"
+                class={model === "gemini-pro" ? "playground-option-button playground-option-button-active" : "playground-option-button"}
+                aria-pressed={model === "gemini-pro"}
+                onClick={() => {
+                  model = "gemini-pro"
+                }}
+              >
+                gemini-pro
+              </button>
             </div>
           </section>
 

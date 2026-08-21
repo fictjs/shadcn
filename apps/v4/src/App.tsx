@@ -735,6 +735,16 @@ function buildSiteSearchEntries(route: ResolvedRoute): SiteSearchEntry[] {
     })
   }
 
+  for (const example of route.examplePages) {
+    pushEntry({
+      href: `/examples/${example.slug}`,
+      title: example.title,
+      kind: "Example",
+      description: example.description,
+      keywords: `${example.slug} example live demo`,
+    })
+  }
+
   for (const example of route.examples) {
     pushEntry({
       href: `/examples/${example}`,
@@ -816,14 +826,17 @@ export function App(props: AppProps) {
     document.documentElement.dataset.layout = "full"
   })
   const searchEntries = buildSiteSearchEntries(routeSnapshot)
-  const visibleSearchEntries = searchEntries.slice(0, 24)
 
   return (
     <>
       <DarkModeManager />
       {route.kind === "create" ? <CreatePage /> : (
         <div class="site-shell">
-        <header class="site-header">
+        <header
+          class="site-header"
+          inert={isSearchOpen || isMobileNavOpen}
+          aria-hidden={isSearchOpen || isMobileNavOpen ? "true" : undefined}
+        >
           <div class="container header-row">
             <div class="header-primary">
               <button
@@ -832,6 +845,7 @@ export function App(props: AppProps) {
                 aria-label="Toggle menu"
                 aria-expanded={isMobileNavOpen}
                 onClick$={() => {
+                  isSearchOpen = false
                   isMobileNavOpen = !isMobileNavOpen
                 }}
               >
@@ -868,6 +882,7 @@ export function App(props: AppProps) {
                 aria-haspopup="dialog"
                 aria-expanded={isSearchOpen}
                 onClick$={() => {
+                  isMobileNavOpen = false
                   isSearchOpen = true
                 }}
               >
@@ -908,7 +923,11 @@ export function App(props: AppProps) {
           </div>
         </header>
 
-        <main class="container main-content">
+        <main
+          class="container main-content"
+          inert={isSearchOpen || isMobileNavOpen}
+          aria-hidden={isSearchOpen || isMobileNavOpen ? "true" : undefined}
+        >
           {route.kind === "home" ? <HomePage route={route} activeThemeName={activeThemeName} onThemeChange={handleThemeChange} /> : null}
           {route.kind === "docs-index" ? <DocsIndexPage docs={route.docs} /> : null}
           {route.kind === "docs-detail" && route.doc ? <DocDetailPage route={route} /> : null}
@@ -1009,10 +1028,12 @@ export function App(props: AppProps) {
               </div>
 
               <div class="site-search-results" role="list">
-                  {visibleSearchEntries.map((entry) => (
+                  {searchEntries.map((entry, index) => (
                     <a
                       key={`${entry.href}:${entry.title}`}
                       class="site-search-result"
+                      hidden={index >= 10}
+                      data-search-title={entry.title.toLowerCase()}
                       data-search-text={`${entry.title} ${entry.kind} ${entry.description} ${entry.keywords}`.toLowerCase()}
                       href={entry.href}
                     >
@@ -1032,7 +1053,11 @@ export function App(props: AppProps) {
           </div>
         ) : null}
 
-        <footer class="site-footer">
+        <footer
+          class="site-footer"
+          inert={isSearchOpen || isMobileNavOpen}
+          aria-hidden={isSearchOpen || isMobileNavOpen ? "true" : undefined}
+        >
           <div class="container footer-row">
             <p>
       Built by <a href="https://twitter.com/shadcn">shadcn</a> at{" "}
@@ -2334,7 +2359,7 @@ function AnnouncementBadge() {
 
 function DocsIndexPage(props: { docs: DocSummary[] }) {
   let query = $state("")
-  let filteredDocs: DocSummary[] = $state(props.docs)
+  let filteredDocs = $state<DocSummary[]>(props.docs)
 
   const updateFilter = (event: Event) => {
     const target = event.target as HTMLInputElement | null
@@ -2843,7 +2868,7 @@ function truncateDocCode(value: string, lineLimit: number): string {
 
 function ComponentsPage(props: { components: string[] }) {
   let query = $state("")
-  let filtered: string[] = $state(props.components)
+  let filtered = $state<string[]>(props.components)
 
   const updateFilter = (event: Event) => {
     const target = event.target as HTMLInputElement | null
@@ -2907,7 +2932,7 @@ function ExamplesPage(props: { route: ResolvedRoute; activeThemeName: string; on
   const activeShowcase = routeSnapshot.activeExample
   const routeThemeStyle = routeThemeStyleLookup[props.activeThemeName] || routeThemeStyleLookup.neutral || routeThemeStyleLookup.blue || ""
   let query = $state("")
-  let filtered: string[] = $state(props.route.examples)
+  let filtered = $state<string[]>(props.route.examples)
 
   const updateFilter = (event: Event) => {
     const target = event.target as HTMLInputElement | null

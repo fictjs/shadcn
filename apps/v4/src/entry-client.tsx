@@ -118,6 +118,7 @@ function wireClientFilters(): void {
 const colorModeStorageKey = "shadcn-v4-color-mode"
 const routeThemeStorageKey = "shadcn-v4-active-theme"
 const layoutStorageKey = "layout"
+const siteSearchResultCache = new WeakMap<HTMLElement, HTMLElement[]>()
 
 type CreateCatalogKind = "component" | "example" | "block" | "chart"
 
@@ -127,35 +128,6 @@ interface CreateCatalogItem {
   description: string
   kind: CreateCatalogKind
 }
-
-const siteSearchEntries = [
-  { href: "/", title: "Home", kind: "Page", description: "Landing page with featured examples." },
-  { href: "/docs", title: "Docs", kind: "Page", description: "Browse the documentation tree." },
-  { href: "/docs/components", title: "Components", kind: "Page", description: "Browse component documentation." },
-  { href: "/examples", title: "Examples", kind: "Page", description: "Explore live examples and application shells." },
-  { href: "/examples/dashboard", title: "Dashboard", kind: "Example", description: "Admin dashboard example." },
-  { href: "/examples/tasks", title: "Tasks", kind: "Example", description: "Task tracker example." },
-  { href: "/examples/playground", title: "Playground", kind: "Example", description: "Prompt playground example." },
-  { href: "/examples/authentication", title: "Authentication", kind: "Example", description: "Authentication example." },
-  { href: "/examples/rtl", title: "RTL", kind: "Example", description: "Right-to-left example." },
-  { href: "/charts/area", title: "Charts", kind: "Page", description: "Chart preview gallery." },
-  { href: "/blocks", title: "Blocks", kind: "Page", description: "Higher-level UI blocks." },
-  { href: "/themes", title: "Themes", kind: "Page", description: "Theme customizer and previews." },
-  { href: "/colors", title: "Colors", kind: "Page", description: "Tailwind color scales." },
-  { href: "/create", title: "New Project", kind: "Page", description: "Build a starter workspace." },
-]
-
-const mobileMenuLinks = [
-  { href: "/", label: "Home" },
-  { href: "/docs", label: "Docs" },
-  { href: "/docs/components", label: "Components" },
-  { href: "/docs/installation", label: "Installation" },
-  { href: "/blocks", label: "Blocks" },
-  { href: "/charts/area", label: "Charts" },
-  { href: "/themes", label: "Themes" },
-  { href: "/colors", label: "Colors" },
-  { href: "/create", label: "New Project" },
-]
 
 const createCatalogItems: Record<CreateCatalogKind, CreateCatalogItem[]> = {
   component: [
@@ -230,51 +202,10 @@ function wireSiteChrome(): void {
       return
     }
 
-    if (target.closest(".header-search-button")) {
-      event.preventDefault()
-      openSearchOverlay()
-      return
-    }
-
-    if (target.closest(".mobile-nav-trigger")) {
-      event.preventDefault()
-      openMobileMenuOverlay()
-      return
-    }
-
     if (target.closest(".header-layout-toggle")) {
       event.preventDefault()
       toggleDocumentLayout()
       syncLayoutToggleButtons()
-      return
-    }
-
-    if (target.closest(".site-search-close")) {
-      event.preventDefault()
-      closeSearchOverlay()
-      return
-    }
-
-    if (target.closest(".mobile-nav-close")) {
-      event.preventDefault()
-      closeMobileMenuOverlay()
-      return
-    }
-
-    const searchOverlay = target.closest(".site-search-overlay")
-    if (searchOverlay instanceof HTMLElement && target === searchOverlay) {
-      closeSearchOverlay()
-      return
-    }
-
-    const mobileOverlay = target.closest(".mobile-nav-overlay")
-    if (mobileOverlay instanceof HTMLElement && target === mobileOverlay) {
-      closeMobileMenuOverlay()
-      return
-    }
-
-    if (target.closest(".site-search-result")) {
-      closeSearchOverlay()
       return
     }
 
@@ -288,11 +219,54 @@ function wireSiteChrome(): void {
     }
   })
 
+  document.addEventListener("input", (event) => {
+    const input = event.target
+    if (!(input instanceof HTMLInputElement) || input.id !== "site-search-input") {
+      return
+    }
+
+    const dialog = input.closest(".site-search-dialog")
+    if (!(dialog instanceof HTMLElement)) {
+      return
+    }
+
+    const resultsRoot = dialog.querySelector(".site-search-results")
+    if (!(resultsRoot instanceof HTMLElement)) {
+      return
+    }
+
+    let allResults = siteSearchResultCache.get(dialog)
+    if (!allResults) {
+      allResults = Array.from(resultsRoot.querySelectorAll<HTMLElement>(".site-search-result"))
+      siteSearchResultCache.set(dialog, allResults)
+    }
+
+    const normalizedQuery = input.value.trim().toLowerCase()
+    const exactMatches = normalizedQuery.length === 0
+      ? []
+      : allResults.filter((result) => result.dataset.searchTitle === normalizedQuery)
+    const visibleResults = (normalizedQuery.length === 0
+      ? allResults
+      : exactMatches.length > 0
+        ? exactMatches
+        : allResults.filter((result) => (result.dataset.searchText || "").includes(normalizedQuery))
+    ).slice(0, normalizedQuery.length === 0 ? 10 : 12)
+    visibleResults.forEach((result) => {
+      result.hidden = false
+    })
+    resultsRoot.replaceChildren(...visibleResults)
+
+    const emptyState = dialog.querySelector(".site-search-empty")
+    if (emptyState instanceof HTMLElement) {
+      emptyState.hidden = visibleResults.length > 0
+    }
+  })
+
   document.addEventListener("keydown", (event) => {
     const isSearchShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k"
     if (isSearchShortcut) {
       event.preventDefault()
-      openSearchOverlay()
+      document.querySelector<HTMLButtonElement>(".header-search-button")?.click()
       return
     }
 
@@ -300,14 +274,13 @@ function wireSiteChrome(): void {
       return
     }
 
-    if (document.querySelector(".site-search-overlay")) {
-      closeSearchOverlay()
+    const searchClose = document.querySelector<HTMLButtonElement>(".site-search-close")
+    if (searchClose) {
+      searchClose.click()
       return
     }
 
-    if (document.querySelector(".mobile-nav-overlay")) {
-      closeMobileMenuOverlay()
-    }
+    document.querySelector<HTMLElement>(".mobile-nav-overlay")?.click()
   })
 }
 
@@ -550,119 +523,6 @@ function applyActiveTheme(themeName: string, persist: boolean): void {
   document.querySelectorAll<HTMLElement>(".theme-customizer-pill").forEach((button) => {
     button.dataset.active = button.dataset.themeName === themeName ? "true" : "false"
   })
-}
-
-function openSearchOverlay(): void {
-  closeMobileMenuOverlay()
-  closeSearchOverlay()
-
-  const overlay = document.createElement("div")
-  overlay.className = "site-search-overlay"
-  overlay.innerHTML = `
-    <div class="site-search-dialog" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
-      <div class="site-search-header">
-        <div>
-          <p class="eyebrow">Search</p>
-          <h2 id="site-search-title">Search documentation...</h2>
-        </div>
-        <button type="button" class="header-icon-link site-search-close" aria-label="Close search">Close</button>
-      </div>
-      <label class="sr-only" for="site-search-input">Search documentation</label>
-      <input id="site-search-input" class="site-search-input" type="text" placeholder="Search documentation..." />
-      <div class="site-search-status">
-        <p>Jump to docs, examples, charts, and top-level pages.</p>
-        <span class="site-search-shortcut" aria-hidden="true">⌘K</span>
-      </div>
-      <div class="site-search-results" role="list"></div>
-      <div class="site-search-empty" hidden>No results found.</div>
-    </div>
-  `
-
-  document.body.append(overlay)
-  document.body.style.overflow = "hidden"
-  document.querySelector(".site-shell")?.setAttribute("inert", "")
-  document.querySelector(".site-shell")?.setAttribute("aria-hidden", "true")
-  document.querySelector(".create-route-shell")?.setAttribute("inert", "")
-  document.querySelector(".create-route-shell")?.setAttribute("aria-hidden", "true")
-
-  const input = overlay.querySelector<HTMLInputElement>("#site-search-input")
-  const results = overlay.querySelector<HTMLElement>(".site-search-results")
-  const empty = overlay.querySelector<HTMLElement>(".site-search-empty")
-  if (!(input instanceof HTMLInputElement) || !(results instanceof HTMLElement) || !(empty instanceof HTMLElement)) {
-    return
-  }
-
-  const renderResults = () => {
-    const normalizedQuery = input.value.trim().toLowerCase()
-    const visibleEntries = siteSearchEntries.filter((entry) => {
-      if (!normalizedQuery) {
-        return true
-      }
-
-      return `${entry.title} ${entry.kind} ${entry.description} ${entry.href}`.toLowerCase().includes(normalizedQuery)
-    })
-
-    results.innerHTML = visibleEntries.map((entry) => `
-      <a class="site-search-result" href="${entry.href}" aria-label="${escapeHtml(entry.title)}" data-search-text="${escapeHtml(`${entry.title} ${entry.kind} ${entry.description} ${entry.href}`.toLowerCase())}">
-        <div class="site-search-result-copy">
-          <div class="site-search-result-topline">
-            <span class="site-search-kind">${escapeHtml(entry.kind)}</span>
-            <span class="site-search-path">${escapeHtml(entry.href)}</span>
-          </div>
-          <strong>${escapeHtml(entry.title)}</strong>
-          <p>${escapeHtml(entry.description)}</p>
-        </div>
-      </a>
-    `).join("")
-    empty.hidden = visibleEntries.length > 0
-  }
-
-  input.addEventListener("input", renderResults)
-  renderResults()
-  input.focus()
-  input.select()
-}
-
-function closeSearchOverlay(): void {
-  document.querySelector(".site-search-overlay")?.remove()
-  document.querySelector(".site-shell")?.removeAttribute("inert")
-  document.querySelector(".site-shell")?.removeAttribute("aria-hidden")
-  document.querySelector(".create-route-shell")?.removeAttribute("inert")
-  document.querySelector(".create-route-shell")?.removeAttribute("aria-hidden")
-  if (!document.querySelector(".mobile-nav-overlay")) {
-    document.body.style.overflow = ""
-  }
-}
-
-function openMobileMenuOverlay(): void {
-  closeSearchOverlay()
-  closeMobileMenuOverlay()
-
-  const overlay = document.createElement("div")
-  overlay.className = "mobile-nav-overlay"
-  overlay.innerHTML = `
-    <div class="mobile-nav-panel" role="dialog" aria-modal="true" aria-labelledby="mobile-nav-title">
-      <div class="mobile-nav-section">
-        <div class="site-search-header">
-          <p id="mobile-nav-title" class="eyebrow">Menu</p>
-          <button type="button" class="header-icon-link mobile-nav-close" aria-label="Close menu">Close</button>
-        </div>
-        <div class="mobile-nav-links">
-          ${mobileMenuLinks.map((link) => `<a href="${link.href}">${escapeHtml(link.label)}</a>`).join("")}
-        </div>
-      </div>
-    </div>
-  `
-
-  document.body.append(overlay)
-  document.body.style.overflow = "hidden"
-}
-
-function closeMobileMenuOverlay(): void {
-  document.querySelector(".mobile-nav-overlay")?.remove()
-  if (!document.querySelector(".site-search-overlay")) {
-    document.body.style.overflow = ""
-  }
 }
 
 function buildCreateInstallCommand(
