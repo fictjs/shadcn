@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "node server.js",
-    "build": "pnpm build:client && pnpm build:server",
+    "build": "pnpm build:client && pnpm build:server && pnpm verify:build",
     "build:client": "vite build --outDir dist/client",
     "build:server": "vite build --outDir dist/server --ssr src/entry-server.tsx",
     "start": "NODE_ENV=production node server.js",
     "typecheck": "tsc --noEmit",
+    "verify:build": "node scripts/verify-build.mjs",
     "verify:compiler": "node scripts/verify-compiler.mjs",
-    "test:e2e": "pnpm --dir ../.. exec playwright test -c apps/v4/playwright.config.ts"
+    "verify:published": "node scripts/verify-published-packages.mjs",
+    "test:e2e": "playwright test -c playwright.config.ts"
   },
   "dependencies": {
     "@fictjs/runtime": "0.32.0",
@@ -22,6 +24,7 @@
   "devDependencies": {
     "@fictjs/compiler": "0.32.0",
     "@fictjs/vite-plugin": "0.32.0",
+    "@playwright/test": "1.58.2",
     "@types/express": "^5.0.5",
     "@types/node": "^24.3.0",
     "typescript": "^5.9.3",

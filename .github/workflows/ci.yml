@@ -32,13 +32,19 @@ jobs:
           cache: pnpm
           cache-dependency-path: apps/v4/pnpm-lock.yaml
       - name: Install isolated consumer
-        run: pnpm --dir apps/v4 install --frozen-lockfile
+        run: pnpm --dir apps/v4 install --ignore-workspace --frozen-lockfile
+      - name: Verify published package boundary
+        run: pnpm --dir apps/v4 verify:published
       - name: Verify Rust-default compiler
         run: pnpm --dir apps/v4 verify:compiler
       - name: Typecheck isolated consumer
         run: pnpm --dir apps/v4 typecheck
       - name: Build isolated consumer
         run: pnpm --dir apps/v4 build
+      - name: Install Playwright browser
+        run: pnpm --dir apps/v4 exec playwright install --with-deps chromium
+      - name: Test isolated consumer
+        run: pnpm --dir apps/v4 test:e2e
 
   quality:
     runs-on: ubuntu-latest
