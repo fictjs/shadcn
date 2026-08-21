@@ -6,12 +6,12 @@ export const formComponentRegistry: RegistryEntry[] = [
     version: '0.1.0',
     type: 'ui-component',
     description: 'Checkbox primitive wrapper',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: ['@fictjs/radix-ui'],
     registryDependencies: [],
     files: [
       {
         path: '{{componentsDir}}/checkbox.tsx',
-        content: context => `import { Checkbox as PrimitiveCheckbox } from '@fictjs/ui-primitives'
+        content: context => `import { Checkbox as CheckboxPrimitive } from '@fictjs/radix-ui'
 
 import { cn } from '${context.imports.cn}'
 
@@ -26,15 +26,17 @@ export function Checkbox(props: CheckboxProps) {
   const { class: className, indicatorClass, children, ...rest } = props
 
   return (
-    <PrimitiveCheckbox
+    <CheckboxPrimitive.Root
       class={cn(
         'peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
         className,
       )}
       {...rest}
     >
-      <span class={cn('flex items-center justify-center text-[10px]', indicatorClass)}>{children ?? '✓'}</span>
-    </PrimitiveCheckbox>
+      <CheckboxPrimitive.Indicator class={cn('flex items-center justify-center text-[10px]', indicatorClass)}>
+        {children ?? '✓'}
+      </CheckboxPrimitive.Indicator>
+    </CheckboxPrimitive.Root>
   )
 }
 `,
@@ -46,13 +48,12 @@ export function Checkbox(props: CheckboxProps) {
     version: '0.1.0',
     type: 'ui-component',
     description: 'Radio group primitives with style wrappers',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: ['@fictjs/radix-ui'],
     registryDependencies: [],
     files: [
       {
         path: '{{componentsDir}}/radio-group.tsx',
-        content:
-          context => `import { RadioGroup as PrimitiveRadioGroup, RadioItem as PrimitiveRadioItem } from '@fictjs/ui-primitives'
+        content: context => `import { RadioGroup as RadioGroupPrimitive } from '@fictjs/radix-ui'
 
 import { cn } from '${context.imports.cn}'
 
@@ -70,21 +71,23 @@ type ItemProps = {
 
 export function RadioGroup(props: GroupProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveRadioGroup class={cn('grid gap-2', className)} {...rest} />
+  return <RadioGroupPrimitive.Root class={cn('grid gap-2', className)} {...rest} />
 }
 
 export function RadioGroupItem(props: ItemProps) {
   const { class: className, indicatorClass, children, ...rest } = props
   return (
-    <PrimitiveRadioItem
+    <RadioGroupPrimitive.Item
       class={cn(
         'aspect-square h-4 w-4 rounded-full border border-primary text-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
         className,
       )}
       {...rest}
     >
-      <span class={cn('block h-2.5 w-2.5 rounded-full bg-current', indicatorClass)}>{children ?? null}</span>
-    </PrimitiveRadioItem>
+      <RadioGroupPrimitive.Indicator class={cn('flex items-center justify-center', indicatorClass)}>
+        {children ?? <span class='block h-2.5 w-2.5 rounded-full bg-current' />}
+      </RadioGroupPrimitive.Indicator>
+    </RadioGroupPrimitive.Item>
   )
 }
 `,
@@ -96,13 +99,12 @@ export function RadioGroupItem(props: ItemProps) {
     version: '0.1.0',
     type: 'ui-component',
     description: 'Switch primitive wrapper',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: ['@fictjs/radix-ui'],
     registryDependencies: [],
     files: [
       {
         path: '{{componentsDir}}/switch.tsx',
-        content:
-          context => `import { Switch as PrimitiveSwitch, SwitchThumb } from '@fictjs/ui-primitives'
+        content: context => `import { Switch as SwitchPrimitive } from '@fictjs/radix-ui'
 
 import { cn } from '${context.imports.cn}'
 
@@ -115,20 +117,20 @@ type SwitchProps = {
 export function Switch(props: SwitchProps) {
   const { class: className, thumbClass, ...rest } = props
   return (
-    <PrimitiveSwitch
+    <SwitchPrimitive.Root
       class={cn(
         'peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent bg-input transition-colors data-[state=checked]:bg-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
         className,
       )}
       {...rest}
     >
-      <SwitchThumb
+      <SwitchPrimitive.Thumb
         class={cn(
           'pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-4 data-[state=unchecked]:translate-x-0',
           thumbClass,
         )}
       />
-    </PrimitiveSwitch>
+    </SwitchPrimitive.Root>
   )
 }
 `,
@@ -140,22 +142,16 @@ export function Switch(props: SwitchProps) {
     version: '0.1.0',
     type: 'ui-component',
     description: 'Select primitive wrappers',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: ['@fictjs/radix-ui'],
     registryDependencies: [],
     files: [
       {
         path: '{{componentsDir}}/select.tsx',
-        content: context => `import {
-  SelectRoot,
-  SelectTrigger as PrimitiveSelectTrigger,
-  SelectValue as PrimitiveSelectValue,
-  SelectContent as PrimitiveSelectContent,
-  SelectItem as PrimitiveSelectItem,
-} from '@fictjs/ui-primitives'
+        content: context => `import { Select as SelectPrimitive } from '@fictjs/radix-ui'
 
 import { cn } from '${context.imports.cn}'
 
-export const Select = SelectRoot
+export const Select = SelectPrimitive.Root
 
 type GenericProps = {
   class?: string
@@ -166,7 +162,7 @@ type GenericProps = {
 export function SelectTrigger(props: GenericProps) {
   const { class: className, children, ...rest } = props
   return (
-    <PrimitiveSelectTrigger
+    <SelectPrimitive.Trigger
       class={cn(
         'flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
         className,
@@ -174,37 +170,42 @@ export function SelectTrigger(props: GenericProps) {
       {...rest}
     >
       {children}
-    </PrimitiveSelectTrigger>
+    </SelectPrimitive.Trigger>
   )
 }
 
 export function SelectValue(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveSelectValue class={cn('truncate', className)} {...rest} />
+  return <SelectPrimitive.Value class={cn('truncate', className)} {...rest} />
 }
 
 export function SelectContent(props: GenericProps) {
-  const { class: className, ...rest } = props
+  const { class: className, children, ...rest } = props
   return (
-    <PrimitiveSelectContent
-      class={cn('relative z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md', className)}
-      {...rest}
-    />
+    <SelectPrimitive.Portal>
+      <SelectPrimitive.Content
+        class={cn('relative z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md', className)}
+        {...rest}
+      >
+        <SelectPrimitive.Viewport class='p-1'>{children}</SelectPrimitive.Viewport>
+      </SelectPrimitive.Content>
+    </SelectPrimitive.Portal>
   )
 }
 
 export function SelectItem(props: GenericProps) {
   const { class: className, children, ...rest } = props
   return (
-    <PrimitiveSelectItem
+    <SelectPrimitive.Item
       class={cn(
         'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground',
         className,
       )}
       {...rest}
     >
-      {children}
-    </PrimitiveSelectItem>
+      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+      <SelectPrimitive.ItemIndicator class='absolute right-2'>✓</SelectPrimitive.ItemIndicator>
+    </SelectPrimitive.Item>
   )
 }
 `,
@@ -401,23 +402,38 @@ export function ComboboxItem(props: ComboboxItemProps) {
     version: '0.1.0',
     type: 'ui-component',
     description: 'Slider primitive wrapper',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: ['@fictjs/radix-ui'],
     registryDependencies: [],
     files: [
       {
         path: '{{componentsDir}}/slider.tsx',
-        content: context => `import { Slider as PrimitiveSlider } from '@fictjs/ui-primitives'
+        content: context => `import { Slider as SliderPrimitive } from '@fictjs/radix-ui'
 
 import { cn } from '${context.imports.cn}'
 
 type SliderProps = {
   class?: string
+  children?: unknown
   [key: string]: unknown
 }
 
 export function Slider(props: SliderProps) {
-  const { class: className, ...rest } = props
-  return <PrimitiveSlider class={cn('w-full accent-primary', className)} {...rest} />
+  const { class: className, children, ...rest } = props
+  return (
+    <SliderPrimitive.Root
+      class={cn('relative flex w-full touch-none select-none items-center', className)}
+      {...rest}
+    >
+      {children ?? (
+        <>
+          <SliderPrimitive.Track class='relative h-1.5 w-full grow overflow-hidden rounded-full bg-primary/20'>
+            <SliderPrimitive.Range class='absolute h-full bg-primary' />
+          </SliderPrimitive.Track>
+          <SliderPrimitive.Thumb class='block h-4 w-4 rounded-full border border-primary/50 bg-background shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50' />
+        </>
+      )}
+    </SliderPrimitive.Root>
+  )
 }
 `,
       },
@@ -428,12 +444,12 @@ export function Slider(props: SliderProps) {
     version: '0.1.0',
     type: 'ui-component',
     description: 'Toggle primitive wrapper',
-    dependencies: ['@fictjs/ui-primitives', 'class-variance-authority'],
+    dependencies: ['@fictjs/radix-ui', 'class-variance-authority'],
     registryDependencies: [],
     files: [
       {
         path: '{{componentsDir}}/toggle.tsx',
-        content: context => `import { Toggle as PrimitiveToggle } from '@fictjs/ui-primitives'
+        content: context => `import { Toggle as TogglePrimitive } from '@fictjs/radix-ui'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '${context.imports.cn}'
@@ -468,9 +484,9 @@ type ToggleProps = VariantProps<typeof toggleVariants> & {
 export function Toggle(props: ToggleProps) {
   const { class: className, variant, size, children, ...rest } = props
   return (
-    <PrimitiveToggle class={cn(toggleVariants({ variant, size }), className)} {...rest}>
+    <TogglePrimitive.Root class={cn(toggleVariants({ variant, size }), className)} {...rest}>
       {children}
-    </PrimitiveToggle>
+    </TogglePrimitive.Root>
   )
 }
 
@@ -484,13 +500,12 @@ export { toggleVariants }
     version: '0.1.0',
     type: 'ui-component',
     description: 'Toggle group wrappers',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: ['@fictjs/radix-ui'],
     registryDependencies: ['toggle'],
     files: [
       {
         path: '{{componentsDir}}/toggle-group.tsx',
-        content:
-          context => `import { ToggleGroup as PrimitiveToggleGroup, ToggleGroupItem as PrimitiveToggleGroupItem } from '@fictjs/ui-primitives'
+        content: context => `import { ToggleGroup as ToggleGroupPrimitive } from '@fictjs/radix-ui'
 
 import { cn } from '${context.imports.cn}'
 import { toggleVariants } from '${context.uiImport('toggle')}'
@@ -512,18 +527,18 @@ type ItemProps = {
 export function ToggleGroup(props: GroupProps) {
   const { class: className, children, ...rest } = props
   return (
-    <PrimitiveToggleGroup class={cn('inline-flex items-center justify-center gap-1', className)} {...rest}>
+    <ToggleGroupPrimitive.Root class={cn('inline-flex items-center justify-center gap-1', className)} {...rest}>
       {children}
-    </PrimitiveToggleGroup>
+    </ToggleGroupPrimitive.Root>
   )
 }
 
 export function ToggleGroupItem(props: ItemProps) {
   const { class: className, variant, size, children, ...rest } = props
   return (
-    <PrimitiveToggleGroupItem class={cn(toggleVariants({ variant, size }), className)} {...rest}>
+    <ToggleGroupPrimitive.Item class={cn(toggleVariants({ variant, size }), className)} {...rest}>
       {children}
-    </PrimitiveToggleGroupItem>
+    </ToggleGroupPrimitive.Item>
   )
 }
 `,
@@ -535,24 +550,17 @@ export function ToggleGroupItem(props: ItemProps) {
     version: '0.1.0',
     type: 'ui-component',
     description: 'Form field structure wrappers',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: ['@fictjs/radix-ui'],
     registryDependencies: ['label'],
     files: [
       {
         path: '{{componentsDir}}/form.tsx',
-        content: context => `import {
-  Form as PrimitiveForm,
-  FormField as PrimitiveFormField,
-  FormLabel as PrimitiveFormLabel,
-  FormControl as PrimitiveFormControl,
-  FormDescription as PrimitiveFormDescription,
-  FormMessage as PrimitiveFormMessage,
-} from '@fictjs/ui-primitives'
+        content: context => `import { Form as FormPrimitive } from '@fictjs/radix-ui'
 
 import { cn } from '${context.imports.cn}'
 
-export const Form = PrimitiveForm
-export const FormField = PrimitiveFormField
+export const Form = FormPrimitive.Root
+export const FormField = FormPrimitive.Field
 
 type GenericProps = {
   class?: string
@@ -562,22 +570,22 @@ type GenericProps = {
 
 export function FormLabel(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveFormLabel class={cn('text-sm font-medium leading-none', className)} {...rest} />
+  return <FormPrimitive.Label class={cn('text-sm font-medium leading-none', className)} {...rest} />
 }
 
 export function FormControl(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveFormControl class={cn('w-full', className)} {...rest} />
+  return <FormPrimitive.Control class={cn('w-full', className)} {...rest} />
 }
 
 export function FormDescription(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveFormDescription class={cn('text-[0.8rem] text-muted-foreground', className)} {...rest} />
+  return <p class={cn('text-[0.8rem] text-muted-foreground', className)} {...rest} />
 }
 
 export function FormMessage(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveFormMessage class={cn('text-[0.8rem] font-medium text-destructive', className)} {...rest} />
+  return <FormPrimitive.Message class={cn('text-[0.8rem] font-medium text-destructive', className)} {...rest} />
 }
 `,
       },

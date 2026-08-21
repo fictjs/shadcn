@@ -1361,12 +1361,8 @@ export function ResizableHandle(props: GenericProps) {
 }
 `
 
-const scrollAreaTemplate: TemplateFn = context => `import {
-  ScrollArea as PrimitiveScrollArea,
-  ScrollAreaScrollbar as PrimitiveScrollAreaScrollbar,
-  ScrollAreaThumb as PrimitiveScrollAreaThumb,
-  ScrollAreaViewport as PrimitiveScrollAreaViewport,
-} from '@fictjs/ui-primitives'
+const scrollAreaTemplate: TemplateFn =
+  context => `import { ScrollArea as ScrollAreaPrimitive } from '@fictjs/radix-ui'
 
 import { cn } from '${context.imports.cn}'
 
@@ -1378,13 +1374,13 @@ type GenericProps = {
 
 export function ScrollArea(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveScrollArea class={cn('relative overflow-hidden rounded-md border', className)} {...rest} />
+  return <ScrollAreaPrimitive.Root class={cn('relative overflow-hidden rounded-md border', className)} {...rest} />
 }
 
 export function ScrollBar(props: GenericProps) {
   const { class: className, orientation = 'vertical', ...rest } = props
   return (
-    <PrimitiveScrollAreaScrollbar
+    <ScrollAreaPrimitive.Scrollbar
       orientation={orientation}
       class={cn(
         'flex select-none touch-none p-0.5 transition-colors',
@@ -1393,14 +1389,14 @@ export function ScrollBar(props: GenericProps) {
       )}
       {...rest}
     >
-      <PrimitiveScrollAreaThumb class='relative flex-1 rounded-full bg-border' />
-    </PrimitiveScrollAreaScrollbar>
+      <ScrollAreaPrimitive.Thumb class='relative flex-1 rounded-full bg-border' />
+    </ScrollAreaPrimitive.Scrollbar>
   )
 }
 
 export function ScrollAreaViewport(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveScrollAreaViewport class={cn('h-full w-full rounded-[inherit]', className)} {...rest} />
+  return <ScrollAreaPrimitive.Viewport class={cn('h-full w-full rounded-[inherit]', className)} {...rest} />
 }
 `
 
@@ -1650,7 +1646,7 @@ export const expandedComponentRegistry: RegistryEntry[] = [
   createComponentEntry({
     name: 'scroll-area',
     description: 'Scroll area wrappers with themed scrollbar',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: ['@fictjs/radix-ui'],
     content: scrollAreaTemplate,
   }),
   createComponentEntry({

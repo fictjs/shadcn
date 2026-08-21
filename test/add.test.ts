@@ -21,7 +21,8 @@ describe('runAdd', () => {
     const button = await readFile(path.join(cwd, 'src/components/ui/button.tsx'), 'utf8')
     const lockRaw = await readFile(path.join(cwd, LOCK_FILE), 'utf8')
 
-    expect(dialog).toContain('export const Dialog = DialogRoot')
+    expect(dialog).toContain('export const Dialog = DialogPrimitive.Root')
+    expect(dialog).toContain("from '@fictjs/radix-ui'")
     expect(button).toContain('buttonVariants')
     expect(result.added).toContain('dialog')
     expect(result.added).toContain('button')

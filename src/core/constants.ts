@@ -27,7 +27,7 @@ export const DEFAULT_LOCK: FictcnLock = {
 }
 
 export const RUNTIME_DEPENDENCIES = [
-  '@fictjs/ui-primitives',
+  '@fictjs/radix-ui',
   'class-variance-authority',
   'clsx',
   'tailwind-merge',

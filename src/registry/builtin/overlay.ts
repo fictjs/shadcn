@@ -6,26 +6,18 @@ export const overlayComponentRegistry: RegistryEntry[] = [
     version: '0.1.0',
     type: 'ui-component',
     description: 'Dialog primitives with styled wrappers',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: ['@fictjs/radix-ui'],
     registryDependencies: ['button'],
     files: [
       {
         path: '{{componentsDir}}/dialog.tsx',
-        content: context => `import {
-  DialogRoot,
-  DialogPortal,
-  DialogTrigger,
-  DialogOverlay as PrimitiveDialogOverlay,
-  DialogContent as PrimitiveDialogContent,
-  DialogTitle as PrimitiveDialogTitle,
-  DialogDescription as PrimitiveDialogDescription,
-  DialogClose as PrimitiveDialogClose,
-} from '@fictjs/ui-primitives'
+        content: context => `import { Dialog as DialogPrimitive } from '@fictjs/radix-ui'
 
 import { cn } from '${context.imports.cn}'
 
-export const Dialog = DialogRoot
-export { DialogPortal, DialogTrigger }
+export const Dialog = DialogPrimitive.Root
+export const DialogPortal = DialogPrimitive.Portal
+export const DialogTrigger = DialogPrimitive.Trigger
 
 type GenericProps = {
   class?: string
@@ -35,7 +27,7 @@ type GenericProps = {
 
 export function DialogOverlay(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveDialogOverlay class={cn('fixed inset-0 z-50 bg-background/80 backdrop-blur-sm', className)} {...rest} />
+  return <DialogPrimitive.Overlay class={cn('fixed inset-0 z-50 bg-background/80 backdrop-blur-sm', className)} {...rest} />
 }
 
 export function DialogContent(props: GenericProps) {
@@ -43,7 +35,7 @@ export function DialogContent(props: GenericProps) {
   return (
     <>
       <DialogOverlay />
-      <PrimitiveDialogContent
+      <DialogPrimitive.Content
         class={cn(
           'fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg',
           className,
@@ -51,10 +43,10 @@ export function DialogContent(props: GenericProps) {
         {...rest}
       >
         {children}
-        <PrimitiveDialogClose class='absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'>
+        <DialogPrimitive.Close class='absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'>
           <span aria-hidden='true'>×</span>
-        </PrimitiveDialogClose>
-      </PrimitiveDialogContent>
+        </DialogPrimitive.Close>
+      </DialogPrimitive.Content>
     </>
   )
 }
@@ -71,15 +63,15 @@ export function DialogFooter(props: GenericProps) {
 
 export function DialogTitle(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveDialogTitle class={cn('text-lg font-semibold leading-none tracking-tight', className)} {...rest} />
+  return <DialogPrimitive.Title class={cn('text-lg font-semibold leading-none tracking-tight', className)} {...rest} />
 }
 
 export function DialogDescription(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveDialogDescription class={cn('text-sm text-muted-foreground', className)} {...rest} />
+  return <DialogPrimitive.Description class={cn('text-sm text-muted-foreground', className)} {...rest} />
 }
 
-export const DialogClose = PrimitiveDialogClose
+export const DialogClose = DialogPrimitive.Close
 `,
       },
     ],
@@ -89,28 +81,19 @@ export const DialogClose = PrimitiveDialogClose
     version: '0.1.0',
     type: 'ui-component',
     description: 'Alert dialog wrappers',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: ['@fictjs/radix-ui'],
     registryDependencies: ['button'],
     files: [
       {
         path: '{{componentsDir}}/alert-dialog.tsx',
-        content: context => `import {
-  AlertDialogRoot,
-  AlertDialogPortal,
-  AlertDialogTrigger,
-  AlertDialogOverlay as PrimitiveAlertDialogOverlay,
-  AlertDialogContent as PrimitiveAlertDialogContent,
-  AlertDialogTitle as PrimitiveAlertDialogTitle,
-  AlertDialogDescription as PrimitiveAlertDialogDescription,
-  AlertDialogAction as PrimitiveAlertDialogAction,
-  AlertDialogCancel as PrimitiveAlertDialogCancel,
-} from '@fictjs/ui-primitives'
+        content: context => `import { AlertDialog as AlertDialogPrimitive } from '@fictjs/radix-ui'
 
 import { cn } from '${context.imports.cn}'
 import { buttonVariants } from '${context.uiImport('button')}'
 
-export const AlertDialog = AlertDialogRoot
-export { AlertDialogPortal, AlertDialogTrigger }
+export const AlertDialog = AlertDialogPrimitive.Root
+export const AlertDialogPortal = AlertDialogPrimitive.Portal
+export const AlertDialogTrigger = AlertDialogPrimitive.Trigger
 
 type GenericProps = {
   class?: string
@@ -120,7 +103,7 @@ type GenericProps = {
 
 export function AlertDialogOverlay(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveAlertDialogOverlay class={cn('fixed inset-0 z-50 bg-background/80 backdrop-blur-sm', className)} {...rest} />
+  return <AlertDialogPrimitive.Overlay class={cn('fixed inset-0 z-50 bg-background/80 backdrop-blur-sm', className)} {...rest} />
 }
 
 export function AlertDialogContent(props: GenericProps) {
@@ -128,7 +111,7 @@ export function AlertDialogContent(props: GenericProps) {
   return (
     <>
       <AlertDialogOverlay />
-      <PrimitiveAlertDialogContent
+      <AlertDialogPrimitive.Content
         class={cn(
           'fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg',
           className,
@@ -136,7 +119,7 @@ export function AlertDialogContent(props: GenericProps) {
         {...rest}
       >
         {children}
-      </PrimitiveAlertDialogContent>
+      </AlertDialogPrimitive.Content>
     </>
   )
 }
@@ -153,22 +136,22 @@ export function AlertDialogFooter(props: GenericProps) {
 
 export function AlertDialogTitle(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveAlertDialogTitle class={cn('text-lg font-semibold', className)} {...rest} />
+  return <AlertDialogPrimitive.Title class={cn('text-lg font-semibold', className)} {...rest} />
 }
 
 export function AlertDialogDescription(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveAlertDialogDescription class={cn('text-sm text-muted-foreground', className)} {...rest} />
+  return <AlertDialogPrimitive.Description class={cn('text-sm text-muted-foreground', className)} {...rest} />
 }
 
 export function AlertDialogAction(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveAlertDialogAction class={cn(buttonVariants(), className)} {...rest} />
+  return <AlertDialogPrimitive.Action class={cn(buttonVariants(), className)} {...rest} />
 }
 
 export function AlertDialogCancel(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveAlertDialogCancel class={cn(buttonVariants({ variant: 'outline' }), className)} {...rest} />
+  return <AlertDialogPrimitive.Cancel class={cn(buttonVariants({ variant: 'outline' }), className)} {...rest} />
 }
 `,
       },
@@ -179,22 +162,18 @@ export function AlertDialogCancel(props: GenericProps) {
     version: '0.1.0',
     type: 'ui-component',
     description: 'Popover primitive wrappers',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: ['@fictjs/radix-ui'],
     registryDependencies: [],
     files: [
       {
         path: '{{componentsDir}}/popover.tsx',
-        content: context => `import {
-  PopoverRoot,
-  PopoverTrigger,
-  PopoverContent as PrimitivePopoverContent,
-  PopoverClose,
-} from '@fictjs/ui-primitives'
+        content: context => `import { Popover as PopoverPrimitive } from '@fictjs/radix-ui'
 
 import { cn } from '${context.imports.cn}'
 
-export const Popover = PopoverRoot
-export { PopoverTrigger, PopoverClose }
+export const Popover = PopoverPrimitive.Root
+export const PopoverTrigger = PopoverPrimitive.Trigger
+export const PopoverClose = PopoverPrimitive.Close
 
 type PopoverContentProps = {
   class?: string
@@ -205,7 +184,7 @@ type PopoverContentProps = {
 export function PopoverContent(props: PopoverContentProps) {
   const { class: className, sideOffset = 4, ...rest } = props
   return (
-    <PrimitivePopoverContent
+    <PopoverPrimitive.Content
       sideOffset={sideOffset}
       class={cn('z-50 w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none', className)}
       {...rest}
@@ -221,23 +200,18 @@ export function PopoverContent(props: PopoverContentProps) {
     version: '0.1.0',
     type: 'ui-component',
     description: 'Tooltip primitive wrappers',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: ['@fictjs/radix-ui'],
     registryDependencies: [],
     files: [
       {
         path: '{{componentsDir}}/tooltip.tsx',
-        content: context => `import {
-  TooltipProvider as PrimitiveTooltipProvider,
-  TooltipRoot,
-  TooltipTrigger,
-  TooltipContent as PrimitiveTooltipContent,
-} from '@fictjs/ui-primitives'
+        content: context => `import { Tooltip as TooltipPrimitive } from '@fictjs/radix-ui'
 
 import { cn } from '${context.imports.cn}'
 
-export const TooltipProvider = PrimitiveTooltipProvider
-export const Tooltip = TooltipRoot
-export const TooltipTriggerEl = TooltipTrigger
+export const TooltipProvider = TooltipPrimitive.Provider
+export const Tooltip = TooltipPrimitive.Root
+export const TooltipTriggerEl = TooltipPrimitive.Trigger
 
 type TooltipContentProps = {
   class?: string
@@ -248,7 +222,7 @@ type TooltipContentProps = {
 export function TooltipContent(props: TooltipContentProps) {
   const { class: className, sideOffset = 4, ...rest } = props
   return (
-    <PrimitiveTooltipContent
+    <TooltipPrimitive.Content
       sideOffset={sideOffset}
       class={cn('z-50 overflow-hidden rounded-md bg-primary px-3 py-1.5 text-xs text-primary-foreground', className)}
       {...rest}
@@ -264,21 +238,17 @@ export function TooltipContent(props: TooltipContentProps) {
     version: '0.1.0',
     type: 'ui-component',
     description: 'Hover card primitive wrappers',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: ['@fictjs/radix-ui'],
     registryDependencies: [],
     files: [
       {
         path: '{{componentsDir}}/hover-card.tsx',
-        content: context => `import {
-  HoverCardRoot,
-  HoverCardTrigger,
-  HoverCardContent as PrimitiveHoverCardContent,
-} from '@fictjs/ui-primitives'
+        content: context => `import { HoverCard as HoverCardPrimitive } from '@fictjs/radix-ui'
 
 import { cn } from '${context.imports.cn}'
 
-export const HoverCard = HoverCardRoot
-export const HoverCardTriggerEl = HoverCardTrigger
+export const HoverCard = HoverCardPrimitive.Root
+export const HoverCardTriggerEl = HoverCardPrimitive.Trigger
 
 type HoverCardContentProps = {
   class?: string
@@ -289,7 +259,7 @@ type HoverCardContentProps = {
 export function HoverCardContent(props: HoverCardContentProps) {
   const { class: className, align = 'center', sideOffset = 4, ...rest } = props
   return (
-    <PrimitiveHoverCardContent
+    <HoverCardPrimitive.Content
       align={align}
       sideOffset={sideOffset}
       class={cn('z-50 w-64 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none', className)}
@@ -306,20 +276,12 @@ export function HoverCardContent(props: HoverCardContentProps) {
     version: '0.1.0',
     type: 'ui-component',
     description: 'Drawer-style sheet based on dialog primitives',
-    dependencies: ['@fictjs/ui-primitives', 'class-variance-authority'],
+    dependencies: ['@fictjs/radix-ui', 'class-variance-authority'],
     registryDependencies: ['dialog'],
     files: [
       {
         path: '{{componentsDir}}/sheet.tsx',
-        content: context => `import {
-  DialogRoot,
-  DialogTrigger,
-  DialogClose,
-  DialogOverlay as PrimitiveDialogOverlay,
-  DialogContent as PrimitiveDialogContent,
-  DialogTitle as PrimitiveDialogTitle,
-  DialogDescription as PrimitiveDialogDescription,
-} from '@fictjs/ui-primitives'
+        content: context => `import { Dialog as DialogPrimitive } from '@fictjs/radix-ui'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '${context.imports.cn}'
@@ -341,9 +303,9 @@ const sheetVariants = cva(
   },
 )
 
-export const Sheet = DialogRoot
-export const SheetTrigger = DialogTrigger
-export const SheetClose = DialogClose
+export const Sheet = DialogPrimitive.Root
+export const SheetTrigger = DialogPrimitive.Trigger
+export const SheetClose = DialogPrimitive.Close
 
 type GenericProps = {
   class?: string
@@ -355,7 +317,7 @@ type SheetContentProps = GenericProps & VariantProps<typeof sheetVariants>
 
 export function SheetOverlay(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveDialogOverlay class={cn('fixed inset-0 z-50 bg-black/80', className)} {...rest} />
+  return <DialogPrimitive.Overlay class={cn('fixed inset-0 z-50 bg-black/80', className)} {...rest} />
 }
 
 export function SheetContent(props: SheetContentProps) {
@@ -363,9 +325,9 @@ export function SheetContent(props: SheetContentProps) {
   return (
     <>
       <SheetOverlay />
-      <PrimitiveDialogContent class={cn(sheetVariants({ side }), className)} {...rest}>
+      <DialogPrimitive.Content class={cn(sheetVariants({ side }), className)} {...rest}>
         {children}
-      </PrimitiveDialogContent>
+      </DialogPrimitive.Content>
     </>
   )
 }
@@ -382,12 +344,12 @@ export function SheetFooter(props: GenericProps) {
 
 export function SheetTitle(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveDialogTitle class={cn('text-lg font-semibold text-foreground', className)} {...rest} />
+  return <DialogPrimitive.Title class={cn('text-lg font-semibold text-foreground', className)} {...rest} />
 }
 
 export function SheetDescription(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveDialogDescription class={cn('text-sm text-muted-foreground', className)} {...rest} />
+  return <DialogPrimitive.Description class={cn('text-sm text-muted-foreground', className)} {...rest} />
 }
 `,
       },

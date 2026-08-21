@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { DEFAULT_CONFIG } from '../src/core/constants'
+import { DEFAULT_CONFIG, RUNTIME_DEPENDENCIES } from '../src/core/constants'
 import { getBuiltinComponent } from '../src/registry'
 import { renderRegistryEntryFiles } from '../src/registry/render'
 import { builtinBlocks, builtinComponents, builtinThemes } from '../src/registry/builtin'
@@ -51,6 +51,27 @@ describe('builtin registry render completeness', () => {
         .map(file => file.content)
         .join('\n')
       expect(source, name).not.toContain("from '@fictjs/ui-primitives'")
+    }
+  })
+
+  it('uses the published Radix umbrella for every primitive-backed component', () => {
+    expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
+    expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')
+
+    for (const entry of builtinComponents) {
+      const source = renderRegistryEntryFiles(entry, DEFAULT_CONFIG)
+        .map(file => file.content)
+        .join('\n')
+
+      expect(entry.dependencies, entry.name).not.toContain('@fictjs/ui-primitives')
+      expect(source, entry.name).not.toContain("from '@fictjs/ui-primitives'")
+
+      if (source.includes("from '@fictjs/radix-ui'")) {
+        expect(entry.dependencies, entry.name).toContain('@fictjs/radix-ui')
+      }
+      if (entry.dependencies.includes('@fictjs/radix-ui')) {
+        expect(source, entry.name).toContain("from '@fictjs/radix-ui'")
+      }
     }
   })
 })

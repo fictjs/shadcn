@@ -320,7 +320,7 @@ your-project/
 
 ## How It Works
 
-1. **`fictcn init`** detects your project root, package manager, and TypeScript config. It generates baseline files and installs core dependencies (`@fictjs/ui-primitives`, `class-variance-authority`, `clsx`, `tailwind-merge`).
+1. **`fictcn init`** detects your project root, package manager, and TypeScript config. It generates baseline files and installs core dependencies (`@fictjs/radix-ui`, `class-variance-authority`, `clsx`, `tailwind-merge`).
 
 2. **`fictcn add button`** looks up `button` in your configured registry, resolves any registry dependencies (e.g., adding `dialog` also pulls in `button`), renders template files with your configured paths and aliases, writes them to `componentsDir`, and records everything in the lock file with SHA-256 hashes.
 

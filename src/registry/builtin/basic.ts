@@ -150,12 +150,12 @@ export function CardFooter(props: DivProps) {
     version: '0.1.0',
     type: 'ui-component',
     description: 'Visual separator based on primitives',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: ['@fictjs/radix-ui'],
     registryDependencies: [],
     files: [
       {
         path: '{{componentsDir}}/separator.tsx',
-        content: context => `import { Separator as PrimitiveSeparator } from '@fictjs/ui-primitives'
+        content: context => `import { Separator as SeparatorPrimitive } from '@fictjs/radix-ui'
 
 import { cn } from '${context.imports.cn}'
 
@@ -169,7 +169,7 @@ type SeparatorProps = {
 export function Separator(props: SeparatorProps) {
   const { class: className, orientation = 'horizontal', decorative = true, ...rest } = props
   return (
-    <PrimitiveSeparator
+    <SeparatorPrimitive.Root
       decorative={decorative}
       orientation={orientation}
       class={cn('shrink-0 bg-border', orientation === 'horizontal' ? 'h-px w-full' : 'h-full w-px', className)}
@@ -219,12 +219,14 @@ export function AvatarFallback(props: DivProps) {
     version: '0.1.0',
     type: 'ui-component',
     description: 'Aspect ratio primitive wrapper',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: ['@fictjs/radix-ui'],
     registryDependencies: [],
     files: [
       {
         path: '{{componentsDir}}/aspect-ratio.tsx',
-        content: () => `export { AspectRatio } from '@fictjs/ui-primitives'
+        content: () => `import { AspectRatio as AspectRatioPrimitive } from '@fictjs/radix-ui'
+
+export const AspectRatio = AspectRatioPrimitive.Root
 `,
       },
     ],
@@ -263,12 +265,12 @@ export function Skeleton(props: SkeletonProps) {
     version: '0.1.0',
     type: 'ui-component',
     description: 'Form label wrapper',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: ['@fictjs/radix-ui'],
     registryDependencies: [],
     files: [
       {
         path: '{{componentsDir}}/label.tsx',
-        content: context => `import { Label as PrimitiveLabel } from '@fictjs/ui-primitives'
+        content: context => `import { Label as LabelPrimitive } from '@fictjs/radix-ui'
 
 import { cn } from '${context.imports.cn}'
 
@@ -279,7 +281,7 @@ type LabelProps = {
 
 export function Label(props: LabelProps) {
   const { class: className, ...rest } = props
-  return <PrimitiveLabel class={cn('text-sm font-medium leading-none', className)} {...rest} />
+  return <LabelPrimitive.Root class={cn('text-sm font-medium leading-none', className)} {...rest} />
 }
 `,
       },

@@ -169,23 +169,42 @@ export function Toaster() {
     version: '0.1.0',
     type: 'ui-component',
     description: 'Progress primitive wrapper',
-    dependencies: ['@fictjs/ui-primitives'],
+    dependencies: ['@fictjs/radix-ui'],
     registryDependencies: [],
     files: [
       {
         path: '{{componentsDir}}/progress.tsx',
-        content: context => `import { Progress as PrimitiveProgress } from '@fictjs/ui-primitives'
+        content: context => `import { Progress as ProgressPrimitive } from '@fictjs/radix-ui'
 
 import { cn } from '${context.imports.cn}'
 
 type ProgressProps = {
   class?: string
+  indicatorClass?: string
+  value?: number | null
+  max?: number
+  children?: unknown
   [key: string]: unknown
 }
 
 export function Progress(props: ProgressProps) {
-  const { class: className, ...rest } = props
-  return <PrimitiveProgress class={cn('relative h-2 w-full overflow-hidden rounded-full bg-secondary', className)} {...rest} />
+  const { class: className, indicatorClass, value = 0, max = 100, children, ...rest } = props
+  const percentage = value === null ? 0 : Math.min(100, Math.max(0, (value / max) * 100))
+  return (
+    <ProgressPrimitive.Root
+      value={value}
+      max={max}
+      class={cn('relative h-2 w-full overflow-hidden rounded-full bg-secondary', className)}
+      {...rest}
+    >
+      {children ?? (
+        <ProgressPrimitive.Indicator
+          class={cn('h-full w-full flex-1 bg-primary transition-transform', indicatorClass)}
+          style={{ transform: 'translateX(-' + String(100 - percentage) + '%)' }}
+        />
+      )}
+    </ProgressPrimitive.Root>
+  )
 }
 `,
       },
