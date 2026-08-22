@@ -2850,9 +2850,82 @@ function RootButtonGroupDemoPreview() {
         <button class="button button-outline button-xs" type="button">
           Snooze
         </button>
-        <button class="ui-icon-button ui-icon-button-sm" type="button" aria-label="More Options">
-          <MoreHorizontalIcon />
-        </button>
+        <span class="ui-menu" data-menu>
+          <button
+            class="ui-icon-button ui-icon-button-sm"
+            type="button"
+            aria-label="More Options"
+            data-menu-trigger
+            aria-haspopup="menu"
+            aria-expanded="false"
+          >
+            <MoreHorizontalIcon />
+          </button>
+          <div
+            class="ui-menu-panel root-actions-menu"
+            data-menu-panel
+            data-menu-side="bottom"
+            data-menu-align="end"
+            role="menu"
+            hidden
+          >
+            <button class="ui-menu-item" type="button" role="menuitem" data-menu-item>
+              <MailCheckIcon />
+              Mark as Read
+            </button>
+            <button class="ui-menu-item" type="button" role="menuitem" data-menu-item>
+              <ArchiveIcon />
+              Archive
+            </button>
+            <span class="ui-menu-separator" aria-hidden="true"></span>
+            <button class="ui-menu-item" type="button" role="menuitem" data-menu-item>
+              <ClockIcon />
+              Snooze
+            </button>
+            <button class="ui-menu-item" type="button" role="menuitem" data-menu-item>
+              <CalendarPlusIcon />
+              Add to Calendar
+            </button>
+            <button class="ui-menu-item" type="button" role="menuitem" data-menu-item>
+              <ListFilterIcon />
+              Add to List
+            </button>
+            <span class="ui-menu-sub ui-menu" data-menu>
+              <button
+                class="ui-menu-item"
+                type="button"
+                role="menuitem"
+                data-menu-item
+                data-menu-trigger
+                aria-haspopup="menu"
+                aria-expanded="false"
+              >
+                <TagIcon />
+                Label As...
+                <ChevronRightIcon class="root-menu-trailing-icon" />
+              </button>
+              <div class="ui-menu-panel" data-menu-panel data-menu-side="right" role="menu" hidden>
+                <button class="ui-menu-item" type="button" role="menuitemradio" data-menu-item data-menu-value="Personal" data-selected="true">
+                  Personal
+                  <CheckIcon class="ui-menu-item-check" />
+                </button>
+                <button class="ui-menu-item" type="button" role="menuitemradio" data-menu-item data-menu-value="Work">
+                  Work
+                  <CheckIcon class="ui-menu-item-check" />
+                </button>
+                <button class="ui-menu-item" type="button" role="menuitemradio" data-menu-item data-menu-value="Other">
+                  Other
+                  <CheckIcon class="ui-menu-item-check" />
+                </button>
+              </div>
+            </span>
+            <span class="ui-menu-separator" aria-hidden="true"></span>
+            <button class="ui-menu-item" type="button" role="menuitem" data-menu-item data-destructive="true">
+              <TrashIcon />
+              Trash
+            </button>
+          </div>
+        </span>
       </span>
     </div>
   )
@@ -3007,6 +3080,79 @@ function MoreHorizontalIcon() {
       <circle cx="12" cy="12" r="1" />
       <circle cx="19" cy="12" r="1" />
       <circle cx="5" cy="12" r="1" />
+    </svg>
+  )
+}
+
+function MailCheckIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8" />
+      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+      <path d="m16 19 2 2 4-4" />
+    </svg>
+  )
+}
+
+function ArchiveIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect width="20" height="5" x="2" y="3" rx="1" />
+      <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
+      <path d="M10 12h4" />
+    </svg>
+  )
+}
+
+function ClockIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 6v6l4 2" />
+    </svg>
+  )
+}
+
+function CalendarPlusIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M8 2v4" />
+      <path d="M16 2v4" />
+      <rect width="18" height="18" x="3" y="4" rx="2" />
+      <path d="M3 10h18" />
+      <path d="M12 14v4" />
+      <path d="M10 16h4" />
+    </svg>
+  )
+}
+
+function ListFilterIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 6h18" />
+      <path d="M7 12h10" />
+      <path d="M10 18h4" />
+    </svg>
+  )
+}
+
+function TagIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" />
+      <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" />
+    </svg>
+  )
+}
+
+function TrashIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 6h18" />
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+      <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+      <path d="M10 11v6" />
+      <path d="M14 11v6" />
     </svg>
   )
 }

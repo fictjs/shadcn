@@ -3488,6 +3488,22 @@ a.ui-item:hover {
   right: 0;
 }
 
+.ui-menu-panel[data-menu-side="right"] {
+  top: -0.25rem;
+  left: calc(100% + 0.25rem);
+}
+
+.ui-menu-panel[data-menu-side="left"] {
+  top: -0.25rem;
+  right: calc(100% + 0.25rem);
+}
+
+.ui-menu-sub {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
 .ui-menu-item {
   position: relative;
   display: flex;
@@ -3571,6 +3587,10 @@ a.ui-item:hover {
 
 .root-sources-menu {
   min-width: 18rem;
+}
+
+.root-actions-menu {
+  min-width: 12rem;
 }
 
 .root-menu-trailing {

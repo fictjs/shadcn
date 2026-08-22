@@ -334,12 +334,12 @@ function wireShowcaseCounters(): void {
 
 function closeShowcaseMenus(except?: Element | null): void {
   document.querySelectorAll<HTMLElement>("[data-menu]").forEach((menu) => {
-    if (menu === except) {
+    if (except && (menu === except || menu.contains(except))) {
       return
     }
 
-    const panel = menu.querySelector<HTMLElement>("[data-menu-panel]")
-    const trigger = menu.querySelector<HTMLElement>("[data-menu-trigger]")
+    const panel = menu.querySelector<HTMLElement>(":scope > [data-menu-panel]")
+    const trigger = menu.querySelector<HTMLElement>(":scope > [data-menu-trigger]")
     if (panel) {
       panel.hidden = true
     }
@@ -360,7 +360,7 @@ function wireShowcaseMenus(): void {
     const trigger = target.closest<HTMLElement>("[data-menu-trigger]")
     if (trigger) {
       const menu = trigger.closest<HTMLElement>("[data-menu]")
-      const panel = menu?.querySelector<HTMLElement>("[data-menu-panel]")
+      const panel = menu?.querySelector<HTMLElement>(":scope > [data-menu-panel]")
       if (!menu || !panel) {
         return
       }
@@ -381,6 +381,10 @@ function wireShowcaseMenus(): void {
       }
 
       event.preventDefault()
+
+      if (item.dataset.menuTrigger !== undefined) {
+        return
+      }
 
       if (item.dataset.menuValue !== undefined) {
         menu.querySelectorAll<HTMLElement>("[data-menu-item]").forEach((sibling) => {
