@@ -257,6 +257,34 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".block-display-card .block-preview-image").first()).toBeVisible()
   })
 
+  test("dashboard example switches views and chart ranges without duplicating lists", async ({
+    page,
+  }) => {
+    await page.goto("/examples/dashboard")
+    await waitForClientReady(page)
+
+    const tabs = page.locator(".dashboard-tabs-trigger")
+    const ranges = page.locator(".dashboard-range-item")
+    await expect(tabs).toHaveCount(4)
+    await expect(ranges).toHaveCount(3)
+
+    await tabs.nth(1).click()
+    // Resuming the scope must reconcile the server-rendered list, not append a
+    // second copy of it.
+    await expect(tabs).toHaveCount(4)
+    await expect(tabs.nth(1)).toHaveAttribute("data-state", "active")
+    await expect(tabs.nth(0)).toHaveAttribute("data-state", "inactive")
+    await expect(page.locator(".dashboard-outline-placeholder")).toBeVisible()
+
+    await page.locator('.dashboard-range-item[data-range="90d"]').click()
+    await expect(ranges).toHaveCount(3)
+    await expect(page.locator('.dashboard-range-item[data-range="90d"]')).toHaveAttribute(
+      "data-state",
+      "on",
+    )
+    await expect(page.locator(".dashboard-chart-ticks text").first()).toBeVisible()
+  })
+
   test("tasks example renders the faceted toolbar and row metadata", async ({ page }) => {
     await page.goto("/examples/tasks")
     await waitForClientReady(page)

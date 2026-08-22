@@ -539,7 +539,27 @@ function DashboardExample() {
               <p class="dashboard-chart-title">Total Visitors</p>
               <p class="dashboard-chart-description">Total for the last 3 months</p>
             </div>
-            <div class="dashboard-range-group" role="group" aria-label="Dashboard chart range">
+            <div
+              class="dashboard-range-group"
+              role="group"
+              aria-label="Dashboard chart range"
+              onClick={(event: MouseEvent) => {
+                const target = event.target
+                if (!(target instanceof Element)) {
+                  return
+                }
+
+                const owner = target.closest("[data-range]")
+                if (!(owner instanceof HTMLElement)) {
+                  return
+                }
+
+                const nextRange = resolveDashboardRange(owner.dataset.range)
+                if (nextRange) {
+                  timeRange = nextRange
+                }
+              }}
+            >
               {[
                 ["90d", "Last 3 months"],
                 ["30d", "Last 30 days"],
@@ -552,19 +572,6 @@ function DashboardExample() {
                   data-state={timeRange === entry[0] ? "on" : "off"}
                   aria-pressed={timeRange === entry[0]}
                   class="dashboard-range-item"
-                  onClick={(event: MouseEvent) => {
-                    const target = event.currentTarget
-                    if (!(target instanceof HTMLButtonElement)) {
-                      return
-                    }
-
-                    const nextRange = resolveDashboardRange(target.dataset.range)
-                    if (!nextRange) {
-                      return
-                    }
-
-                    timeRange = nextRange
-                  }}
                 >
                   {entry[1]}
                 </button>
@@ -578,7 +585,27 @@ function DashboardExample() {
 
         <section class="dashboard-table-block">
           <div class="dashboard-table-toolbar">
-            <div class="dashboard-tabs-list" role="tablist" aria-label="Dashboard views">
+            <div
+              class="dashboard-tabs-list"
+              role="tablist"
+              aria-label="Dashboard views"
+              onClick={(event: MouseEvent) => {
+                const target = event.target
+                if (!(target instanceof Element)) {
+                  return
+                }
+
+                const owner = target.closest("[data-view]")
+                if (!(owner instanceof HTMLElement)) {
+                  return
+                }
+
+                const nextView = resolveDashboardView(owner.dataset.view)
+                if (nextView) {
+                  activeView = nextView
+                }
+              }}
+            >
               {dashboardViewTabs.map((tab, index) => {
                 const value = index === 0
                   ? "outline"
@@ -597,19 +624,6 @@ function DashboardExample() {
                     data-state={activeView === value ? "active" : "inactive"}
                     aria-selected={activeView === value}
                     class="dashboard-tabs-trigger"
-                    onClick={(event: MouseEvent) => {
-                      const target = event.currentTarget
-                      if (!(target instanceof HTMLButtonElement)) {
-                        return
-                      }
-
-                      const nextView = resolveDashboardView(target.dataset.view)
-                      if (!nextView) {
-                        return
-                      }
-
-                      activeView = nextView
-                    }}
                   >
                     {tab}
                     <DashboardTabBadge tab={tab} />
