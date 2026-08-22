@@ -2195,31 +2195,121 @@ function RootFieldDemoPreview() {
   )
 }
 
-function UiSelect(props: { id?: string; placeholder: string; options: string[] }) {
+interface UiSelectOption {
+  value: string
+  label: string
+  hint?: string
+}
+
+function UiSelectControl(props: {
+  id?: string
+  ariaLabel: string
+  value: string
+  placeholder?: string
+  groupLabel?: string
+  prefix?: string
+  shellClass?: string
+  triggerClass?: string
+  contentClass?: string
+  monoValue?: boolean
+  contentAlign?: "start" | "end"
+  options: UiSelectOption[]
+  onSelect?: (value: string) => void
+}) {
+  const options = untrack(() => props.options)
+  const value = untrack(() => props.value)
+  const placeholder = untrack(() => props.placeholder ?? "")
+  const selected = options.find((option) => option.value === value)
+
   return (
-    <span class="ui-select-field">
-      <select class="ui-select" id={props.id} aria-label={props.placeholder} data-has-value="false">
-        <option value="">{props.placeholder}</option>
-        {props.options.map((option) => (
-          <option key={option} value={option}>
-            {option}
+    <span class={props.shellClass ? `ui-select-shell ${props.shellClass}` : "ui-select-shell"} data-menu data-select>
+      <select
+        class="ui-select-native"
+        data-select-native
+        id={props.id}
+        aria-label={props.ariaLabel}
+        aria-hidden="true"
+        tabIndex={-1}
+        value={props.value}
+        data-active-theme={props.value}
+        onChange={(event: Event) => {
+          const target = event.currentTarget
+          if (!(target instanceof HTMLSelectElement)) {
+            return
+          }
+
+          props.onSelect?.(target.value)
+        }}
+      >
+        {placeholder ? <option value="">{placeholder}</option> : null}
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
           </option>
         ))}
       </select>
-      <svg
-        class="ui-select-chevron"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
+
+      <button
+        type="button"
+        class={props.triggerClass ? `ui-select-trigger ${props.triggerClass}` : "ui-select-trigger"}
+        role="combobox"
+        aria-label={props.ariaLabel}
+        aria-haspopup="listbox"
+        aria-expanded="false"
+        data-menu-trigger
+        data-select-trigger
+        data-placeholder={selected ? "false" : "true"}
       >
-        <path d="m6 9 6 6 6-6" />
-      </svg>
+        {props.prefix ? <span class="ui-select-prefix">{props.prefix}</span> : null}
+        <span
+          class={props.monoValue ? "ui-select-value ui-select-value-mono" : "ui-select-value"}
+          data-select-value
+        >
+          {selected ? selected.label : placeholder}
+        </span>
+        <ChevronDownIcon class="ui-select-chevron" />
+      </button>
+
+      <div
+        class={props.contentClass ? `ui-select-content ${props.contentClass}` : "ui-select-content"}
+        data-menu-panel
+        data-menu-side="bottom"
+        data-menu-align={props.contentAlign || "start"}
+        role="listbox"
+        aria-label={props.ariaLabel}
+        hidden
+      >
+        {props.groupLabel ? <p class="ui-select-group-label">{props.groupLabel}</p> : null}
+        {options.map((option) => (
+          <button
+            type="button"
+            class="ui-select-item"
+            key={option.value}
+            role="option"
+            aria-selected={option.value === value ? "true" : "false"}
+            data-select-option
+            data-select-option-value={option.value}
+          >
+            <span class="ui-select-item-label">{option.label}</span>
+            {option.hint ? <span class="ui-select-item-hint">{option.hint}</span> : null}
+            <CheckIcon class="ui-select-item-check" />
+          </button>
+        ))}
+      </div>
     </span>
+  )
+}
+
+function UiSelect(props: { id?: string; placeholder: string; options: string[] }) {
+  return (
+    <UiSelectControl
+      id={props.id}
+      ariaLabel={props.placeholder}
+      value=""
+      placeholder={props.placeholder}
+      shellClass="ui-select-shell-full"
+      options={untrack(() => props.options).map((option) => ({ value: option, label: option }))}
+    />
   )
 }
 
@@ -3413,44 +3503,16 @@ function ExamplesRootPreview() {
 function ThemeSelectorControl(props: { themes: ThemeEntry[]; activeThemeName: string; onThemeSelect: (themeName: string) => void }) {
   return (
     <div class="theme-selector-stub">
-      <label class="sr-only" for="theme-selector">
-        Theme
-      </label>
-      <span class="theme-selector-field">
-      <select
+      <UiSelectControl
         id="theme-selector"
-        aria-label="Theme selector"
+        ariaLabel="Theme selector"
         value={props.activeThemeName}
-        data-active-theme={props.activeThemeName}
-        onChange={(event: Event) => {
-          const target = event.currentTarget
-          if (!(target instanceof HTMLSelectElement)) {
-            return
-          }
-
-          props.onThemeSelect(target.value)
-        }}
-      >
-        {createVisibleThemes.map((theme) => (
-          <option key={theme.name} value={theme.name}>
-            {theme.title}
-          </option>
-        ))}
-      </select>
-        <svg
-          class="theme-selector-chevron"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="m6 9 6 6 6-6" />
-        </svg>
-      </span>
+        groupLabel="Theme"
+        shellClass="theme-selector-field"
+        triggerClass="theme-selector-trigger"
+        options={createVisibleThemes.map((theme) => ({ value: theme.name, label: theme.title }))}
+        onSelect={(themeName: string) => props.onThemeSelect(themeName)}
+      />
       <button
         type="button"
         class="button theme-selector-copy"
@@ -3476,7 +3538,7 @@ function ThemeSelectorControl(props: { themes: ThemeEntry[]; activeThemeName: st
         }}
       >
         <svg
-          class="theme-selector-copy-icon"
+          class="theme-selector-copy-icon copy-icon-idle"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="none"
@@ -3489,6 +3551,7 @@ function ThemeSelectorControl(props: { themes: ThemeEntry[]; activeThemeName: st
           <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
           <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
         </svg>
+        <CheckIcon class="theme-selector-copy-icon copy-icon-done" />
       </button>
     </div>
   )
@@ -4967,35 +5030,19 @@ function ThemesPage(props: { themes: ThemeEntry[]; activeThemeName: string; onTh
             </div>
 
             <div class="theme-customizer-mobile">
-              <label class="sr-only" for="themes-route-selector">
-                Theme
-              </label>
-              <span class="theme-selector-prefix">Theme:</span>
-              <select
+              <UiSelectControl
                 id="themes-route-selector"
-                aria-label="Theme selector"
+                ariaLabel="Theme selector"
                 value={props.activeThemeName}
-                data-active-theme={props.activeThemeName}
-                onChange={(event: Event) => {
-                  const target = event.currentTarget
-                  if (!(target instanceof HTMLSelectElement)) {
-                    return
-                  }
-
-                  const nextTheme = createVisibleThemes.find((entry) => entry.name === target.value)
-                  if (!nextTheme) {
-                    return
-                  }
-
-                  props.onThemeChange(nextTheme.name)
-                }}
-              >
-                {createVisibleThemes.map((theme) => (
-                  <option key={theme.name} value={theme.name}>
-                    {theme.name === "neutral" ? "Default" : theme.name}
-                  </option>
-                ))}
-              </select>
+                prefix="Theme:"
+                groupLabel="Theme"
+                triggerClass="theme-route-trigger"
+                options={createVisibleThemes.map((theme) => ({
+                  value: theme.name,
+                  label: theme.name === "neutral" ? "Default" : theme.name,
+                }))}
+                onSelect={(themeName: string) => props.onThemeChange(themeName)}
+              />
             </div>
 
             <button
@@ -5067,28 +5114,22 @@ function ColorsPage() {
           <section class="color-palette" key={palette.name} id={palette.name}>
             <div class="color-palette-head">
               <h2>{palette.name}</h2>
-              <span class="color-format-field">
-                <span class="color-format-label">Format:</span>
-                <select class="color-format-select" aria-label={`Color format for ${palette.name}`}>
-                  <option value="hex">hex</option>
-                  <option value="rgb">rgb</option>
-                  <option value="hsl">hsl</option>
-                  <option value="oklch">oklch</option>
-                </select>
-                <svg
-                  class="color-format-chevron"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </span>
+              <UiSelectControl
+                ariaLabel={`Color format for ${palette.name}`}
+                value="hex"
+                prefix="Format:"
+                monoValue
+                contentAlign="end"
+                shellClass="color-format-field"
+                triggerClass="color-format-trigger"
+                contentClass="color-format-content"
+                options={[
+                  { value: "hex", label: "hex" },
+                  { value: "rgb", label: "rgb" },
+                  { value: "hsl", label: "hsl" },
+                  { value: "oklch", label: "oklch" },
+                ]}
+              />
             </div>
             <div class="color-scales">
               {palette.scales.map((entry) => (

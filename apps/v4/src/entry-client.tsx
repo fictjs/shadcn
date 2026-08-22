@@ -646,25 +646,164 @@ function wireShowcaseMentions(): void {
   })
 }
 
-function wireShowcaseSelects(): void {
-  const syncSelect = (select: HTMLSelectElement): void => {
-    select.dataset.hasValue = select.value ? "true" : "false"
+function syncSelectShell(shell: HTMLElement): void {
+  const native = shell.querySelector<HTMLSelectElement>("[data-select-native]")
+  const trigger = shell.querySelector<HTMLElement>("[data-select-trigger]")
+  const valueLabel = shell.querySelector<HTMLElement>("[data-select-value]")
+  if (!native) {
+    return
   }
 
-  document.addEventListener("change", (event) => {
+  const value = native.value
+  const option = Array.from(native.options).find((entry) => entry.value === value)
+  const placeholderOption = Array.from(native.options).find((entry) => entry.value === "")
+
+  if (valueLabel) {
+    valueLabel.textContent =
+      option && option.value !== "" ? option.text : placeholderOption?.text ?? ""
+  }
+
+  if (trigger) {
+    trigger.dataset.placeholder = option && option.value !== "" ? "false" : "true"
+  }
+
+  shell.querySelectorAll<HTMLElement>("[data-select-option]").forEach((item) => {
+    const selected = item.dataset.selectOptionValue === value
+    item.setAttribute("aria-selected", selected ? "true" : "false")
+    item.dataset.active = "false"
+  })
+}
+
+function syncAllSelectShells(): void {
+  document.querySelectorAll<HTMLElement>("[data-select]").forEach(syncSelectShell)
+}
+
+function selectShellOptions(shell: HTMLElement): HTMLElement[] {
+  return Array.from(shell.querySelectorAll<HTMLElement>("[data-select-option]"))
+}
+
+function setSelectShellValue(shell: HTMLElement, value: string): void {
+  const native = shell.querySelector<HTMLSelectElement>("[data-select-native]")
+  if (!native || native.value === value) {
+    if (native) {
+      syncSelectShell(shell)
+    }
+    return
+  }
+
+  native.value = value
+  Array.from(native.options).forEach((option) => {
+    option.selected = option.value === value
+  })
+  syncSelectShell(shell)
+  native.dispatchEvent(new Event("input", { bubbles: true }))
+  native.dispatchEvent(new Event("change", { bubbles: true }))
+}
+
+function moveSelectShellActive(shell: HTMLElement, delta: number): void {
+  const options = selectShellOptions(shell).filter((option) => !option.hidden)
+  if (options.length === 0) {
+    return
+  }
+
+  const currentIndex = options.findIndex((option) => option.dataset.active === "true")
+  const selectedIndex = options.findIndex(
+    (option) => option.getAttribute("aria-selected") === "true",
+  )
+  const base = currentIndex >= 0 ? currentIndex : selectedIndex >= 0 ? selectedIndex : 0
+  const nextIndex = Math.min(options.length - 1, Math.max(0, base + delta))
+
+  options.forEach((option, index) => {
+    option.dataset.active = index === nextIndex ? "true" : "false"
+  })
+  options[nextIndex].scrollIntoView({ block: "nearest" })
+}
+
+function wireShowcaseSelects(): void {
+  document.addEventListener("click", (event) => {
     const target = event.target
-    if (target instanceof HTMLSelectElement && target.dataset.hasValue !== undefined) {
-      syncSelect(target)
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const option = target.closest<HTMLElement>("[data-select-option]")
+    const shell = option?.closest<HTMLElement>("[data-select]")
+    if (!option || !shell) {
+      return
+    }
+
+    event.preventDefault()
+    setSelectShellValue(shell, option.dataset.selectOptionValue ?? "")
+    closeShowcaseMenus()
+  })
+
+  document.addEventListener("keydown", (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLElement)) {
+      return
+    }
+
+    const shell = target.closest<HTMLElement>("[data-select]")
+    if (!shell || !target.closest("[data-select-trigger]")) {
+      return
+    }
+
+    const panel = shell.querySelector<HTMLElement>("[data-menu-panel]")
+    if (!panel) {
+      return
+    }
+
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault()
+      if (panel.hidden) {
+        target.click()
+        return
+      }
+      moveSelectShellActive(shell, event.key === "ArrowDown" ? 1 : -1)
+      return
+    }
+
+    if (event.key === "Home" || event.key === "End") {
+      if (panel.hidden) {
+        return
+      }
+      event.preventDefault()
+      moveSelectShellActive(shell, event.key === "Home" ? -999 : 999)
+      return
+    }
+
+    if (event.key === "Enter" || event.key === " ") {
+      if (panel.hidden) {
+        return
+      }
+      event.preventDefault()
+      const active = selectShellOptions(shell).find((option) => option.dataset.active === "true")
+      if (active) {
+        setSelectShellValue(shell, active.dataset.selectOptionValue ?? "")
+      }
+      closeShowcaseMenus()
     }
   })
 
-  document.querySelectorAll<HTMLSelectElement>("select[data-has-value]").forEach(syncSelect)
+  document.addEventListener("change", (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLSelectElement) || target.dataset.selectNative === undefined) {
+      return
+    }
+
+    const shell = target.closest<HTMLElement>("[data-select]")
+    if (shell) {
+      syncSelectShell(shell)
+    }
+  })
+
+  syncAllSelectShells()
 }
 
 function wireColorFormatSelectors(): void {
   document.addEventListener("change", (event) => {
     const target = event.target
-    if (!(target instanceof HTMLSelectElement) || !target.classList.contains("color-format-select")) {
+    if (!(target instanceof HTMLSelectElement) || target.dataset.selectNative === undefined) {
       return
     }
 
@@ -674,8 +813,17 @@ function wireColorFormatSelectors(): void {
     }
 
     grid.dataset.colorFormat = target.value
-    grid.querySelectorAll<HTMLSelectElement>(".color-format-select").forEach((select) => {
-      select.value = target.value
+    grid.querySelectorAll<HTMLElement>("[data-select]").forEach((shell) => {
+      const native = shell.querySelector<HTMLSelectElement>("[data-select-native]")
+      if (!native || native === target) {
+        return
+      }
+
+      native.value = target.value
+      Array.from(native.options).forEach((option) => {
+        option.selected = option.value === target.value
+      })
+      syncSelectShell(shell)
     })
   })
 }
@@ -1197,6 +1345,13 @@ function applyActiveTheme(themeName: string, persist: boolean): void {
     Array.from(select.options).forEach((option) => {
       option.selected = option.value === themeName
     })
+  })
+
+  document.querySelectorAll<HTMLElement>("[data-select]").forEach((shell) => {
+    const native = shell.querySelector<HTMLSelectElement>("[data-select-native]")
+    if (native && (native.id === "theme-selector" || native.id === "themes-route-selector")) {
+      syncSelectShell(shell)
+    }
   })
 
   document.querySelectorAll<HTMLElement>(".theme-selector-copy, .theme-copy-button").forEach((button) => {

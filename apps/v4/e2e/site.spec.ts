@@ -53,7 +53,10 @@ test.describe("shadcn v4 site", () => {
       "/docs/installation",
     )
     await expect(page.locator("body")).toHaveAttribute("data-active-theme", "neutral")
-    await expect(page.getByLabel("Theme selector")).toHaveValue("neutral")
+    await expect(page.locator("#theme-selector")).toHaveValue("neutral")
+    await expect(
+      page.locator('[data-select-trigger][aria-label="Theme selector"]'),
+    ).toContainText("Neutral")
     await expect(page.getByRole("link", { name: "RTL New" })).toBeVisible()
     await expect(page.locator(".home-examples-root .examples-root-grid")).toBeVisible()
     await expect(page.locator(".home-examples-root")).toContainText("Payment Method")
@@ -302,7 +305,8 @@ test.describe("shadcn v4 site", () => {
     await page.goto("/")
     await waitForClientReady(page)
 
-    await page.getByLabel("Theme selector").selectOption("blue")
+    await page.locator('[data-select-trigger][aria-label="Theme selector"]').click()
+    await page.locator('[data-select-option-value="blue"]').click()
     await expect(page.locator("body")).toHaveAttribute("data-active-theme", "blue")
     await expect(page.locator(".home-preview-shell")).toHaveAttribute("data-theme-name", "blue")
 
@@ -397,9 +401,11 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".colors-route-grid .color-palette").first()).toBeVisible()
     await expect(page.locator(".colors-route-grid")).toContainText("amber")
 
-    await page.locator(".color-format-select").first().selectOption("hsl")
+    await page.locator("[data-select-trigger]").first().click()
+    await page.locator('[data-select-option-value="hsl"]').first().click()
     await expect(page.locator(".colors-route-grid")).toHaveAttribute("data-color-format", "hsl")
-    await expect(page.locator(".color-format-select").nth(1)).toHaveValue("hsl")
+    await expect(page.locator("[data-select-native]").nth(1)).toHaveValue("hsl")
+    await expect(page.locator("[data-select-trigger]").nth(1)).toContainText("hsl")
   })
 
   test("authentication and rtl examples stay interactive", async ({ page }) => {
