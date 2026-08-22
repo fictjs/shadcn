@@ -372,7 +372,7 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".root-actions-menu")).toBeVisible()
 
     await page.getByRole("menuitem", { name: "Label As..." }).click()
-    await expect(page.locator(".ui-menu-sub [data-menu-panel]")).toBeVisible()
+    await expect(page.locator(".root-actions-menu .ui-menu-sub [data-menu-panel]")).toBeVisible()
     await page.getByRole("menuitemradio", { name: "Work" }).click()
     await expect(page.locator(".root-actions-menu")).toBeHidden()
 
@@ -380,15 +380,20 @@ test.describe("shadcn v4 site", () => {
     await sources.scrollIntoViewIfNeeded()
     await sources.click()
     await expect(page.locator(".root-sources-menu")).toBeVisible()
+    await page.locator('.root-sources-menu .ui-menu-sub [data-menu-trigger]').click()
+    await expect(page.locator(".root-knowledge-menu")).toBeVisible()
+    await expect(page.locator(".root-sources-menu")).toBeVisible()
     await page.keyboard.press("Escape")
     await expect(page.locator(".root-sources-menu")).toBeHidden()
 
     const addContext = page.getByRole("button", { name: "Add context" })
     await addContext.scrollIntoViewIfNeeded()
     await addContext.click()
-    await page.locator("[data-mention-search]").fill("dash")
-    await expect(page.locator("[data-mention-item]:not([hidden])")).toHaveCount(1)
-    await page.locator("[data-mention-item]:not([hidden])").click()
+    await page.locator(".root-mention-popover [data-mention-search]").fill("dash")
+    await expect(
+      page.locator(".root-mention-popover [data-mention-item]:not([hidden])"),
+    ).toHaveCount(1)
+    await page.locator(".root-mention-popover [data-mention-item]:not([hidden])").click()
     await expect(page.locator("[data-mention-chip]")).toHaveCount(1)
     await page.locator("[data-mention-chip]").click()
     await expect(page.locator("[data-mention-chip]")).toHaveCount(0)
