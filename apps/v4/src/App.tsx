@@ -2050,7 +2050,7 @@ function CreatePreviewStage(props: { kind: CreateCatalogKind; itemId: string }) 
 }
 
 function HomePage(props: { route: ResolvedRoute; activeThemeName: string; onThemeChange: (themeName: string) => void }) {
-  const routeThemeStyle = routeThemeStyleLookup[props.activeThemeName] || routeThemeStyleLookup.neutral || routeThemeStyleLookup.blue || ""
+  const routeThemeStyle = routeThemeStyleLookup[props.activeThemeName] ?? ""
 
   return (
     <section class="stack-gap">
@@ -2182,10 +2182,10 @@ function RootFieldDemoPreview() {
         </fieldset>
 
         <div class="ui-field ui-field-horizontal">
-          <button class="button" type="button">
+          <button class="button button-compact" type="button">
             Submit
           </button>
-          <button class="button button-outline" type="button">
+          <button class="button button-outline button-compact" type="button">
             Cancel
           </button>
         </div>
@@ -2250,42 +2250,72 @@ function UiCheckbox(props: { checked?: boolean }) {
 
 function RootAvatarEmptyPreview() {
   return (
-    <div class="root-preview-shell root-preview-stack">
-      <div class="root-preview-avatar-row" aria-label="Avatar group preview">
-        <span>CN</span>
-        <span>LR</span>
-        <span>ER</span>
+    <div class="ui-empty">
+      <div class="ui-empty-header">
+        <div class="ui-avatar-group">
+          <span class="ui-avatar">
+            <img src="/avatars/01.png" alt="@shadcn" />
+          </span>
+          <span class="ui-avatar">
+            <img src="/avatars/02.png" alt="@maxleiter" />
+          </span>
+          <span class="ui-avatar">
+            <img src="/avatars/03.png" alt="@evilrabbit" />
+          </span>
+        </div>
+        <p class="ui-empty-title">No Team Members</p>
+        <p class="ui-empty-description">Invite your team to collaborate on this project.</p>
       </div>
-      <div class="root-preview-section">
-        <strong>No Team Members</strong>
-        <span>Invite your team to collaborate on this project.</span>
-      </div>
-      <div class="root-preview-button-row">
-        <button class="root-preview-button root-preview-button-primary" type="button">Invite Members</button>
+      <div>
+        <button class="button button-xs" type="button">
+          <PlusIcon />
+          Invite Members
+        </button>
       </div>
     </div>
   )
 }
 
+function UiSpinner() {
+  return (
+    <svg class="ui-spinner" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+    </svg>
+  )
+}
+
 function RootSpinnerBadgePreview() {
   return (
-    <div class="root-preview-shell root-preview-stack">
-      <div class="root-preview-badge-row">
-        <span class="root-preview-badge is-active">Syncing</span>
-        <span class="root-preview-badge">Updating</span>
-        <span class="root-preview-badge">Loading</span>
-      </div>
+    <div class="root-badge-row">
+      <span class="ui-badge ui-badge-default">
+        <UiSpinner />
+        Syncing
+      </span>
+      <span class="ui-badge ui-badge-secondary">
+        <UiSpinner />
+        Updating
+      </span>
+      <span class="ui-badge ui-badge-outline">
+        <UiSpinner />
+        Loading
+      </span>
     </div>
   )
 }
 
 function RootButtonGroupInputPreview() {
   return (
-    <div class="root-preview-shell root-preview-stack">
-      <div class="root-preview-inline-input">
-        <button type="button">+</button>
-        <span>Send a message...</span>
-        <button type="button">Voice</button>
+    <div class="ui-button-group">
+      <button class="ui-icon-button ui-icon-button-round" type="button" aria-label="Add">
+        <PlusIcon />
+      </button>
+      <div class="ui-input-group ui-input-group-round">
+        <input class="ui-input-group-input" placeholder="Send a message..." />
+        <span class="ui-input-group-addon ui-input-group-addon-end">
+          <button class="ui-input-group-button ui-input-group-button-icon" type="button" aria-label="Voice Mode">
+            <AudioLinesIcon />
+          </button>
+        </span>
       </div>
     </div>
   )
@@ -2293,33 +2323,116 @@ function RootButtonGroupInputPreview() {
 
 function RootFieldSliderPreview() {
   return (
-    <div class="root-preview-shell root-preview-stack">
-      <div class="root-preview-section">
-        <strong>Price Range</strong>
-        <span>Set your budget range ($200 - 800).</span>
+    <div class="ui-field">
+      <p class="ui-empty-title root-field-title">Price Range</p>
+      <p class="ui-field-description">
+        Set your budget range (${"$"}
+        <span class="root-numeric">200</span> - <span class="root-numeric">800</span>).
+      </p>
+      <div class="ui-slider" role="group" aria-label="Price Range">
+        <span class="ui-slider-track">
+          <span class="ui-slider-range" style="left:20%;right:20%"></span>
+        </span>
+        <span class="ui-slider-thumb" style="left:20%"></span>
+        <span class="ui-slider-thumb" style="left:80%"></span>
       </div>
-      <div class="root-preview-slider-track" aria-hidden="true"><span class="is-wide"></span></div>
     </div>
   )
 }
 
 function RootInputGroupDemoPreview() {
   return (
-    <div class="root-preview-shell root-preview-stack">
-      <div class="root-preview-inline-input">
-        <span>Search...</span>
-        <span class="root-preview-inline-addon">12 results</span>
+    <div class="root-input-group-stack">
+      <div class="ui-input-group">
+        <span class="ui-input-group-addon">
+          <SearchIcon />
+        </span>
+        <input class="ui-input-group-input root-input-flush" placeholder="Search..." />
+        <span class="ui-input-group-addon">12 results</span>
       </div>
-      <div class="root-preview-inline-input root-preview-inline-input-muted">
-        <span class="root-preview-inline-addon">https://</span>
-        <span>example.com</span>
+      <div class="ui-input-group">
+        <span class="ui-input-group-addon">https://</span>
+        <input class="ui-input-group-input root-input-flush" placeholder="example.com" />
+        <span class="ui-input-group-addon">
+          <button class="ui-input-group-button ui-input-group-button-icon" type="button" aria-label="Info">
+            <InfoIcon />
+          </button>
+        </span>
       </div>
-      <div class="root-preview-inline-input root-preview-inline-input-muted">
-        <button type="button">Auto</button>
-        <span class="root-preview-inline-addon">52% used</span>
-        <button type="button">Send</button>
+      <div class="ui-input-group ui-input-group-block">
+        <textarea class="ui-input-group-textarea" placeholder="Ask, Search or Chat..."></textarea>
+        <span class="ui-input-group-addon ui-input-group-addon-block">
+          <button class="ui-input-group-button ui-input-group-button-icon ui-input-group-button-outline" type="button" aria-label="Add">
+            <PlusIcon />
+          </button>
+          <button class="ui-input-group-button" type="button">
+            Auto
+          </button>
+          <span class="ui-input-group-addon-end">52% used</span>
+          <span class="root-inline-divider" aria-hidden="true"></span>
+          <button class="ui-input-group-button ui-input-group-button-icon ui-input-group-button-primary" type="button" aria-label="Send">
+            <ArrowUpIcon />
+          </button>
+        </span>
+      </div>
+      <div class="ui-input-group">
+        <input class="ui-input-group-input" placeholder="@shadcn" />
+        <span class="ui-input-group-addon">
+          <span class="root-verified-dot">
+            <CheckIcon />
+          </span>
+        </span>
       </div>
     </div>
+  )
+}
+
+function SearchIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
+  )
+}
+
+function InfoIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 8h.01" />
+      <path d="M11 12h1v4h1" />
+    </svg>
+  )
+}
+
+function ArrowUpIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m5 12 7-7 7 7" />
+      <path d="M12 19V5" />
+    </svg>
+  )
+}
+
+function CheckIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  )
+}
+
+function AudioLinesIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M2 10v3" />
+      <path d="M6 6v11" />
+      <path d="M10 3v18" />
+      <path d="M14 8v7" />
+      <path d="M18 5v13" />
+      <path d="M22 10v3" />
+    </svg>
   )
 }
 
@@ -3267,7 +3380,7 @@ function ComponentsPage(props: { components: string[] }) {
 function ExamplesPage(props: { route: ResolvedRoute; activeThemeName: string; onThemeChange: (themeName: string) => void }) {
   const routeSnapshot = untrack(() => props.route)
   const activeShowcase = routeSnapshot.activeExample
-  const routeThemeStyle = routeThemeStyleLookup[props.activeThemeName] || routeThemeStyleLookup.neutral || routeThemeStyleLookup.blue || ""
+  const routeThemeStyle = routeThemeStyleLookup[props.activeThemeName] ?? ""
   let query = $state("")
   let filtered = $state<string[]>(props.route.examples)
 
@@ -3626,7 +3739,7 @@ function TooltipChartPreviewSurface(props: { chartId: string }) {
 function ChartsPage(props: { route: ResolvedRoute; activeThemeName: string; onThemeChange: (themeName: string) => void }) {
   const chartTypes = props.route.chartTypes
   const activeType = props.route.activeChartType
-  const routeThemeStyle = routeThemeStyleLookup[props.activeThemeName] || routeThemeStyleLookup.neutral || routeThemeStyleLookup.blue || ""
+  const routeThemeStyle = routeThemeStyleLookup[props.activeThemeName] ?? ""
   const visibleCharts = untrack(() => {
     const orderedCharts: Array<{ id: string; fullWidth: boolean }> = []
     const seenChartIds = new Set<string>()
@@ -4343,9 +4456,8 @@ function buildRouteThemeStyleLookup(): Record<string, string> {
     lookup[themeName] = buildRouteThemeStyleValue(swatches)
   }
 
-  if (!lookup.neutral) {
-    lookup.neutral = buildRouteThemeStyleValue(defaultThemeSwatches)
-  }
+  lookup.neutral = ""
+  lookup.default = ""
 
   return lookup
 }

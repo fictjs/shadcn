@@ -1340,6 +1340,16 @@ h1 {
   height: 31px;
 }
 
+.button-compact {
+  padding: 0 0.625rem;
+}
+
+.button-xs {
+  height: 1.75rem;
+  padding: 0 0.625rem;
+  font-size: 0.8rem;
+}
+
 .button-ghost {
   background: transparent;
   color: var(--foreground);
@@ -2636,6 +2646,368 @@ h1 {
 
 .ui-muted {
   color: var(--muted-foreground);
+}
+
+.ui-empty {
+  display: flex;
+  flex: none;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+}
+
+.ui-empty-header {
+  display: flex;
+  max-width: 24rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.ui-empty-title {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+.ui-empty-description {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.625;
+}
+
+.ui-avatar-group {
+  display: flex;
+  align-items: center;
+  filter: grayscale(1);
+}
+
+.ui-avatar-group > * {
+  margin-left: -0.5rem;
+}
+
+.ui-avatar-group > *:first-child {
+  margin-left: 0;
+}
+
+.ui-avatar {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  outline: 2px solid var(--background);
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  font-weight: 500;
+  overflow: hidden;
+}
+
+.ui-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ui-spinner {
+  width: 1rem;
+  height: 1rem;
+  animation: ui-spin 1s linear infinite;
+}
+
+@keyframes ui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ui-input-group {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  height: 2rem;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  background: transparent;
+  overflow: hidden;
+}
+
+.ui-input-group-round {
+  border-radius: 999px;
+}
+
+.ui-input-group-block {
+  height: auto;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.ui-input-group-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  padding: 0.25rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  outline: none;
+}
+
+.ui-input-group-input::placeholder {
+  color: var(--muted-foreground);
+}
+
+.ui-input-group-textarea {
+  width: 100%;
+  min-height: 4.5rem;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  padding: 0.75rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  outline: none;
+  resize: none;
+}
+
+.ui-input-group-textarea::placeholder {
+  color: var(--muted-foreground);
+}
+
+.ui-input-group-addon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.5rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+}
+
+.ui-input-group-addon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.ui-input-group-addon-end {
+  margin-left: auto;
+}
+
+.ui-input-group-addon-block {
+  width: 100%;
+  border-top: 1px solid var(--input);
+  padding: 0.5rem 0.75rem;
+}
+
+.ui-input-group-button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  height: 1.5rem;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--foreground);
+  padding: 0 0.5rem;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.ui-input-group-button:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.ui-input-group-button-icon {
+  width: 1.5rem;
+  padding: 0;
+  border-radius: 999px;
+}
+
+.ui-input-group-button-icon svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.ui-input-group-button-outline {
+  border: 1px solid var(--input);
+}
+
+.ui-input-group-button-primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.ui-input-group-button-primary:hover {
+  background: color-mix(in oklab, var(--primary) 90%, transparent);
+  color: var(--primary-foreground);
+}
+
+.ui-button-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.ui-button-group-attached {
+  gap: 0;
+}
+
+.ui-button-group-attached > *:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-left: -1px;
+}
+
+.ui-button-group-attached > *:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.ui-icon-button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: var(--foreground);
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.ui-icon-button:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.ui-icon-button svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.ui-icon-button-round {
+  border-radius: 999px;
+}
+
+.ui-slider {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  height: 1rem;
+  margin-top: 0.5rem;
+}
+
+.ui-slider-track {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--muted);
+  overflow: hidden;
+}
+
+.ui-slider-range {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--primary);
+}
+
+.ui-slider-thumb {
+  position: absolute;
+  top: 50%;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid var(--primary);
+  border-radius: 999px;
+  background: var(--background);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 1px 2px 0 color-mix(in oklab, var(--foreground) 10%, transparent);
+}
+
+.root-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.root-field-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+}
+
+.root-numeric {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.root-input-group-stack {
+  display: grid;
+  width: 100%;
+  gap: 1.5rem;
+}
+
+.root-input-flush {
+  padding-left: 0.25rem;
+}
+
+.root-inline-divider {
+  flex: none;
+  width: 1px;
+  height: 1rem;
+  background: var(--border);
+}
+
+.root-verified-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.root-verified-dot svg {
+  width: 0.75rem;
+  height: 0.75rem;
 }
 
 .examples-root-grid {
