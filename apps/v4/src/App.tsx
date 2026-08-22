@@ -2869,7 +2869,11 @@ function RootPromptPreview() {
         Prompt
       </label>
       <div class="ui-input-group ui-input-group-block root-prompt-group">
-        <span class="ui-input-group-addon ui-input-group-addon-block root-prompt-top" data-mention-root>
+        <span
+          class="ui-input-group-addon ui-input-group-addon-block root-prompt-top"
+          data-mention-root
+          data-command-scope
+        >
           <span class="ui-menu" data-menu>
             <button
               class="ui-input-group-button ui-input-group-button-outline root-prompt-context"
@@ -3030,13 +3034,66 @@ function RootPromptPreview() {
                 <CircleDashedPlusIcon />
                 All Sources I can access
               </button>
-              <button class="ui-menu-item" type="button" role="menuitem" data-menu-item>
-                <span class="ui-avatar root-menu-avatar">
-                  <img src="/avatars/01.png" alt="" />
-                </span>
-                shadcn
-                <ChevronRightIcon class="root-menu-trailing-icon" />
-              </button>
+              <span class="ui-menu-sub ui-menu" data-menu>
+                <button
+                  class="ui-menu-item"
+                  type="button"
+                  role="menuitem"
+                  data-menu-item
+                  data-menu-trigger
+                  aria-haspopup="menu"
+                  aria-expanded="false"
+                >
+                  <span class="ui-avatar root-menu-avatar">
+                    <img src="/avatars/01.png" alt="" />
+                  </span>
+                  shadcn
+                  <ChevronRightIcon class="root-menu-trailing-icon" />
+                </button>
+                <div
+                  class="ui-menu-panel root-knowledge-menu"
+                  data-menu-panel
+                  data-menu-side="right"
+                  role="menu"
+                  hidden
+                >
+                  <div class="root-command" data-command-scope>
+                    <div class="root-command-input">
+                      <SearchIcon />
+                      <input
+                        class="root-command-field"
+                        type="text"
+                        placeholder="Find or use knowledge in..."
+                        aria-label="Find knowledge"
+                        data-mention-search
+                      />
+                    </div>
+                    <div class="root-command-list" data-mention-list>
+                      <p class="root-command-empty" data-mention-empty hidden>
+                        No knowledge found
+                      </p>
+                      <div class="root-command-group" data-mention-group="user">
+                        {mentionUsers.map((user) => (
+                          <button
+                            class="root-command-item"
+                            type="button"
+                            key={user.title}
+                            data-mention-item
+                            data-mention-title={user.title}
+                            data-mention-avatar={user.image}
+                          >
+                            <span class="ui-avatar root-command-avatar">
+                              <img src={user.image} alt="" />
+                            </span>
+                            {user.title}
+                            <span class="root-command-item-hint">- Workspace</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </span>
               <button class="ui-menu-item" type="button" role="menuitem" data-menu-item>
                 <BookIcon />
                 Help Center

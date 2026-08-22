@@ -376,6 +376,10 @@ function positionShowcaseMenu(panel: HTMLElement): void {
     panel.dataset.menuSide = "right"
   }
 
+  if (panel.dataset.menuSide === "left" || panel.dataset.menuSide === "right") {
+    return
+  }
+
   rect = panel.getBoundingClientRect()
 
   if (preferredAlign === "start" && rect.right > window.innerWidth - margin) {
@@ -518,7 +522,7 @@ function wireShowcaseMentions(): void {
     }
   }
 
-  const filterMentionList = (root: HTMLElement): void => {
+  const filterCommandList = (root: HTMLElement): void => {
     const search = root.querySelector<HTMLInputElement>("[data-mention-search]")
     const query = (search?.value ?? "").trim().toLowerCase()
     const list = root.querySelector<HTMLElement>("[data-mention-list]")
@@ -569,7 +573,7 @@ function wireShowcaseMentions(): void {
               item.dataset.mentionTaken = "false"
             }
           })
-        filterMentionList(root)
+        filterCommandList(root)
         syncMentionRoot(root)
       }
       return
@@ -583,7 +587,10 @@ function wireShowcaseMentions(): void {
     const root = item.closest<HTMLElement>("[data-mention-root]")
     const chips = root?.querySelector<HTMLElement>("[data-mention-chips]")
     const title = item.dataset.mentionTitle
+
     if (!root || !chips || !title) {
+      event.preventDefault()
+      closeShowcaseMenus()
       return
     }
 
@@ -623,7 +630,7 @@ function wireShowcaseMentions(): void {
     if (search) {
       search.value = ""
     }
-    filterMentionList(root)
+    filterCommandList(root)
     syncMentionRoot(root)
     closeShowcaseMenus()
   })
@@ -634,16 +641,14 @@ function wireShowcaseMentions(): void {
       return
     }
 
-    const root = target.closest<HTMLElement>("[data-mention-root]")
-    if (root) {
-      filterMentionList(root)
+    const scope = target.closest<HTMLElement>("[data-command-scope]")
+    if (scope) {
+      filterCommandList(scope)
     }
   })
 
-  document.querySelectorAll<HTMLElement>("[data-mention-root]").forEach((root) => {
-    filterMentionList(root)
-    syncMentionRoot(root)
-  })
+  document.querySelectorAll<HTMLElement>("[data-command-scope]").forEach(filterCommandList)
+  document.querySelectorAll<HTMLElement>("[data-mention-root]").forEach(syncMentionRoot)
 }
 
 function syncSelectShell(shell: HTMLElement): void {

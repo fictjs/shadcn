@@ -3796,12 +3796,12 @@ a.ui-item:hover {
   top: calc(100% + 0.25rem);
 }
 
-.ui-menu-panel[data-menu-align="start"],
+.ui-menu-panel[data-menu-align="start"]:not([data-menu-side="left"]):not([data-menu-side="right"]),
 .ui-popover-panel[data-menu-align="start"] {
   left: 0;
 }
 
-.ui-menu-panel[data-menu-align="end"],
+.ui-menu-panel[data-menu-align="end"]:not([data-menu-side="left"]):not([data-menu-side="right"]),
 .ui-popover-panel[data-menu-align="end"] {
   right: 0;
 }
@@ -3909,6 +3909,17 @@ a.ui-item:hover {
 
 .root-actions-menu {
   min-width: 12rem;
+}
+
+.root-knowledge-menu {
+  width: 18rem;
+  min-width: 18rem;
+  padding: 0;
+  border-radius: var(--radius-xl);
+}
+
+.root-command-item-hint {
+  color: var(--muted-foreground);
 }
 
 .root-secure-popover {
