@@ -897,9 +897,11 @@ function PlaygroundExample() {
             <span class="playground-header-button-value">{preset}</span>
           </button>
           <button class="playground-header-button" type="button">Save</button>
-          <button class="playground-header-button playground-header-button-icon" type="button">Code</button>
-          <button class="playground-header-button playground-header-button-icon" type="button">Share</button>
-          <button class="playground-header-button playground-header-button-icon" type="button" aria-label="Actions">...</button>
+          <button class="playground-header-button" type="button">View code</button>
+          <button class="playground-header-button" type="button">Share</button>
+          <button class="playground-header-button playground-header-button-icon" type="button" aria-label="Actions">
+            <LucideEllipsisIcon />
+          </button>
         </div>
       </header>
 
@@ -907,10 +909,10 @@ function PlaygroundExample() {
 
       <div class="playground-shell">
         <section class="playground-main-column">
-          <div class="playground-editor-grid">
+          <div class="playground-editor-grid" data-mode={mode}>
             {mode === "complete" ? (
               <div class="playground-complete-panel">
-                <div class="playground-textarea playground-copy-surface">{preset}</div>
+                <textarea class="playground-textarea" placeholder="Write a tagline for an ice cream shop"></textarea>
               </div>
             ) : null}
 
@@ -1008,55 +1010,28 @@ function PlaygroundExample() {
             </div>
           </section>
 
-          <section class="playground-field playground-sidebar-stack">
+          <section class="playground-field">
             <span>Model</span>
-            <div class="playground-option-group">
-              <button
-                type="button"
-                class={model === "gpt-4.1" ? "playground-option-button playground-option-button-active" : "playground-option-button"}
-                aria-pressed={model === "gpt-4.1"}
-                onClick={() => {
-                  model = "gpt-4.1"
-                }}
-              >
-                gpt-4.1
-              </button>
-              <button
-                type="button"
-                class={model === "gpt-4o-mini" ? "playground-option-button playground-option-button-active" : "playground-option-button"}
-                aria-pressed={model === "gpt-4o-mini"}
-                onClick={() => {
-                  model = "gpt-4o-mini"
-                }}
-              >
-                gpt-4o-mini
-              </button>
-              <button
-                type="button"
-                class={model === "claude-sonnet" ? "playground-option-button playground-option-button-active" : "playground-option-button"}
-                aria-pressed={model === "claude-sonnet"}
-                onClick={() => {
-                  model = "claude-sonnet"
-                }}
-              >
-                claude-sonnet
-              </button>
-              <button
-                type="button"
-                class={model === "gemini-pro" ? "playground-option-button playground-option-button-active" : "playground-option-button"}
-                aria-pressed={model === "gemini-pro"}
-                onClick={() => {
-                  model = "gemini-pro"
-                }}
-              >
-                gemini-pro
-              </button>
-            </div>
+            <button
+              type="button"
+              class="playground-model-trigger"
+              aria-label="Model"
+              onClick={() => {
+                const current = untrack(() => model)
+                model = current === "gpt-4.1" ? "gpt-4o-mini"
+                  : current === "gpt-4o-mini" ? "claude-sonnet"
+                  : current === "claude-sonnet" ? "gemini-pro"
+                  : "gpt-4.1"
+              }}
+            >
+              <span>{model}</span>
+              <LucideChevronsUpDownIcon class="playground-model-chevron" />
+            </button>
           </section>
 
-          <PlaygroundSlider label="Temperature" name="temperature" min={0} max={100} step={1} value={56} />
-          <PlaygroundSlider label="Maximum Length" name="max-length" min={64} max={512} step={1} value={256} />
-          <PlaygroundSlider label="Top P" name="top-p" min={0} max={100} step={1} value={90} />
+          <PlaygroundSlider label="Temperature" name="temperature" min={0} max={1} step={0.1} value={0.56} />
+          <PlaygroundSlider label="Maximum Length" name="max-length" min={0} max={4000} step={10} value={256} />
+          <PlaygroundSlider label="Top P" name="top-p" min={0} max={1} step={0.1} value={0.9} />
         </aside>
       </div>
     </div>

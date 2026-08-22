@@ -135,7 +135,11 @@ function wireShowcaseSliders(): void {
     const step = readNumber(slider.dataset.sliderStep, 1) || 1
     const thumbs = Array.from(slider.querySelectorAll<HTMLElement>("[data-slider-thumb]"))
     const index = thumbs.indexOf(thumb)
-    const stepped = Math.round((rawValue - min) / step) * step + min
+    const steps = Math.round((rawValue - min) / step)
+    // Re-round at the step's own precision so fractional steps (0.1) do not
+    // surface binary-float noise such as 0.30000000000000004 in the readout.
+    const decimals = (String(step).split(".")[1] ?? "").length
+    const stepped = Number((steps * step + min).toFixed(decimals))
     let lowerBound = min
     let upperBound = max
 

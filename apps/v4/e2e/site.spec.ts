@@ -288,9 +288,12 @@ test.describe("shadcn v4 site", () => {
     await insertTab.click()
     await expect(insertTab).toHaveClass(/playground-tab-active/)
     await expect(page.locator(".playground-surface-pane-muted")).toBeVisible()
+    await expect(page.locator('.playground-editor-grid[data-mode="insert"]')).toBeVisible()
 
-    await page.getByRole("button", { name: "gemini-pro" }).click()
-    await expect(page.getByRole("button", { name: "gemini-pro" })).toHaveClass(/playground-option-button-active/)
+    const modelTrigger = page.locator(".playground-model-trigger")
+    await expect(modelTrigger).toContainText("gpt-4.1")
+    await modelTrigger.click()
+    await expect(modelTrigger).toContainText("gpt-4o-mini")
 
     await presetButton.click()
     await expect(presetButton).toContainText("Write release notes")

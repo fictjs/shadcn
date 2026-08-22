@@ -5744,7 +5744,6 @@ a.ui-item:hover {
 
 .dashboard-sidebar-card,
 .playground-panel,
-.playground-sidebar-panel,
 .rtl-card {
   border: 1px solid var(--border);
   border-radius: 1rem;
@@ -5753,7 +5752,6 @@ a.ui-item:hover {
 
 .dashboard-sidebar-card,
 .playground-panel,
-.playground-sidebar-panel,
 .rtl-card,
 .auth-form-shell {
   box-shadow: 0 1px 2px color-mix(in oklab, var(--foreground) 8%, transparent);
@@ -5865,7 +5863,6 @@ a.ui-item:hover {
 }
 
 .dashboard-pill,
-.playground-tab,
 .playground-ghost-button,
 .playground-primary-button,
 .auth-provider-button {
@@ -5876,7 +5873,6 @@ a.ui-item:hover {
 }
 
 .dashboard-pill,
-.playground-tab,
 .playground-ghost-button,
 .auth-provider-button {
   border: 1px solid var(--border);
@@ -5885,13 +5881,11 @@ a.ui-item:hover {
 }
 
 .dashboard-pill,
-.playground-tab,
 .playground-ghost-button {
   padding: 0.5rem 0.8rem;
 }
 
 .dashboard-pill-active,
-.playground-tab-active,
 .playground-primary-button {
   background: var(--primary);
   border-color: var(--primary);
@@ -6005,7 +5999,6 @@ a.ui-item:hover {
 
 .dashboard-table-card,
 .playground-panel,
-.playground-sidebar-panel,
 .rtl-card {
   padding: 1rem;
 }
@@ -6873,9 +6866,9 @@ a.ui-item:hover {
 
 .playground-shell {
   display: grid;
-  align-items: start;
+  align-items: stretch;
   gap: 1.5rem;
-  grid-template-columns: minmax(0, 1fr) 250px;
+  grid-template-columns: minmax(0, 1fr) 200px;
 }
 
 .playground-separator {
@@ -6893,24 +6886,38 @@ a.ui-item:hover {
 
 .playground-header-button {
   display: inline-flex;
+  height: 2.25rem;
   align-items: center;
   justify-content: center;
-  min-height: 2.4rem;
-  border: 1px solid var(--border);
-  border-radius: 0.7rem;
-  background: transparent;
-  color: var(--foreground);
-  padding: 0.55rem 0.8rem;
+  gap: 0.5rem;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  padding: 0 1rem;
   font: inherit;
-  font-size: 0.84rem;
+  font-size: 0.875rem;
   font-weight: 500;
+  white-space: nowrap;
   cursor: pointer;
 }
 
+.playground-header-button:hover {
+  background: color-mix(in oklab, var(--secondary) 80%, var(--foreground) 4%);
+}
+
 .playground-header-button-wide {
+  width: 18.75rem;
   justify-content: space-between;
-  gap: 0.75rem;
-  min-width: min(100%, 18rem);
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--foreground);
+  padding: 0 0.75rem;
+}
+
+.playground-header-button-wide:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
 }
 
 .playground-header-button-label {
@@ -6926,13 +6933,11 @@ a.ui-item:hover {
 }
 
 .playground-header-button-icon {
-  min-width: 2.4rem;
-  padding-inline: 0.6rem;
+  width: 2.25rem;
+  padding-inline: 0;
 }
 
-.playground-main-column,
 .playground-sidebar-panel,
-.playground-sidebar-stack,
 .playground-complete-panel,
 .playground-edit-stack {
   display: grid;
@@ -6940,21 +6945,74 @@ a.ui-item:hover {
 }
 
 .playground-sidebar-panel {
+  order: 2;
   align-content: start;
+  gap: 1.5rem;
+}
+
+.playground-main-column {
+  order: 1;
+}
+
+.playground-model-trigger {
+  display: inline-flex;
+  width: 100%;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--background);
+  padding: 0 0.75rem;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.playground-model-trigger:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.playground-model-chevron {
+  opacity: 0.5;
 }
 
 .playground-icon-tab-list {
   display: grid;
+  width: 100%;
+  height: 2.25rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.35rem;
+  border-radius: var(--radius-lg);
+  background: var(--muted);
+  padding: 3px;
 }
 
 .playground-tab {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.6rem;
-  padding: 0.5rem;
+  min-height: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  padding: 0.25rem 0.5rem;
+  color: var(--muted-foreground);
+}
+
+.playground-tab {
+  font: inherit;
+  cursor: pointer;
+}
+
+.playground-tab-active {
+  border-color: var(--border);
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
 }
 
 .playground-tab-icon {
@@ -6967,25 +7025,45 @@ a.ui-item:hover {
 
 .playground-editor-grid {
   display: grid;
+  flex: 1;
   gap: 1rem;
   grid-template-columns: minmax(0, 1fr);
 }
 
+.playground-main-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
 .playground-textarea,
 .playground-surface-pane {
-  min-height: 25rem;
+  min-height: 43.75rem;
   border: 1px solid var(--border);
-  border-radius: 0.95rem;
+  border-radius: var(--radius-md);
   padding: 1rem;
-  background: var(--card);
+  background: transparent;
 }
 
 .playground-textarea {
+  width: 100%;
   resize: none;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 0.875rem;
+}
+
+.playground-textarea::placeholder {
+  color: var(--muted-foreground);
 }
 
 .playground-textarea-compact {
   min-height: 9rem;
+}
+
+.playground-complete-panel {
+  height: 100%;
 }
 
 .playground-copy-surface {
@@ -7009,32 +7087,7 @@ a.ui-item:hover {
 
 .playground-primary-button,
 .playground-ghost-button {
-  min-height: 2.5rem;
-}
-
-.playground-option-group {
-  display: grid;
-  gap: 0.45rem;
-}
-
-.playground-option-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-start;
-  min-height: 2.4rem;
-  border: 1px solid var(--border);
-  border-radius: 0.7rem;
-  background: transparent;
-  color: var(--foreground);
-  padding: 0.55rem 0.8rem;
-  font: inherit;
-  font-size: 0.84rem;
-  cursor: pointer;
-}
-
-.playground-option-button-active {
-  background: color-mix(in oklab, var(--muted) 72%, var(--card));
-  border-color: color-mix(in oklab, var(--foreground) 18%, var(--border));
+  min-height: 2.25rem;
 }
 
 .auth-button-stack {
@@ -7442,7 +7495,10 @@ a.ui-item:hover {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .playground-editor-grid {
+  /* Only the insert and edit modes split into two panes; complete is one
+     full-width textarea, matching the React example. */
+  .playground-editor-grid[data-mode="insert"],
+  .playground-editor-grid[data-mode="edit"] {
     grid-template-columns: minmax(0, 1fr) minmax(260px, 0.92fr);
   }
 
