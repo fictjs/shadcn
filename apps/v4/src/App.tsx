@@ -2111,51 +2111,140 @@ function HomePage(props: { route: ResolvedRoute; activeThemeName: string; onThem
 
 function RootFieldDemoPreview() {
   return (
-    <div class="root-preview-shell root-preview-stack">
-      <div class="root-preview-section">
-        <strong>Payment Method</strong>
-        <span>All transactions are secure and encrypted</span>
-      </div>
-      <div class="root-preview-field">
-        <span>Name on Card</span>
-        <strong>Evil Rabbit</strong>
-      </div>
-      <div class="root-preview-field">
-        <span>Card Number</span>
-        <strong>1234 5678 9012 3456</strong>
-        <span>Enter your 16-digit card number</span>
-      </div>
-      <div class="root-preview-grid root-preview-grid-three">
-        <div class="root-preview-field">
-          <span>Month</span>
-          <strong>MM</strong>
+    <div class="ui-card root-field-demo">
+      <form class="ui-field-group">
+        <fieldset class="ui-field-set">
+          <legend class="ui-field-legend">Payment Method</legend>
+          <p class="ui-field-description">All transactions are secure and encrypted</p>
+          <div class="ui-field-group">
+            <div class="ui-field">
+              <label class="ui-label" for="checkout-card-name">
+                Name on Card
+              </label>
+              <input class="ui-input" id="checkout-card-name" placeholder="John Doe" />
+            </div>
+            <div class="ui-field-row ui-field-row-3">
+              <div class="ui-field ui-col-span-2">
+                <label class="ui-label" for="checkout-card-number">
+                  Card Number
+                </label>
+                <input class="ui-input" id="checkout-card-number" placeholder="1234 5678 9012 3456" />
+                <p class="ui-field-description">Enter your 16-digit number.</p>
+              </div>
+              <div class="ui-field">
+                <label class="ui-label" for="checkout-cvv">
+                  CVV
+                </label>
+                <input class="ui-input" id="checkout-cvv" placeholder="123" />
+              </div>
+            </div>
+            <div class="ui-field-row ui-field-row-2">
+              <div class="ui-field">
+                <label class="ui-label" for="checkout-exp-month">
+                  Month
+                </label>
+                <UiSelect id="checkout-exp-month" placeholder="MM" options={["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]} />
+              </div>
+              <div class="ui-field">
+                <label class="ui-label" for="checkout-exp-year">
+                  Year
+                </label>
+                <UiSelect id="checkout-exp-year" placeholder="YYYY" options={["2024", "2025", "2026", "2027", "2028", "2029"]} />
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="ui-separator"></div>
+
+        <fieldset class="ui-field-set">
+          <legend class="ui-field-legend">Billing Address</legend>
+          <p class="ui-field-description">The billing address associated with your payment method</p>
+          <div class="ui-field-group">
+            <div class="ui-field ui-field-horizontal">
+              <UiCheckbox checked />
+              <span class="ui-label ui-label-normal">Same as shipping address</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="ui-separator"></div>
+
+        <fieldset class="ui-field-set">
+          <div class="ui-field-group">
+            <div class="ui-field">
+              <label class="ui-label" for="checkout-comments">
+                Comments
+              </label>
+              <textarea class="ui-textarea" id="checkout-comments" placeholder="Add any additional comments"></textarea>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="ui-field ui-field-horizontal">
+          <button class="button" type="button">
+            Submit
+          </button>
+          <button class="button button-outline" type="button">
+            Cancel
+          </button>
         </div>
-        <div class="root-preview-field">
-          <span>Year</span>
-          <strong>YYYY</strong>
-        </div>
-        <div class="root-preview-field">
-          <span>CVV</span>
-          <strong>123</strong>
-        </div>
-      </div>
-      <div class="root-preview-section">
-        <strong>Billing Address</strong>
-        <span>The billing address associated with your payment method</span>
-      </div>
-      <div class="root-preview-check-row">
-        <span class="root-preview-check is-active"></span>
-        <span>Same as shipping address</span>
-      </div>
-      <div class="root-preview-field">
-        <span>Comments</span>
-        <strong>Add any additional comments</strong>
-      </div>
-      <div class="root-preview-button-row">
-        <button class="root-preview-button root-preview-button-primary" type="button">Submit</button>
-        <button class="root-preview-button root-preview-button-secondary" type="button">Cancel</button>
-      </div>
+      </form>
     </div>
+  )
+}
+
+function UiSelect(props: { id?: string; placeholder: string; options: string[] }) {
+  return (
+    <span class="ui-select-field">
+      <select class="ui-select" id={props.id} aria-label={props.placeholder}>
+        <option value="">{props.placeholder}</option>
+        {props.options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+      <svg
+        class="ui-select-chevron"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="m6 9 6 6 6-6" />
+      </svg>
+    </span>
+  )
+}
+
+function UiCheckbox(props: { checked?: boolean }) {
+  return (
+    <button
+      type="button"
+      class="ui-checkbox"
+      role="checkbox"
+      aria-checked={props.checked ? "true" : "false"}
+      data-checked={props.checked ? "true" : "false"}
+      onClick$={(event: MouseEvent) => {
+        const target = event.currentTarget
+        if (!(target instanceof HTMLButtonElement)) {
+          return
+        }
+
+        const next = target.dataset.checked !== "true"
+        target.dataset.checked = next ? "true" : "false"
+        target.setAttribute("aria-checked", next ? "true" : "false")
+      }}
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M20 6 9 17l-5-5" />
+      </svg>
+    </button>
   )
 }
 
