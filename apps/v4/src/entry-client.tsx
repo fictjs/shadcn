@@ -349,6 +349,37 @@ function closeShowcaseMenus(except?: Element | null): void {
   })
 }
 
+function positionShowcaseMenu(panel: HTMLElement): void {
+  const preferredSide = panel.dataset.menuPreferredSide ?? panel.dataset.menuSide ?? "bottom"
+  const preferredAlign = panel.dataset.menuPreferredAlign ?? panel.dataset.menuAlign ?? "start"
+
+  panel.dataset.menuPreferredSide = preferredSide
+  panel.dataset.menuPreferredAlign = preferredAlign
+  panel.dataset.menuSide = preferredSide
+  panel.dataset.menuAlign = preferredAlign
+
+  const margin = 8
+  let rect = panel.getBoundingClientRect()
+
+  if (preferredSide === "bottom" && rect.bottom > window.innerHeight - margin) {
+    panel.dataset.menuSide = "top"
+  } else if (preferredSide === "top" && rect.top < margin) {
+    panel.dataset.menuSide = "bottom"
+  } else if (preferredSide === "right" && rect.right > window.innerWidth - margin) {
+    panel.dataset.menuSide = "left"
+  } else if (preferredSide === "left" && rect.left < margin) {
+    panel.dataset.menuSide = "right"
+  }
+
+  rect = panel.getBoundingClientRect()
+
+  if (preferredAlign === "start" && rect.right > window.innerWidth - margin) {
+    panel.dataset.menuAlign = "end"
+  } else if (preferredAlign === "end" && rect.left < margin) {
+    panel.dataset.menuAlign = "start"
+  }
+}
+
 function wireShowcaseMenus(): void {
   document.addEventListener("click", (event) => {
     const target = event.target
@@ -370,6 +401,9 @@ function wireShowcaseMenus(): void {
       closeShowcaseMenus(menu)
       panel.hidden = nextHidden
       trigger.setAttribute("aria-expanded", nextHidden ? "false" : "true")
+      if (!nextHidden) {
+        positionShowcaseMenu(panel)
+      }
       return
     }
 

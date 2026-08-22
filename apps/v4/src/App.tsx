@@ -2969,9 +2969,44 @@ function RootNestedButtonsPreview() {
           <BotIcon />
           Copilot
         </button>
-        <button class="ui-icon-button ui-icon-button-sm" type="button" aria-label="Open Popover">
-          <ChevronDownIcon />
-        </button>
+        <span class="ui-menu" data-menu>
+          <button
+            class="ui-icon-button ui-icon-button-sm"
+            type="button"
+            aria-label="Open Popover"
+            data-menu-trigger
+            aria-haspopup="dialog"
+            aria-expanded="false"
+          >
+            <ChevronDownIcon />
+          </button>
+          <div
+            class="ui-popover-panel root-agent-popover"
+            data-menu-panel
+            data-menu-side="bottom"
+            data-menu-align="end"
+            role="dialog"
+            aria-label="Agent Tasks"
+            hidden
+          >
+            <div class="root-agent-popover-head">
+              <p class="ui-popover-title">Agent Tasks</p>
+            </div>
+            <span class="ui-separator" aria-hidden="true"></span>
+            <div class="root-agent-popover-body">
+              <textarea
+                class="ui-textarea root-agent-textarea"
+                placeholder="Describe your task in natural language."
+                aria-label="Agent task"
+              ></textarea>
+              <p class="ui-popover-title">Start a new task with Copilot</p>
+              <p class="ui-popover-text">
+                Describe your task in natural language. Copilot will work in the background and open
+                a pull request for your review.
+              </p>
+            </div>
+          </div>
+        </span>
       </div>
     </div>
   )
