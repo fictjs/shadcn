@@ -673,7 +673,8 @@ a {
 
 .main-content {
   flex: 1;
-  padding: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .site-footer {
@@ -983,8 +984,9 @@ a {
 
 .home-grid,
 .stack-gap {
-  display: grid;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .home-grid {
@@ -1136,23 +1138,31 @@ h1 {
 
 .section-nav {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  border: 1px solid var(--border);
-  border-radius: 0.65rem;
-  background: color-mix(in oklab, var(--muted) 55%, transparent);
-  padding: 0.35rem;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.section-nav::-webkit-scrollbar {
+  display: none;
 }
 
 .section-nav a {
-  display: inline-flex;
+  display: flex;
+  flex: none;
   align-items: center;
-  gap: 0.35rem;
-  border-radius: 0.45rem;
-  padding: 0.35rem 0.6rem;
-  font-size: 0.84rem;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 1.75rem;
+  padding: 0 1rem;
+  font-size: 1rem;
   font-weight: 500;
+  line-height: 1.5rem;
+  text-align: center;
+  white-space: nowrap;
   color: var(--muted-foreground);
+  transition: color 120ms ease;
 }
 
 .section-nav-badge {
@@ -1165,26 +1175,21 @@ h1 {
 
 .section-nav a:hover,
 .section-nav a.section-nav-link-active {
-  background: var(--card);
-  color: var(--foreground);
+  color: var(--primary);
 }
 
-.section-nav-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.6rem;
-}
-
+.section-nav-row,
 .route-nav-row {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 0.6rem;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0;
 }
 
 .route-nav-row .section-nav {
   flex: 1;
+  overflow: hidden;
 }
 
 .route-theme-container {
