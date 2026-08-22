@@ -2438,18 +2438,20 @@ function AudioLinesIcon() {
 
 function RootInputGroupButtonPreview() {
   return (
-    <div class="root-preview-shell root-preview-stack">
-      <div class="root-preview-inline-input root-preview-inline-input-muted">
-        <span class="root-preview-inline-addon">https://</span>
-        <span>Input Secure</span>
-      </div>
-      <div class="root-preview-section">
-        <strong>Your connection is not secure.</strong>
-        <span>You should not enter any sensitive information on this site.</span>
-      </div>
-      <div class="root-preview-inline-input">
-        <span>Type to search...</span>
-        <button type="button">Search</button>
+    <div class="root-input-group-stack">
+      <div class="ui-input-group ui-input-group-round">
+        <span class="ui-input-group-addon">
+          <button class="ui-input-group-button ui-input-group-button-icon ui-input-group-button-secondary" type="button" aria-label="Info">
+            <InfoIcon />
+          </button>
+        </span>
+        <span class="ui-input-group-addon root-addon-flush">https://</span>
+        <input class="ui-input-group-input root-input-flush" aria-label="Input Secure" />
+        <span class="ui-input-group-addon">
+          <button class="ui-input-group-button ui-input-group-button-icon" type="button" aria-label="Favorite">
+            <StarIcon />
+          </button>
+        </span>
       </div>
     </div>
   )
@@ -2457,68 +2459,152 @@ function RootInputGroupButtonPreview() {
 
 function RootItemDemoPreview() {
   return (
-    <div class="root-preview-shell root-preview-stack">
-      <div class="root-preview-item-card">
-        <div class="root-preview-item-row root-preview-item-row-split">
-          <div class="root-preview-section">
-            <strong>Two-factor authentication</strong>
-            <span>Verify via email or phone number.</span>
-          </div>
-          <button type="button" class="root-preview-button root-preview-button-secondary root-preview-item-action">
+    <div class="root-item-stack">
+      <div class="ui-item">
+        <div class="ui-item-content">
+          <p class="ui-item-title">Two-factor authentication</p>
+          <p class="ui-item-description root-item-description-xl">Verify via email or phone number.</p>
+        </div>
+        <div class="ui-item-actions">
+          <button class="button button-xs" type="button">
             Enable
           </button>
         </div>
       </div>
-      <div class="root-preview-item-row root-preview-item-row-split root-preview-item-row-compact">
-        <div class="root-preview-item-inline">
-          <div class="root-preview-item-media root-preview-item-media-verified" aria-hidden="true">
-            <span></span>
-          </div>
-          <strong>Your profile has been verified.</strong>
+      <a class="ui-item" href="#">
+        <span class="ui-item-media">
+          <BadgeCheckIcon />
+        </span>
+        <div class="ui-item-content">
+          <p class="ui-item-title">Your profile has been verified.</p>
         </div>
-        <span class="root-preview-item-arrow" aria-hidden="true"></span>
-      </div>
+        <span class="ui-item-actions">
+          <ChevronRightIcon />
+        </span>
+      </a>
     </div>
   )
 }
 
 function RootAppearanceSettingsPreview() {
-  let gpuCount = $state(8)
-
   return (
-    <div class="root-preview-shell root-preview-stack">
-      <div class="root-preview-section">
-        <strong>Compute Environment</strong>
-        <span>Select the compute environment for your cluster.</span>
-      </div>
-      <div class="root-preview-radio-card is-active">
-        <strong>Kubernetes</strong>
-        <span>Run GPU workloads on a K8s configured cluster. This is the default.</span>
-        <span class="root-preview-radio-indicator" aria-hidden="true"></span>
-      </div>
-      <div class="root-preview-radio-card">
-        <strong>Virtual Machine</strong>
-        <span>Access a VM configured cluster to run workloads. (Coming soon)</span>
-      </div>
-      <div class="root-preview-counter-row">
-        <div class="root-preview-section">
-          <strong>Number of GPUs</strong>
-          <span>You can add more later.</span>
+    <fieldset class="ui-field-set">
+      <div class="ui-field-group">
+        <fieldset class="ui-field-set">
+          <legend class="ui-field-legend">Compute Environment</legend>
+          <p class="ui-field-description">Select the compute environment for your cluster.</p>
+          <div class="root-radio-group">
+            <label class="ui-radio-card" data-checked="true">
+              <span class="ui-item-content">
+                <span class="root-field-title">Kubernetes</span>
+                <span class="ui-field-description">
+                  Run GPU workloads on a K8s configured cluster. This is the default.
+                </span>
+              </span>
+              <span class="ui-radio" data-checked="true" role="radio" aria-checked="true" aria-label="Kubernetes">
+                <span></span>
+              </span>
+            </label>
+            <label class="ui-radio-card" data-checked="false">
+              <span class="ui-item-content">
+                <span class="root-field-title">Virtual Machine</span>
+                <span class="ui-field-description">
+                  Access a VM configured cluster to run workloads. (Coming soon)
+                </span>
+              </span>
+              <span class="ui-radio" data-checked="false" role="radio" aria-checked="false" aria-label="Virtual Machine">
+                <span></span>
+              </span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="ui-field-separator" aria-hidden="true"></div>
+
+        <div class="ui-field ui-field-horizontal">
+          <span class="ui-item-content">
+            <span class="root-field-title">Number of GPUs</span>
+            <span class="ui-field-description">You can add more later.</span>
+          </span>
+          <span class="ui-button-group root-counter-group">
+            <input class="ui-counter-input" value="8" aria-label="Number of GPUs" />
+            <button class="ui-icon-button ui-icon-button-sm" type="button" aria-label="Decrement">
+              <MinusIcon />
+            </button>
+            <button class="ui-icon-button ui-icon-button-sm" type="button" aria-label="Increment">
+              <PlusIcon />
+            </button>
+          </span>
         </div>
-        <div class="root-preview-counter-controls">
-          <button type="button" onClick$={() => { gpuCount = Math.max(1, gpuCount - 1) }}>-</button>
-          <span class="root-preview-counter-value">{gpuCount}</span>
-          <button type="button" onClick$={() => { gpuCount = Math.min(99, gpuCount + 1) }}>+</button>
+
+        <div class="ui-field-separator" aria-hidden="true"></div>
+
+        <div class="ui-field ui-field-horizontal">
+          <span class="ui-item-content">
+            <span class="root-field-title">Wallpaper Tinting</span>
+            <span class="ui-field-description">Allow the wallpaper to be tinted.</span>
+          </span>
+          <UiSwitch checked />
         </div>
       </div>
-      <div class="root-preview-counter-row">
-        <div class="root-preview-section">
-          <strong>Wallpaper Tinting</strong>
-          <span>Allow the wallpaper to be tinted.</span>
-        </div>
-        <span class="root-preview-toggle is-active" aria-hidden="true"></span>
-      </div>
-    </div>
+    </fieldset>
+  )
+}
+
+function UiSwitch(props: { checked?: boolean }) {
+  return (
+    <button
+      type="button"
+      class="ui-switch"
+      role="switch"
+      aria-checked={props.checked ? "true" : "false"}
+      data-checked={props.checked ? "true" : "false"}
+      onClick$={(event: MouseEvent) => {
+        const target = event.currentTarget
+        if (!(target instanceof HTMLButtonElement)) {
+          return
+        }
+
+        const next = target.dataset.checked !== "true"
+        target.dataset.checked = next ? "true" : "false"
+        target.setAttribute("aria-checked", next ? "true" : "false")
+      }}
+    >
+      <span></span>
+    </button>
+  )
+}
+
+function StarIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 17.75l-6.172 3.245 1.179-6.873-4.993-4.867 6.9-1.002L12 2l3.086 6.253 6.9 1.002-4.993 4.867 1.179 6.873z" />
+    </svg>
+  )
+}
+
+function BadgeCheckIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  )
+}
+
+function ChevronRightIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m9 18 6-6-6-6" />
+    </svg>
+  )
+}
+
+function MinusIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M5 12h14" />
+    </svg>
   )
 }
 
@@ -2639,10 +2725,8 @@ function ExamplesRootPreview() {
               {entry === "item-demo" ? <RootItemDemoPreview /> : null}
 
               {entry === "appearance-separator" ? (
-                <div class="root-preview-separator" aria-hidden="true">
-                  <span></span>
-                  <p>Appearance Settings</p>
-                  <span></span>
+                <div class="ui-field-separator root-section-separator">
+                  <span>Appearance Settings</span>
                 </div>
               ) : null}
 
