@@ -3388,7 +3388,19 @@ h1 {
 }
 
 .themes-route {
-  gap: 1.25rem;
+  gap: 0;
+}
+
+.themes-route .route-page-header {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.theme-preview-section {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding-bottom: 1.5rem;
 }
 
 .route-surface-wrapper {
@@ -3403,17 +3415,18 @@ h1 {
 }
 
 .theme-customizer-shell {
-  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
-  border-radius: 0.95rem;
-  background: var(--card);
-  padding: 0.75rem 0.9rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  scroll-margin-top: 5rem;
 }
 
 .theme-customizer-bar {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
 }
 
 .theme-customizer-scroll {
@@ -3435,21 +3448,33 @@ h1 {
 }
 
 .theme-customizer-pill {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  height: 1.75rem;
   border: 0;
   background: transparent;
   color: var(--muted-foreground);
-  padding: 0.35rem 1rem;
-  font: inherit;
-  font-size: 0.98rem;
+  padding: 0 1rem;
+  font-family: inherit;
+  font-size: 1rem;
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.5rem;
+  text-align: center;
   text-transform: capitalize;
+  white-space: nowrap;
   cursor: pointer;
+  transition: color 120ms ease;
 }
 
 .theme-customizer-pill:hover,
 .theme-customizer-pill[data-active="true"] {
-  color: var(--foreground);
+  color: var(--primary);
+}
+
+.theme-copy-button.button {
+  margin-left: auto;
 }
 
 .theme-customizer-mobile {
@@ -3501,14 +3526,15 @@ h1 {
 
 .theme-preview-shell {
   display: flex;
+  flex: 1;
   flex-direction: column;
 }
 
 .theme-preview-stage {
-  border: 1px solid color-mix(in oklab, var(--theme-accent, var(--border)) 22%, var(--border));
-  border-radius: 1rem;
-  background: color-mix(in oklab, var(--theme-muted, var(--muted)) 18%, var(--card));
-  padding: 1rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
 }
 
 .theme-preview-gallery,

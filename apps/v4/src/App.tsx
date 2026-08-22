@@ -3974,8 +3974,7 @@ function ThemesPage(props: { themes: ThemeEntry[]; activeThemeName: string; onTh
         </div>
       </div>
 
-      <div class="route-surface-wrapper" id="themes">
-        <div class="theme-customizer-shell">
+      <div class="container theme-customizer-shell" id="themes">
           <div class="theme-customizer-bar">
             <div class="theme-customizer-scroll" aria-label="Theme customizer">
               <div class="theme-customizer-scroll-inner">
@@ -4045,7 +4044,7 @@ function ThemesPage(props: { themes: ThemeEntry[]; activeThemeName: string; onTh
 
             <button
               type="button"
-              class="button button-ghost theme-copy-button"
+              class="button button-secondary theme-copy-button"
               data-theme-name={props.activeThemeName}
               onClick$={(event: MouseEvent) => {
                 if (typeof navigator === "undefined" || !navigator.clipboard) {
@@ -4067,14 +4066,14 @@ function ThemesPage(props: { themes: ThemeEntry[]; activeThemeName: string; onTh
                 )
               }}
             >
+              <CopyIcon />
               Copy Code
             </button>
           </div>
-        </div>
       </div>
 
-      <div class="route-surface-wrapper route-surface-soft">
-        <div class="theme-preview-shell">
+      <div class="theme-preview-section section-soft">
+        <div class="container theme-preview-shell">
           <div
             class="theme-preview-stage"
             data-theme-name={props.activeThemeName}
