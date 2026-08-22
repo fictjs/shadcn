@@ -697,6 +697,47 @@ function SmartphoneIcon() {
   )
 }
 
+function ChartFamilyIcon(props: { chartId: string }) {
+  const id = props.chartId
+
+  return id.includes("chart-bar") ? (
+    <svg class="chart-display-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 3v16a2 2 0 0 0 2 2h16" />
+      <path d="M7 11h2v6H7z" />
+      <path d="M13 7h2v10h-2z" />
+      <path d="M19 13h2v4h-2z" />
+    </svg>
+  ) : id.includes("chart-pie") ? (
+    <svg class="chart-display-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+      <path d="M22 12A10 10 0 0 0 12 2v10z" />
+    </svg>
+  ) : id.includes("chart-radar") ? (
+    <svg class="chart-display-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 16.5V7.5L12 2.5L3 7.5v9l9 5z" />
+    </svg>
+  ) : id.includes("chart-radial") ? (
+    <svg class="chart-display-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <circle cx="12" cy="12" r="4" />
+    </svg>
+  ) : id.includes("chart-tooltip") ? (
+    <svg class="chart-display-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 4l7.07 17 2.51-7.39L21 11.07z" />
+    </svg>
+  ) : id.includes("chart-line") ? (
+    <svg class="chart-display-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 3v16a2 2 0 0 0 2 2h16" />
+      <path d="m19 9-5 5-4-4-3 3" />
+    </svg>
+  ) : (
+    <svg class="chart-display-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 3v16a2 2 0 0 0 2 2h16" />
+      <path d="M7 15.5 11 11l3 3 4.5-6" />
+    </svg>
+  )
+}
+
 function TerminalIcon() {
   return (
     <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -3566,26 +3607,20 @@ function ChartsPage(props: { route: ResolvedRoute; activeThemeName: string; onTh
       </div>
 
       <div class="route-theme-container" data-theme-name={props.activeThemeName} style={routeThemeStyle}>
-      {activeType ? (
-        <div class="card chart-summary-card">
-          <p class="eyebrow">{activeType.charAt(0).toUpperCase() + activeType.slice(1)} charts</p>
-          <h2>{visibleCharts.length} chart recipes</h2>
-          <p class="lead">Curated previews from the v4 registry, ordered like the upstream chart gallery.</p>
-        </div>
-      ) : null}
-
       <div class="charts-grid" id="charts">
         {visibleCharts.map((chart) => (
-          <article class="card chart-display-card" data-full-width={chart.fullWidth ? "true" : "false"} key={chart.id}>
+          <article class="chart-display-card" data-full-width={chart.fullWidth ? "true" : "false"} key={chart.id}>
             <div class="chart-display-toolbar">
               <div class="chart-display-title">
-                <p class="pill-name">{getChartFamilyLabel(chart.id)}</p>
-                <p class="slug">{chart.id}</p>
+                <ChartFamilyIcon chartId={chart.id} />
+                <span>{getChartFamilyLabel(chart.id)}</span>
               </div>
               <div class="chart-display-actions">
                 <button
                   type="button"
-                  class="button button-ghost chart-display-button"
+                  class="chart-display-copy"
+                  aria-label="Copy chart path"
+                  title="Copy chart path"
                   data-chart-id={chart.id}
                   onClick$={(event: MouseEvent) => {
                     if (typeof navigator === "undefined" || !navigator.clipboard) {
@@ -3605,15 +3640,15 @@ function ChartsPage(props: { route: ResolvedRoute; activeThemeName: string; onTh
                     void navigator.clipboard.writeText(`registry/new-york-v4/charts/${chartId}.tsx`)
                   }}
                 >
-                  Copy Path
+                  <CopyIcon />
                 </button>
-                <a class="button button-ghost chart-display-button" href="/docs/components/chart">
-                  Docs
+                <span class="chart-display-divider" aria-hidden="true"></span>
+                <a class="button button-outline chart-display-button" href="/docs/components/chart">
+                  View Code
                 </a>
               </div>
             </div>
             <ChartPreviewSurface chartId={chart.id} />
-            <p class="slug">registry/new-york-v4/charts/{chart.id}.tsx</p>
           </article>
         ))}
         {emptySlots.map((slot) => (

@@ -2722,11 +2722,6 @@ h1 {
   }
 }
 
-.chart-summary-card {
-  display: grid;
-  gap: 0.35rem;
-}
-
 .charts-grid {
   display: grid;
   gap: 1rem;
@@ -2735,33 +2730,69 @@ h1 {
 
 .chart-display-card {
   display: grid;
-  gap: 0.75rem;
-  padding: 0.85rem;
-  overflow: hidden;
+  gap: 0.5rem;
 }
 
 .chart-display-toolbar {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .chart-display-title {
-  display: grid;
-  gap: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding-left: 0.25rem;
+  color: var(--muted-foreground);
+  font-size: 13px;
+}
+
+.chart-display-icon {
+  width: 0.9rem;
+  height: 0.9rem;
 }
 
 .chart-display-actions {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 0.4rem;
+  align-items: center;
+  margin-left: auto;
+  gap: 0.5rem;
 }
 
-.chart-display-button {
-  min-height: 2rem;
-  padding-inline: 0.7rem;
+.chart-display-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--foreground);
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.chart-display-copy:hover {
+  background: var(--muted);
+}
+
+.chart-display-copy .button-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.chart-display-divider {
+  flex: none;
+  width: 1px;
+  height: 1rem;
+  background: var(--border);
+}
+
+.chart-display-button.button {
+  height: 2rem;
 }
 
 .chart-preview-stage {
