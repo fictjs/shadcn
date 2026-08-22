@@ -316,12 +316,90 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".chart-display-card .chart-accent-dot").first()).toBeVisible()
   })
 
+  test("home showcase controls stay interactive", async ({ page }) => {
+    await page.goto("/")
+    await waitForClientReady(page)
+
+    const maxThumb = page.locator('[data-slider-thumb="1"]')
+    await maxThumb.scrollIntoViewIfNeeded()
+    const sliderBox = await page.locator("[data-slider]").boundingBox()
+    const thumbBox = await maxThumb.boundingBox()
+    expect(sliderBox).not.toBeNull()
+    expect(thumbBox).not.toBeNull()
+
+    await page.mouse.move(thumbBox!.x + thumbBox!.width / 2, thumbBox!.y + thumbBox!.height / 2)
+    await page.mouse.down()
+    await page.mouse.move(sliderBox!.x + sliderBox!.width * 0.5, thumbBox!.y + thumbBox!.height / 2, {
+      steps: 8,
+    })
+    await page.mouse.up()
+    await expect(page.locator('[data-slider-output="1"]')).toHaveText("500")
+
+    const gpuInput = page.locator("[data-counter-input]")
+    await gpuInput.scrollIntoViewIfNeeded()
+    await expect(gpuInput).toHaveValue("8")
+    await page.locator('[data-counter-step="1"]').click()
+    await expect(gpuInput).toHaveValue("9")
+    await page.locator('[data-counter-step="-1"]').click()
+    await expect(gpuInput).toHaveValue("8")
+
+    const radioItems = page.locator("[data-radio-item]")
+    await expect(radioItems.nth(0)).toHaveAttribute("data-checked", "true")
+    await radioItems.nth(1).click()
+    await expect(radioItems.nth(0)).toHaveAttribute("data-checked", "false")
+    await expect(radioItems.nth(1)).toHaveAttribute("data-checked", "true")
+
+    const voiceToggle = page.locator('[data-toggle="voice"]')
+    await voiceToggle.scrollIntoViewIfNeeded()
+    await voiceToggle.click()
+    await expect(page.locator(".ui-input-group-round input").first()).toHaveAttribute(
+      "placeholder",
+      "Record and send audio...",
+    )
+  })
+
+  test("home showcase menus and popovers open on demand", async ({ page }) => {
+    await page.goto("/")
+    await waitForClientReady(page)
+
+    const moreOptions = page.getByRole("button", { name: "More Options" })
+    await moreOptions.scrollIntoViewIfNeeded()
+    await moreOptions.click()
+    await expect(page.locator(".root-actions-menu")).toBeVisible()
+
+    await page.getByRole("menuitem", { name: "Label As..." }).click()
+    await expect(page.locator(".ui-menu-sub [data-menu-panel]")).toBeVisible()
+    await page.getByRole("menuitemradio", { name: "Work" }).click()
+    await expect(page.locator(".root-actions-menu")).toBeHidden()
+
+    const sources = page.getByRole("button", { name: "All Sources" })
+    await sources.scrollIntoViewIfNeeded()
+    await sources.click()
+    await expect(page.locator(".root-sources-menu")).toBeVisible()
+    await page.keyboard.press("Escape")
+    await expect(page.locator(".root-sources-menu")).toBeHidden()
+
+    const addContext = page.getByRole("button", { name: "Add context" })
+    await addContext.scrollIntoViewIfNeeded()
+    await addContext.click()
+    await page.locator("[data-mention-search]").fill("dash")
+    await expect(page.locator("[data-mention-item]:not([hidden])")).toHaveCount(1)
+    await page.locator("[data-mention-item]:not([hidden])").click()
+    await expect(page.locator("[data-mention-chip]")).toHaveCount(1)
+    await page.locator("[data-mention-chip]").click()
+    await expect(page.locator("[data-mention-chip]")).toHaveCount(0)
+  })
+
   test("colors route renders the wrapped palette grid", async ({ page }) => {
     await page.goto("/colors")
 
     await expect(page.getByRole("heading", { name: "Tailwind Colors in Every Format" })).toBeVisible()
     await expect(page.locator(".colors-route-grid .color-palette").first()).toBeVisible()
     await expect(page.locator(".colors-route-grid")).toContainText("amber")
+
+    await page.locator(".color-format-select").first().selectOption("hsl")
+    await expect(page.locator(".colors-route-grid")).toHaveAttribute("data-color-format", "hsl")
+    await expect(page.locator(".color-format-select").nth(1)).toHaveValue("hsl")
   })
 
   test("authentication and rtl examples stay interactive", async ({ page }) => {
