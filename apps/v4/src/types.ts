@@ -17,6 +17,12 @@ export interface DocTabPanel {
   blocks: DocContentBlock[]
 }
 
+export interface DocInlineNode {
+  kind: "text" | "strong" | "em" | "code" | "link"
+  text: string
+  href?: string
+}
+
 export interface DocContentBlock {
   kind:
     | "heading"
@@ -31,9 +37,11 @@ export interface DocContentBlock {
     | "component-preview"
     | "component-source"
   text: string
+  inline?: DocInlineNode[]
   id?: string
   level?: number
   items?: string[]
+  itemsInline?: DocInlineNode[][]
   ordered?: boolean
   src?: string
   alt?: string

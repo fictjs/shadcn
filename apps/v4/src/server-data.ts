@@ -6,6 +6,7 @@ import type {
   BlockEntry,
   DocContentBlock,
   DocHeading,
+  DocInlineNode,
   DocNavSection,
   DocPage,
   DocSummary,
@@ -1454,7 +1455,7 @@ function parseDocBody(body: string): {
         if (!listMatch) {
           break
         }
-        items.push(cleanInlineMarkdown(listMatch[1] || ""))
+        items.push(listMatch[1] || "")
         index += 1
       }
 
@@ -1462,7 +1463,8 @@ function parseDocBody(body: string): {
         kind: "list",
         text: "",
         ordered: false,
-        items,
+        items: items.map((item) => cleanInlineMarkdown(item)),
+        itemsInline: items.map((item) => parseInlineMarkdown(item)),
       })
       continue
     }
@@ -1475,7 +1477,7 @@ function parseDocBody(body: string): {
         if (!listMatch) {
           break
         }
-        items.push(cleanInlineMarkdown(listMatch[1] || ""))
+        items.push(listMatch[1] || "")
         index += 1
       }
 
@@ -1483,7 +1485,8 @@ function parseDocBody(body: string): {
         kind: "list",
         text: "",
         ordered: true,
-        items,
+        items: items.map((item) => cleanInlineMarkdown(item)),
+        itemsInline: items.map((item) => parseInlineMarkdown(item)),
       })
       continue
     }
@@ -1503,6 +1506,7 @@ function parseDocBody(body: string): {
       blocks.push({
         kind: "blockquote",
         text: cleanInlineMarkdown(quoteLines.join(" ")),
+        inline: parseInlineMarkdown(quoteLines.join(" ")),
       })
       continue
     }
@@ -1533,10 +1537,53 @@ function parseDocBody(body: string): {
     blocks.push({
       kind: "paragraph",
       text: cleanInlineMarkdown(paragraphLines.join(" ")),
+      inline: parseInlineMarkdown(paragraphLines.join(" ")),
     })
   }
 
   return { headings, blocks }
+}
+
+const inlineMarkdownPattern =
+  /(`[^`]+`)|(\*\*[^*]+\*\*)|(\*[^*]+\*)|(\[[^\]]+\]\([^)]*\))/g
+
+function parseInlineMarkdown(value: string): DocInlineNode[] {
+  const source = value.trim()
+  const nodes: DocInlineNode[] = []
+  let lastIndex = 0
+
+  inlineMarkdownPattern.lastIndex = 0
+  let match = inlineMarkdownPattern.exec(source)
+  while (match) {
+    if (match.index > lastIndex) {
+      nodes.push({ kind: "text", text: source.slice(lastIndex, match.index) })
+    }
+
+    const token = match[0]
+    if (token.startsWith("`")) {
+      nodes.push({ kind: "code", text: token.slice(1, -1) })
+    } else if (token.startsWith("**")) {
+      nodes.push({ kind: "strong", text: token.slice(2, -2) })
+    } else if (token.startsWith("*")) {
+      nodes.push({ kind: "em", text: token.slice(1, -1) })
+    } else {
+      const linkMatch = token.match(/^\[([^\]]+)\]\(([^)]*)\)$/)
+      nodes.push({
+        kind: "link",
+        text: linkMatch?.[1] || token,
+        href: linkMatch?.[2] || "#",
+      })
+    }
+
+    lastIndex = match.index + token.length
+    match = inlineMarkdownPattern.exec(source)
+  }
+
+  if (lastIndex < source.length) {
+    nodes.push({ kind: "text", text: source.slice(lastIndex) })
+  }
+
+  return nodes
 }
 
 function cleanInlineMarkdown(value: string): string {

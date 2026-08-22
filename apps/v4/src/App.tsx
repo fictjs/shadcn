@@ -4,6 +4,7 @@ import { colors as tailwindColors } from "../registry/_legacy-colors"
 import type {
   BlockEntry,
   DocContentBlock,
+  DocInlineNode,
   DocPage,
   DocSummary,
   ResolvedRoute,
@@ -2672,6 +2673,29 @@ function DocBlockList(props: { blocks: DocContentBlock[]; keyPrefix?: string }) 
   return props.blocks.map((block, index) => renderDocBlock(block, `${keyPrefix}-${index}`))
 }
 
+function DocInline(props: { nodes?: DocInlineNode[]; text: string }) {
+  const nodes = props.nodes
+  if (!nodes || nodes.length === 0) {
+    return props.text
+  }
+
+  return nodes.map((node, index) =>
+    node.kind === "strong" ? (
+      <strong key={`inline-${index}`}>{node.text}</strong>
+    ) : node.kind === "em" ? (
+      <em key={`inline-${index}`}>{node.text}</em>
+    ) : node.kind === "code" ? (
+      <code key={`inline-${index}`}>{node.text}</code>
+    ) : node.kind === "link" ? (
+      <a key={`inline-${index}`} href={node.href || "#"}>
+        {node.text}
+      </a>
+    ) : (
+      node.text
+    ),
+  )
+}
+
 function renderDocBlock(block: DocContentBlock, key: string) {
   return block.kind === "heading" ? (
     block.level === 1 ? (
@@ -2695,18 +2719,24 @@ function renderDocBlock(block: DocContentBlock, key: string) {
     block.ordered ? (
       <ol key={key}>
         {(block.items || []).map((item, itemIndex) => (
-          <li key={`${key}-item-${itemIndex}`}>{item}</li>
+          <li key={`${key}-item-${itemIndex}`}>
+            <DocInline nodes={block.itemsInline?.[itemIndex]} text={item} />
+          </li>
         ))}
       </ol>
     ) : (
       <ul key={key}>
         {(block.items || []).map((item, itemIndex) => (
-          <li key={`${key}-item-${itemIndex}`}>{item}</li>
+          <li key={`${key}-item-${itemIndex}`}>
+            <DocInline nodes={block.itemsInline?.[itemIndex]} text={item} />
+          </li>
         ))}
       </ul>
     )
   ) : block.kind === "blockquote" ? (
-    <blockquote key={key}>{block.text}</blockquote>
+    <blockquote key={key}>
+      <DocInline nodes={block.inline} text={block.text} />
+    </blockquote>
   ) : block.kind === "image" ? (
     <figure class="doc-image" key={key}>
       <img src={block.src || ""} alt={block.alt || block.text || "Documentation image"} loading="lazy" />
@@ -2725,7 +2755,9 @@ function renderDocBlock(block: DocContentBlock, key: string) {
   ) : block.kind === "component-preview" || block.kind === "component-source" ? (
     <DocComponentBlock block={untrack(() => block)} />
   ) : (
-    <p key={key}>{block.text}</p>
+    <p key={key}>
+      <DocInline nodes={block.inline} text={block.text} />
+    </p>
   )
 }
 
