@@ -1174,7 +1174,7 @@ function RTLExample() {
           <button
             type="button"
             data-direction="rtl"
-            class={direction === "rtl" ? "tasks-chip tasks-chip-active" : "tasks-chip"}
+            class={direction === "rtl" ? "rtl-toggle rtl-toggle-active" : "rtl-toggle"}
             onClick$={(event: MouseEvent) => {
               const target = event.currentTarget
               if (!(target instanceof HTMLButtonElement)) {
@@ -1194,7 +1194,7 @@ function RTLExample() {
           <button
             type="button"
             data-direction="ltr"
-            class={direction === "ltr" ? "tasks-chip tasks-chip-active" : "tasks-chip"}
+            class={direction === "ltr" ? "rtl-toggle rtl-toggle-active" : "rtl-toggle"}
             onClick$={(event: MouseEvent) => {
               const target = event.currentTarget
               if (!(target instanceof HTMLButtonElement)) {

@@ -7246,6 +7246,33 @@ a.ui-item:hover {
   background: color-mix(in oklab, var(--border) 92%, transparent);
 }
 
+.rtl-toggle {
+  display: inline-flex;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--background);
+  padding: 0 0.75rem;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.rtl-toggle:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.rtl-toggle-active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
 .rtl-preview-frame {
   border: 1px dashed color-mix(in oklab, var(--border) 92%, transparent);
   border-radius: 1rem;
