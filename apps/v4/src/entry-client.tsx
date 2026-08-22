@@ -30,6 +30,7 @@ async function initResumableClient(): Promise<void> {
   wireShowcaseMenus()
   wireShowcaseToggles()
   wireShowcaseMentions()
+  wireShowcaseSelects()
 
   await loadManifest()
   installResumableLoader({
@@ -641,6 +642,21 @@ function wireShowcaseMentions(): void {
     filterMentionList(root)
     syncMentionRoot(root)
   })
+}
+
+function wireShowcaseSelects(): void {
+  const syncSelect = (select: HTMLSelectElement): void => {
+    select.dataset.hasValue = select.value ? "true" : "false"
+  }
+
+  document.addEventListener("change", (event) => {
+    const target = event.target
+    if (target instanceof HTMLSelectElement && target.dataset.hasValue !== undefined) {
+      syncSelect(target)
+    }
+  })
+
+  document.querySelectorAll<HTMLSelectElement>("select[data-has-value]").forEach(syncSelect)
 }
 
 function wireClientFilters(): void {

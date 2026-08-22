@@ -2197,7 +2197,7 @@ function RootFieldDemoPreview() {
 function UiSelect(props: { id?: string; placeholder: string; options: string[] }) {
   return (
     <span class="ui-select-field">
-      <select class="ui-select" id={props.id} aria-label={props.placeholder}>
+      <select class="ui-select" id={props.id} aria-label={props.placeholder} data-has-value="false">
         <option value="">{props.placeholder}</option>
         {props.options.map((option) => (
           <option key={option} value={option}>
