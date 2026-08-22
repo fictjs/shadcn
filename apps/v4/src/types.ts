@@ -36,6 +36,7 @@ export interface DocContentBlock {
     | "tabs"
     | "component-preview"
     | "component-source"
+    | "component-list"
   text: string
   inline?: DocInlineNode[]
   id?: string
@@ -53,6 +54,7 @@ export interface DocContentBlock {
   code?: string
   styleName?: string
   variant?: string
+  links?: { title: string; href: string }[]
   direction?: "ltr" | "rtl"
 }
 

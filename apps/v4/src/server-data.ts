@@ -385,6 +385,8 @@ function getSiteCatalog(): SiteCatalog {
 
   const { sections: docNavigation, order: docOrder } = buildDocsNavigation(summaries)
 
+  applyComponentListBlocks(docsBySlug, docNavigation)
+
   const catalog: SiteCatalog = {
     docs: summaries,
     docsBySlug,
@@ -430,6 +432,31 @@ function toDocSummary(doc: DocPage | null | undefined): DocSummary | null {
     title: doc.title,
     description: doc.description,
     section: doc.section,
+  }
+}
+
+function applyComponentListBlocks(
+  docsBySlug: Map<string, DocPage>,
+  docNavigation: DocNavSection[],
+): void {
+  const componentsSection = docNavigation.reduce<DocNavSection | null>((widest, section) => {
+    if (!widest || section.items.length > widest.items.length) {
+      return section
+    }
+    return widest
+  }, null)
+
+  const links = (componentsSection?.items ?? []).map((item) => ({
+    title: item.title,
+    href: item.href,
+  }))
+
+  for (const doc of docsBySlug.values()) {
+    for (const block of doc.blocks) {
+      if (block.kind === "component-list") {
+        block.links = links
+      }
+    }
   }
 }
 
@@ -966,6 +993,10 @@ function normalizeMdxBody(body: string): string {
 function normalizeMdxStructures(value: string): string {
   let normalized = value
 
+  normalized = replaceSelfClosingMdxTag(normalized, "ComponentsList", () => {
+    return `\n${createDocMarker("component-list", {})}\n`
+  })
+
   normalized = replaceSelfClosingMdxTag(normalized, "ComponentPreview", (attributes) => {
     const name = readMdxAttribute(attributes, "name") || "component-preview"
     const styleName = readMdxAttribute(attributes, "styleName") || "new-york-v4"
@@ -1298,6 +1329,15 @@ function parseDocBody(body: string): {
     const trimmed = line.trim()
 
     if (!trimmed) {
+      index += 1
+      continue
+    }
+
+    if (trimmed.startsWith(":::component-list")) {
+      blocks.push({
+        kind: "component-list",
+        text: "",
+      })
       index += 1
       continue
     }

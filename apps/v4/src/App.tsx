@@ -3279,6 +3279,14 @@ function renderDocBlock(block: DocContentBlock, key: string) {
     </section>
   ) : block.kind === "tabs" ? (
     <DocTabsBlock panels={untrack(() => block.panels || [])} blockKey={key} />
+  ) : block.kind === "component-list" ? (
+    <div class="doc-component-list" key={key}>
+      {(block.links || []).map((link) => (
+        <a class="doc-component-list-item" href={link.href} key={link.href}>
+          {link.title}
+        </a>
+      ))}
+    </div>
   ) : block.kind === "component-preview" || block.kind === "component-source" ? (
     <DocComponentBlock block={untrack(() => block)} />
   ) : (

@@ -1731,6 +1731,31 @@ h1 {
   border-top: 1px solid var(--border);
 }
 
+.doc-component-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem 1rem;
+  margin-top: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .doc-component-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.doc-body .doc-component-list a {
+  color: inherit;
+  font-size: 1rem;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.doc-body .doc-component-list a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 .doc-body a {
   color: inherit;
   font-weight: 500;
