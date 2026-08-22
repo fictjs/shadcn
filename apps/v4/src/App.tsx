@@ -4829,12 +4829,24 @@ function BlocksPage(props: { route: ResolvedRoute }) {
           <article class="block-display-card" key={block.name}>
             <div class="block-display-toolbar">
               <div class="block-display-tabs" role="tablist" aria-label="Block view">
-                <span class="block-display-tab is-active" role="tab" aria-selected="true">
+                <button
+                  type="button"
+                  class="block-display-tab is-active"
+                  role="tab"
+                  aria-selected="true"
+                  data-block-view="preview"
+                >
                   Preview
-                </span>
-                <span class="block-display-tab" role="tab" aria-selected="false">
+                </button>
+                <button
+                  type="button"
+                  class="block-display-tab"
+                  role="tab"
+                  aria-selected="false"
+                  data-block-view="code"
+                >
                   Code
-                </span>
+                </button>
               </div>
               <span class="block-display-divider" aria-hidden="true"></span>
               <a class="block-display-description" href={`#${block.name}`}>
@@ -4910,6 +4922,12 @@ function BlocksPage(props: { route: ResolvedRoute }) {
               </div>
             </div>
             <BlockPreviewSurface block={block} />
+            <div class="block-code-view" data-block-code data-block-name={block.name} hidden>
+              <div class="block-code-files" data-block-code-files role="tablist" aria-label="Block files"></div>
+              <pre class="block-code-source" data-block-code-source>
+                <code>Loading source...</code>
+              </pre>
+            </div>
           </article>
         ))}
       </div>

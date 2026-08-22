@@ -33,6 +33,7 @@ async function initResumableClient(): Promise<void> {
   wireShowcaseSelects()
   wireColorFormatSelectors()
   wireShowcaseTooltips()
+  wireBlockViewer()
 
   await loadManifest()
   installResumableLoader({
@@ -912,6 +913,124 @@ function wireShowcaseTooltips(): void {
     }
   })
   window.addEventListener("scroll", hideTooltip, true)
+}
+
+function wireBlockViewer(): void {
+  const cache = new Map<string, Array<{ path: string; content: string }>>()
+
+  const renderFile = (card: HTMLElement, index: number): void => {
+    const name = card.querySelector<HTMLElement>("[data-block-code]")?.dataset.blockName
+    const files = name ? cache.get(name) : undefined
+    const source = card.querySelector<HTMLElement>("[data-block-code-source] code")
+    if (!files || !source || !files[index]) {
+      return
+    }
+
+    source.textContent = files[index].content
+    card.querySelectorAll<HTMLElement>("[data-block-code-file]").forEach((button, buttonIndex) => {
+      const active = buttonIndex === index
+      button.classList.toggle("is-active", active)
+      button.setAttribute("aria-selected", active ? "true" : "false")
+    })
+  }
+
+  const loadFiles = async (card: HTMLElement): Promise<void> => {
+    const panel = card.querySelector<HTMLElement>("[data-block-code]")
+    const list = card.querySelector<HTMLElement>("[data-block-code-files]")
+    const name = panel?.dataset.blockName
+    if (!panel || !list || !name) {
+      return
+    }
+
+    if (!cache.has(name)) {
+      try {
+        const response = await fetch(`/r/styles/new-york-v4/${name}.json`)
+        if (!response.ok) {
+          throw new Error(String(response.status))
+        }
+        const payload = (await response.json()) as {
+          files?: Array<{ path?: string; content?: string }>
+        }
+        cache.set(
+          name,
+          (payload.files ?? [])
+            .filter((file) => typeof file.content === "string")
+            .map((file) => ({ path: file.path ?? "", content: file.content ?? "" })),
+        )
+      } catch {
+        cache.set(name, [])
+      }
+    }
+
+    const files = cache.get(name) ?? []
+    if (files.length === 0) {
+      const source = card.querySelector<HTMLElement>("[data-block-code-source] code")
+      if (source) {
+        source.textContent = "Source is not available for this block."
+      }
+      return
+    }
+
+    if (list.childElementCount === 0) {
+      list.replaceChildren(
+        ...files.map((file, index) => {
+          const button = document.createElement("button")
+          button.type = "button"
+          button.className = index === 0 ? "block-code-file is-active" : "block-code-file"
+          button.dataset.blockCodeFile = String(index)
+          button.setAttribute("role", "tab")
+          button.setAttribute("aria-selected", index === 0 ? "true" : "false")
+          button.textContent = file.path.split("/").pop() ?? file.path
+          button.title = file.path
+          return button
+        }),
+      )
+    }
+
+    renderFile(card, 0)
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const fileButton = target.closest<HTMLElement>("[data-block-code-file]")
+    if (fileButton) {
+      const card = fileButton.closest<HTMLElement>(".block-display-card")
+      if (card) {
+        renderFile(card, Number.parseInt(fileButton.dataset.blockCodeFile ?? "0", 10) || 0)
+      }
+      return
+    }
+
+    const tab = target.closest<HTMLElement>("[data-block-view]")
+    const card = tab?.closest<HTMLElement>(".block-display-card")
+    if (!tab || !card) {
+      return
+    }
+
+    const view = tab.dataset.blockView
+    card.querySelectorAll<HTMLElement>("[data-block-view]").forEach((button) => {
+      const active = button === tab
+      button.classList.toggle("is-active", active)
+      button.setAttribute("aria-selected", active ? "true" : "false")
+    })
+
+    const preview = card.querySelector<HTMLElement>(".block-preview-stage")
+    const code = card.querySelector<HTMLElement>("[data-block-code]")
+    if (preview) {
+      preview.hidden = view === "code"
+    }
+    if (code) {
+      code.hidden = view !== "code"
+    }
+
+    if (view === "code") {
+      void loadFiles(card)
+    }
+  })
 }
 
 function wireClientFilters(): void {

@@ -4809,6 +4809,9 @@ a.ui-item:hover {
 }
 
 .block-display-tab {
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -4899,6 +4902,70 @@ a.ui-item:hover {
 
 .block-display-open.button {
   height: 2rem;
+}
+
+.block-code-view {
+  display: flex;
+  width: 100%;
+  min-height: 20rem;
+  max-height: 40rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--code);
+}
+
+.block-code-view[hidden] {
+  display: none;
+}
+
+.block-code-files {
+  display: flex;
+  flex: none;
+  width: 14rem;
+  flex-direction: column;
+  gap: 0.125rem;
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+  padding: 0.5rem;
+}
+
+.block-code-file {
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--muted-foreground);
+  padding: 0.25rem 0.5rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.block-code-file:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.block-code-file.is-active {
+  background: var(--accent);
+  color: var(--foreground);
+}
+
+.block-code-source {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow: auto;
+  padding: 1rem;
+  color: var(--code-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.5rem;
+  tab-size: 2;
 }
 
 .block-preview-stage {
