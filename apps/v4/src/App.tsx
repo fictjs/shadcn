@@ -3640,8 +3640,8 @@ function ExamplesPage(props: { route: ResolvedRoute; activeThemeName: string; on
   }
 
   return (
-    <section class="stack-gap container">
-      <div class="route-page-header">
+    <section class="stack-gap">
+      <div class="route-page-header container examples-hero">
         <AnnouncementBadge />
         <h1>The Foundation for your Design System</h1>
         <p class="lead">
@@ -3658,7 +3658,7 @@ function ExamplesPage(props: { route: ResolvedRoute; activeThemeName: string; on
         </div>
       </div>
 
-      <div class="route-nav-row">
+      <div class="route-nav-row container">
         <nav class="section-nav" aria-label="Examples navigation">
           <a class={props.route.exampleSlug === null ? "section-nav-link-active" : ""} href="/">
             Examples
@@ -3677,9 +3677,10 @@ function ExamplesPage(props: { route: ResolvedRoute; activeThemeName: string; on
         <ThemeSelectorControl themes={props.route.themes} activeThemeName={props.activeThemeName} onThemeSelect={props.onThemeChange} />
       </div>
 
-      <div class="route-theme-container" data-theme-name={props.activeThemeName} style={routeThemeStyle}>
+      <div class="section-soft example-preview-section">
+      <div class="container route-theme-container" data-theme-name={props.activeThemeName} style={routeThemeStyle}>
       {activeShowcase ? (
-        <article class="card example-detail-card">
+        <article class="example-detail-card">
           <div class="example-showcase-surface">
             <div class="example-mobile-gallery">
               <ColorModeImage
@@ -3736,6 +3737,7 @@ function ExamplesPage(props: { route: ResolvedRoute; activeThemeName: string; on
           </ul>
         </>
       )}
+      </div>
       </div>
     </section>
   )

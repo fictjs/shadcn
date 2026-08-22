@@ -2301,8 +2301,24 @@ h1 {
   padding: 2rem 1.5rem;
 }
 
-.home-hero-card h1 {
+.home-hero-card h1,
+.examples-hero h1 {
   max-width: 56rem;
+}
+
+.example-preview-section {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding-bottom: 1.5rem;
+}
+
+.example-preview-section .route-theme-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1rem;
+  scroll-margin-top: 5rem;
 }
 
 @media (min-width: 768px) {
@@ -2372,7 +2388,23 @@ h1 {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
-.example-detail-card,
+.example-detail-card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--background);
+  background-clip: padding-box;
+}
+
+@media (min-width: 1280px) {
+  .example-detail-card {
+    border-radius: var(--radius-xl);
+  }
+}
+
 .example-detail-head {
   display: grid;
   gap: 0.5rem;
