@@ -18,6 +18,7 @@ import {
   TablerTrendingUpIcon,
   TablerUsersIcon,
 } from "./example-icons"
+import { visitorChartData } from "./example-data"
 
 interface LiveExamplePageProps {
   slug: string
@@ -153,6 +154,232 @@ export function LiveExamplePage(props: LiveExamplePageProps) {
     : <ExampleFallback slug={props.slug} />
 }
 
+const CHART_VIEW_WIDTH = 980
+const CHART_VIEW_HEIGHT = 250
+const CHART_PLOT_LEFT = 5
+const CHART_PLOT_RIGHT = 975
+const CHART_PLOT_TOP = 5
+const CHART_PLOT_BOTTOM = 215
+const CHART_TICK_BASELINE = 229
+const CHART_TICK_GAP = 32
+const CHART_TICK_CHAR_WIDTH = 6.6
+const CHART_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+const CHART_NICE_STEPS = [1, 1.5, 2, 2.5, 3, 4, 5, 6, 7.5, 8, 10]
+
+/** Matches the y-axis domain recharts derives for a 5-tick axis starting at zero. */
+function niceChartMax(max: number): number {
+  if (max <= 0) {
+    return 1
+  }
+
+  const magnitude = Math.pow(10, Math.floor(Math.log10(max)) - 1)
+  for (const scale of CHART_NICE_STEPS) {
+    const step = scale * magnitude
+    if (step * 4 >= max) {
+      return step * 4
+    }
+  }
+
+  return max
+}
+
+/**
+ * Natural cubic spline control points, matching d3-shape's curveNatural — the
+ * curve recharts renders for `type="natural"`.
+ */
+function naturalControlPoints(values: number[]): number[][] {
+  const n = values.length - 1
+  const a: number[] = new Array(n)
+  const b: number[] = new Array(n)
+  const r: number[] = new Array(n)
+
+  a[0] = 0
+  b[0] = 2
+  r[0] = values[0] + 2 * values[1]
+
+  for (let i = 1; i < n - 1; i += 1) {
+    a[i] = 1
+    b[i] = 4
+    r[i] = 4 * values[i] + 2 * values[i + 1]
+  }
+
+  a[n - 1] = 2
+  b[n - 1] = 7
+  r[n - 1] = 8 * values[n - 1] + values[n]
+
+  for (let i = 1; i < n; i += 1) {
+    const m = a[i] / b[i - 1]
+    b[i] -= m
+    r[i] -= m * r[i - 1]
+  }
+
+  a[n - 1] = r[n - 1] / b[n - 1]
+  for (let i = n - 2; i >= 0; i -= 1) {
+    a[i] = (r[i] - a[i + 1]) / b[i]
+  }
+
+  b[n - 1] = (values[n] + a[n - 1]) / 2
+  for (let i = 0; i < n - 1; i += 1) {
+    b[i] = 2 * values[i + 1] - a[i + 1]
+  }
+
+  return [a, b]
+}
+
+/** Just the cubic segments, so a curve can be appended to an open subpath. */
+function naturalSplineCurves(xs: number[], ys: number[]): string {
+  if (xs.length < 2) {
+    return ""
+  }
+
+  const cx = naturalControlPoints(xs)
+  const cy = naturalControlPoints(ys)
+  let curves = ""
+
+  for (let i = 0; i < xs.length - 1; i += 1) {
+    curves += `C${cx[0][i]},${cy[0][i]},${cx[1][i]},${cy[1][i]},${xs[i + 1]},${ys[i + 1]}`
+  }
+
+  return curves
+}
+
+function naturalSplinePath(xs: number[], ys: number[]): string {
+  if (xs.length === 0) {
+    return ""
+  }
+
+  return `M${xs[0]},${ys[0]}${naturalSplineCurves(xs, ys)}`
+}
+
+function formatChartTick(date: string): string {
+  const month = CHART_MONTHS[Number(date.slice(5, 7)) - 1]
+  return `${month} ${Number(date.slice(8, 10))}`
+}
+
+interface ChartTick {
+  x: number
+  label: string
+}
+
+/** Mirrors the recharts `minTickGap` pass, including the clamped trailing tick. */
+function buildChartTicks(dates: string[], xs: number[]): ChartTick[] {
+  const lastIndex = dates.length - 1
+  const lastLabel = formatChartTick(dates[lastIndex])
+  const lastHalf = (lastLabel.length * CHART_TICK_CHAR_WIDTH) / 2
+  const lastX = Math.min(xs[lastIndex], CHART_VIEW_WIDTH - lastHalf)
+  const ticks: ChartTick[] = []
+  let previousRight = Number.NEGATIVE_INFINITY
+
+  for (let i = 0; i < lastIndex; i += 1) {
+    const label = formatChartTick(dates[i])
+    const half = (label.length * CHART_TICK_CHAR_WIDTH) / 2
+    const left = xs[i] - half
+    const right = xs[i] + half
+
+    if (left < 0 || left - previousRight < CHART_TICK_GAP) {
+      continue
+    }
+
+    if (right + CHART_TICK_GAP > lastX - lastHalf) {
+      continue
+    }
+
+    ticks.push({ x: xs[i], label })
+    previousRight = right
+  }
+
+  ticks.push({ x: lastX, label: lastLabel })
+  return ticks
+}
+
+interface VisitorChartModel {
+  mobileLine: string
+  mobileArea: string
+  stackedLine: string
+  stackedArea: string
+  gridYs: number[]
+  ticks: ChartTick[]
+}
+
+/**
+ * All chart geometry is derived here, outside any reactive scope: the compiler
+ * flags dynamic array indexing inside a component body (FICT-H).
+ */
+function buildVisitorChart(days: number): VisitorChartModel {
+  const points = visitorChartData.slice(-(days + 1))
+  const span = points.length - 1
+  const plotWidth = CHART_PLOT_RIGHT - CHART_PLOT_LEFT
+  const plotHeight = CHART_PLOT_BOTTOM - CHART_PLOT_TOP
+
+  const xs = points.map((_, index) => CHART_PLOT_LEFT + (index * plotWidth) / span)
+  const domainMax = niceChartMax(points.reduce((max, point) => Math.max(max, point.desktop + point.mobile), 0))
+  const scaleY = (value: number) => CHART_PLOT_BOTTOM - (value / domainMax) * plotHeight
+
+  const mobileYs = points.map((point) => scaleY(point.mobile))
+  const stackedYs = points.map((point) => scaleY(point.mobile + point.desktop))
+
+  const mobileLine = naturalSplinePath(xs, mobileYs)
+  const stackedLine = naturalSplinePath(xs, stackedYs)
+  const firstX = xs[0]
+  const lastX = xs[span]
+
+  // The stacked band is closed along the mobile curve walked back right-to-left.
+  const mobileReturn = naturalSplineCurves(xs.slice().reverse(), mobileYs.slice().reverse())
+
+  return {
+    mobileLine,
+    mobileArea: `${mobileLine}L${lastX},${CHART_PLOT_BOTTOM}L${firstX},${CHART_PLOT_BOTTOM}Z`,
+    stackedLine,
+    stackedArea: `${stackedLine}L${lastX},${mobileYs[span]}${mobileReturn}Z`,
+    gridYs: [0, 1, 2, 3, 4].map((index) => CHART_PLOT_BOTTOM - (index * plotHeight) / 4),
+    ticks: buildChartTicks(points.map((point) => point.date), xs),
+  }
+}
+
+function VisitorsAreaChart(props: { range: DashboardRange }) {
+  const range = props.range
+  const chart = buildVisitorChart(range === "90d" ? 90 : range === "30d" ? 30 : 7)
+
+  return (
+    <svg
+      class="dashboard-chart"
+      viewBox={`0 0 ${CHART_VIEW_WIDTH} ${CHART_VIEW_HEIGHT}`}
+      role="img"
+      aria-label="Total visitors chart"
+    >
+      <defs>
+        <linearGradient id="dashboardFillDesktop" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="5%" stop-color="var(--primary)" stop-opacity="1" />
+          <stop offset="95%" stop-color="var(--primary)" stop-opacity="0.1" />
+        </linearGradient>
+        <linearGradient id="dashboardFillMobile" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="5%" stop-color="var(--primary)" stop-opacity="0.8" />
+          <stop offset="95%" stop-color="var(--primary)" stop-opacity="0.1" />
+        </linearGradient>
+      </defs>
+
+      <g class="dashboard-chart-grid">
+        {chart.gridYs.map((y) => (
+          <line key={y} x1={CHART_PLOT_LEFT} y1={y} x2={CHART_PLOT_RIGHT} y2={y} />
+        ))}
+      </g>
+
+      <path d={chart.mobileArea} fill="url(#dashboardFillMobile)" stroke="none" />
+      <path d={chart.mobileLine} fill="none" stroke="var(--primary)" stroke-width="1" />
+      <path d={chart.stackedArea} fill="url(#dashboardFillDesktop)" stroke="none" />
+      <path d={chart.stackedLine} fill="none" stroke="var(--primary)" stroke-width="1" />
+
+      <g class="dashboard-chart-ticks">
+        {chart.ticks.map((tick) => (
+          <text key={tick.label} x={tick.x} y={CHART_TICK_BASELINE} text-anchor="middle">
+            {tick.label}
+          </text>
+        ))}
+      </g>
+    </svg>
+  )
+}
+
 function DashboardTrendIcon(props: { down: boolean }) {
   return props.down ? <TablerTrendingDownIcon /> : <TablerTrendingUpIcon />
 }
@@ -174,14 +401,9 @@ function DashboardNavIcon(props: { name: string }) {
 }
 
 function DashboardExample() {
-  let timeRange = $state<DashboardRange>("90d")
+  let timeRange = $state<DashboardRange>("7d")
   let activeView = $state<DashboardView>("outline")
 
-  const chartLabel = timeRange === "90d"
-    ? "Total for the last 3 months"
-    : timeRange === "30d"
-      ? "Total for the last 30 days"
-      : "Total for the last 7 days"
   const activeViewLabel = activeView === "past-performance"
     ? "past performance"
     : activeView === "key-personnel"
@@ -294,9 +516,9 @@ function DashboardExample() {
           <div class="dashboard-chart-head">
             <div>
               <p class="dashboard-chart-title">Total Visitors</p>
-              <p class="dashboard-chart-description">{chartLabel}</p>
+              <p class="dashboard-chart-description">Total for the last 3 months</p>
             </div>
-            <div class="dashboard-chart-actions" role="tablist" aria-label="Dashboard chart range">
+            <div class="dashboard-range-group" role="group" aria-label="Dashboard chart range">
               {[
                 ["90d", "Last 3 months"],
                 ["30d", "Last 30 days"],
@@ -306,7 +528,9 @@ function DashboardExample() {
                   type="button"
                   key={entry[0]}
                   data-range={entry[0]}
-                  class={timeRange === entry[0] ? "dashboard-range-chip dashboard-range-chip-active" : "dashboard-range-chip"}
+                  data-state={timeRange === entry[0] ? "on" : "off"}
+                  aria-pressed={timeRange === entry[0]}
+                  class="dashboard-range-item"
                   onClick={(event: MouseEvent) => {
                     const target = event.currentTarget
                     if (!(target instanceof HTMLButtonElement)) {
@@ -326,15 +550,9 @@ function DashboardExample() {
               ))}
             </div>
           </div>
-          <svg class="dashboard-chart" viewBox="0 0 640 280" role="img" aria-label="Visitors chart">
-            <path d="M40 210 L130 168 L220 184 L310 112 L400 130 L490 72 L580 104 L580 240 L40 240 Z" fill="rgba(15, 23, 42, 0.08)" />
-            <path d="M40 210 L130 168 L220 184 L310 112 L400 130 L490 72 L580 104" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-            <g class="dashboard-chart-guides">
-              <line x1="40" y1="80" x2="580" y2="80" />
-              <line x1="40" y1="140" x2="580" y2="140" />
-              <line x1="40" y1="200" x2="580" y2="200" />
-            </g>
-          </svg>
+          <div class="dashboard-chart-body">
+            <VisitorsAreaChart range={timeRange} />
+          </div>
         </article>
 
         <section class="dashboard-outline-card">

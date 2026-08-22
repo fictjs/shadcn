@@ -5989,7 +5989,6 @@ a.ui-item:hover {
 }
 
 .dashboard-stat-badge,
-.dashboard-range-chip,
 .dashboard-view-tab,
 .dashboard-outline-button,
 .dashboard-outline-status {
@@ -6009,7 +6008,6 @@ a.ui-item:hover {
   padding: 0.28rem 0.55rem;
 }
 
-.dashboard-range-chip,
 .dashboard-view-tab,
 .dashboard-outline-button {
   padding: 0.45rem 0.75rem;
@@ -6026,7 +6024,6 @@ a.ui-item:hover {
 }
 
 .dashboard-outline-status-in-progress,
-.dashboard-range-chip-active,
 .dashboard-view-tab-active,
 .dashboard-outline-button-primary {
   background: var(--foreground);
@@ -6068,7 +6065,6 @@ a.ui-item:hover {
   grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.9fr);
 }
 
-.dashboard-chart-card,
 .dashboard-table-card,
 .tasks-table-card,
 .playground-panel,
@@ -6077,17 +6073,64 @@ a.ui-item:hover {
   padding: 1rem;
 }
 
+.dashboard-chart-card {
+  padding: 1.5rem 0;
+}
+
 .dashboard-chart-head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.85rem;
+  padding: 0 1.5rem;
 }
 
-.dashboard-chart-actions,
 .dashboard-view-tabs,
 .dashboard-outline-actions {
   flex-wrap: wrap;
+}
+
+.dashboard-range-group {
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-range-item {
+  display: inline-flex;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  background: transparent;
+  padding: 0 1rem;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.dashboard-range-item:first-child {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.dashboard-range-item:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.dashboard-range-item + .dashboard-range-item {
+  border-left-width: 0;
+}
+
+.dashboard-range-item:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.dashboard-range-item[data-state="on"] {
+  background: var(--accent);
+  color: var(--accent-foreground);
 }
 
 .dashboard-chart-chip {
@@ -6102,11 +6145,24 @@ a.ui-item:hover {
   font-weight: 600;
 }
 
+.dashboard-chart-body {
+  padding: 1.5rem 1.5rem 0;
+}
+
 .dashboard-chart {
+  display: block;
   width: 100%;
   height: auto;
-  margin-top: 1rem;
-  color: var(--primary);
+}
+
+.dashboard-chart-grid line {
+  stroke: color-mix(in oklab, var(--border) 50%, transparent);
+  stroke-width: 1;
+}
+
+.dashboard-chart-ticks text {
+  fill: var(--muted-foreground);
+  font-size: 12px;
 }
 
 .dashboard-outline-card {
@@ -6161,11 +6217,6 @@ a.ui-item:hover {
   border: 1px dashed color-mix(in oklab, var(--border) 88%, transparent);
   border-radius: 0.9rem;
   text-transform: capitalize;
-}
-
-.dashboard-chart-guides line {
-  stroke: color-mix(in oklab, var(--border) 92%, transparent);
-  stroke-width: 1;
 }
 
 .dashboard-sales-list {
