@@ -2941,6 +2941,11 @@ h1 {
   color: var(--primary-foreground);
 }
 
+.ui-input-group-button[data-toggle="favorite"][data-toggle-active="true"] svg {
+  fill: var(--primary);
+  stroke: var(--primary);
+}
+
 .ui-input-group-button-primary:hover {
   background: color-mix(in oklab, var(--primary) 90%, transparent);
   color: var(--primary-foreground);

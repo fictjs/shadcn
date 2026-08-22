@@ -2526,7 +2526,14 @@ function RootInputGroupButtonPreview() {
         <span class="ui-input-group-addon root-addon-flush">https://</span>
         <input class="ui-input-group-input root-input-flush" aria-label="Input Secure" />
         <span class="ui-input-group-addon">
-          <button class="ui-input-group-button ui-input-group-button-icon" type="button" aria-label="Favorite">
+          <button
+            class="ui-input-group-button ui-input-group-button-icon"
+            type="button"
+            aria-label="Favorite"
+            aria-pressed="false"
+            data-toggle="favorite"
+            data-toggle-active="false"
+          >
             <StarIcon />
           </button>
         </span>

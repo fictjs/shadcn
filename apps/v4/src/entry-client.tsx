@@ -28,6 +28,7 @@ async function initResumableClient(): Promise<void> {
   wireShowcaseSliders()
   wireShowcaseCounters()
   wireShowcaseMenus()
+  wireShowcaseToggles()
 
   await loadManifest()
   installResumableLoader({
@@ -447,6 +448,33 @@ function wireShowcaseMenus(): void {
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       closeShowcaseMenus()
+    }
+  })
+}
+
+function wireShowcaseToggles(): void {
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const toggle = target.closest<HTMLElement>("[data-toggle]")
+    if (!toggle) {
+      return
+    }
+
+    const nextActive = toggle.dataset.toggleActive !== "true"
+    toggle.dataset.toggleActive = nextActive ? "true" : "false"
+    toggle.setAttribute("aria-pressed", nextActive ? "true" : "false")
+
+    if (toggle.dataset.toggle === "voice") {
+      const group = toggle.closest<HTMLElement>(".ui-input-group")
+      const input = group?.querySelector<HTMLInputElement>("input")
+      if (input) {
+        input.disabled = nextActive
+        input.placeholder = nextActive ? "Record and send audio..." : "Send a message..."
+      }
     }
   })
 }
