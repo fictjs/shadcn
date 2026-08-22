@@ -34,6 +34,7 @@ async function initResumableClient(): Promise<void> {
   wireColorFormatSelectors()
   wireShowcaseTooltips()
   wireBlockViewer()
+  wireChartViewer()
 
   await loadManifest()
   installResumableLoader({
@@ -1030,6 +1031,60 @@ function wireBlockViewer(): void {
     if (view === "code") {
       void loadFiles(card)
     }
+  })
+}
+
+function wireChartViewer(): void {
+  const cache = new Map<string, string>()
+
+  document.addEventListener("click", async (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const toggle = target.closest<HTMLElement>("[data-chart-code-toggle]")
+    const card = toggle?.closest<HTMLElement>(".chart-display-card")
+    const panel = card?.querySelector<HTMLElement>("[data-chart-code]")
+    if (!toggle || !card || !panel) {
+      return
+    }
+
+    const nextOpen = panel.hidden
+    panel.hidden = !nextOpen
+    toggle.setAttribute("aria-expanded", nextOpen ? "true" : "false")
+
+    const stage = card.querySelector<HTMLElement>(".chart-preview-stage")
+    if (stage) {
+      stage.hidden = nextOpen
+    }
+
+    if (!nextOpen) {
+      return
+    }
+
+    const name = panel.dataset.chartName
+    const source = panel.querySelector<HTMLElement>("[data-chart-code-source] code")
+    if (!name || !source) {
+      return
+    }
+
+    if (!cache.has(name)) {
+      try {
+        const response = await fetch(`/r/styles/new-york-v4/${name}.json`)
+        if (!response.ok) {
+          throw new Error(String(response.status))
+        }
+        const payload = (await response.json()) as {
+          files?: Array<{ content?: string }>
+        }
+        cache.set(name, payload.files?.[0]?.content ?? "")
+      } catch {
+        cache.set(name, "")
+      }
+    }
+
+    source.textContent = cache.get(name) || "Source is not available for this chart."
   })
 }
 

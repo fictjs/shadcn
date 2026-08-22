@@ -4718,12 +4718,22 @@ function ChartsPage(props: { route: ResolvedRoute; activeThemeName: string; onTh
                   <CheckIcon class="copy-icon-done" />
                 </button>
                 <span class="chart-display-divider" aria-hidden="true"></span>
-                <a class="button button-outline chart-display-button" href="/docs/components/chart">
+                <button
+                  type="button"
+                  class="button button-outline chart-display-button"
+                  data-chart-code-toggle
+                  aria-expanded="false"
+                >
                   View Code
-                </a>
+                </button>
               </div>
             </div>
             <ChartPreviewSurface chartId={chart.id} />
+            <div class="chart-code-view" data-chart-code data-chart-name={chart.id} hidden>
+              <pre class="chart-code-source" data-chart-code-source>
+                <code>Loading source...</code>
+              </pre>
+            </div>
           </article>
         ))}
         {emptySlots.map((slot) => (

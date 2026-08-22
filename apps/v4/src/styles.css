@@ -996,7 +996,33 @@ a {
 }
 
 .create-preview-stage-block .block-preview-stage,
-.create-preview-stage-chart .chart-preview-stage {
+.create-preview-stage-chart .chart-code-view {
+  display: block;
+  width: 100%;
+  max-height: 32rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--code);
+}
+
+.chart-code-view[hidden] {
+  display: none;
+}
+
+.chart-code-source {
+  margin: 0;
+  max-height: 32rem;
+  overflow: auto;
+  padding: 1rem;
+  color: var(--code-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.5rem;
+  tab-size: 2;
+}
+
+.chart-preview-stage {
   margin: 0 auto;
 }
 
