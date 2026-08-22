@@ -431,8 +431,10 @@ test.describe("shadcn v4 site", () => {
 
     await expect(page.locator(".auth-login-link")).toContainText("Login")
     await expect(page.locator(".auth-form-shell h3")).toContainText("Create an account")
-    await expect(page.locator(".auth-provider-button")).toHaveCount(2)
+    await expect(page.locator(".auth-provider-button")).toHaveCount(1)
+    await expect(page.locator(".auth-provider-button")).toContainText("GitHub")
     await expect(page.getByPlaceholder("name@example.com")).toBeVisible()
+    await expect(page.getByRole("button", { name: "Sign In with Email" })).toBeVisible()
 
     await page.goto("/examples/rtl")
 
