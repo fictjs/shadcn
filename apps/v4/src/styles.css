@@ -5715,10 +5715,7 @@ a.ui-item:hover {
   color: var(--muted-foreground);
 }
 
-.dashboard-chart-description,
-.dashboard-outline-footer,
-.dashboard-outline-placeholder,
-.dashboard-outline-table td {
+.dashboard-chart-description {
   color: var(--muted-foreground);
 }
 
@@ -5742,9 +5739,7 @@ a.ui-item:hover {
   font-weight: 600;
 }
 
-.dashboard-chart-description,
-.dashboard-outline-footer,
-.dashboard-outline-placeholder {
+.dashboard-chart-description {
   font-size: 0.82rem;
   line-height: 1.45;
 }
@@ -5977,58 +5972,14 @@ a.ui-item:hover {
   line-height: 1.25rem;
 }
 
-.dashboard-outline-toolbar,
-.dashboard-outline-actions,
-.dashboard-view-tabs,
-.dashboard-chart-actions,
-.dashboard-outline-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
-.dashboard-stat-badge,
-.dashboard-view-tab,
-.dashboard-outline-button,
-.dashboard-outline-status {
-  /* shared chip shell; per-component sizing follows below */
+.dashboard-stat-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+  border: 1px solid var(--border);
   border-radius: 999px;
-  background: color-mix(in oklab, var(--muted) 58%, var(--card));
+  background: transparent;
   color: var(--foreground);
-  font-size: 0.74rem;
-  font-weight: 600;
-}
-
-.dashboard-outline-status {
-  padding: 0.28rem 0.55rem;
-}
-
-.dashboard-view-tab,
-.dashboard-outline-button {
-  padding: 0.45rem 0.75rem;
-  font: inherit;
-  cursor: pointer;
-}
-
-.dashboard-outline-status-not-started {
-  background: color-mix(in oklab, var(--muted) 72%, var(--card));
-}
-
-.dashboard-outline-status-done {
-  background: color-mix(in oklab, #16a34a 18%, var(--card));
-}
-
-.dashboard-outline-status-in-progress,
-.dashboard-view-tab-active,
-.dashboard-outline-button-primary {
-  background: var(--foreground);
-  border-color: var(--foreground);
-  color: var(--background);
 }
 
 .dashboard-stat-trend {
@@ -6052,11 +6003,6 @@ a.ui-item:hover {
 .dashboard-chart-head h4 {
   margin-top: 0.4rem;
   font-size: 1.5rem;
-}
-
-.dashboard-chart-card,
-.dashboard-outline-card {
-  margin: 0 1.25rem;
 }
 
 .dashboard-content-grid {
@@ -6083,11 +6029,6 @@ a.ui-item:hover {
   justify-content: space-between;
   gap: 0.85rem;
   padding: 0 1.5rem;
-}
-
-.dashboard-view-tabs,
-.dashboard-outline-actions {
-  flex-wrap: wrap;
 }
 
 .dashboard-range-group {
@@ -6165,58 +6106,362 @@ a.ui-item:hover {
   font-size: 12px;
 }
 
-.dashboard-outline-card {
-  display: grid;
-  gap: 1rem;
+.dashboard-table-block {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1.5rem;
+}
+
+.dashboard-table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0 1.5rem;
+}
+
+.dashboard-tabs-list {
+  display: inline-flex;
+  height: 2.25rem;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+  background: var(--muted);
+  padding: 3px;
+  color: var(--muted-foreground);
+}
+
+.dashboard-tabs-trigger {
+  display: inline-flex;
+  height: calc(2.25rem - 6px);
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  padding: 0.25rem 0.5rem;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.dashboard-tabs-trigger[data-state="active"] {
+  border-color: var(--border);
+  background: var(--background);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+}
+
+.dashboard-tab-badge {
+  display: inline-flex;
+  width: 1.25rem;
+  height: 1.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--muted-foreground) 30%, transparent);
+  padding: 0.125rem 0.25rem;
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.dashboard-table-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard-outline-button {
+  display: inline-flex;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
   border: 1px solid var(--border);
-  border-radius: 1rem;
-  background: var(--card);
-  box-shadow: 0 1px 2px color-mix(in oklab, var(--foreground) 8%, transparent);
-  padding: 1rem;
+  border-radius: var(--radius-md);
+  background: var(--background);
+  padding: 0 0.625rem;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
 }
 
-.dashboard-outline-table-wrap {
-  overflow: auto;
-  border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
-  border-radius: 0.9rem;
+.dashboard-outline-button:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
 }
 
-.dashboard-outline-table {
+.dashboard-table-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0 1.5rem;
+}
+
+.dashboard-table-frame {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.dashboard-data-table {
   width: 100%;
   border-collapse: collapse;
-}
-
-.dashboard-outline-table th,
-.dashboard-outline-table td {
-  padding: 0.9rem 0.8rem;
+  font-size: 0.875rem;
   text-align: left;
-  border-bottom: 1px solid color-mix(in oklab, var(--border) 92%, transparent);
 }
 
-.dashboard-outline-table th {
+.dashboard-data-table thead {
+  background: var(--muted);
+}
+
+.dashboard-data-table tr {
+  border-bottom: 1px solid var(--border);
+}
+
+.dashboard-data-table tbody tr:last-child {
+  border-bottom: 0;
+}
+
+.dashboard-data-table th {
+  height: 2.5rem;
+  padding: 0 0.5rem;
+  color: var(--foreground);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.dashboard-data-table td {
+  height: 3.3125rem;
+  padding: 0.5rem;
+  vertical-align: middle;
+}
+
+.dashboard-cell-drag,
+.dashboard-cell-select,
+.dashboard-cell-actions {
+  width: 2rem;
+}
+
+.dashboard-cell-select {
+  text-align: center;
+}
+
+.dashboard-cell-number {
+  text-align: right;
+}
+
+.dashboard-icon-button {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
   color: var(--muted-foreground);
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  background: color-mix(in oklab, var(--muted) 52%, var(--card));
+  cursor: pointer;
 }
 
-.dashboard-outline-table td {
-  font-size: 0.84rem;
+.dashboard-icon-button:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
 }
 
-.dashboard-outline-footer {
-  padding: 0.85rem 1rem;
+.dashboard-drag-handle {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.dashboard-drag-handle:hover {
+  background: transparent;
+}
+
+.dashboard-grip-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.dashboard-checkbox {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  border-radius: 4px;
+  accent-color: var(--primary);
+}
+
+.dashboard-cell-link {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 0.875rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dashboard-cell-link:hover {
+  text-decoration: underline;
+}
+
+.dashboard-cell-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.125rem 0.375rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1rem;
+  white-space: nowrap;
+}
+
+.dashboard-status-done {
+  fill: #22c55e;
+  color: #22c55e;
+}
+
+.dashboard-cell-input {
+  width: 4rem;
+  height: 2rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  padding: 0.25rem 0.75rem;
+  color: inherit;
+  font: inherit;
+  font-size: 0.875rem;
+  text-align: right;
+}
+
+.dashboard-cell-input:hover {
+  background: color-mix(in oklab, var(--input) 30%, transparent);
+}
+
+.dashboard-cell-input:focus-visible {
+  border-color: var(--border);
+  background: var(--background);
+  outline: none;
+}
+
+.dashboard-select-trigger {
+  display: inline-flex;
+  height: 2rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.375rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: transparent;
+  padding: 0 0.5rem 0 0.625rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.dashboard-select-trigger-reviewer {
+  width: 9.5rem;
+}
+
+.dashboard-select-trigger-narrow {
+  width: 5rem;
+}
+
+.dashboard-select-placeholder {
+  overflow: hidden;
+  color: var(--muted-foreground);
+  text-overflow: ellipsis;
+}
+
+.dashboard-select-chevron {
+  width: 1rem;
+  height: 1rem;
+  opacity: 0.5;
+}
+
+.dashboard-table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 1rem;
+}
+
+.dashboard-table-selection {
+  flex: 1;
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+.dashboard-table-pagination {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 2rem;
+}
+
+.dashboard-rows-per-page {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard-pagination-label {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.dashboard-pagination-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard-pagination-button {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--background);
+  color: var(--foreground);
+  cursor: pointer;
+}
+
+.dashboard-pagination-button:hover:not(:disabled) {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.dashboard-pagination-button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .dashboard-outline-placeholder {
-  display: grid;
-  place-items: center;
-  min-height: 12rem;
-  border: 1px dashed color-mix(in oklab, var(--border) 88%, transparent);
-  border-radius: 0.9rem;
-  text-transform: capitalize;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  flex: 1;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
 }
 
 .dashboard-sales-list {

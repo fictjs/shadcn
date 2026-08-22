@@ -2,15 +2,25 @@ import { $state, untrack } from "fict"
 
 import {
   TablerChartBarIcon,
+  TablerChevronDownIcon,
+  TablerChevronLeftIcon,
+  TablerChevronRightIcon,
+  TablerChevronsLeftIcon,
+  TablerChevronsRightIcon,
+  TablerCircleCheckFilledIcon,
   TablerDashboardIcon,
   TablerDatabaseIcon,
   TablerDotsIcon,
   TablerDotsVerticalIcon,
   TablerFileWordIcon,
   TablerFolderIcon,
+  TablerGripVerticalIcon,
   TablerHelpIcon,
+  TablerLayoutColumnsIcon,
   TablerInnerShadowTopIcon,
   TablerListDetailsIcon,
+  TablerLoaderIcon,
+  TablerPlusIcon,
   TablerReportIcon,
   TablerSearchIcon,
   TablerSettingsIcon,
@@ -18,7 +28,7 @@ import {
   TablerTrendingUpIcon,
   TablerUsersIcon,
 } from "./example-icons"
-import { visitorChartData } from "./example-data"
+import { dashboardTableRows, visitorChartData } from "./example-data"
 
 interface LiveExamplePageProps {
   slug: string
@@ -69,45 +79,11 @@ const dashboardStats = [
   },
 ] as const
 
+const DASHBOARD_PAGE_SIZE = 10
 const dashboardNavItems = ["Dashboard", "Lifecycle", "Analytics", "Projects", "Team"] as const
 const dashboardDocumentItems = ["Data Library", "Reports", "Word Assistant"] as const
 const dashboardSecondaryItems = ["Settings", "Get Help", "Search"] as const
 const dashboardViewTabs = ["Outline", "Past Performance", "Key Personnel", "Focus Documents"] as const
-const dashboardOutlineRows = [
-  {
-    header: "Executive Summary",
-    type: "Narrative",
-    status: "Done",
-    target: "18",
-    limit: "24",
-    reviewer: "Eddie Lake",
-  },
-  {
-    header: "Technical Approach",
-    type: "Technical Approach",
-    status: "In Progress",
-    target: "12",
-    limit: "18",
-    reviewer: "Jamik Tashpulatov",
-  },
-  {
-    header: "Capabilities",
-    type: "Capabilities",
-    status: "Done",
-    target: "10",
-    limit: "16",
-    reviewer: "Emily Whalen",
-  },
-  {
-    header: "Focus Documents",
-    type: "Focus Documents",
-    status: "Not Started",
-    target: "08",
-    limit: "12",
-    reviewer: "Assign reviewer",
-  },
-] as const
-
 const taskRows: TaskRow[] = [
   { id: "TASK-8782", title: "You can’t compress the program without quantifying the open-source SSD pixel!", status: "in-progress", priority: "Medium", team: "Design" },
   { id: "TASK-7878", title: "Try to calculate the EXE feed, maybe it will index the multi-byte pixel!", status: "todo", priority: "High", team: "Product" },
@@ -380,6 +356,31 @@ function VisitorsAreaChart(props: { range: DashboardRange }) {
   )
 }
 
+function DashboardTabBadge(props: { tab: string }) {
+  const tab = props.tab
+
+  return tab === "Past Performance" ? <span class="dashboard-tab-badge">3</span>
+    : tab === "Key Personnel" ? <span class="dashboard-tab-badge">2</span>
+    : null
+}
+
+function DashboardStatusIcon(props: { status: string }) {
+  return props.status === "Done"
+    ? <TablerCircleCheckFilledIcon class="dashboard-status-done" />
+    : <TablerLoaderIcon />
+}
+
+function DashboardReviewerCell(props: { reviewer: string }) {
+  return props.reviewer === "Assign reviewer" ? (
+    <span class="dashboard-select-trigger dashboard-select-trigger-reviewer">
+      <span class="dashboard-select-placeholder">Assign reviewer</span>
+      <TablerChevronDownIcon class="dashboard-select-chevron" />
+    </span>
+  ) : (
+    props.reviewer
+  )
+}
+
 function DashboardTrendIcon(props: { down: boolean }) {
   return props.down ? <TablerTrendingDownIcon /> : <TablerTrendingUpIcon />
 }
@@ -555,9 +556,9 @@ function DashboardExample() {
           </div>
         </article>
 
-        <section class="dashboard-outline-card">
-          <div class="dashboard-outline-toolbar">
-            <div class="dashboard-view-tabs" role="tablist" aria-label="Dashboard views">
+        <section class="dashboard-table-block">
+          <div class="dashboard-table-toolbar">
+            <div class="dashboard-tabs-list" role="tablist" aria-label="Dashboard views">
               {dashboardViewTabs.map((tab, index) => {
                 const value = index === 0
                   ? "outline"
@@ -571,8 +572,11 @@ function DashboardExample() {
                   <button
                     type="button"
                     key={tab}
+                    role="tab"
                     data-view={value}
-                    class={activeView === value ? "dashboard-view-tab dashboard-view-tab-active" : "dashboard-view-tab"}
+                    data-state={activeView === value ? "active" : "inactive"}
+                    aria-selected={activeView === value}
+                    class="dashboard-tabs-trigger"
                     onClick={(event: MouseEvent) => {
                       const target = event.currentTarget
                       if (!(target instanceof HTMLButtonElement)) {
@@ -588,56 +592,118 @@ function DashboardExample() {
                     }}
                   >
                     {tab}
+                    <DashboardTabBadge tab={tab} />
                   </button>
                 )
               })}
             </div>
 
-            <div class="dashboard-outline-actions">
-              <button type="button" class="dashboard-outline-button">Columns</button>
-              <button type="button" class="dashboard-outline-button dashboard-outline-button-primary">Add Section</button>
+            <div class="dashboard-table-actions">
+              <button type="button" class="dashboard-outline-button">
+                <TablerLayoutColumnsIcon />
+                <span>Customize Columns</span>
+                <TablerChevronDownIcon />
+              </button>
+              <button type="button" class="dashboard-outline-button">
+                <TablerPlusIcon />
+                <span>Add Section</span>
+              </button>
             </div>
           </div>
 
           {activeView === "outline" ? (
-            <div class="dashboard-outline-table-wrap">
-              <table class="dashboard-outline-table">
-                <thead>
-                  <tr>
-                    <th>Header</th>
-                    <th>Section Type</th>
-                    <th>Status</th>
-                    <th>Target</th>
-                    <th>Limit</th>
-                    <th>Reviewer</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dashboardOutlineRows.map((row) => (
-                    <tr key={row.header}>
-                      <td>{row.header}</td>
-                      <td>{row.type}</td>
-                      <td>
-                        <span class={`dashboard-outline-status dashboard-outline-status-${row.status.toLowerCase().replace(/\s+/g, "-")}`}>
-                          {row.status}
-                        </span>
-                      </td>
-                      <td>{row.target}</td>
-                      <td>{row.limit}</td>
-                      <td>{row.reviewer}</td>
+            <div class="dashboard-table-panel">
+              <div class="dashboard-table-frame">
+                <table class="dashboard-data-table">
+                  <thead>
+                    <tr>
+                      <th class="dashboard-cell-drag"></th>
+                      <th class="dashboard-cell-select"></th>
+                      <th>Header</th>
+                      <th>Section Type</th>
+                      <th>Status</th>
+                      <th class="dashboard-cell-number">Target</th>
+                      <th class="dashboard-cell-number">Limit</th>
+                      <th>Reviewer</th>
+                      <th class="dashboard-cell-actions"></th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {dashboardTableRows.slice(0, DASHBOARD_PAGE_SIZE).map((row) => (
+                      <tr key={row.id}>
+                        <td class="dashboard-cell-drag">
+                          <button type="button" class="dashboard-icon-button dashboard-drag-handle" aria-label="Drag to reorder">
+                            <TablerGripVerticalIcon class="dashboard-grip-icon" />
+                          </button>
+                        </td>
+                        <td class="dashboard-cell-select">
+                          <input type="checkbox" class="dashboard-checkbox" aria-label={`Select ${row.header}`} />
+                        </td>
+                        <td>
+                          <button type="button" class="dashboard-cell-link">{row.header}</button>
+                        </td>
+                        <td>
+                          <span class="dashboard-cell-badge">{row.type}</span>
+                        </td>
+                        <td>
+                          <span class="dashboard-cell-badge">
+                            <DashboardStatusIcon status={row.status} />
+                            {row.status}
+                          </span>
+                        </td>
+                        <td class="dashboard-cell-number">
+                          <input class="dashboard-cell-input" value={row.target} aria-label={`Target for ${row.header}`} />
+                        </td>
+                        <td class="dashboard-cell-number">
+                          <input class="dashboard-cell-input" value={row.limit} aria-label={`Limit for ${row.header}`} />
+                        </td>
+                        <td>
+                          <DashboardReviewerCell reviewer={row.reviewer} />
+                        </td>
+                        <td class="dashboard-cell-actions">
+                          <button type="button" class="dashboard-icon-button" aria-label="Open menu">
+                            <TablerDotsVerticalIcon />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-              <div class="dashboard-outline-footer">
-                <p>4 proposal sections</p>
-                <p>Page 1 of 1</p>
+              <div class="dashboard-table-footer">
+                <p class="dashboard-table-selection">0 of {dashboardTableRows.length} row(s) selected.</p>
+                <div class="dashboard-table-pagination">
+                  <div class="dashboard-rows-per-page">
+                    <span class="dashboard-pagination-label">Rows per page</span>
+                    <span class="dashboard-select-trigger dashboard-select-trigger-narrow">
+                      <span>{DASHBOARD_PAGE_SIZE}</span>
+                      <TablerChevronDownIcon class="dashboard-select-chevron" />
+                    </span>
+                  </div>
+                  <p class="dashboard-pagination-label">
+                    Page 1 of {Math.ceil(dashboardTableRows.length / DASHBOARD_PAGE_SIZE)}
+                  </p>
+                  <div class="dashboard-pagination-buttons">
+                    <button type="button" class="dashboard-pagination-button" aria-label="Go to first page" disabled>
+                      <TablerChevronsLeftIcon />
+                    </button>
+                    <button type="button" class="dashboard-pagination-button" aria-label="Go to previous page" disabled>
+                      <TablerChevronLeftIcon />
+                    </button>
+                    <button type="button" class="dashboard-pagination-button" aria-label="Go to next page">
+                      <TablerChevronRightIcon />
+                    </button>
+                    <button type="button" class="dashboard-pagination-button" aria-label="Go to last page">
+                      <TablerChevronsRightIcon />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           ) : (
-            <div class="dashboard-outline-placeholder">
-              <p>{activeViewLabel}</p>
+            <div class="dashboard-table-panel">
+              <div class="dashboard-outline-placeholder" aria-label={activeViewLabel}></div>
             </div>
           )}
         </section>
