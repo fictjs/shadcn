@@ -2379,8 +2379,10 @@ h1 {
   background-color: var(--background);
 }
 
-.home-preview-container {
-  overflow: hidden;
+@media (max-width: 767.98px) {
+  .home-preview-container {
+    overflow: hidden;
+  }
 }
 
 .home-mobile-preview-card {
@@ -2819,7 +2821,6 @@ h1 {
   border: 1px solid var(--input);
   border-radius: var(--radius-lg);
   background: transparent;
-  overflow: hidden;
 }
 
 .ui-input-group-round {
@@ -3566,6 +3567,29 @@ a.ui-item:hover {
 
 .root-model-menu {
   min-width: 12rem;
+}
+
+.root-sources-menu {
+  min-width: 18rem;
+}
+
+.root-menu-trailing {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.root-menu-trailing-icon {
+  margin-left: auto;
+  width: 1rem;
+  height: 1rem;
+  color: var(--muted-foreground);
+}
+
+.root-menu-avatar {
+  width: 1rem;
+  height: 1rem;
+  outline: 0;
 }
 
 .root-beta-badge {

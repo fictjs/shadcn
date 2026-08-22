@@ -2669,10 +2669,39 @@ function BadgeCheckIcon() {
   )
 }
 
-function ChevronRightIcon() {
+function ChevronRightIcon(props: { class?: string }) {
+  return (
+    <svg class={props.class} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m9 18 6-6-6-6" />
+    </svg>
+  )
+}
+
+function AppsIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="m9 18 6-6-6-6" />
+      <rect width="7" height="7" x="3" y="3" rx="1" />
+      <rect width="7" height="7" x="14" y="3" rx="1" />
+      <rect width="7" height="7" x="14" y="14" rx="1" />
+      <rect width="7" height="7" x="3" y="14" rx="1" />
+    </svg>
+  )
+}
+
+function CircleDashedPlusIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" stroke-dasharray="3 3" />
+      <path d="M12 8v8" />
+      <path d="M8 12h8" />
+    </svg>
+  )
+}
+
+function BookIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
     </svg>
   )
 }
@@ -2737,10 +2766,63 @@ function RootPromptPreview() {
               </button>
             </div>
           </span>
-          <button class="ui-input-group-button root-pill-button" type="button">
-            <GlobeIcon />
-            All Sources
-          </button>
+          <span class="ui-menu" data-menu>
+            <button
+              class="ui-input-group-button root-pill-button"
+              type="button"
+              data-menu-trigger
+              aria-haspopup="menu"
+              aria-expanded="false"
+            >
+              <GlobeIcon />
+              All Sources
+            </button>
+            <div
+              class="ui-menu-panel root-sources-menu"
+              data-menu-panel
+              data-menu-side="top"
+              data-menu-align="end"
+              role="menu"
+              hidden
+            >
+              <label class="ui-menu-item" data-menu-item data-menu-keep-open>
+                <GlobeIcon />
+                Web Search
+                <span class="root-menu-trailing">
+                  <UiSwitch checked />
+                </span>
+              </label>
+              <span class="ui-menu-separator" aria-hidden="true"></span>
+              <label class="ui-menu-item" data-menu-item data-menu-keep-open>
+                <AppsIcon />
+                Apps and Integrations
+                <span class="root-menu-trailing">
+                  <UiSwitch checked />
+                </span>
+              </label>
+              <button class="ui-menu-item" type="button" role="menuitem" data-menu-item>
+                <CircleDashedPlusIcon />
+                All Sources I can access
+              </button>
+              <button class="ui-menu-item" type="button" role="menuitem" data-menu-item>
+                <span class="ui-avatar root-menu-avatar">
+                  <img src="/avatars/01.png" alt="" />
+                </span>
+                shadcn
+                <ChevronRightIcon class="root-menu-trailing-icon" />
+              </button>
+              <button class="ui-menu-item" type="button" role="menuitem" data-menu-item>
+                <BookIcon />
+                Help Center
+              </button>
+              <span class="ui-menu-separator" aria-hidden="true"></span>
+              <button class="ui-menu-item" type="button" role="menuitem" data-menu-item>
+                <PlusIcon />
+                Connect Apps
+              </button>
+              <span class="ui-menu-label">We&apos;ll only search in the sources selected here.</span>
+            </div>
+          </span>
           <button class="ui-input-group-button ui-input-group-button-icon ui-input-group-button-primary ui-input-group-addon-end" type="button" aria-label="Send">
             <ArrowUpIcon />
           </button>
