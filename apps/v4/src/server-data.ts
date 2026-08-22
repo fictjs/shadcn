@@ -1103,9 +1103,25 @@ function normalizeTabsMarkup(value: string): string {
 function normalizeCalloutMarkup(value: string): string {
   return value.replace(/<Callout([^>]*)>([\s\S]*?)<\/Callout>/g, (_, attributes, content) => {
     const title = readMdxAttribute(attributes, "title")
+    const variant = readCalloutVariant(
+      `${readMdxAttribute(attributes, "className")} ${readMdxAttribute(attributes, "variant")}`,
+    )
     const inner = normalizeMdxBody(content).trim()
-    return `\n${createDocMarker("callout", { title })}\n${inner}\n:::endcallout\n`
+    return `\n${createDocMarker("callout", { title, variant })}\n${inner}\n:::endcallout\n`
   })
+}
+
+function readCalloutVariant(value: string): string {
+  if (/emerald|green|success/.test(value)) {
+    return "success"
+  }
+  if (/amber|yellow|warning/.test(value)) {
+    return "warning"
+  }
+  if (/red|rose|destructive/.test(value)) {
+    return "destructive"
+  }
+  return ""
 }
 
 function stripResidualMdx(value: string): string {
@@ -1303,6 +1319,7 @@ function parseDocBody(body: string): {
         kind: "callout",
         text: title,
         title: title || undefined,
+        variant: readDocMarkerAttribute(trimmed, "variant") || undefined,
         children: nestedBody.blocks,
       })
       continue

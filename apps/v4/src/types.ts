@@ -52,6 +52,7 @@ export interface DocContentBlock {
   filePath?: string
   code?: string
   styleName?: string
+  variant?: string
   direction?: "ltr" | "rtl"
 }
 

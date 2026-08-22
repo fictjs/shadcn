@@ -2744,7 +2744,7 @@ function renderDocBlock(block: DocContentBlock, key: string) {
   ) : block.kind === "hr" ? (
     <hr key={key} />
   ) : block.kind === "callout" ? (
-    <section class="doc-callout" key={key}>
+    <section class="doc-callout" data-variant={block.variant || "default"} key={key}>
       {block.title ? <p class="doc-callout-title">{block.title}</p> : null}
       <div class="doc-callout-body">
         <DocBlockList blocks={untrack(() => block.children || [])} keyPrefix={`${key}-callout`} />
