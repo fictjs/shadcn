@@ -2312,7 +2312,14 @@ function RootButtonGroupInputPreview() {
       <div class="ui-input-group ui-input-group-round">
         <input class="ui-input-group-input" placeholder="Send a message..." />
         <span class="ui-input-group-addon ui-input-group-addon-end">
-          <button class="ui-input-group-button ui-input-group-button-icon" type="button" aria-label="Voice Mode">
+          <button
+            class="ui-input-group-button ui-input-group-button-icon"
+            type="button"
+            aria-label="Voice Mode"
+            aria-pressed="false"
+            data-toggle="voice"
+            data-toggle-active="false"
+          >
             <AudioLinesIcon />
           </button>
         </span>

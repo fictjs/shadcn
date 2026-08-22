@@ -2941,6 +2941,16 @@ h1 {
   color: var(--primary-foreground);
 }
 
+.ui-input-group-button[data-toggle="voice"][data-toggle-active="true"] {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.ui-input-group-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 .ui-input-group-button[data-toggle="favorite"][data-toggle-active="true"] svg {
   fill: var(--primary);
   stroke: var(--primary);
