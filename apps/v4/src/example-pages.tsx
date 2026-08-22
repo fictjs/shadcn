@@ -27,22 +27,29 @@ import {
   TablerTrendingDownIcon,
   TablerTrendingUpIcon,
   TablerUsersIcon,
+  LucideArrowDownIcon,
+  LucideArrowRightIcon,
+  LucideArrowUpIcon,
+  LucideChevronLeftIcon,
+  LucideChevronRightIcon,
+  LucideChevronsLeftIcon,
+  LucideChevronsRightIcon,
+  LucideChevronsUpDownIcon,
+  LucideCircleCheckBigIcon,
+  LucideCircleHelpIcon,
+  LucideCircleIcon,
+  LucideCircleOffIcon,
+  LucideCirclePlusIcon,
+  LucideEllipsisIcon,
+  LucideSettings2Icon,
+  LucideTimerIcon,
 } from "./example-icons"
-import { dashboardTableRows, visitorChartData } from "./example-data"
+import { dashboardTableRows, taskRows, visitorChartData } from "./example-data"
 
 interface LiveExamplePageProps {
   slug: string
 }
 
-interface TaskRow {
-  id: string
-  title: string
-  status: "todo" | "in-progress" | "done"
-  priority: "Low" | "Medium" | "High"
-  team: string
-}
-
-type TaskStatusFilter = "all" | TaskRow["status"]
 type DashboardRange = "90d" | "30d" | "7d"
 type DashboardView = "outline" | "past-performance" | "key-personnel" | "focus-documents"
 type PlaygroundMode = "complete" | "insert" | "edit"
@@ -80,18 +87,11 @@ const dashboardStats = [
 ] as const
 
 const DASHBOARD_PAGE_SIZE = 10
+const TASKS_PAGE_SIZE = 25
 const dashboardNavItems = ["Dashboard", "Lifecycle", "Analytics", "Projects", "Team"] as const
 const dashboardDocumentItems = ["Data Library", "Reports", "Word Assistant"] as const
 const dashboardSecondaryItems = ["Settings", "Get Help", "Search"] as const
 const dashboardViewTabs = ["Outline", "Past Performance", "Key Personnel", "Focus Documents"] as const
-const taskRows: TaskRow[] = [
-  { id: "TASK-8782", title: "You can’t compress the program without quantifying the open-source SSD pixel!", status: "in-progress", priority: "Medium", team: "Design" },
-  { id: "TASK-7878", title: "Try to calculate the EXE feed, maybe it will index the multi-byte pixel!", status: "todo", priority: "High", team: "Product" },
-  { id: "TASK-7839", title: "We need to bypass the neural TCP card and back up the haptic RSS panel!", status: "done", priority: "Low", team: "Support" },
-  { id: "TASK-5562", title: "The SAS interface is down, bypass the open-source matrix so we can program the PNG bus!", status: "in-progress", priority: "High", team: "Growth" },
-  { id: "TASK-8686", title: "The SQL application is down, override the virtual circuit so we can parse the PNG bandwidth!", status: "todo", priority: "Medium", team: "Platform" },
-] 
-
 const playgroundPresets = ["Explain quantum computing", "Write release notes", "Draft support reply"] as const
 const playgroundModels = ["gpt-4.1", "gpt-4o-mini", "claude-sonnet", "gemini-pro"] as const
 
@@ -101,10 +101,30 @@ const rtlSampleRows = [
   { title: "تحديث شريط التنقل", owner: "فريق الواجهة", state: "جديد" },
 ] as const
 
-function resolveTaskStatusFilter(value: string | undefined): TaskStatusFilter | null {
-  return value === "all" || value === "todo" || value === "in-progress" || value === "done"
-    ? value
-    : null
+function formatTaskLabel(value: string): string {
+  return value.charAt(0).toUpperCase() + value.slice(1)
+}
+
+function formatTaskStatus(value: string): string {
+  return value === "in progress" ? "In Progress" : formatTaskLabel(value)
+}
+
+function TaskStatusIcon(props: { status: string }) {
+  const status = props.status
+
+  return status === "backlog" ? <LucideCircleHelpIcon class="tasks-meta-icon" />
+    : status === "todo" ? <LucideCircleIcon class="tasks-meta-icon" />
+    : status === "in progress" ? <LucideTimerIcon class="tasks-meta-icon" />
+    : status === "done" ? <LucideCircleCheckBigIcon class="tasks-meta-icon" />
+    : <LucideCircleOffIcon class="tasks-meta-icon" />
+}
+
+function TaskPriorityIcon(props: { priority: string }) {
+  const priority = props.priority
+
+  return priority === "low" ? <LucideArrowDownIcon class="tasks-meta-icon" />
+    : priority === "high" ? <LucideArrowUpIcon class="tasks-meta-icon" />
+    : <LucideArrowRightIcon class="tasks-meta-icon" />
 }
 
 function resolveDashboardRange(value: string | undefined): DashboardRange | null {
@@ -713,140 +733,139 @@ function DashboardExample() {
 }
 
 function TasksExample() {
-  let query = $state("")
-  let status = $state<TaskStatusFilter>("all")
-  let filteredTasks = $state<TaskRow[]>(taskRows)
+  const pageRows = taskRows.slice(0, TASKS_PAGE_SIZE)
 
   return (
     <div class="live-example tasks-example">
       <header class="tasks-header">
-        <div>
+        <div class="tasks-heading">
           <h2>Welcome back!</h2>
           <p class="tasks-copy">Here&apos;s a list of your tasks for this month.</p>
         </div>
         <button type="button" class="tasks-user-nav" aria-label="Open user menu">
-          <span class="tasks-user-avatar">JD</span>
+          <img class="tasks-user-avatar" src="/avatars/shadcn.jpg" alt="shadcn" width="36" height="36" />
         </button>
       </header>
 
-      <section class="tasks-table-card">
-        <div class="tasks-table-toolbar">
-          <label class="tasks-search-field">
-            <span class="tasks-search-label">Filter tasks</span>
-            <input
-              id="tasks-filter"
-              type="text"
-              value={query}
-              placeholder="Search issue, title, or team"
-              onInput={(event) => {
-                const target = event.target
-                if (!(target instanceof HTMLInputElement)) {
-                  return
-                }
-
-                const nextQuery = target.value
-                query = nextQuery
-                const statusSnapshot = untrack(() => status)
-                const normalized = nextQuery.trim().toLowerCase()
-                const nextRows: TaskRow[] = []
-
-                for (const task of taskRows) {
-                  const matchesStatus = statusSnapshot === "all" ? true : task.status === statusSnapshot
-                  const matchesQuery = normalized.length === 0
-                    ? true
-                    : `${task.id} ${task.title} ${task.team}`.toLowerCase().includes(normalized)
-
-                  if (matchesStatus && matchesQuery) {
-                    nextRows.push(task)
-                  }
-                }
-
-                filteredTasks = nextRows
-              }}
-            />
-          </label>
-
-          <div class="tasks-table-toolbar-actions">
-            <div class="tasks-filter-row">
-          {[
-            ["all", "All"],
-            ["todo", "Todo"],
-            ["in-progress", "In Progress"],
-            ["done", "Done"],
-          ].map((entry) => (
-            <button
-              type="button"
-              key={entry[0]}
-              data-status={entry[0]}
-              class={status === entry[0] ? "tasks-chip tasks-chip-active" : "tasks-chip"}
-              onClick={(event: MouseEvent) => {
-                const target = event.currentTarget
-                if (!(target instanceof HTMLButtonElement)) {
-                  return
-                }
-
-                const nextStatus = resolveTaskStatusFilter(target.dataset.status)
-                if (!nextStatus) {
-                  return
-                }
-
-                status = nextStatus
-                const queryInput = document.getElementById("tasks-filter")
-                const normalized = queryInput instanceof HTMLInputElement
-                  ? queryInput.value.trim().toLowerCase()
-                  : ""
-                const nextRows: TaskRow[] = []
-
-                for (const task of taskRows) {
-                  const matchesStatus = nextStatus === "all" ? true : task.status === nextStatus
-                  const matchesQuery = normalized.length === 0
-                    ? true
-                    : `${task.id} ${task.title} ${task.team}`.toLowerCase().includes(normalized)
-
-                  if (matchesStatus && matchesQuery) {
-                    nextRows.push(task)
-                  }
-                }
-
-                filteredTasks = nextRows
-              }}
-            >
-              {entry[1]}
+      <div class="tasks-table-block">
+        <div class="tasks-toolbar">
+          <div class="tasks-toolbar-filters">
+            <input id="tasks-filter" class="tasks-filter-input" type="text" placeholder="Filter tasks..." aria-label="Filter tasks" />
+            <button type="button" class="tasks-facet-button">
+              <LucideCirclePlusIcon />
+              <span>Status</span>
             </button>
-          ))}
+            <button type="button" class="tasks-facet-button">
+              <LucideCirclePlusIcon />
+              <span>Priority</span>
+            </button>
+          </div>
+          <div class="tasks-toolbar-actions">
+            <button type="button" class="tasks-outline-button">
+              <LucideSettings2Icon />
+              <span>View</span>
+            </button>
+            <button type="button" class="tasks-primary-button">Add Task</button>
+          </div>
+        </div>
+
+        <div class="tasks-table-frame">
+          <table class="tasks-data-table">
+            <thead>
+              <tr>
+                <th class="tasks-cell-select">
+                  <input type="checkbox" class="tasks-checkbox" aria-label="Select all" />
+                </th>
+                <th>
+                  <span class="tasks-column-header">Task</span>
+                </th>
+                <th>
+                  <button type="button" class="tasks-sort-button">
+                    <span>Title</span>
+                    <LucideChevronsUpDownIcon />
+                  </button>
+                </th>
+                <th>
+                  <button type="button" class="tasks-sort-button">
+                    <span>Status</span>
+                    <LucideChevronsUpDownIcon />
+                  </button>
+                </th>
+                <th>
+                  <button type="button" class="tasks-sort-button">
+                    <span>Priority</span>
+                    <LucideChevronsUpDownIcon />
+                  </button>
+                </th>
+                <th class="tasks-cell-actions"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {pageRows.map((task) => (
+                <tr key={task.id}>
+                  <td class="tasks-cell-select">
+                    <input type="checkbox" class="tasks-checkbox" aria-label={`Select ${task.id}`} />
+                  </td>
+                  <td class="tasks-cell-id">{task.id}</td>
+                  <td>
+                    <div class="tasks-title-cell">
+                      <span class="tasks-label-badge">{formatTaskLabel(task.label)}</span>
+                      <span class="tasks-title-text">{task.title}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="tasks-meta-cell tasks-status-cell">
+                      <TaskStatusIcon status={task.status} />
+                      <span>{formatTaskStatus(task.status)}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="tasks-meta-cell">
+                      <TaskPriorityIcon priority={task.priority} />
+                      <span>{formatTaskLabel(task.priority)}</span>
+                    </div>
+                  </td>
+                  <td class="tasks-cell-actions">
+                    <button type="button" class="tasks-row-action" aria-label="Open menu">
+                      <LucideEllipsisIcon />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tasks-pagination">
+          <p class="tasks-selection">0 of {taskRows.length} row(s) selected.</p>
+          <div class="tasks-pagination-controls">
+            <div class="tasks-rows-per-page">
+              <span class="tasks-pagination-label">Rows per page</span>
+              <span class="tasks-select-trigger">
+                <span>{TASKS_PAGE_SIZE}</span>
+                <LucideChevronsUpDownIcon class="tasks-select-chevron" />
+              </span>
+            </div>
+            <p class="tasks-pagination-label">
+              Page 1 of {Math.ceil(taskRows.length / TASKS_PAGE_SIZE)}
+            </p>
+            <div class="tasks-pagination-buttons">
+              <button type="button" class="tasks-pagination-button" aria-label="Go to first page" disabled>
+                <LucideChevronsLeftIcon />
+              </button>
+              <button type="button" class="tasks-pagination-button" aria-label="Go to previous page" disabled>
+                <LucideChevronLeftIcon />
+              </button>
+              <button type="button" class="tasks-pagination-button" aria-label="Go to next page">
+                <LucideChevronRightIcon />
+              </button>
+              <button type="button" class="tasks-pagination-button" aria-label="Go to last page">
+                <LucideChevronsRightIcon />
+              </button>
             </div>
           </div>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Task</th>
-              <th>Status</th>
-              <th>Priority</th>
-              <th>Team</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredTasks.map((task) => (
-              <tr key={task.id}>
-                <td>
-                  <strong>{task.id}</strong>
-                  <p>{task.title}</p>
-                </td>
-                <td>
-                  <span class={`tasks-status tasks-status-${task.status}`}>
-                    {task.status === "in-progress" ? "in progress" : task.status}
-                  </span>
-                </td>
-                <td>{task.priority}</td>
-                <td>{task.team}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {filteredTasks.length === 0 ? <p class="tasks-empty-state">No tasks match the current filters.</p> : null}
-      </section>
+      </div>
     </div>
   )
 }
