@@ -32,6 +32,7 @@ async function initResumableClient(): Promise<void> {
   wireShowcaseMentions()
   wireShowcaseSelects()
   wireColorFormatSelectors()
+  wireShowcaseTooltips()
 
   await loadManifest()
   installResumableLoader({
@@ -677,6 +678,87 @@ function wireColorFormatSelectors(): void {
       select.value = target.value
     })
   })
+}
+
+function wireShowcaseTooltips(): void {
+  let tooltip: HTMLElement | null = null
+
+  const ensureTooltip = (): HTMLElement => {
+    if (!tooltip) {
+      tooltip = document.createElement("div")
+      tooltip.className = "ui-tooltip"
+      tooltip.setAttribute("role", "tooltip")
+      tooltip.hidden = true
+      document.body.append(tooltip)
+    }
+    return tooltip
+  }
+
+  const hideTooltip = (): void => {
+    if (tooltip) {
+      tooltip.hidden = true
+    }
+  }
+
+  const showTooltip = (host: HTMLElement): void => {
+    const text = host.dataset.tooltip
+    if (!text) {
+      return
+    }
+
+    const element = ensureTooltip()
+    element.textContent = text
+    element.hidden = false
+
+    const hostRect = host.getBoundingClientRect()
+    const tipRect = element.getBoundingClientRect()
+    const margin = 8
+    let top = hostRect.top - tipRect.height - 6
+    if (top < margin) {
+      top = hostRect.bottom + 6
+    }
+
+    let left = hostRect.left + hostRect.width / 2 - tipRect.width / 2
+    left = Math.min(window.innerWidth - tipRect.width - margin, Math.max(margin, left))
+
+    element.style.top = `${top + window.scrollY}px`
+    element.style.left = `${left + window.scrollX}px`
+  }
+
+  const resolveHost = (target: EventTarget | null): HTMLElement | null => {
+    if (!(target instanceof Element)) {
+      return null
+    }
+    return target.closest<HTMLElement>("[data-tooltip]")
+  }
+
+  document.addEventListener("pointerover", (event) => {
+    const host = resolveHost(event.target)
+    if (host) {
+      showTooltip(host)
+    }
+  })
+
+  document.addEventListener("pointerout", (event) => {
+    if (resolveHost(event.target)) {
+      hideTooltip()
+    }
+  })
+
+  document.addEventListener("focusin", (event) => {
+    const host = resolveHost(event.target)
+    if (host) {
+      showTooltip(host)
+    }
+  })
+
+  document.addEventListener("focusout", hideTooltip)
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      hideTooltip()
+    }
+  })
+  window.addEventListener("scroll", hideTooltip, true)
 }
 
 function wireClientFilters(): void {

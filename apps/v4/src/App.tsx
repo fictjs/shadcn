@@ -572,6 +572,7 @@ function ModeToggleControl() {
       type="button"
       class="header-icon-link header-mode-toggle"
       aria-label="Toggle theme"
+      data-tooltip="Toggle Mode"
       onClick$={() => {
         toggleDocumentColorMode()
       }}
@@ -2316,6 +2317,7 @@ function RootButtonGroupInputPreview() {
             class="ui-input-group-button ui-input-group-button-icon"
             type="button"
             aria-label="Voice Mode"
+            data-tooltip="Voice Mode"
             aria-pressed="false"
             data-toggle="voice"
             data-toggle-active="false"
@@ -2392,7 +2394,12 @@ function RootInputGroupDemoPreview() {
         <span class="ui-input-group-addon">https://</span>
         <input class="ui-input-group-input root-input-flush" placeholder="example.com" />
         <span class="ui-input-group-addon">
-          <button class="ui-input-group-button ui-input-group-button-icon" type="button" aria-label="Info">
+          <button
+            class="ui-input-group-button ui-input-group-button-icon"
+            type="button"
+            aria-label="Info"
+            data-tooltip="This is content in a tooltip."
+          >
             <InfoIcon />
           </button>
         </span>
@@ -2781,6 +2788,7 @@ function RootPromptPreview() {
               aria-haspopup="dialog"
               aria-expanded="false"
               aria-label="Add context"
+              data-tooltip="Mention a person, page, or date"
             >
               <AtIcon />
               <span class="root-prompt-context-label">Add context</span>
@@ -2851,7 +2859,12 @@ function RootPromptPreview() {
         </span>
         <textarea class="ui-input-group-textarea" id="notion-prompt" placeholder="Ask, search, or make anything..."></textarea>
         <span class="ui-input-group-addon ui-input-group-addon-block root-prompt-bottom">
-          <button class="ui-input-group-button ui-input-group-button-icon" type="button" aria-label="Attach file">
+          <button
+            class="ui-input-group-button ui-input-group-button-icon"
+            type="button"
+            aria-label="Attach file"
+            data-tooltip="Attach file"
+          >
             <PaperclipIcon />
           </button>
           <span class="ui-menu" data-menu>
@@ -2859,6 +2872,7 @@ function RootPromptPreview() {
               class="ui-input-group-button root-pill-button"
               type="button"
               data-menu-trigger
+              data-tooltip="Select AI model"
               aria-haspopup="menu"
               aria-expanded="false"
             >
