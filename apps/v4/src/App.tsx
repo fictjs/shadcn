@@ -2585,8 +2585,8 @@ function RootAppearanceSettingsPreview() {
         <fieldset class="ui-field-set">
           <legend class="ui-field-legend">Compute Environment</legend>
           <p class="ui-field-description">Select the compute environment for your cluster.</p>
-          <div class="root-radio-group">
-            <label class="ui-radio-card" data-checked="true">
+          <div class="root-radio-group" data-radio-group role="radiogroup" aria-label="Compute Environment">
+            <label class="ui-radio-card" data-radio-item data-checked="true">
               <span class="ui-item-content">
                 <span class="root-field-title">Kubernetes</span>
                 <span class="ui-field-description">
@@ -2597,7 +2597,7 @@ function RootAppearanceSettingsPreview() {
                 <span></span>
               </span>
             </label>
-            <label class="ui-radio-card" data-checked="false">
+            <label class="ui-radio-card" data-radio-item data-checked="false">
               <span class="ui-item-content">
                 <span class="root-field-title">Virtual Machine</span>
                 <span class="ui-field-description">

@@ -459,6 +459,21 @@ function wireShowcaseToggles(): void {
       return
     }
 
+    const radioItem = target.closest<HTMLElement>("[data-radio-item]")
+    if (radioItem) {
+      const group = radioItem.closest<HTMLElement>("[data-radio-group]")
+      if (group) {
+        group.querySelectorAll<HTMLElement>("[data-radio-item]").forEach((item) => {
+          const checked = item === radioItem
+          item.dataset.checked = checked ? "true" : "false"
+          item.querySelectorAll<HTMLElement>(".ui-radio").forEach((radio) => {
+            radio.dataset.checked = checked ? "true" : "false"
+            radio.setAttribute("aria-checked", checked ? "true" : "false")
+          })
+        })
+      }
+    }
+
     const toggle = target.closest<HTMLElement>("[data-toggle]")
     if (!toggle) {
       return
