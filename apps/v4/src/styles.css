@@ -5476,6 +5476,13 @@ a.ui-item:hover {
   background: var(--card);
 }
 
+.example-icon {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+  pointer-events: none;
+}
+
 .live-example {
   min-height: 44rem;
   background: var(--card);
