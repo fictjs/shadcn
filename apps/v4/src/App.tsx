@@ -2746,6 +2746,25 @@ function MinusIcon() {
   )
 }
 
+const mentionPages = [
+  { title: "Meeting Notes", image: "📝" },
+  { title: "Project Dashboard", image: "📊" },
+  { title: "Ideas & Brainstorming", image: "💡" },
+  { title: "Calendar & Events", image: "📅" },
+  { title: "Documentation", image: "📚" },
+  { title: "Goals & Objectives", image: "🎯" },
+  { title: "Budget Planning", image: "💰" },
+  { title: "Team Directory", image: "👥" },
+  { title: "Technical Specs", image: "🔧" },
+  { title: "Analytics Report", image: "📈" },
+]
+
+const mentionUsers = [
+  { title: "shadcn", image: "/avatars/01.png" },
+  { title: "maxleiter", image: "/avatars/02.png" },
+  { title: "evilrabbit", image: "/avatars/03.png" },
+]
+
 function RootPromptPreview() {
   return (
     <form class="ui-field">
@@ -2753,11 +2772,82 @@ function RootPromptPreview() {
         Prompt
       </label>
       <div class="ui-input-group ui-input-group-block root-prompt-group">
-        <span class="ui-input-group-addon ui-input-group-addon-block root-prompt-top">
-          <button class="ui-input-group-button ui-input-group-button-outline root-prompt-context" type="button">
-            <AtIcon />
-            Add context
-          </button>
+        <span class="ui-input-group-addon ui-input-group-addon-block root-prompt-top" data-mention-root>
+          <span class="ui-menu" data-menu>
+            <button
+              class="ui-input-group-button ui-input-group-button-outline root-prompt-context"
+              type="button"
+              data-menu-trigger
+              aria-haspopup="dialog"
+              aria-expanded="false"
+              aria-label="Add context"
+            >
+              <AtIcon />
+              <span class="root-prompt-context-label">Add context</span>
+            </button>
+            <div
+              class="ui-popover-panel root-mention-popover"
+              data-menu-panel
+              data-menu-side="bottom"
+              data-menu-align="start"
+              role="dialog"
+              aria-label="Add context"
+              hidden
+            >
+              <div class="root-command">
+                <div class="root-command-input">
+                  <SearchIcon />
+                  <input
+                    class="root-command-field"
+                    type="text"
+                    placeholder="Search pages..."
+                    aria-label="Search pages"
+                    data-mention-search
+                  />
+                </div>
+                <div class="root-command-list" data-mention-list>
+                  <p class="root-command-empty" data-mention-empty hidden>
+                    No pages found
+                  </p>
+                  <div class="root-command-group" data-mention-group="page">
+                    <p class="root-command-heading">Pages</p>
+                    {mentionPages.map((item) => (
+                      <button
+                        class="root-command-item"
+                        type="button"
+                        key={item.title}
+                        data-mention-item
+                        data-mention-title={item.title}
+                        data-mention-icon={item.image}
+                      >
+                        <span class="root-command-emoji">{item.image}</span>
+                        {item.title}
+                      </button>
+                    ))}
+                  </div>
+                  <div class="root-command-group" data-mention-group="user">
+                    <p class="root-command-heading">Users</p>
+                    {mentionUsers.map((item) => (
+                      <button
+                        class="root-command-item"
+                        type="button"
+                        key={item.title}
+                        data-mention-item
+                        data-mention-title={item.title}
+                        data-mention-avatar={item.image}
+                      >
+                        <span class="ui-avatar root-command-avatar">
+                          <img src={item.image} alt="" />
+                        </span>
+                        {item.title}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </span>
+          <span class="root-mention-chips" data-mention-chips></span>
         </span>
         <textarea class="ui-input-group-textarea" id="notion-prompt" placeholder="Ask, search, or make anything..."></textarea>
         <span class="ui-input-group-addon ui-input-group-addon-block root-prompt-bottom">

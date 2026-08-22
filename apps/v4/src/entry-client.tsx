@@ -29,6 +29,7 @@ async function initResumableClient(): Promise<void> {
   wireShowcaseCounters()
   wireShowcaseMenus()
   wireShowcaseToggles()
+  wireShowcaseMentions()
 
   await loadManifest()
   installResumableLoader({
@@ -501,6 +502,144 @@ function wireShowcaseToggles(): void {
         input.placeholder = nextActive ? "Record and send audio..." : "Send a message..."
       }
     }
+  })
+}
+
+function wireShowcaseMentions(): void {
+  const syncMentionRoot = (root: HTMLElement): void => {
+    const chips = root.querySelector<HTMLElement>("[data-mention-chips]")
+    const trigger = root.querySelector<HTMLElement>("[data-menu-trigger]")
+    const hasMentions = (chips?.childElementCount ?? 0) > 0
+    if (trigger) {
+      trigger.dataset.compact = hasMentions ? "true" : "false"
+    }
+  }
+
+  const filterMentionList = (root: HTMLElement): void => {
+    const search = root.querySelector<HTMLInputElement>("[data-mention-search]")
+    const query = (search?.value ?? "").trim().toLowerCase()
+    const list = root.querySelector<HTMLElement>("[data-mention-list]")
+    if (!list) {
+      return
+    }
+
+    let visible = 0
+    list.querySelectorAll<HTMLElement>("[data-mention-item]").forEach((item) => {
+      const title = (item.dataset.mentionTitle ?? "").toLowerCase()
+      const taken = item.dataset.mentionTaken === "true"
+      const matches = !taken && (query === "" || title.includes(query))
+      item.hidden = !matches
+      if (matches) {
+        visible += 1
+      }
+    })
+
+    list.querySelectorAll<HTMLElement>("[data-mention-group]").forEach((group) => {
+      const anyVisible = Array.from(group.querySelectorAll<HTMLElement>("[data-mention-item]")).some(
+        (item) => !item.hidden,
+      )
+      group.hidden = !anyVisible
+    })
+
+    const empty = list.querySelector<HTMLElement>("[data-mention-empty]")
+    if (empty) {
+      empty.hidden = visible > 0
+    }
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const chip = target.closest<HTMLElement>("[data-mention-chip]")
+    if (chip) {
+      const root = chip.closest<HTMLElement>("[data-mention-root]")
+      const title = chip.dataset.mentionChip
+      chip.remove()
+      if (root) {
+        root
+          .querySelectorAll<HTMLElement>("[data-mention-item]")
+          .forEach((item) => {
+            if (item.dataset.mentionTitle === title) {
+              item.dataset.mentionTaken = "false"
+            }
+          })
+        filterMentionList(root)
+        syncMentionRoot(root)
+      }
+      return
+    }
+
+    const item = target.closest<HTMLElement>("[data-mention-item]")
+    if (!item) {
+      return
+    }
+
+    const root = item.closest<HTMLElement>("[data-mention-root]")
+    const chips = root?.querySelector<HTMLElement>("[data-mention-chips]")
+    const title = item.dataset.mentionTitle
+    if (!root || !chips || !title) {
+      return
+    }
+
+    event.preventDefault()
+
+    const button = document.createElement("button")
+    button.type = "button"
+    button.className = "root-mention-chip"
+    button.dataset.mentionChip = title
+    button.setAttribute("aria-label", `Remove ${title}`)
+
+    const media = document.createElement("span")
+    if (item.dataset.mentionAvatar) {
+      media.className = "ui-avatar root-command-avatar"
+      const image = document.createElement("img")
+      image.src = item.dataset.mentionAvatar
+      image.alt = ""
+      media.append(image)
+    } else {
+      media.className = "root-command-emoji"
+      media.textContent = item.dataset.mentionIcon ?? ""
+    }
+
+    const label = document.createElement("span")
+    label.textContent = title
+
+    const remove = document.createElement("span")
+    remove.className = "root-mention-chip-remove"
+    remove.setAttribute("aria-hidden", "true")
+    remove.textContent = "\u00d7"
+
+    button.append(media, label, remove)
+    chips.append(button)
+
+    item.dataset.mentionTaken = "true"
+    const search = root.querySelector<HTMLInputElement>("[data-mention-search]")
+    if (search) {
+      search.value = ""
+    }
+    filterMentionList(root)
+    syncMentionRoot(root)
+    closeShowcaseMenus()
+  })
+
+  document.addEventListener("input", (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLInputElement) || target.dataset.mentionSearch === undefined) {
+      return
+    }
+
+    const root = target.closest<HTMLElement>("[data-mention-root]")
+    if (root) {
+      filterMentionList(root)
+    }
+  })
+
+  document.querySelectorAll<HTMLElement>("[data-mention-root]").forEach((root) => {
+    filterMentionList(root)
+    syncMentionRoot(root)
   })
 }
 
