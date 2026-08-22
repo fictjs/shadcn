@@ -26,6 +26,7 @@ async function initResumableClient(): Promise<void> {
   wireSiteChrome()
   wireDocTabsFallback()
   wireShowcaseSliders()
+  wireShowcaseCounters()
 
   await loadManifest()
   installResumableLoader({
@@ -239,6 +240,95 @@ function wireShowcaseSliders(): void {
   })
 
   document.querySelectorAll<HTMLElement>("[data-slider]").forEach(syncSlider)
+}
+
+function wireShowcaseCounters(): void {
+  const clampCounter = (group: HTMLElement, rawValue: number): number => {
+    const min = Number.parseInt(group.dataset.counterMin ?? "", 10)
+    const max = Number.parseInt(group.dataset.counterMax ?? "", 10)
+    let next = rawValue
+    if (Number.isFinite(min)) {
+      next = Math.max(min, next)
+    }
+    if (Number.isFinite(max)) {
+      next = Math.min(max, next)
+    }
+    return next
+  }
+
+  const syncCounter = (group: HTMLElement): void => {
+    const input = group.querySelector<HTMLInputElement>("[data-counter-input]")
+    if (!input) {
+      return
+    }
+
+    const min = Number.parseInt(group.dataset.counterMin ?? "", 10)
+    const max = Number.parseInt(group.dataset.counterMax ?? "", 10)
+    const current = Number.parseInt(input.value, 10)
+
+    group.querySelectorAll<HTMLButtonElement>("[data-counter-step]").forEach((button) => {
+      const step = Number.parseInt(button.dataset.counterStep ?? "0", 10) || 0
+      const next = current + step
+      button.disabled =
+        (Number.isFinite(min) && next < min) || (Number.isFinite(max) && next > max)
+    })
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const button = target.closest<HTMLButtonElement>("[data-counter-step]")
+    const group = button?.closest<HTMLElement>("[data-counter]")
+    const input = group?.querySelector<HTMLInputElement>("[data-counter-input]")
+    if (!button || !group || !input) {
+      return
+    }
+
+    const step = Number.parseInt(button.dataset.counterStep ?? "0", 10) || 0
+    const current = Number.parseInt(input.value, 10)
+    input.value = String(clampCounter(group, (Number.isFinite(current) ? current : 0) + step))
+    syncCounter(group)
+  })
+
+  document.addEventListener("input", (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLInputElement) || target.dataset.counterInput === undefined) {
+      return
+    }
+
+    const group = target.closest<HTMLElement>("[data-counter]")
+    if (!group) {
+      return
+    }
+
+    target.value = target.value.replace(/[^0-9]/g, "")
+    syncCounter(group)
+  })
+
+  document.addEventListener(
+    "blur",
+    (event) => {
+      const target = event.target
+      if (!(target instanceof HTMLInputElement) || target.dataset.counterInput === undefined) {
+        return
+      }
+
+      const group = target.closest<HTMLElement>("[data-counter]")
+      if (!group) {
+        return
+      }
+
+      const parsed = Number.parseInt(target.value, 10)
+      target.value = String(clampCounter(group, Number.isFinite(parsed) ? parsed : 1))
+      syncCounter(group)
+    },
+    true,
+  )
+
+  document.querySelectorAll<HTMLElement>("[data-counter]").forEach(syncCounter)
 }
 
 function wireClientFilters(): void {

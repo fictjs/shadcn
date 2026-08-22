@@ -2557,12 +2557,29 @@ function RootAppearanceSettingsPreview() {
             <span class="root-field-title">Number of GPUs</span>
             <span class="ui-field-description">You can add more later.</span>
           </span>
-          <span class="ui-button-group root-counter-group">
-            <input class="ui-counter-input" value="8" aria-label="Number of GPUs" />
-            <button class="ui-icon-button ui-icon-button-sm" type="button" aria-label="Decrement">
+          <span class="ui-button-group root-counter-group" data-counter data-counter-min="1" data-counter-max="99">
+            <input
+              class="ui-counter-input"
+              value="8"
+              inputMode="numeric"
+              maxLength={3}
+              data-counter-input
+              aria-label="Number of GPUs"
+            />
+            <button
+              class="ui-icon-button ui-icon-button-sm"
+              type="button"
+              aria-label="Decrement"
+              data-counter-step="-1"
+            >
               <MinusIcon />
             </button>
-            <button class="ui-icon-button ui-icon-button-sm" type="button" aria-label="Increment">
+            <button
+              class="ui-icon-button ui-icon-button-sm"
+              type="button"
+              aria-label="Increment"
+              data-counter-step="1"
+            >
               <PlusIcon />
             </button>
           </span>
