@@ -46,3 +46,7 @@ next-env.d.ts
 .contentlayer
 .content-collections
 .source
+
+# playwright
+/test-results
+/playwright-report

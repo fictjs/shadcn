@@ -48,7 +48,10 @@ test.describe("shadcn v4 site", () => {
       "href",
       "/docs/changelog/2026-03-cli-v4"
     )
-    await expect(page.getByRole("main").getByRole("link", { name: "New Project" })).toHaveAttribute("href", "/create")
+    await expect(page.getByRole("main").getByRole("link", { name: "Get Started" })).toHaveAttribute(
+      "href",
+      "/docs/installation",
+    )
     await expect(page.locator("body")).toHaveAttribute("data-active-theme", "neutral")
     await expect(page.getByLabel("Theme selector")).toHaveValue("neutral")
     await expect(page.getByRole("link", { name: "RTL New" })).toBeVisible()
@@ -58,7 +61,7 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".home-examples-root")).toContainText("Enable")
     await expect(page.locator(".home-examples-root")).toContainText("Your profile has been verified.")
     await expect(page.locator(".home-examples-root")).toContainText("Invite Members")
-    await expect(page.locator(".root-preview-separator")).toContainText("Appearance Settings")
+    await expect(page.locator(".root-section-separator")).toContainText("Appearance Settings")
     await expect(page.locator(".home-examples-root")).toContainText("Compute Environment")
     await expect(page.locator(".home-examples-root")).toContainText("How did you hear about us?")
     await expect(page.locator(".home-examples-root")).toContainText("Processing your request")
@@ -69,7 +72,7 @@ test.describe("shadcn v4 site", () => {
 
     await page.goto("/docs")
 
-    await expect(page.locator(".doc-header-main > h1")).toContainText("Introduction")
+    await expect(page.locator(".doc-header-row > h1")).toContainText("Introduction")
     await expect(page.getByRole("button", { name: "Copy Page" })).toBeVisible()
   })
 
@@ -92,7 +95,7 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByRole("link", { name: "108k" })).toHaveAttribute("href", "https://github.com/shadcn-ui/ui")
     await expect(page.getByRole("button", { name: "Toggle layout" })).toHaveCount(0)
     await expect(page.getByRole("button", { name: "Toggle theme" })).toBeVisible()
-    await expect(page.getByRole("banner").getByRole("link", { name: "Create Project" })).toHaveAttribute("href", "/create")
+    await expect(page.getByRole("banner").getByRole("link", { name: "New Project" })).toHaveAttribute("href", "/create")
   })
 
   test("layout toggle switches between full and fixed containers", async ({ page }) => {
@@ -100,7 +103,7 @@ test.describe("shadcn v4 site", () => {
     await page.goto("/")
 
     const html = page.locator("html")
-    const mainContainer = page.locator("main.container")
+    const mainContainer = page.locator(".home-preview-shell")
     const layoutToggle = page.getByRole("button", { name: "Toggle layout" })
 
     await expect(layoutToggle).toBeVisible()
@@ -146,7 +149,7 @@ test.describe("shadcn v4 site", () => {
     await page.getByRole("link", { name: "Installation" }).click()
 
     await expect(page).toHaveURL(/\/docs\/installation$/)
-    await expect(page.locator(".doc-header-main > h1")).toContainText("Installation")
+    await expect(page.locator(".doc-header-row > h1")).toContainText("Installation")
   })
 
   test("mode toggle switches site theme and preview assets", async ({ page }) => {
