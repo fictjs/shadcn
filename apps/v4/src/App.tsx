@@ -3054,19 +3054,30 @@ function RootFieldHearPreview() {
             Select the option that best describes how you heard about us.
           </p>
           <div class="root-hear-options">
-            <label class="root-hear-option" data-checked="true">
-              <UiCheckbox checked />
-              <span class="root-field-title">Social Media</span>
-            </label>
-            <label class="root-hear-option" data-checked="false">
-              <span class="root-field-title">Search Engine</span>
-            </label>
-            <label class="root-hear-option" data-checked="false">
-              <span class="root-field-title">Referral</span>
-            </label>
-            <label class="root-hear-option" data-checked="false">
-              <span class="root-field-title">Other</span>
-            </label>
+            {[
+              { label: "Social Media", checked: true },
+              { label: "Search Engine", checked: false },
+              { label: "Referral", checked: false },
+              { label: "Other", checked: false },
+            ].map((option) => (
+              <label
+                class="root-hear-option"
+                key={option.label}
+                data-hear-option
+                data-checked={option.checked ? "true" : "false"}
+              >
+                <span
+                  class="ui-checkbox root-hear-check"
+                  role="checkbox"
+                  aria-checked={option.checked ? "true" : "false"}
+                  aria-label={option.label}
+                  data-checked={option.checked ? "true" : "false"}
+                >
+                  <CheckIcon />
+                </span>
+                <span class="root-field-title">{option.label}</span>
+              </label>
+            ))}
           </div>
         </fieldset>
       </form>

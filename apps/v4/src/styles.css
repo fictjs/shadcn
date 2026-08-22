@@ -3410,19 +3410,32 @@ a.ui-item:hover {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
+  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 0.375rem 0.75rem;
   cursor: pointer;
-  transition: padding 100ms linear;
+  transition: padding 100ms linear, background-color 100ms linear;
+}
+
+.root-hear-option[data-checked="true"] {
+  background: color-mix(in oklab, var(--muted) 60%, transparent);
 }
 
 .root-hear-option[data-checked="true"] {
   padding-left: 0.5rem;
 }
 
-.root-hear-option .ui-checkbox {
+.root-hear-check {
   border-radius: 999px;
+  margin-left: -1.5rem;
+  transform: translateX(-0.25rem);
+  transition: margin-left 100ms linear, transform 100ms linear;
+}
+
+.root-hear-option[data-checked="true"] .root-hear-check {
+  margin-left: 0;
+  transform: translateX(0);
 }
 
 .root-clamp-1 {

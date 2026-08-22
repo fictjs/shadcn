@@ -474,6 +474,16 @@ function wireShowcaseToggles(): void {
       }
     }
 
+    const hearOption = target.closest<HTMLElement>("[data-hear-option]")
+    if (hearOption) {
+      const checked = hearOption.dataset.checked !== "true"
+      hearOption.dataset.checked = checked ? "true" : "false"
+      hearOption.querySelectorAll<HTMLElement>(".ui-checkbox").forEach((box) => {
+        box.dataset.checked = checked ? "true" : "false"
+        box.setAttribute("aria-checked", checked ? "true" : "false")
+      })
+    }
+
     const toggle = target.closest<HTMLElement>("[data-toggle]")
     if (!toggle) {
       return
