@@ -617,6 +617,35 @@ function GitHubIcon() {
   )
 }
 
+function ArrowLeftIcon() {
+  return (
+    <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M5 12l14 0" />
+      <path d="M5 12l6 6" />
+      <path d="M5 12l6 -6" />
+    </svg>
+  )
+}
+
+function ArrowRightIcon() {
+  return (
+    <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M5 12l14 0" />
+      <path d="M13 18l6 -6" />
+      <path d="M13 6l6 6" />
+    </svg>
+  )
+}
+
+function CopyIcon() {
+  return (
+    <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+      <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+    </svg>
+  )
+}
+
 function PlusIcon() {
   return (
     <svg
@@ -2514,10 +2543,9 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
   return (
     <section class="docs-layout" data-slot="docs">
       <aside class="docs-sidebar">
-        <p class="eyebrow">Documentation</p>
         {props.route.docNavigation.map((section) => (
           <div class="docs-sidebar-section" key={section.title}>
-            <h3>{section.title}</h3>
+            <p class="docs-sidebar-label">{section.title}</p>
             <ul>
               {section.items.map((item) => (
                 <li key={item.slug || "index"}>
@@ -2537,15 +2565,12 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
       <article class="doc-main">
         <div class="doc-main-shell">
           <header class="doc-header">
-            <div class="doc-header-main">
-              <p class="eyebrow">{doc.section || "overview"}</p>
+            <div class="doc-header-row">
               <h1>{doc.title}</h1>
-              <p class="lead">{doc.description || "No description provided."}</p>
-            </div>
-            <div class="doc-header-actions">
+              <div class="doc-header-actions">
               <button
                 type="button"
-                class="button button-ghost"
+                class="button button-outline doc-copy-page"
                 onClick$={() => {
                   if (typeof navigator === "undefined" || !navigator.clipboard || !props.route.doc) {
                     return
@@ -2555,27 +2580,30 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
                   void navigator.clipboard.writeText(bodySnapshot)
                 }}
               >
+                <CopyIcon />
                 Copy Page
               </button>
               {props.route.docPrev ? (
                 <a
-                  class="button button-ghost doc-icon-button"
+                  class="button doc-icon-button"
                   href={props.route.docPrev.slug ? `/docs/${props.route.docPrev.slug}` : "/docs"}
                   aria-label="Previous page"
                 >
-                  <span aria-hidden="true">&lt;</span>
+                  <ArrowLeftIcon />
                 </a>
               ) : null}
               {props.route.docNext ? (
                 <a
-                  class="button button-ghost doc-icon-button"
+                  class="button doc-icon-button"
                   href={props.route.docNext.slug ? `/docs/${props.route.docNext.slug}` : "/docs"}
                   aria-label="Next page"
                 >
-                  <span aria-hidden="true">&gt;</span>
+                  <ArrowRightIcon />
                 </a>
               ) : null}
+              </div>
             </div>
+            <p class="lead">{doc.description || "No description provided."}</p>
           </header>
 
           <div class="doc-body">
@@ -2585,20 +2613,22 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
           <div class="doc-nav">
             {props.route.docPrev ? (
               <a
-                class="button button-ghost"
+                class="button button-secondary"
                 href={props.route.docPrev.slug ? `/docs/${props.route.docPrev.slug}` : "/docs"}
               >
-                &lt;- {props.route.docPrev.title}
+                <ArrowLeftIcon />
+                {props.route.docPrev.title}
               </a>
             ) : (
               <span />
             )}
             {props.route.docNext ? (
               <a
-                class="button button-ghost"
+                class="button button-secondary"
                 href={props.route.docNext.slug ? `/docs/${props.route.docNext.slug}` : "/docs"}
               >
-                {props.route.docNext.title} -&gt;
+                {props.route.docNext.title}
+                <ArrowRightIcon />
               </a>
             ) : null}
           </div>
@@ -2606,7 +2636,7 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
       </article>
 
       <aside class="docs-toc">
-        <p class="eyebrow">On this page</p>
+        <p class="docs-toc-label">On This Page</p>
         {doc.headings.length > 0 ? (
           <ul>
             {doc.headings.map((heading) => (
