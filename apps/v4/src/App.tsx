@@ -638,9 +638,9 @@ function ArrowRightIcon() {
   )
 }
 
-function CopyIcon() {
+function CopyIcon(props: { class?: string }) {
   return (
-    <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <svg class={props.class ? `button-icon ${props.class}` : "button-icon"} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
       <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
     </svg>
@@ -738,9 +738,9 @@ function ChartFamilyIcon(props: { chartId: string }) {
   )
 }
 
-function TerminalIcon() {
+function TerminalIcon(props: { class?: string }) {
   return (
-    <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <svg class={props.class ? `button-icon ${props.class}` : "button-icon"} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="m4 17 6-6-6-6" />
       <path d="M12 19h8" />
     </svg>
@@ -1298,7 +1298,7 @@ function CreatePage() {
       return
     }
 
-    void navigator.clipboard.writeText(window.location.href)
+    writeClipboardText(window.location.href)
     copiedLabel = "Copied"
   }
 
@@ -1319,7 +1319,7 @@ function CreatePage() {
       return
     }
 
-    void navigator.clipboard.writeText(command)
+    writeClipboardText(command)
     copiedCommandLabel = "Copied"
   }
 
@@ -1368,7 +1368,7 @@ function CreatePage() {
                   return
                 }
 
-                void navigator.clipboard.writeText(window.location.href)
+                writeClipboardText(window.location.href)
                 copiedLabel = "Copied"
               }}
             >
@@ -1522,7 +1522,7 @@ function CreatePage() {
                       return
                     }
 
-                    void navigator.clipboard.writeText(command)
+                    writeClipboardText(command)
                     copiedCommandLabel = "Copied"
                   }}
                 >
@@ -3458,9 +3458,7 @@ function ThemeSelectorControl(props: { themes: ThemeEntry[]; activeThemeName: st
             return
           }
 
-          void navigator.clipboard.writeText(
-            `pnpm dlx @fictjs/shadcn@latest theme apply ${themeName}`,
-          )
+          writeClipboardText(`pnpm dlx @fictjs/shadcn@latest theme apply ${themeName}`, target)
         }}
       >
         <svg
@@ -3603,16 +3601,17 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
               <button
                 type="button"
                 class="button button-outline doc-copy-page"
-                onClick$={() => {
+                onClick$={(event: MouseEvent) => {
                   if (typeof navigator === "undefined" || !navigator.clipboard || !props.route.doc) {
                     return
                   }
 
                   const bodySnapshot = untrack(() => props.route.doc?.body ?? "")
-                  void navigator.clipboard.writeText(bodySnapshot)
+                  writeClipboardText(bodySnapshot, event.currentTarget)
                 }}
               >
-                <CopyIcon />
+                <CopyIcon class="copy-icon-idle" />
+                <CheckIcon class="copy-icon-done" />
                 Copy Page
               </button>
               {props.route.docPrev ? (
@@ -4578,10 +4577,11 @@ function ChartsPage(props: { route: ResolvedRoute; activeThemeName: string; onTh
                       return
                     }
 
-                    void navigator.clipboard.writeText(`registry/new-york-v4/charts/${chartId}.tsx`)
+                    writeClipboardText(`registry/new-york-v4/charts/${chartId}.tsx`, target)
                   }}
                 >
-                  <CopyIcon />
+                  <CopyIcon class="copy-icon-idle" />
+                  <CheckIcon class="copy-icon-done" />
                 </button>
                 <span class="chart-display-divider" aria-hidden="true"></span>
                 <a class="button button-outline chart-display-button" href="/docs/components/chart">
@@ -4762,10 +4762,11 @@ function BlocksPage(props: { route: ResolvedRoute }) {
                       return
                     }
 
-                    void navigator.clipboard.writeText(`npx @fictjs/shadcn@latest add ${blockName}`)
+                    writeClipboardText(`npx @fictjs/shadcn@latest add ${blockName}`, target)
                   }}
                 >
-                  <TerminalIcon />
+                  <TerminalIcon class="copy-icon-idle" />
+                  <CheckIcon class="copy-icon-done" />
                   <span>npx fictcn add {block.name}</span>
                 </button>
                 <span class="block-display-divider" aria-hidden="true"></span>
@@ -5002,12 +5003,11 @@ function ThemesPage(props: { themes: ThemeEntry[]; activeThemeName: string; onTh
                   return
                 }
 
-                void navigator.clipboard.writeText(
-                  `pnpm dlx @fictjs/shadcn@latest theme apply ${themeName}`,
-                )
+                writeClipboardText(`pnpm dlx @fictjs/shadcn@latest theme apply ${themeName}`, target)
               }}
             >
-              <CopyIcon />
+              <CopyIcon class="copy-icon-idle" />
+              <CheckIcon class="copy-icon-done" />
               Copy Code
             </button>
           </div>
@@ -5104,6 +5104,30 @@ function ColorsPage() {
   )
 }
 
+function writeClipboardText(value: string, source?: EventTarget | null): void {
+  if (typeof navigator === "undefined" || !navigator.clipboard) {
+    return
+  }
+
+  const button = source instanceof HTMLElement ? source : null
+
+  navigator.clipboard.writeText(value).then(
+    () => {
+      if (!button) {
+        return
+      }
+
+      button.dataset.copied = "true"
+      window.setTimeout(() => {
+        button.dataset.copied = "false"
+      }, 2000)
+    },
+    () => {
+      // Clipboard access can be denied; keep the interaction silent.
+    },
+  )
+}
+
 function copyColorValue(event: MouseEvent) {
   if (typeof navigator === "undefined" || !navigator.clipboard) {
     return
@@ -5121,7 +5145,7 @@ function copyColorValue(event: MouseEvent) {
     return
   }
 
-  void navigator.clipboard.writeText(value)
+  writeClipboardText(value, target)
 }
 
 function NotFoundPage(props: { pathname: string }) {
