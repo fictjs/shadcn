@@ -1,5 +1,22 @@
 import { $state, untrack } from "fict"
 
+import {
+  TablerChartBarIcon,
+  TablerDashboardIcon,
+  TablerDatabaseIcon,
+  TablerDotsIcon,
+  TablerDotsVerticalIcon,
+  TablerFileWordIcon,
+  TablerFolderIcon,
+  TablerHelpIcon,
+  TablerInnerShadowTopIcon,
+  TablerListDetailsIcon,
+  TablerReportIcon,
+  TablerSearchIcon,
+  TablerSettingsIcon,
+  TablerUsersIcon,
+} from "./example-icons"
+
 interface LiveExamplePageProps {
   slug: string
 }
@@ -134,6 +151,22 @@ export function LiveExamplePage(props: LiveExamplePageProps) {
     : <ExampleFallback slug={props.slug} />
 }
 
+function DashboardNavIcon(props: { name: string }) {
+  const name = props.name
+
+  return name === "Dashboard" ? <TablerDashboardIcon />
+    : name === "Lifecycle" ? <TablerListDetailsIcon />
+    : name === "Analytics" ? <TablerChartBarIcon />
+    : name === "Projects" ? <TablerFolderIcon />
+    : name === "Team" ? <TablerUsersIcon />
+    : name === "Data Library" ? <TablerDatabaseIcon />
+    : name === "Reports" ? <TablerReportIcon />
+    : name === "Word Assistant" ? <TablerFileWordIcon />
+    : name === "Settings" ? <TablerSettingsIcon />
+    : name === "Get Help" ? <TablerHelpIcon />
+    : <TablerSearchIcon />
+}
+
 function DashboardExample() {
   let timeRange = $state<DashboardRange>("90d")
   let activeView = $state<DashboardView>("outline")
@@ -154,52 +187,72 @@ function DashboardExample() {
   return (
     <div class="live-example dashboard-example">
       <aside class="dashboard-sidebar">
-        <div class="dashboard-sidebar-top">
-          <div class="dashboard-brand-row">
-            <div class="dashboard-brand-mark">S</div>
-            <div>
-              <p class="dashboard-brand-title">Acme Inc.</p>
-            </div>
-          </div>
+        <div class="dashboard-sidebar-header">
+          <a class="dashboard-menu-button dashboard-brand-button" href="#acme-inc">
+            <TablerInnerShadowTopIcon class="dashboard-brand-icon" />
+            <span class="dashboard-brand-title">Acme Inc.</span>
+          </a>
+        </div>
 
-          <nav class="dashboard-nav" aria-label="Dashboard sidebar">
-            {dashboardNavItems.map((item, index) => (
-              <a class={index === 0 ? "dashboard-nav-link dashboard-nav-link-active" : "dashboard-nav-link"} href={`#${item.toLowerCase().replace(/\s+/g, "-")}`} key={item}>
-                <span class="dashboard-nav-icon">{item.charAt(0)}</span>
-                <span>{item}</span>
-              </a>
-            ))}
-          </nav>
-
-          <section class="dashboard-sidebar-section">
-            <p class="dashboard-sidebar-heading">Documents</p>
-            <div class="dashboard-sidebar-stack">
-              {dashboardDocumentItems.map((item) => (
-                <a class="dashboard-doc-link" href={`#${item.toLowerCase().replace(/\s+/g, "-")}`} key={item}>
-                  <span class="dashboard-doc-icon">{item.charAt(0)}</span>
+        <div class="dashboard-sidebar-content">
+          <section class="dashboard-sidebar-group">
+            <p class="dashboard-sidebar-group-label">Home</p>
+            <nav class="dashboard-sidebar-menu" aria-label="Dashboard sidebar">
+              {dashboardNavItems.map((item, index) => (
+                <a
+                  class={index === 0 ? "dashboard-menu-button dashboard-menu-button-active" : "dashboard-menu-button"}
+                  href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
+                  key={item}
+                >
+                  <DashboardNavIcon name={item} />
                   <span>{item}</span>
                 </a>
               ))}
-            </div>
+            </nav>
+          </section>
+
+          <section class="dashboard-sidebar-group">
+            <p class="dashboard-sidebar-group-label">Documents</p>
+            <nav class="dashboard-sidebar-menu" aria-label="Dashboard documents">
+              {dashboardDocumentItems.map((item) => (
+                <div class="dashboard-menu-item" key={item}>
+                  <a class="dashboard-menu-button" href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}>
+                    <DashboardNavIcon name={item} />
+                    <span>{item}</span>
+                  </a>
+                  <button class="dashboard-menu-action" type="button" aria-label={`More options for ${item}`}>
+                    <TablerDotsIcon />
+                  </button>
+                </div>
+              ))}
+              <button class="dashboard-menu-button dashboard-menu-button-muted" type="button">
+                <TablerDotsIcon />
+                <span>More</span>
+              </button>
+            </nav>
+          </section>
+
+          <section class="dashboard-sidebar-group dashboard-sidebar-group-end">
+            <nav class="dashboard-sidebar-menu" aria-label="Dashboard utilities">
+              {dashboardSecondaryItems.map((item) => (
+                <a class="dashboard-menu-button" href={`#${item.toLowerCase().replace(/\s+/g, "-")}`} key={item}>
+                  <DashboardNavIcon name={item} />
+                  <span>{item}</span>
+                </a>
+              ))}
+            </nav>
           </section>
         </div>
 
-        <div class="dashboard-sidebar-bottom">
-          <nav class="dashboard-secondary-nav" aria-label="Dashboard utilities">
-            {dashboardSecondaryItems.map((item) => (
-              <a class="dashboard-secondary-link" href={`#${item.toLowerCase().replace(/\s+/g, "-")}`} key={item}>
-                {item}
-              </a>
-            ))}
-          </nav>
-
-          <div class="dashboard-user-card">
-            <span class="dashboard-user-avatar">S</span>
-            <div class="dashboard-user-meta">
-              <strong>shadcn</strong>
-              <span>m@example.com</span>
-            </div>
-          </div>
+        <div class="dashboard-sidebar-footer">
+          <button class="dashboard-menu-button dashboard-menu-button-lg" type="button">
+            <img class="dashboard-user-avatar" src="/avatars/shadcn.jpg" alt="shadcn" width="32" height="32" />
+            <span class="dashboard-user-meta">
+              <span class="dashboard-user-name">shadcn</span>
+              <span class="dashboard-user-email">m@example.com</span>
+            </span>
+            <TablerDotsVerticalIcon class="dashboard-user-more" />
+          </button>
         </div>
       </aside>
 
