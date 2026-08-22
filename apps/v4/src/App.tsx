@@ -976,7 +976,7 @@ export function App(props: AppProps) {
         </header>
 
         <main
-          class="container main-content"
+          class="main-content"
           inert={isSearchOpen || isMobileNavOpen}
           aria-hidden={isSearchOpen || isMobileNavOpen ? "true" : undefined}
         >
@@ -1924,7 +1924,7 @@ function HomePage(props: { route: ResolvedRoute; activeThemeName: string; onThem
 
   return (
     <section class="stack-gap">
-      <div class="home-hero-card route-page-header">
+      <div class="home-hero-card route-page-header container">
         <AnnouncementBadge />
         <h1>The Foundation for your Design System</h1>
         <p class="lead">
@@ -1941,7 +1941,7 @@ function HomePage(props: { route: ResolvedRoute; activeThemeName: string; onThem
         </div>
       </div>
 
-      <div class="route-nav-row">
+      <div class="route-nav-row container">
         <nav class="section-nav" aria-label="Home examples navigation">
           <a class="section-nav-link-active" href="/">
             Examples
@@ -1956,22 +1956,24 @@ function HomePage(props: { route: ResolvedRoute; activeThemeName: string; onThem
         <ThemeSelectorControl themes={props.route.themes} activeThemeName={props.activeThemeName} onThemeSelect={props.onThemeChange} />
       </div>
 
-      <div class="home-preview-shell route-theme-container" data-theme-name={props.activeThemeName} style={routeThemeStyle}>
-        <section class="home-mobile-preview">
-          <figure class="example-preview-card home-mobile-preview-card">
-            <ColorModeImage
-              lightSrc="/r/styles/new-york-v4/dashboard-01-light.png"
-              darkSrc="/r/styles/new-york-v4/dashboard-01-dark.png"
-              alt="Dashboard"
-            />
-          </figure>
-        </section>
+      <div class="home-preview-shell section-soft route-theme-container" data-theme-name={props.activeThemeName} style={routeThemeStyle}>
+        <div class="container home-preview-container">
+          <section class="home-mobile-preview">
+            <figure class="example-preview-card home-mobile-preview-card">
+              <ColorModeImage
+                lightSrc="/r/styles/new-york-v4/dashboard-01-light.png"
+                darkSrc="/r/styles/new-york-v4/dashboard-01-dark.png"
+                alt="Dashboard"
+              />
+            </figure>
+          </section>
 
-        <section class="home-examples-root">
-          <div class="home-theme-container">
-            <ExamplesRootPreview />
-          </div>
-        </section>
+          <section class="home-examples-root">
+            <div class="home-theme-container">
+              <ExamplesRootPreview />
+            </div>
+          </section>
+        </div>
       </div>
     </section>
   )
@@ -2472,7 +2474,7 @@ function DocsIndexPage(props: { docs: DocSummary[] }) {
   }
 
   return (
-    <section class="stack-gap">
+    <section class="stack-gap container">
       <div>
         <p class="eyebrow">Documentation</p>
         <h1>Docs</h1>
@@ -2977,7 +2979,7 @@ function ComponentsPage(props: { components: string[] }) {
   }
 
   return (
-    <section class="stack-gap">
+    <section class="stack-gap container">
       <div>
         <p class="eyebrow">Components</p>
         <h1>Browse Components</h1>
@@ -3041,7 +3043,7 @@ function ExamplesPage(props: { route: ResolvedRoute; activeThemeName: string; on
   }
 
   return (
-    <section class="stack-gap">
+    <section class="stack-gap container">
       <div class="route-page-header">
         <AnnouncementBadge />
         <h1>The Foundation for your Design System</h1>
@@ -3407,7 +3409,7 @@ function ChartsPage(props: { route: ResolvedRoute; activeThemeName: string; onTh
   )
 
   return (
-    <section class="stack-gap">
+    <section class="stack-gap container">
       <div class="route-page-header">
         <AnnouncementBadge />
         <h1>Beautiful Charts &amp; Graphs</h1>
@@ -3553,7 +3555,7 @@ function BlocksPage(props: { route: ResolvedRoute }) {
   const activeBlockCategory = untrack(() => props.route.blockCategory)
 
   return (
-    <section class="stack-gap">
+    <section class="stack-gap container">
       <div class="route-page-header">
         <AnnouncementBadge />
         <h1>Building Blocks for the Web</h1>
@@ -3753,7 +3755,7 @@ function ThemesPage(props: { themes: ThemeEntry[]; activeThemeName: string; onTh
   const activeSwatches = themeSwatchLookup[props.activeThemeName] || defaultThemeSwatches
 
   return (
-    <section class="stack-gap themes-route">
+    <section class="stack-gap container themes-route">
       <div class="route-page-header">
         <AnnouncementBadge />
         <h1>Pick a Color. Make it yours.</h1>
@@ -3887,7 +3889,7 @@ function ThemesPage(props: { themes: ThemeEntry[]; activeThemeName: string; onTh
 
 function ColorsPage() {
   return (
-    <section class="stack-gap colors-route">
+    <section class="stack-gap container colors-route">
       <div class="route-page-header">
         <AnnouncementBadge />
         <h1>Tailwind Colors in Every Format</h1>
@@ -3934,7 +3936,7 @@ function ColorsPage() {
 
 function NotFoundPage(props: { pathname: string }) {
   return (
-    <section class="stack-gap not-found">
+    <section class="stack-gap container not-found">
       <p class="eyebrow">404</p>
       <h1>Page not found</h1>
       <p class="lead">No route matched: {props.pathname}</p>

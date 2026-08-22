@@ -1184,7 +1184,8 @@ h1 {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1rem 0;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .route-nav-row .section-nav {
@@ -1919,14 +1920,32 @@ h1 {
 }
 
 .home-preview-shell {
-  padding-bottom: 0.5rem;
+  flex: 1;
+  padding-bottom: 1.5rem;
 }
 
 .home-theme-container {
-  border: 1px solid color-mix(in oklab, var(--border) 50%, transparent);
-  border-radius: 1rem;
-  padding: 1rem;
-  background: color-mix(in oklab, var(--muted) 20%, var(--card));
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.section-soft {
+  background-image: linear-gradient(
+    to bottom,
+    var(--background),
+    color-mix(in oklab, var(--surface) 40%, transparent)
+  );
+}
+
+.dark .section-soft {
+  background-image: none;
+  background-color: var(--background);
+}
+
+.home-preview-container {
+  overflow: hidden;
 }
 
 .home-mobile-preview-card {
