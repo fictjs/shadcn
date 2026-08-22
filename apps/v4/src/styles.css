@@ -3895,7 +3895,8 @@ a.ui-item:hover {
 }
 
 .examples-root-column-last {
-  display: none;
+  display: flex;
+  order: -1;
 }
 
 .example-root-panel {
@@ -6718,5 +6719,39 @@ a.ui-item:hover {
 
   .header-divider-wide {
     display: block;
+  }
+}
+
+@media (min-width: 768px) {
+  .examples-root-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .examples-root-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .examples-root-column-last {
+    display: none;
+  }
+}
+
+@media (min-width: 1280px) {
+  .examples-root-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  .examples-root-column-last {
+    display: flex;
+    order: 0;
+  }
+}
+
+@media (min-width: 1536px) {
+  .examples-root-grid {
+    gap: 2rem;
   }
 }
