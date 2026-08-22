@@ -686,21 +686,57 @@ function PlaygroundExample() {
             </div>
           </section>
 
-          <label class="playground-field">
-            <span>Temperature</span>
-            <input type="range" min="0" max="100" value="56" />
-          </label>
-
-          <label class="playground-field">
-            <span>Max Length</span>
-            <input type="range" min="64" max="512" value="256" />
-          </label>
-
-          <label class="playground-field">
-            <span>Top P</span>
-            <input type="range" min="0" max="100" value="90" />
-          </label>
+          <PlaygroundSlider label="Temperature" name="temperature" min={0} max={100} step={1} value={56} />
+          <PlaygroundSlider label="Maximum Length" name="max-length" min={64} max={512} step={1} value={256} />
+          <PlaygroundSlider label="Top P" name="top-p" min={0} max={100} step={1} value={90} />
         </aside>
+      </div>
+    </div>
+  )
+}
+
+function PlaygroundSlider(props: {
+  label: string
+  name: string
+  min: number
+  max: number
+  step: number
+  value: number
+}) {
+  const percent = ((props.value - props.min) / (props.max - props.min || 1)) * 100
+
+  return (
+    <div class="playground-field" data-slider-scope={props.name}>
+      <div class="playground-field-head">
+        <span>{props.label}</span>
+        <span class="playground-field-value" data-slider-output="0">
+          {props.value}
+        </span>
+      </div>
+      <div
+        class="ui-slider"
+        data-slider={props.name}
+        data-slider-min={String(props.min)}
+        data-slider-max={String(props.max)}
+        data-slider-step={String(props.step)}
+        role="group"
+        aria-label={props.label}
+      >
+        <span class="ui-slider-track">
+          <span class="ui-slider-range" data-slider-range style={`left:0%;right:${100 - percent}%`}></span>
+        </span>
+        <span
+          class="ui-slider-thumb"
+          data-slider-thumb="0"
+          data-slider-value={String(props.value)}
+          role="slider"
+          tabIndex={0}
+          aria-label={props.label}
+          aria-valuemin={props.min}
+          aria-valuemax={props.max}
+          aria-valuenow={props.value}
+          style={`left:${percent}%`}
+        ></span>
       </div>
     </div>
   )

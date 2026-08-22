@@ -113,7 +113,7 @@ function wireShowcaseSliders(): void {
 
     const range = slider.querySelector<HTMLElement>("[data-slider-range]")
     if (range) {
-      const lowest = Math.min(...values)
+      const lowest = values.length > 1 ? Math.min(...values) : min
       const highest = Math.max(...values)
       range.style.left = `${((lowest - min) / span) * 100}%`
       range.style.right = `${100 - ((highest - min) / span) * 100}%`

@@ -6156,6 +6156,23 @@ a.ui-item:hover {
   gap: 0.35rem;
 }
 
+.playground-field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.playground-field-value {
+  color: var(--muted-foreground);
+  font-weight: 400 !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.playground-field .ui-slider {
+  margin-top: 0.25rem;
+}
+
 .tasks-search-field {
   width: min(100%, 20rem);
 }
@@ -6169,7 +6186,7 @@ a.ui-item:hover {
 
 .tasks-search-field input,
 .playground-field select,
-.playground-field input,
+.playground-field > input,
 .playground-textarea,
 .auth-field input {
   border: 1px solid var(--border);
