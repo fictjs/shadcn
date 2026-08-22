@@ -647,6 +647,65 @@ function CopyIcon() {
   )
 }
 
+function setBlockViewport(event: MouseEvent, width: string) {
+  const target = event.currentTarget
+  if (!(target instanceof HTMLButtonElement)) {
+    return
+  }
+
+  const group = target.parentElement
+  const card = target.closest(".block-display-card")
+  if (!group || !card) {
+    return
+  }
+
+  for (const button of Array.from(group.children)) {
+    button.classList.toggle("is-active", button === target)
+  }
+
+  const stage = card.querySelector(".block-preview-stage")
+  if (stage instanceof HTMLElement) {
+    stage.style.width = `${width}%`
+  }
+}
+
+function MonitorIcon() {
+  return (
+    <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect width="20" height="14" x="2" y="3" rx="2" />
+      <line x1="8" x2="16" y1="21" y2="21" />
+      <line x1="12" x2="12" y1="17" y2="21" />
+    </svg>
+  )
+}
+
+function TabletIcon() {
+  return (
+    <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect width="16" height="20" x="4" y="2" rx="2" />
+      <line x1="12" x2="12.01" y1="18" y2="18" />
+    </svg>
+  )
+}
+
+function SmartphoneIcon() {
+  return (
+    <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect width="14" height="20" x="5" y="2" rx="2" />
+      <path d="M12 18h.01" />
+    </svg>
+  )
+}
+
+function TerminalIcon() {
+  return (
+    <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m4 17 6-6-6-6" />
+      <path d="M12 19h8" />
+    </svg>
+  )
+}
+
 function PlusIcon() {
   return (
     <svg
@@ -3650,24 +3709,67 @@ function BlocksPage(props: { route: ResolvedRoute }) {
             </a>
           ))}
         </nav>
-        <a class="button button-ghost section-nav-action" href="/blocks/sidebar">
+        <a class="button button-secondary section-nav-action" href="/blocks/sidebar">
           Browse all blocks
         </a>
       </div>
 
       <div class="blocks-stack" id="blocks">
         {filteredBlocks.map((block) => (
-          <article class="card block-display-card" key={block.name}>
+          <article class="block-display-card" key={block.name}>
             <div class="block-display-toolbar">
-              <div class="block-display-title">
-                <p class="pill-name">{formatDisplayLabel(block.name)}</p>
-                <h3>{block.description}</h3>
-                <p class="slug">categories: {block.categories.join(", ") || "uncategorized"}</p>
+              <div class="block-display-tabs" role="tablist" aria-label="Block view">
+                <span class="block-display-tab is-active" role="tab" aria-selected="true">
+                  Preview
+                </span>
+                <span class="block-display-tab" role="tab" aria-selected="false">
+                  Code
+                </span>
               </div>
+              <span class="block-display-divider" aria-hidden="true"></span>
+              <a class="block-display-description" href={`#${block.name}`}>
+                {block.description.replace(/\.$/, "")}
+              </a>
               <div class="block-display-actions">
+                <div class="block-viewport-group" role="group" aria-label="Preview width">
+                  <button
+                    type="button"
+                    class="block-viewport-button is-active"
+                    title="Desktop"
+                    aria-label="Desktop"
+                    data-block-viewport={block.name}
+                    data-viewport-width="100"
+                    onClick$={(event: MouseEvent) => setBlockViewport(event, "100")}
+                  >
+                    <MonitorIcon />
+                  </button>
+                  <button
+                    type="button"
+                    class="block-viewport-button"
+                    title="Tablet"
+                    aria-label="Tablet"
+                    data-block-viewport={block.name}
+                    data-viewport-width="60"
+                    onClick$={(event: MouseEvent) => setBlockViewport(event, "60")}
+                  >
+                    <TabletIcon />
+                  </button>
+                  <button
+                    type="button"
+                    class="block-viewport-button"
+                    title="Mobile"
+                    aria-label="Mobile"
+                    data-block-viewport={block.name}
+                    data-viewport-width="30"
+                    onClick$={(event: MouseEvent) => setBlockViewport(event, "30")}
+                  >
+                    <SmartphoneIcon />
+                  </button>
+                </div>
+                <span class="block-display-divider" aria-hidden="true"></span>
                 <button
                   type="button"
-                  class="button button-ghost block-display-button"
+                  class="button button-outline block-display-button"
                   data-block-name={block.name}
                   onClick$={(event: MouseEvent) => {
                     if (typeof navigator === "undefined" || !navigator.clipboard) {
@@ -3687,10 +3789,12 @@ function BlocksPage(props: { route: ResolvedRoute }) {
                     void navigator.clipboard.writeText(`npx @fictjs/shadcn@latest add ${blockName}`)
                   }}
                 >
-                  Copy Command
+                  <TerminalIcon />
+                  <span>npx fictcn add {block.name}</span>
                 </button>
-                <a class="button button-ghost block-display-button" href="/docs/blocks">
-                  Docs
+                <span class="block-display-divider" aria-hidden="true"></span>
+                <a class="button block-display-open" href="/docs/blocks">
+                  Open in Docs
                 </a>
               </div>
             </div>
