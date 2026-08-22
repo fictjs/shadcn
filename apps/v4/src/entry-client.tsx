@@ -31,6 +31,7 @@ async function initResumableClient(): Promise<void> {
   wireShowcaseToggles()
   wireShowcaseMentions()
   wireShowcaseSelects()
+  wireColorFormatSelectors()
 
   await loadManifest()
   installResumableLoader({
@@ -657,6 +658,25 @@ function wireShowcaseSelects(): void {
   })
 
   document.querySelectorAll<HTMLSelectElement>("select[data-has-value]").forEach(syncSelect)
+}
+
+function wireColorFormatSelectors(): void {
+  document.addEventListener("change", (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLSelectElement) || !target.classList.contains("color-format-select")) {
+      return
+    }
+
+    const grid = target.closest<HTMLElement>(".colors-route-grid")
+    if (!grid) {
+      return
+    }
+
+    grid.dataset.colorFormat = target.value
+    grid.querySelectorAll<HTMLSelectElement>(".color-format-select").forEach((select) => {
+      select.value = target.value
+    })
+  })
 }
 
 function wireClientFilters(): void {

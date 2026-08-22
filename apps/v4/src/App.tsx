@@ -5055,11 +5055,7 @@ function ColorsPage() {
               <h2>{palette.name}</h2>
               <span class="color-format-field">
                 <span class="color-format-label">Format:</span>
-                <select
-                  class="color-format-select"
-                  aria-label={`Color format for ${palette.name}`}
-                  onChange={(event: Event) => syncColorFormat(event)}
-                >
+                <select class="color-format-select" aria-label={`Color format for ${palette.name}`}>
                   <option value="hex">hex</option>
                   <option value="rgb">rgb</option>
                   <option value="hsl">hsl</option>
@@ -5106,25 +5102,6 @@ function ColorsPage() {
       </div>
     </section>
   )
-}
-
-function syncColorFormat(event: Event) {
-  const target = event.currentTarget
-  if (!(target instanceof HTMLSelectElement)) {
-    return
-  }
-
-  const grid = target.closest(".colors-route-grid")
-  if (!(grid instanceof HTMLElement)) {
-    return
-  }
-
-  grid.dataset.colorFormat = target.value
-  for (const select of Array.from(grid.querySelectorAll(".color-format-select"))) {
-    if (select instanceof HTMLSelectElement) {
-      select.value = target.value
-    }
-  }
 }
 
 function copyColorValue(event: MouseEvent) {
