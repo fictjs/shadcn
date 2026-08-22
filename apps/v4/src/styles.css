@@ -3594,6 +3594,13 @@ a.ui-item:hover {
   min-width: 12rem;
 }
 
+.root-secure-popover {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border-radius: var(--radius-xl);
+}
+
 .root-agent-popover {
   padding: 0;
   border-radius: var(--radius-xl);

@@ -2500,10 +2500,28 @@ function RootInputGroupButtonPreview() {
   return (
     <div class="root-input-group-stack">
       <div class="ui-input-group ui-input-group-round">
-        <span class="ui-input-group-addon">
-          <button class="ui-input-group-button ui-input-group-button-icon ui-input-group-button-secondary" type="button" aria-label="Info">
+        <span class="ui-input-group-addon ui-menu" data-menu>
+          <button
+            class="ui-input-group-button ui-input-group-button-icon ui-input-group-button-secondary"
+            type="button"
+            aria-label="Info"
+            data-menu-trigger
+            aria-haspopup="dialog"
+            aria-expanded="false"
+          >
             <InfoIcon />
           </button>
+          <div
+            class="ui-popover-panel root-secure-popover"
+            data-menu-panel
+            data-menu-side="bottom"
+            data-menu-align="start"
+            role="dialog"
+            hidden
+          >
+            <p class="ui-popover-title">Your connection is not secure.</p>
+            <p class="ui-popover-text">You should not enter any sensitive information on this site.</p>
+          </div>
         </span>
         <span class="ui-input-group-addon root-addon-flush">https://</span>
         <input class="ui-input-group-input root-input-flush" aria-label="Input Secure" />
