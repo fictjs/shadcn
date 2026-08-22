@@ -27,6 +27,7 @@ async function initResumableClient(): Promise<void> {
   wireDocTabsFallback()
   wireShowcaseSliders()
   wireShowcaseCounters()
+  wireShowcaseMenus()
 
   await loadManifest()
   installResumableLoader({
@@ -329,6 +330,87 @@ function wireShowcaseCounters(): void {
   )
 
   document.querySelectorAll<HTMLElement>("[data-counter]").forEach(syncCounter)
+}
+
+function closeShowcaseMenus(except?: Element | null): void {
+  document.querySelectorAll<HTMLElement>("[data-menu]").forEach((menu) => {
+    if (menu === except) {
+      return
+    }
+
+    const panel = menu.querySelector<HTMLElement>("[data-menu-panel]")
+    const trigger = menu.querySelector<HTMLElement>("[data-menu-trigger]")
+    if (panel) {
+      panel.hidden = true
+    }
+    if (trigger) {
+      trigger.setAttribute("aria-expanded", "false")
+    }
+  })
+}
+
+function wireShowcaseMenus(): void {
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      closeShowcaseMenus()
+      return
+    }
+
+    const trigger = target.closest<HTMLElement>("[data-menu-trigger]")
+    if (trigger) {
+      const menu = trigger.closest<HTMLElement>("[data-menu]")
+      const panel = menu?.querySelector<HTMLElement>("[data-menu-panel]")
+      if (!menu || !panel) {
+        return
+      }
+
+      event.preventDefault()
+      const nextHidden = !panel.hidden
+      closeShowcaseMenus(menu)
+      panel.hidden = nextHidden
+      trigger.setAttribute("aria-expanded", nextHidden ? "false" : "true")
+      return
+    }
+
+    const item = target.closest<HTMLElement>("[data-menu-item]")
+    if (item) {
+      const menu = item.closest<HTMLElement>("[data-menu]")
+      if (!menu) {
+        return
+      }
+
+      event.preventDefault()
+
+      if (item.dataset.menuValue !== undefined) {
+        menu.querySelectorAll<HTMLElement>("[data-menu-item]").forEach((sibling) => {
+          if (sibling.dataset.menuValue !== undefined) {
+            sibling.dataset.selected = sibling === item ? "true" : "false"
+          }
+        })
+
+        const label = menu.querySelector<HTMLElement>("[data-menu-label-target]")
+        if (label) {
+          label.textContent = item.dataset.menuValue ?? label.textContent
+        }
+      }
+
+      if (item.dataset.menuKeepOpen === undefined) {
+        closeShowcaseMenus()
+      }
+      return
+    }
+
+    if (!target.closest("[data-menu-panel]")) {
+      closeShowcaseMenus()
+    }
+  })
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeShowcaseMenus()
+    }
+  })
 }
 
 function wireClientFilters(): void {

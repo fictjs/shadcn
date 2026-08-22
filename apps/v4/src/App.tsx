@@ -2396,9 +2396,28 @@ function RootInputGroupDemoPreview() {
           <button class="ui-input-group-button ui-input-group-button-icon ui-input-group-button-outline" type="button" aria-label="Add">
             <PlusIcon />
           </button>
-          <button class="ui-input-group-button" type="button">
-            Auto
-          </button>
+          <span class="ui-menu" data-menu>
+            <button
+              class="ui-input-group-button"
+              type="button"
+              data-menu-trigger
+              aria-haspopup="menu"
+              aria-expanded="false"
+            >
+              <span data-menu-label-target>Auto</span>
+            </button>
+            <div class="ui-menu-panel" data-menu-panel data-menu-side="top" data-menu-align="start" role="menu" hidden>
+              <button class="ui-menu-item" type="button" role="menuitem" data-menu-item data-menu-value="Auto" data-selected="true">
+                Auto
+              </button>
+              <button class="ui-menu-item" type="button" role="menuitem" data-menu-item data-menu-value="Agent">
+                Agent
+              </button>
+              <button class="ui-menu-item" type="button" role="menuitem" data-menu-item data-menu-value="Manual">
+                Manual
+              </button>
+            </div>
+          </span>
           <span class="ui-input-group-addon-end">52% used</span>
           <span class="root-inline-divider" aria-hidden="true"></span>
           <button class="ui-input-group-button ui-input-group-button-icon ui-input-group-button-primary" type="button" aria-label="Send">
