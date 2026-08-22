@@ -1932,8 +1932,8 @@ function HomePage(props: { route: ResolvedRoute; activeThemeName: string; onThem
           Start here then make it your own. Open Source. Open Code.
         </p>
         <div class="cta-row">
-          <a class="button" href="/create">
-            New Project
+          <a class="button button-sm" href="/docs/installation">
+            Get Started
           </a>
           <a class="button button-ghost" href="/docs/components">
             View Components
@@ -2398,9 +2398,20 @@ function AnnouncementBadge() {
   return (
     <a class="announcement-chip" href="/docs/changelog/2026-03-cli-v4">
       <span>shadcn/skills, presets and more</span>
-      <span class="announcement-chip-arrow" aria-hidden="true">
-        -&gt;
-      </span>
+      <svg
+        class="announcement-chip-arrow"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M5 12h14" />
+        <path d="m12 5 7 7-7 7" />
+      </svg>
     </a>
   )
 }
