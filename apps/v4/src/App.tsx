@@ -2326,7 +2326,7 @@ function RootFieldSliderPreview() {
     <div class="ui-field">
       <p class="ui-empty-title root-field-title">Price Range</p>
       <p class="ui-field-description">
-        Set your budget range (${"$"}
+        Set your budget range ($
         <span class="root-numeric">200</span> - <span class="root-numeric">800</span>).
       </p>
       <div class="ui-slider" role="group" aria-label="Price Range">
