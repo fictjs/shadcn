@@ -25,6 +25,7 @@ async function initResumableClient(): Promise<void> {
   wireLayoutManager()
   wireSiteChrome()
   wireDocTabsFallback()
+  wireShowcaseSliders()
 
   await loadManifest()
   installResumableLoader({
@@ -76,6 +77,168 @@ function wireDocTabsFallback(): void {
       panelSection.hidden = panelSection.dataset.panelValue !== nextPanelValue
     })
   })
+}
+
+function wireShowcaseSliders(): void {
+  const readNumber = (value: string | null | undefined, fallback: number): number => {
+    const parsed = Number.parseFloat(value ?? "")
+    return Number.isFinite(parsed) ? parsed : fallback
+  }
+
+  const syncSlider = (slider: HTMLElement): void => {
+    const min = readNumber(slider.dataset.sliderMin, 0)
+    const max = readNumber(slider.dataset.sliderMax, 100)
+    const span = max - min || 1
+    const thumbs = Array.from(slider.querySelectorAll<HTMLElement>("[data-slider-thumb]"))
+    const values = thumbs.map((thumb) => readNumber(thumb.dataset.sliderValue, min))
+    const scopeName = slider.dataset.slider
+    const scope = scopeName
+      ? document.querySelector<HTMLElement>(`[data-slider-scope="${scopeName}"]`)
+      : slider.parentElement
+
+    thumbs.forEach((thumb, index) => {
+      const percent = ((values[index] - min) / span) * 100
+      thumb.style.left = `${percent}%`
+      thumb.setAttribute("aria-valuenow", String(values[index]))
+    })
+
+    const range = slider.querySelector<HTMLElement>("[data-slider-range]")
+    if (range) {
+      const lowest = Math.min(...values)
+      const highest = Math.max(...values)
+      range.style.left = `${((lowest - min) / span) * 100}%`
+      range.style.right = `${100 - ((highest - min) / span) * 100}%`
+    }
+
+    if (scope) {
+      scope.querySelectorAll<HTMLElement>("[data-slider-output]").forEach((output) => {
+        const index = Number.parseInt(output.dataset.sliderOutput ?? "", 10)
+        if (Number.isFinite(index) && values[index] !== undefined) {
+          output.textContent = String(values[index])
+        }
+      })
+    }
+  }
+
+  const setThumbValue = (slider: HTMLElement, thumb: HTMLElement, rawValue: number): void => {
+    const min = readNumber(slider.dataset.sliderMin, 0)
+    const max = readNumber(slider.dataset.sliderMax, 100)
+    const step = readNumber(slider.dataset.sliderStep, 1) || 1
+    const thumbs = Array.from(slider.querySelectorAll<HTMLElement>("[data-slider-thumb]"))
+    const index = thumbs.indexOf(thumb)
+    const stepped = Math.round((rawValue - min) / step) * step + min
+    let lowerBound = min
+    let upperBound = max
+
+    if (index > 0) {
+      lowerBound = readNumber(thumbs[index - 1].dataset.sliderValue, min)
+    }
+    if (index < thumbs.length - 1) {
+      upperBound = readNumber(thumbs[index + 1].dataset.sliderValue, max)
+    }
+
+    thumb.dataset.sliderValue = String(Math.min(upperBound, Math.max(lowerBound, stepped)))
+    syncSlider(slider)
+  }
+
+  const valueFromPointer = (slider: HTMLElement, clientX: number): number => {
+    const min = readNumber(slider.dataset.sliderMin, 0)
+    const max = readNumber(slider.dataset.sliderMax, 100)
+    const rect = slider.getBoundingClientRect()
+    const ratio = rect.width > 0 ? (clientX - rect.left) / rect.width : 0
+    return min + Math.min(1, Math.max(0, ratio)) * (max - min)
+  }
+
+  document.addEventListener("pointerdown", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const slider = target.closest<HTMLElement>("[data-slider]")
+    if (!slider) {
+      return
+    }
+
+    const thumbs = Array.from(slider.querySelectorAll<HTMLElement>("[data-slider-thumb]"))
+    if (thumbs.length === 0) {
+      return
+    }
+
+    const pointerValue = valueFromPointer(slider, event.clientX)
+    const directThumb = target.closest<HTMLElement>("[data-slider-thumb]")
+    const activeThumb =
+      directThumb ??
+      thumbs.reduce((closest, thumb) => {
+        const current = Math.abs(Number.parseFloat(thumb.dataset.sliderValue ?? "0") - pointerValue)
+        const best = Math.abs(Number.parseFloat(closest.dataset.sliderValue ?? "0") - pointerValue)
+        return current < best ? thumb : closest
+      }, thumbs[0])
+
+    event.preventDefault()
+    activeThumb.focus()
+    setThumbValue(slider, activeThumb, pointerValue)
+
+    const onMove = (moveEvent: PointerEvent): void => {
+      setThumbValue(slider, activeThumb, valueFromPointer(slider, moveEvent.clientX))
+    }
+
+    const onUp = (): void => {
+      document.removeEventListener("pointermove", onMove)
+      document.removeEventListener("pointerup", onUp)
+      document.removeEventListener("pointercancel", onUp)
+    }
+
+    document.addEventListener("pointermove", onMove)
+    document.addEventListener("pointerup", onUp)
+    document.addEventListener("pointercancel", onUp)
+  })
+
+  document.addEventListener("keydown", (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLElement)) {
+      return
+    }
+
+    const thumb = target.closest<HTMLElement>("[data-slider-thumb]")
+    const slider = thumb?.closest<HTMLElement>("[data-slider]")
+    if (!thumb || !slider) {
+      return
+    }
+
+    const step = readNumber(slider.dataset.sliderStep, 1) || 1
+    const current = readNumber(thumb.dataset.sliderValue, 0)
+    const deltas: Record<string, number> = {
+      ArrowRight: step,
+      ArrowUp: step,
+      ArrowLeft: -step,
+      ArrowDown: -step,
+      PageUp: step * 10,
+      PageDown: step * -10,
+    }
+
+    if (event.key === "Home") {
+      event.preventDefault()
+      setThumbValue(slider, thumb, readNumber(slider.dataset.sliderMin, 0))
+      return
+    }
+
+    if (event.key === "End") {
+      event.preventDefault()
+      setThumbValue(slider, thumb, readNumber(slider.dataset.sliderMax, 100))
+      return
+    }
+
+    const delta = deltas[event.key]
+    if (delta === undefined) {
+      return
+    }
+
+    event.preventDefault()
+    setThumbValue(slider, thumb, current + delta)
+  })
+
+  document.querySelectorAll<HTMLElement>("[data-slider]").forEach(syncSlider)
 }
 
 function wireClientFilters(): void {

@@ -2323,18 +2323,49 @@ function RootButtonGroupInputPreview() {
 
 function RootFieldSliderPreview() {
   return (
-    <div class="ui-field">
+    <div class="ui-field" data-slider-scope="price-range">
       <p class="ui-empty-title root-field-title">Price Range</p>
       <p class="ui-field-description">
         Set your budget range ($
-        <span class="root-numeric">200</span> - <span class="root-numeric">800</span>).
+        <span class="root-numeric" data-slider-output="0">200</span> -{" "}
+        <span class="root-numeric" data-slider-output="1">800</span>).
       </p>
-      <div class="ui-slider" role="group" aria-label="Price Range">
+      <div
+        class="ui-slider"
+        data-slider="price-range"
+        data-slider-min="0"
+        data-slider-max="1000"
+        data-slider-step="10"
+        role="group"
+        aria-label="Price Range"
+      >
         <span class="ui-slider-track">
-          <span class="ui-slider-range" style="left:20%;right:20%"></span>
+          <span class="ui-slider-range" data-slider-range style="left:20%;right:20%"></span>
         </span>
-        <span class="ui-slider-thumb" style="left:20%"></span>
-        <span class="ui-slider-thumb" style="left:80%"></span>
+        <span
+          class="ui-slider-thumb"
+          data-slider-thumb="0"
+          data-slider-value="200"
+          role="slider"
+          tabIndex={0}
+          aria-label="Minimum price"
+          aria-valuemin={0}
+          aria-valuemax={1000}
+          aria-valuenow={200}
+          style="left:20%"
+        ></span>
+        <span
+          class="ui-slider-thumb"
+          data-slider-thumb="1"
+          data-slider-value="800"
+          role="slider"
+          tabIndex={0}
+          aria-label="Maximum price"
+          aria-valuemin={0}
+          aria-valuemax={1000}
+          aria-valuenow={800}
+          style="left:80%"
+        ></span>
       </div>
     </div>
   )
