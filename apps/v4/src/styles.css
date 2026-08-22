@@ -3564,6 +3564,23 @@ a.ui-item:hover {
   color: var(--muted-foreground);
 }
 
+.root-model-menu {
+  min-width: 12rem;
+}
+
+.root-beta-badge {
+  height: 1.25rem;
+  border-radius: var(--radius-sm);
+  background: oklch(0.932 0.032 255.585);
+  color: oklch(0.424 0.199 265.638);
+  padding: 0 0.25rem;
+}
+
+.dark .root-beta-badge {
+  background: oklch(0.379 0.146 265.522);
+  color: oklch(0.932 0.032 255.585);
+}
+
 .examples-root-grid {
   display: grid;
   gap: 2rem;

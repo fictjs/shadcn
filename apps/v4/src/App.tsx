@@ -2465,9 +2465,19 @@ function ArrowUpIcon() {
   )
 }
 
-function CheckIcon() {
+function CheckIcon(props: { class?: string }) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <svg
+      class={props.class}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="3"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
       <path d="M20 6 9 17l-5-5" />
     </svg>
   )
@@ -2693,9 +2703,40 @@ function RootPromptPreview() {
           <button class="ui-input-group-button ui-input-group-button-icon" type="button" aria-label="Attach file">
             <PaperclipIcon />
           </button>
-          <button class="ui-input-group-button root-pill-button" type="button">
-            Auto
-          </button>
+          <span class="ui-menu" data-menu>
+            <button
+              class="ui-input-group-button root-pill-button"
+              type="button"
+              data-menu-trigger
+              aria-haspopup="menu"
+              aria-expanded="false"
+            >
+              <span data-menu-label-target>Auto</span>
+            </button>
+            <div
+              class="ui-menu-panel root-model-menu"
+              data-menu-panel
+              data-menu-side="top"
+              data-menu-align="start"
+              role="menu"
+              hidden
+            >
+              <span class="ui-menu-label">Select Agent Mode</span>
+              <button class="ui-menu-item" type="button" role="menuitemradio" data-menu-item data-menu-value="Auto" data-selected="true">
+                Auto
+                <CheckIcon class="ui-menu-item-check" />
+              </button>
+              <button class="ui-menu-item" type="button" role="menuitemradio" data-menu-item data-menu-value="Agent Mode">
+                Agent Mode
+                <span class="ui-badge ui-badge-secondary root-beta-badge">Beta</span>
+                <CheckIcon class="ui-menu-item-check" />
+              </button>
+              <button class="ui-menu-item" type="button" role="menuitemradio" data-menu-item data-menu-value="Plan Mode">
+                Plan Mode
+                <CheckIcon class="ui-menu-item-check" />
+              </button>
+            </div>
+          </span>
           <button class="ui-input-group-button root-pill-button" type="button">
             <GlobeIcon />
             All Sources
