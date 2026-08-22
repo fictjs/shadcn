@@ -2610,60 +2610,105 @@ function MinusIcon() {
 
 function RootPromptPreview() {
   return (
-    <div class="root-preview-shell root-preview-stack">
-      <div class="root-preview-section">
-        <strong>Prompt</strong>
+    <form class="ui-field">
+      <label class="sr-only" for="notion-prompt">
+        Prompt
+      </label>
+      <div class="ui-input-group ui-input-group-block root-prompt-group">
+        <span class="ui-input-group-addon ui-input-group-addon-block root-prompt-top">
+          <button class="ui-input-group-button ui-input-group-button-outline root-prompt-context" type="button">
+            <AtIcon />
+            Add context
+          </button>
+        </span>
+        <textarea class="ui-input-group-textarea" id="notion-prompt" placeholder="Ask, search, or make anything..."></textarea>
+        <span class="ui-input-group-addon ui-input-group-addon-block root-prompt-bottom">
+          <button class="ui-input-group-button ui-input-group-button-icon" type="button" aria-label="Attach file">
+            <PaperclipIcon />
+          </button>
+          <button class="ui-input-group-button root-pill-button" type="button">
+            Auto
+          </button>
+          <button class="ui-input-group-button root-pill-button" type="button">
+            <GlobeIcon />
+            All Sources
+          </button>
+          <button class="ui-input-group-button ui-input-group-button-icon ui-input-group-button-primary ui-input-group-addon-end" type="button" aria-label="Send">
+            <ArrowUpIcon />
+          </button>
+        </span>
       </div>
-      <div class="root-preview-inline-input root-preview-inline-input-muted">
-        <button type="button">Add context</button>
-        <span class="root-preview-inline-addon">Auto</span>
-        <span class="root-preview-inline-addon">All Sources</span>
-      </div>
-      <div class="root-preview-badge-row">
-        <span class="root-preview-badge">Archive</span>
-        <span class="root-preview-badge">Report</span>
-        <span class="root-preview-badge">Snooze</span>
-      </div>
-    </div>
+    </form>
   )
 }
 
 function RootButtonGroupDemoPreview() {
   return (
-    <div class="root-preview-shell root-preview-stack">
-      <div class="root-preview-badge-row">
-        <span class="root-preview-badge">Archive</span>
-        <span class="root-preview-badge">Report</span>
-        <span class="root-preview-badge">Snooze</span>
-      </div>
+    <div class="ui-button-group">
+      <button class="ui-icon-button ui-icon-button-sm" type="button" aria-label="Go Back">
+        <ArrowLeftGlyph />
+      </button>
+      <span class="ui-button-group ui-button-group-attached root-button-group-inline">
+        <button class="button button-outline button-xs" type="button">
+          Archive
+        </button>
+        <button class="button button-outline button-xs" type="button">
+          Report
+        </button>
+      </span>
+      <span class="ui-button-group ui-button-group-attached root-button-group-inline">
+        <button class="button button-outline button-xs" type="button">
+          Snooze
+        </button>
+        <button class="ui-icon-button ui-icon-button-sm" type="button" aria-label="More Options">
+          <MoreHorizontalIcon />
+        </button>
+      </span>
     </div>
   )
 }
 
 function RootFieldCheckboxPreview() {
   return (
-    <div class="root-preview-shell root-preview-stack">
-      <div class="root-preview-check-row">
-        <span class="root-preview-check is-active"></span>
-        <span>I agree to the terms and conditions</span>
-      </div>
-    </div>
+    <label class="ui-field ui-field-horizontal root-check-field">
+      <UiCheckbox checked />
+      <span class="ui-label ui-label-normal">I agree to the terms and conditions</span>
+    </label>
   )
 }
 
 function RootNestedButtonsPreview() {
   return (
-    <div class="root-preview-shell root-preview-stack">
-      <div class="root-preview-split-row">
-        <div class="root-preview-segmented-row">
-          <span class="is-active">1</span>
-          <span>2</span>
-          <span>3</span>
-        </div>
-        <div class="root-preview-inline-input">
-          <button type="button">Copilot</button>
-          <button type="button">v</button>
-        </div>
+    <div class="root-nested-row">
+      <div class="ui-button-group">
+        <span class="ui-button-group ui-button-group-attached root-button-group-inline">
+          <button class="button button-outline button-xs" type="button">
+            1
+          </button>
+          <button class="button button-outline button-xs" type="button">
+            2
+          </button>
+          <button class="button button-outline button-xs" type="button">
+            3
+          </button>
+        </span>
+        <span class="ui-button-group ui-button-group-attached root-button-group-inline">
+          <button class="ui-icon-button ui-icon-button-sm" type="button" aria-label="Previous">
+            <ArrowLeftGlyph />
+          </button>
+          <button class="ui-icon-button ui-icon-button-sm" type="button" aria-label="Next">
+            <ArrowRightGlyph />
+          </button>
+        </span>
+      </div>
+      <div class="ui-button-group ui-button-group-attached root-button-group-inline">
+        <button class="button button-outline button-xs" type="button">
+          <BotIcon />
+          Copilot
+        </button>
+        <button class="ui-icon-button ui-icon-button-sm" type="button" aria-label="Open Popover">
+          <ChevronDownIcon />
+        </button>
       </div>
     </div>
   )
@@ -2671,33 +2716,129 @@ function RootNestedButtonsPreview() {
 
 function RootFieldHearPreview() {
   return (
-    <div class="root-preview-shell root-preview-stack">
-      <div class="root-preview-section">
-        <strong>How did you hear about us?</strong>
-        <span>Select the option that best describes how you heard about us.</span>
-      </div>
-      <div class="root-preview-pill-row">
-        <span class="root-preview-pill is-active">Social Media</span>
-        <span class="root-preview-pill">Search Engine</span>
-        <span class="root-preview-pill">Referral</span>
-        <span class="root-preview-pill">Other</span>
-      </div>
+    <div class="ui-card root-hear-card">
+      <form>
+        <fieldset class="ui-field-set">
+          <legend class="ui-field-legend">How did you hear about us?</legend>
+          <p class="ui-field-description root-clamp-1">
+            Select the option that best describes how you heard about us.
+          </p>
+          <div class="root-hear-options">
+            <label class="root-hear-option" data-checked="true">
+              <UiCheckbox checked />
+              <span class="root-field-title">Social Media</span>
+            </label>
+            <label class="root-hear-option" data-checked="false">
+              <span class="root-field-title">Search Engine</span>
+            </label>
+            <label class="root-hear-option" data-checked="false">
+              <span class="root-field-title">Referral</span>
+            </label>
+            <label class="root-hear-option" data-checked="false">
+              <span class="root-field-title">Other</span>
+            </label>
+          </div>
+        </fieldset>
+      </form>
     </div>
   )
 }
 
 function RootSpinnerEmptyPreview() {
   return (
-    <div class="root-preview-shell root-preview-stack root-preview-empty">
-      <div class="root-preview-spinner"></div>
-      <div class="root-preview-section">
-        <strong>Processing your request</strong>
-        <span>Please wait while we process your request. Do not refresh the page.</span>
+    <div class="ui-empty root-empty-solid">
+      <div class="ui-empty-header">
+        <span class="root-empty-media">
+          <UiSpinner />
+        </span>
+        <p class="ui-empty-title">Processing your request</p>
+        <p class="ui-empty-description">
+          Please wait while we process your request. Do not refresh the page.
+        </p>
       </div>
-      <div class="root-preview-button-row">
-        <button class="root-preview-button root-preview-button-secondary" type="button">Cancel</button>
+      <div>
+        <button class="button button-outline button-xs" type="button">
+          Cancel
+        </button>
       </div>
     </div>
+  )
+}
+
+function AtIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8" />
+    </svg>
+  )
+}
+
+function PaperclipIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M13.234 20.252 21 12.3" />
+      <path d="m16 6-8.414 8.586a2 2 0 0 0 0 2.828 2 2 0 0 0 2.828 0l8.414-8.586a4 4 0 0 0 0-5.656 4 4 0 0 0-5.656 0l-8.415 8.585a6 6 0 1 0 8.486 8.486" />
+    </svg>
+  )
+}
+
+function GlobeIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+      <path d="M2 12h20" />
+    </svg>
+  )
+}
+
+function ArrowLeftGlyph() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m12 19-7-7 7-7" />
+      <path d="M19 12H5" />
+    </svg>
+  )
+}
+
+function ArrowRightGlyph() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M5 12h14" />
+      <path d="m12 5 7 7-7 7" />
+    </svg>
+  )
+}
+
+function MoreHorizontalIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="1" />
+      <circle cx="19" cy="12" r="1" />
+      <circle cx="5" cy="12" r="1" />
+    </svg>
+  )
+}
+
+function BotIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 8V4H8" />
+      <rect width="16" height="12" x="4" y="8" rx="2" />
+      <path d="M2 14h2" />
+      <path d="M20 14h2" />
+      <path d="M15 13v2" />
+      <path d="M9 13v2" />
+    </svg>
+  )
+}
+
+function ChevronDownIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m6 9 6 6 6-6" />
+    </svg>
   )
 }
 
