@@ -14,6 +14,8 @@ import {
   TablerReportIcon,
   TablerSearchIcon,
   TablerSettingsIcon,
+  TablerTrendingDownIcon,
+  TablerTrendingUpIcon,
   TablerUsersIcon,
 } from "./example-icons"
 
@@ -151,6 +153,10 @@ export function LiveExamplePage(props: LiveExamplePageProps) {
     : <ExampleFallback slug={props.slug} />
 }
 
+function DashboardTrendIcon(props: { down: boolean }) {
+  return props.down ? <TablerTrendingDownIcon /> : <TablerTrendingUpIcon />
+}
+
 function DashboardNavIcon(props: { name: string }) {
   const name = props.name
 
@@ -267,11 +273,17 @@ function DashboardExample() {
             <article class="dashboard-stat-card" key={stat.label}>
               <div class="dashboard-stat-head">
                 <p class="dashboard-stat-label">{stat.label}</p>
-                <span class={stat.delta.startsWith("-") ? "dashboard-stat-badge dashboard-stat-badge-negative" : "dashboard-stat-badge"}>{stat.delta}</span>
+                <p class="dashboard-stat-value">{stat.value}</p>
+                <span class="dashboard-stat-badge">
+                  <DashboardTrendIcon down={stat.delta.startsWith("-")} />
+                  {stat.delta}
+                </span>
               </div>
-              <h4>{stat.value}</h4>
               <div class="dashboard-stat-foot">
-                <p class="dashboard-stat-trend">{stat.trend}</p>
+                <p class="dashboard-stat-trend">
+                  {stat.trend}
+                  <DashboardTrendIcon down={stat.delta.startsWith("-")} />
+                </p>
                 <p class="dashboard-stat-copy">{stat.detail}</p>
               </div>
             </article>

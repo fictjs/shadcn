@@ -5490,7 +5490,6 @@ a.ui-item:hover {
 }
 
 .dashboard-brand-title,
-.dashboard-stat-card h4,
 .dashboard-chart-head h4,
 .tasks-header h2,
 .playground-header h3,
@@ -5724,7 +5723,6 @@ a.ui-item:hover {
 }
 
 .dashboard-brand-copy,
-.dashboard-stat-copy,
 .tasks-copy,
 .dashboard-sale-row p,
 .tasks-empty-state,
@@ -5732,6 +5730,10 @@ a.ui-item:hover {
   margin: 0.2rem 0 0;
   font-size: 0.84rem;
   line-height: 1.45;
+}
+
+.dashboard-stat-copy {
+  margin: 0;
 }
 
 .dashboard-chart-title {
@@ -5911,27 +5913,70 @@ a.ui-item:hover {
 
 .dashboard-stats-grid {
   display: grid;
-  gap: 0.85rem;
+  gap: 1rem;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  padding: 0 1.25rem;
+  padding: 0 1.5rem;
 }
 
 .dashboard-stat-card,
 .dashboard-chart-card,
 .dashboard-table-card {
   border: 1px solid var(--border);
-  border-radius: 1rem;
+  border-radius: var(--radius-xl);
   background: var(--card);
-  box-shadow: 0 1px 2px color-mix(in oklab, var(--foreground) 8%, transparent);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
 }
 
 .dashboard-stat-card {
-  display: grid;
-  gap: 0.75rem;
-  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
 }
 
-.dashboard-stat-head,
+.dashboard-stat-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 0.5rem;
+  padding: 0 1.5rem;
+}
+
+.dashboard-stat-value {
+  grid-column: 1;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 2rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard-stat-badge {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  justify-self: end;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1rem;
+}
+
+.dashboard-stat-badge .example-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.dashboard-stat-foot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.375rem;
+  padding: 0 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
 .dashboard-outline-toolbar,
 .dashboard-outline-actions,
 .dashboard-view-tabs,
@@ -5948,6 +5993,7 @@ a.ui-item:hover {
 .dashboard-view-tab,
 .dashboard-outline-button,
 .dashboard-outline-status {
+  /* shared chip shell; per-component sizing follows below */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -5959,7 +6005,6 @@ a.ui-item:hover {
   font-weight: 600;
 }
 
-.dashboard-stat-badge,
 .dashboard-outline-status {
   padding: 0.28rem 0.55rem;
 }
@@ -5972,7 +6017,6 @@ a.ui-item:hover {
   cursor: pointer;
 }
 
-.dashboard-stat-badge-negative,
 .dashboard-outline-status-not-started {
   background: color-mix(in oklab, var(--muted) 72%, var(--card));
 }
@@ -5991,18 +6035,23 @@ a.ui-item:hover {
 }
 
 .dashboard-stat-trend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   margin: 0;
-  font-size: 0.86rem;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
 }
 
 .dashboard-stat-label {
+  grid-column: 1;
   margin: 0;
   color: var(--muted-foreground);
-  font-size: 0.82rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
-.dashboard-stat-card h4,
 .dashboard-chart-head h4 {
   margin-top: 0.4rem;
   font-size: 1.5rem;
