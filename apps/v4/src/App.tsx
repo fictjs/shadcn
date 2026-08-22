@@ -4108,31 +4108,103 @@ function ColorsPage() {
         </div>
       </div>
 
-      <div class="route-surface-wrapper colors-route-shell">
-        <div class="colors-route-grid" id="colors">
-          {colorPalettes.map((palette) => (
-            <section class="card color-palette" key={palette.name} id={palette.name}>
+      <div class="colors-route-grid" id="colors" data-color-format="hex">
+        {colorPalettes.map((palette) => (
+          <section class="color-palette" key={palette.name} id={palette.name}>
+            <div class="color-palette-head">
               <h2>{palette.name}</h2>
-              <div class="color-scales">
-                {palette.scales.map((entry) => (
-                  <article class="color-scale" key={`${palette.name}-${entry.scale}`}>
-                    <div class="color-swatch" style={`background:${entry.hex}`}></div>
-                    <div class="color-meta">
-                      <p class="pill-name">{entry.scale}</p>
-                      <p class="slug">{entry.hex}</p>
-                      <p class="slug">{entry.rgb}</p>
-                      <p class="slug">{entry.hsl}</p>
-                      <p class="slug">{entry.oklch}</p>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
+              <span class="color-format-field">
+                <span class="color-format-label">Format:</span>
+                <select
+                  class="color-format-select"
+                  aria-label={`Color format for ${palette.name}`}
+                  onChange={(event: Event) => syncColorFormat(event)}
+                >
+                  <option value="hex">hex</option>
+                  <option value="rgb">rgb</option>
+                  <option value="hsl">hsl</option>
+                  <option value="oklch">oklch</option>
+                </select>
+                <svg
+                  class="color-format-chevron"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </span>
+            </div>
+            <div class="color-scales">
+              {palette.scales.map((entry) => (
+                <button
+                  type="button"
+                  class="color-scale"
+                  key={`${palette.name}-${entry.scale}`}
+                  title={`Copy ${palette.name}-${entry.scale}`}
+                  data-color-hex={entry.hex}
+                  data-color-rgb={entry.rgb}
+                  data-color-hsl={entry.hsl}
+                  data-color-oklch={entry.oklch}
+                  style={`--swatch:${entry.hex};--swatch-foreground:${entry.scale >= 500 ? "#fff" : "#000"}`}
+                  onClick$={(event: MouseEvent) => copyColorValue(event)}
+                >
+                  <span class="color-swatch"></span>
+                  <span class="color-scale-label">
+                    {palette.name}-{entry.scale}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </section>
+        ))}
       </div>
     </section>
   )
+}
+
+function syncColorFormat(event: Event) {
+  const target = event.currentTarget
+  if (!(target instanceof HTMLSelectElement)) {
+    return
+  }
+
+  const grid = target.closest(".colors-route-grid")
+  if (!(grid instanceof HTMLElement)) {
+    return
+  }
+
+  grid.dataset.colorFormat = target.value
+  for (const select of Array.from(grid.querySelectorAll(".color-format-select"))) {
+    if (select instanceof HTMLSelectElement) {
+      select.value = target.value
+    }
+  }
+}
+
+function copyColorValue(event: MouseEvent) {
+  if (typeof navigator === "undefined" || !navigator.clipboard) {
+    return
+  }
+
+  const target = event.currentTarget
+  if (!(target instanceof HTMLButtonElement)) {
+    return
+  }
+
+  const grid = target.closest(".colors-route-grid")
+  const format = (grid instanceof HTMLElement ? grid.dataset.colorFormat : "hex") || "hex"
+  const value = target.dataset[`color${format.charAt(0).toUpperCase()}${format.slice(1)}`]
+  if (!value) {
+    return
+  }
+
+  void navigator.clipboard.writeText(value)
 }
 
 function NotFoundPage(props: { pathname: string }) {
