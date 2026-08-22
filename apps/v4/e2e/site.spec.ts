@@ -223,7 +223,19 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".dashboard-site-header")).toContainText("Documents")
     await expect(page.getByRole("button", { name: "Quick Create" })).toBeVisible()
     await expect(page.locator(".dashboard-chart-card")).toContainText("Total Visitors")
-    await expect(page.locator(".dashboard-outline-table")).toBeVisible()
+    await expect(page.locator(".dashboard-data-table")).toBeVisible()
+    await expect(page.locator(".dashboard-data-table tbody tr")).toHaveCount(10)
+    await expect(page.locator(".dashboard-table-footer")).toContainText("0 of 68 row(s) selected.")
+  })
+
+  test("tasks example mirrors the shadcn data table", async ({ page }) => {
+    await page.goto("/examples/tasks")
+
+    await expect(page.locator(".example-live-stage .tasks-example")).toBeVisible()
+    await expect(page.getByPlaceholder("Filter tasks...")).toBeVisible()
+    await expect(page.getByRole("button", { name: "Add Task" })).toBeVisible()
+    await expect(page.locator(".tasks-data-table tbody tr")).toHaveCount(25)
+    await expect(page.locator(".tasks-pagination")).toContainText("0 of 100 row(s) selected.")
   })
 
   test("charts route renders styled preview cards instead of placeholders", async ({ page }) => {
@@ -245,24 +257,22 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".block-display-card .block-preview-image").first()).toBeVisible()
   })
 
-  test("tasks example filters rows interactively", async ({ page }) => {
+  test("tasks example renders the faceted toolbar and row metadata", async ({ page }) => {
     await page.goto("/examples/tasks")
     await waitForClientReady(page)
 
-    const searchInput = page.getByPlaceholder("Search issue, title, or team")
-    await expect(searchInput).toBeVisible()
-    await expect(page.locator("tbody tr")).toHaveCount(5)
+    const toolbar = page.locator(".tasks-toolbar")
+    await expect(toolbar.getByRole("button", { name: "Status" })).toBeVisible()
+    await expect(toolbar.getByRole("button", { name: "Priority" })).toBeVisible()
+    await expect(toolbar.getByRole("button", { name: "View" })).toBeVisible()
+    await expect(toolbar.getByRole("button", { name: "Add Task" })).toBeVisible()
 
-    await searchInput.fill("growth")
-    await expect(page.locator("tbody tr")).toHaveCount(1)
-    await expect(page.locator("tbody")).toContainText("Growth")
-
-    await page.getByRole("button", { name: "Done" }).click()
-    await expect(page.locator("tbody tr")).toHaveCount(0)
-    await expect(page.locator(".tasks-empty-state")).toBeVisible()
-
-    await page.getByRole("button", { name: "All" }).click()
-    await expect(page.locator("tbody tr")).toHaveCount(1)
+    const firstRow = page.locator(".tasks-data-table tbody tr").first()
+    await expect(firstRow.locator(".tasks-cell-id")).toHaveText("TASK-8782")
+    await expect(firstRow.locator(".tasks-label-badge")).toHaveText("Documentation")
+    await expect(firstRow.locator(".tasks-status-cell")).toContainText("In Progress")
+    await expect(firstRow.locator(".tasks-meta-icon")).toHaveCount(2)
+    await expect(firstRow.locator(".tasks-meta-cell").last()).toContainText("Medium")
   })
 
   test("playground example switches modes and updates controls", async ({ page }) => {
