@@ -3394,13 +3394,14 @@ a.ui-item:hover {
 }
 
 .ui-radio-card[data-checked="true"] {
-  background: color-mix(in oklab, var(--muted) 60%, transparent);
+  border-color: color-mix(in oklab, var(--primary) 30%, transparent);
+  background: color-mix(in oklab, var(--primary) 5%, transparent);
 }
 
 .ui-radio {
   display: inline-flex;
   flex: none;
-  margin-top: 0.125rem;
+  margin-top: 1px;
   align-items: center;
   justify-content: center;
   width: 1rem;
@@ -3416,8 +3417,8 @@ a.ui-item:hover {
 }
 
 .ui-radio span {
-  width: 0.375rem;
-  height: 0.375rem;
+  width: 0.5rem;
+  height: 0.5rem;
   border-radius: 999px;
   background: var(--background);
   opacity: 0;
@@ -3433,7 +3434,7 @@ a.ui-item:hover {
   flex: none;
   align-items: center;
   width: 2rem;
-  height: 1.125rem;
+  height: 18.4px;
   border: 1px solid transparent;
   border-radius: 999px;
   background: var(--input);
@@ -3448,16 +3449,16 @@ a.ui-item:hover {
 
 .ui-switch span {
   display: block;
-  width: 0.875rem;
-  height: 0.875rem;
+  width: 1rem;
+  height: 1rem;
   border-radius: 999px;
   background: var(--background);
-  transform: translateX(2px);
+  transform: translateX(0);
   transition: transform 120ms ease;
 }
 
 .ui-switch[data-checked="true"] span {
-  transform: translateX(calc(2rem - 1.125rem));
+  transform: translateX(calc(100% - 2px));
 }
 
 .ui-counter-input {
@@ -3543,6 +3544,14 @@ a.ui-item:hover {
 
 .root-appearance-settings .ui-item-content {
   gap: 0.125rem;
+}
+
+.root-appearance-settings .ui-field-horizontal {
+  align-items: flex-start;
+}
+
+.rtl-components .root-appearance-settings .ui-switch[data-checked="true"] span {
+  transform: translateX(calc(-100% + 2px));
 }
 
 .root-appearance-settings .root-field-title {
