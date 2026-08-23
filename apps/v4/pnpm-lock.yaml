@@ -14,6 +14,12 @@ importers:
       '@fictjs/ssr':
         specifier: 0.33.0
         version: 0.33.0
+      '@fontsource-variable/noto-sans-arabic':
+        specifier: 5.3.0
+        version: 5.3.0
+      '@fontsource-variable/noto-sans-hebrew':
+        specifier: 5.3.0
+        version: 5.3.0
       express:
         specifier: ^5.1.0
         version: 5.2.1
@@ -271,6 +277,12 @@ packages:
     resolution: {integrity: sha512-itTGmex7KleTLzOkeASNXRhC5M7lccPaBUe/Myp1VNKoZn5u7qtT2FzFuInpuTwaifvxs4G5xdzqjo9vDAIsKg==}
     peerDependencies:
       vite: '>=7.0.0'
+
+  '@fontsource-variable/noto-sans-arabic@5.3.0':
+    resolution: {integrity: sha512-Rz8+DBzza3//cmN+DBQajJhx3x+Dx12eUgnQsTOgPWbOT0+In6APmE8z4I/QQnUWfAx+s8l93+60qDT5vJH1sA==}
+
+  '@fontsource-variable/noto-sans-hebrew@5.3.0':
+    resolution: {integrity: sha512-jGIZ2EOCTtT1ZhLthz6nEpPXGMniSPI/0tv5CDFDZ7MPYyoj6FskW7WJ0YTyesFADdzjx7F2Pg5W1PWD6y9UFw==}
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -1095,6 +1107,10 @@ snapshots:
       '@jridgewell/remapping': 2.3.5
       magic-string: 0.30.21
       vite: 7.3.1(@types/node@24.11.0)(jiti@2.6.1)(lightningcss@1.31.1)
+
+  '@fontsource-variable/noto-sans-arabic@5.3.0': {}
+
+  '@fontsource-variable/noto-sans-hebrew@5.3.0': {}
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
