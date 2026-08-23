@@ -1318,6 +1318,35 @@ test.describe("shadcn v4 site", () => {
     await expect(sliderField.locator('[data-slider-output="0"]')).toHaveText("٢٥٠")
   })
 
+  test("rtl appearance settings match React controls", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 1200 })
+    await page.goto("/examples/rtl")
+    await waitForClientReady(page)
+
+    const settings = page.locator(".root-appearance-settings")
+    await expect(settings).toHaveCSS("height", "408px")
+
+    const radios = settings.getByRole("radio")
+    await expect(radios).toHaveCount(2)
+    await expect(radios.first()).toHaveAttribute("aria-checked", "true")
+    await radios.first().focus()
+    await page.keyboard.press("ArrowLeft")
+    await expect(radios.last()).toHaveAttribute("aria-checked", "true")
+    await expect(radios.last()).toBeFocused()
+    await page.keyboard.press("ArrowRight")
+    await expect(radios.first()).toHaveAttribute("aria-checked", "true")
+
+    const gpuInput = settings.getByRole("textbox", { name: "عدد وحدات GPU" })
+    await expect(gpuInput).toHaveValue("8")
+    await settings.getByRole("button", { name: "زيادة" }).click()
+    await expect(gpuInput).toHaveValue("9")
+
+    const tinting = settings.getByRole("switch", { name: "تلوين الخلفية" })
+    await expect(tinting).toHaveAttribute("aria-checked", "true")
+    await settings.getByText("تلوين الخلفية", { exact: true }).click()
+    await expect(tinting).toHaveAttribute("aria-checked", "false")
+  })
+
   test("create route builds a live starter workspace", async ({ page }) => {
     await page.goto("/create")
 

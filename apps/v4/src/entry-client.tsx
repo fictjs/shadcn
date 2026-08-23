@@ -962,6 +962,26 @@ function wireShowcaseMenus(): void {
 }
 
 function wireShowcaseToggles(): void {
+  const selectRadioItem = (radioItem: HTMLElement, focus = false): void => {
+    const group = radioItem.closest<HTMLElement>("[data-radio-group]")
+    if (!group) {
+      return
+    }
+
+    group.querySelectorAll<HTMLElement>("[data-radio-item]").forEach((item) => {
+      const checked = item === radioItem
+      item.dataset.checked = checked ? "true" : "false"
+      item.querySelectorAll<HTMLElement>(".ui-radio").forEach((radio) => {
+        radio.dataset.checked = checked ? "true" : "false"
+        radio.setAttribute("aria-checked", checked ? "true" : "false")
+        radio.tabIndex = checked ? 0 : -1
+        if (checked && focus) {
+          radio.focus()
+        }
+      })
+    })
+  }
+
   document.addEventListener("click", (event) => {
     const target = event.target
     if (!(target instanceof Element)) {
@@ -970,17 +990,7 @@ function wireShowcaseToggles(): void {
 
     const radioItem = target.closest<HTMLElement>("[data-radio-item]")
     if (radioItem) {
-      const group = radioItem.closest<HTMLElement>("[data-radio-group]")
-      if (group) {
-        group.querySelectorAll<HTMLElement>("[data-radio-item]").forEach((item) => {
-          const checked = item === radioItem
-          item.dataset.checked = checked ? "true" : "false"
-          item.querySelectorAll<HTMLElement>(".ui-radio").forEach((radio) => {
-            radio.dataset.checked = checked ? "true" : "false"
-            radio.setAttribute("aria-checked", checked ? "true" : "false")
-          })
-        })
-      }
+      selectRadioItem(radioItem)
     }
 
     const hearOption = target.closest<HTMLElement>("[data-hear-option]")
@@ -1010,6 +1020,41 @@ function wireShowcaseToggles(): void {
         input.placeholder = nextActive ? "Record and send audio..." : "Send a message..."
       }
     }
+  })
+
+  document.addEventListener("keydown", (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLElement) || !target.matches(".ui-radio[role='radio']")) {
+      return
+    }
+    const group = target.closest<HTMLElement>("[data-radio-group]")
+    const currentItem = target.closest<HTMLElement>("[data-radio-item]")
+    if (!group || !currentItem) {
+      return
+    }
+
+    const items = Array.from(group.querySelectorAll<HTMLElement>("[data-radio-item]"))
+    const currentIndex = items.indexOf(currentItem)
+    const isRtl = getComputedStyle(group).direction === "rtl"
+    let nextIndex: number | undefined
+
+    if (event.key === "Home") {
+      nextIndex = 0
+    } else if (event.key === "End") {
+      nextIndex = items.length - 1
+    } else if (event.key === "ArrowDown" || event.key === (isRtl ? "ArrowLeft" : "ArrowRight")) {
+      nextIndex = (currentIndex + 1) % items.length
+    } else if (event.key === "ArrowUp" || event.key === (isRtl ? "ArrowRight" : "ArrowLeft")) {
+      nextIndex = (currentIndex - 1 + items.length) % items.length
+    } else if (event.key === " " || event.key === "Enter") {
+      nextIndex = currentIndex
+    }
+
+    if (nextIndex === undefined) {
+      return
+    }
+    event.preventDefault()
+    selectRadioItem(items[nextIndex], true)
   })
 }
 

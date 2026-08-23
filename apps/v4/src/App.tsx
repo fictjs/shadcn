@@ -2709,9 +2709,9 @@ function RootItemDemoPreview() {
 
 function RootAppearanceSettingsPreview() {
   return (
-    <fieldset class="ui-field-set">
+    <fieldset class="ui-field-set root-appearance-settings">
       <div class="ui-field-group">
-        <fieldset class="ui-field-set">
+        <fieldset class="ui-field-set root-compute-fieldset">
           <legend class="ui-field-legend">Compute Environment</legend>
           <p class="ui-field-description">Select the compute environment for your cluster.</p>
           <div class="root-radio-group" data-radio-group role="radiogroup" aria-label="Compute Environment">
@@ -2722,7 +2722,7 @@ function RootAppearanceSettingsPreview() {
                   Run GPU workloads on a K8s configured cluster. This is the default.
                 </span>
               </span>
-              <span class="ui-radio" data-checked="true" role="radio" aria-checked="true" aria-label="Kubernetes">
+              <span class="ui-radio" data-checked="true" role="radio" aria-checked="true" aria-label="Kubernetes" tabIndex={0}>
                 <span></span>
               </span>
             </label>
@@ -2733,7 +2733,7 @@ function RootAppearanceSettingsPreview() {
                   Access a VM configured cluster to run workloads. (Coming soon)
                 </span>
               </span>
-              <span class="ui-radio" data-checked="false" role="radio" aria-checked="false" aria-label="Virtual Machine">
+              <span class="ui-radio" data-checked="false" role="radio" aria-checked="false" aria-label="Virtual Machine" tabIndex={-1}>
                 <span></span>
               </span>
             </label>
@@ -2744,12 +2744,13 @@ function RootAppearanceSettingsPreview() {
 
         <div class="ui-field ui-field-horizontal">
           <span class="ui-item-content">
-            <span class="root-field-title">Number of GPUs</span>
+            <label class="root-field-title" for="rtl-gpu-count">Number of GPUs</label>
             <span class="ui-field-description">You can add more later.</span>
           </span>
           <span class="ui-button-group root-counter-group" data-counter data-counter-min="1" data-counter-max="99">
             <input
               class="ui-counter-input"
+              id="rtl-gpu-count"
               value="8"
               inputMode="numeric"
               maxLength={3}
@@ -2779,19 +2780,20 @@ function RootAppearanceSettingsPreview() {
 
         <div class="ui-field ui-field-horizontal">
           <span class="ui-item-content">
-            <span class="root-field-title">Wallpaper Tinting</span>
+            <label class="root-field-title" for="rtl-tinting">Wallpaper Tinting</label>
             <span class="ui-field-description">Allow the wallpaper to be tinted.</span>
           </span>
-          <UiSwitch checked />
+          <UiSwitch id="rtl-tinting" checked />
         </div>
       </div>
     </fieldset>
   )
 }
 
-function UiSwitch(props: { checked?: boolean }) {
+function UiSwitch(props: { id?: string; checked?: boolean }) {
   return (
     <button
+      id={props.id}
       type="button"
       class="ui-switch"
       role="switch"
