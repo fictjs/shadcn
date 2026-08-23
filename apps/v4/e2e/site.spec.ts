@@ -540,6 +540,40 @@ test.describe("shadcn v4 site", () => {
     await expect(reset).toBeHidden()
   })
 
+  test("tasks selection and pagination match the React table", async ({ page }) => {
+    await page.goto("/examples/tasks")
+    await waitForClientReady(page)
+
+    const rows = page.locator(".tasks-data-table tbody [data-task-row]")
+    const selection = page.locator("[data-tasks-selection]")
+    const pageLabel = page.locator("[data-tasks-page-label]")
+    const selectAll = page.getByRole("checkbox", { name: "Select all" })
+
+    await rows.first().getByRole("checkbox").check()
+    await expect(selection).toHaveText("1 of 100 row(s) selected.")
+    await selectAll.check()
+    await expect(selection).toHaveText("25 of 100 row(s) selected.")
+    await expect(rows.first()).toHaveAttribute("data-state", "selected")
+
+    await page.getByLabel("Go to next page").click()
+    await expect(pageLabel).toHaveText("Page 2 of 4")
+    await expect(rows).toHaveCount(25)
+    await expect(rows.first().locator(".tasks-cell-id")).toHaveText("TASK-6274")
+    await selectAll.check()
+    await expect(selection).toHaveText("50 of 100 row(s) selected.")
+
+    await page.getByLabel("Rows per page").selectOption("10")
+    await expect(pageLabel).toHaveText("Page 1 of 10")
+    await expect(rows).toHaveCount(10)
+    await expect(selectAll).toBeChecked()
+
+    await page.getByLabel("Go to last page").click()
+    await expect(pageLabel).toHaveText("Page 10 of 10")
+    await expect(rows).toHaveCount(10)
+    await expect(selectAll).not.toBeChecked()
+    await expect(selection).toHaveText("50 of 100 row(s) selected.")
+  })
+
   test("playground example switches modes and updates controls", async ({ page }) => {
     await page.goto("/examples/playground")
 

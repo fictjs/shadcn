@@ -7546,6 +7546,10 @@ body[data-dashboard-drawer-open="true"] {
   border-bottom: 1px solid var(--border);
 }
 
+.tasks-data-table tbody tr[data-state="selected"] {
+  background: var(--muted);
+}
+
 .tasks-data-table tbody tr:last-child {
   border-bottom: 0;
 }
@@ -7725,6 +7729,20 @@ body[data-dashboard-drawer-open="true"] {
 
 .tasks-select-chevron {
   opacity: 0.5;
+  pointer-events: none;
+}
+
+.tasks-page-size-select {
+  min-width: 0;
+  flex: 1;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 0.875rem;
+  outline: none;
+  cursor: pointer;
 }
 
 .tasks-pagination-buttons {

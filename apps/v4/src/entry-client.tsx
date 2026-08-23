@@ -1089,6 +1089,7 @@ function wireTasksTables(): void {
       const checkbox = document.createElement("input")
       checkbox.type = "checkbox"
       checkbox.className = "tasks-checkbox"
+      checkbox.dataset.taskRowSelect = "true"
       checkbox.setAttribute("aria-label", `Select ${taskId}`)
       selectCell.append(checkbox)
 
@@ -1175,6 +1176,17 @@ function wireTasksTables(): void {
       return Boolean(value && hasToken(values, value))
     }
 
+    const getFilteredRows = (): HTMLTableRowElement[] => {
+      const query = (root.dataset.tasksQuery ?? "").trim().toLowerCase()
+      const statusValues = getFacetValues("status")
+      const priorityValues = getFacetValues("priority")
+      return allRows.filter((row) => {
+        return matchesQuery(row, query)
+          && matchesFacet(row, "status", statusValues)
+          && matchesFacet(row, "priority", priorityValues)
+      })
+    }
+
     const syncFacet = (kind: FacetKind, query: string): void => {
       const menu = root.querySelector<HTMLElement>(`[data-task-facet="${kind}"]`)
       if (!menu) {
@@ -1238,11 +1250,7 @@ function wireTasksTables(): void {
       const query = (root.dataset.tasksQuery ?? "").trim().toLowerCase()
       const statusValues = getFacetValues("status")
       const priorityValues = getFacetValues("priority")
-      const filteredRows = allRows.filter((row) => {
-        return matchesQuery(row, query)
-          && matchesFacet(row, "status", statusValues)
-          && matchesFacet(row, "priority", priorityValues)
-      })
+      const filteredRows = getFilteredRows()
       const pageSize = Number.parseInt(root.dataset.tasksPageSize ?? "25", 10) || 25
       const pageCount = Math.ceil(filteredRows.length / pageSize)
       const maximumPageIndex = Math.max(0, pageCount - 1)
@@ -1268,6 +1276,30 @@ function wireTasksTables(): void {
       }
 
       const selectedValues = root.dataset.tasksSelectedValues || "|"
+      let selectedPageRows = 0
+      for (const row of pageRows) {
+        const taskId = row.dataset.taskId
+        const selected = Boolean(taskId && hasToken(selectedValues, taskId))
+        const checkbox = row.querySelector<HTMLInputElement>("[data-task-row-select]")
+        if (checkbox) {
+          checkbox.checked = selected
+        }
+        if (selected) {
+          row.setAttribute("data-state", "selected")
+          selectedPageRows += 1
+        } else {
+          row.removeAttribute("data-state")
+        }
+      }
+
+      const selectAll = root.querySelector<HTMLInputElement>("[data-tasks-select-all]")
+      if (selectAll) {
+        const allSelected = pageRows.length > 0 && selectedPageRows === pageRows.length
+        selectAll.checked = allSelected
+        selectAll.indeterminate = selectedPageRows > 0 && !allSelected
+        selectAll.setAttribute("aria-checked", selectAll.indeterminate ? "mixed" : String(allSelected))
+      }
+
       const selectedCount = filteredRows.filter((row) => {
         const taskId = row.dataset.taskId
         return Boolean(taskId && hasToken(selectedValues, taskId))
@@ -1280,6 +1312,11 @@ function wireTasksTables(): void {
       const pageLabel = root.querySelector<HTMLElement>("[data-tasks-page-label]")
       if (pageLabel) {
         pageLabel.textContent = `Page ${pageIndex + 1} of ${pageCount}`
+      }
+
+      const pageSizeSelect = root.querySelector<HTMLSelectElement>("[data-tasks-page-size-select]")
+      if (pageSizeSelect) {
+        pageSizeSelect.value = String(pageSize)
       }
 
       root.querySelectorAll<HTMLButtonElement>("[data-tasks-page-action]").forEach((button) => {
@@ -1300,7 +1337,42 @@ function wireTasksTables(): void {
 
     root.addEventListener("input", (event) => {
       const target = event.target
+      if (target instanceof HTMLSelectElement && target.dataset.tasksPageSizeSelect !== undefined) {
+        const pageSize = Number.parseInt(target.value, 10)
+        if ([10, 20, 25, 30, 40, 50].includes(pageSize)) {
+          root.dataset.tasksPageSize = String(pageSize)
+          root.dataset.tasksPageIndex = "0"
+          sync()
+        }
+        return
+      }
+
       if (!(target instanceof HTMLInputElement)) {
+        return
+      }
+
+      if (target.dataset.tasksSelectAll !== undefined) {
+        let selectedValues = root.dataset.tasksSelectedValues || "|"
+        body.querySelectorAll<HTMLTableRowElement>("[data-task-row]").forEach((row) => {
+          const taskId = row.dataset.taskId
+          if (taskId && hasToken(selectedValues, taskId) !== target.checked) {
+            selectedValues = toggleToken(selectedValues, taskId)
+          }
+        })
+        root.dataset.tasksSelectedValues = selectedValues
+        sync()
+        return
+      }
+
+      if (target.dataset.taskRowSelect !== undefined) {
+        const taskId = target.closest<HTMLTableRowElement>("[data-task-row]")?.dataset.taskId
+        if (taskId) {
+          const selectedValues = root.dataset.tasksSelectedValues || "|"
+          if (hasToken(selectedValues, taskId) !== target.checked) {
+            root.dataset.tasksSelectedValues = toggleToken(selectedValues, taskId)
+          }
+          sync()
+        }
         return
       }
 
@@ -1336,6 +1408,25 @@ function wireTasksTables(): void {
     root.addEventListener("click", (event) => {
       const target = event.target
       if (!(target instanceof Element)) {
+        return
+      }
+
+      const pageButton = target.closest<HTMLButtonElement>("[data-tasks-page-action]")
+      if (pageButton && !pageButton.disabled) {
+        const pageSize = Number.parseInt(root.dataset.tasksPageSize ?? "25", 10) || 25
+        const pageCount = Math.ceil(getFilteredRows().length / pageSize)
+        const lastPageIndex = Math.max(0, pageCount - 1)
+        const currentPageIndex = Number.parseInt(root.dataset.tasksPageIndex ?? "0", 10) || 0
+        const action = pageButton.dataset.tasksPageAction
+        const nextPageIndex = action === "first"
+          ? 0
+          : action === "previous"
+            ? currentPageIndex - 1
+            : action === "next"
+              ? currentPageIndex + 1
+              : lastPageIndex
+        root.dataset.tasksPageIndex = String(Math.min(lastPageIndex, Math.max(0, nextPageIndex)))
+        sync()
         return
       }
 

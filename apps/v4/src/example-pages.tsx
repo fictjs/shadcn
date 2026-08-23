@@ -1439,7 +1439,12 @@ function renderTaskTableRow(task: (typeof taskRows)[number], index: number) {
       data-task-label={task.label}
     >
       <td class="tasks-cell-select">
-        <input type="checkbox" class="tasks-checkbox" aria-label={`Select ${task.id}`} />
+        <input
+          type="checkbox"
+          class="tasks-checkbox"
+          aria-label={`Select ${task.id}`}
+          data-task-row-select
+        />
       </td>
       <td class="tasks-cell-id">{task.id}</td>
       <td data-task-column="title">
@@ -1524,7 +1529,13 @@ function TasksExample() {
             <thead>
               <tr>
                 <th class="tasks-cell-select">
-                  <input type="checkbox" class="tasks-checkbox" aria-label="Select all" />
+                  <input
+                    type="checkbox"
+                    class="tasks-checkbox"
+                    aria-label="Select all"
+                    aria-checked="false"
+                    data-tasks-select-all
+                  />
                 </th>
                 <th>
                   <span class="tasks-column-header">Task</span>
@@ -1577,10 +1588,19 @@ function TasksExample() {
           <div class="tasks-pagination-controls">
             <div class="tasks-rows-per-page">
               <span class="tasks-pagination-label">Rows per page</span>
-              <span class="tasks-select-trigger">
-                <span>{TASKS_PAGE_SIZE}</span>
+              <label class="tasks-select-trigger">
+                <select
+                  class="tasks-page-size-select"
+                  aria-label="Rows per page"
+                  data-tasks-page-size-select
+                  value={TASKS_PAGE_SIZE}
+                >
+                  {[10, 20, 25, 30, 40, 50].map((pageSize) => (
+                    <option key={pageSize} value={pageSize}>{pageSize}</option>
+                  ))}
+                </select>
                 <LucideChevronsUpDownIcon class="tasks-select-chevron" />
-              </span>
+              </label>
             </div>
             <p class="tasks-pagination-label" data-tasks-page-label>
               Page 1 of {Math.ceil(taskRows.length / TASKS_PAGE_SIZE)}
