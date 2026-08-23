@@ -6418,6 +6418,10 @@ a.ui-item:hover {
   border-radius: var(--radius-lg);
 }
 
+.dashboard-table-selection-scope {
+  min-width: 0;
+}
+
 .dashboard-data-table {
   width: 100%;
   border-collapse: collapse;
@@ -6431,6 +6435,10 @@ a.ui-item:hover {
 
 .dashboard-data-table tr {
   border-bottom: 1px solid var(--border);
+}
+
+.dashboard-data-table tbody tr[data-state="selected"] {
+  background: var(--muted);
 }
 
 .dashboard-data-table tbody tr:last-child {
@@ -6582,6 +6590,19 @@ a.ui-item:hover {
 
 .dashboard-select-trigger-narrow {
   width: 5rem;
+}
+
+.dashboard-page-size-select {
+  min-width: 0;
+  flex: 1;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 0.875rem;
+  outline: none;
+  cursor: pointer;
 }
 
 .dashboard-select-placeholder {

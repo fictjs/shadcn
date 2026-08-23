@@ -285,6 +285,44 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".dashboard-chart-ticks text").first()).toBeVisible()
   })
 
+  test("dashboard table selection and pagination match the React example", async ({ page }) => {
+    await page.goto("/examples/dashboard")
+    await waitForClientReady(page)
+
+    const rows = page.locator(".dashboard-data-table tbody tr")
+    const selection = page.locator(".dashboard-table-selection")
+    const pagination = page.locator(".dashboard-table-pagination")
+
+    await expect(rows).toHaveCount(10)
+    await rows.first().getByRole("checkbox").check()
+    await expect(selection).toHaveText("1 of 68 row(s) selected.")
+
+    await page.getByRole("checkbox", { name: "Select all" }).check()
+    await expect(selection).toHaveText("10 of 68 row(s) selected.")
+    await expect(rows.first()).toHaveAttribute("data-state", "selected")
+
+    await page.getByRole("button", { name: "Go to next page" }).click()
+    await expect(pagination).toContainText("Page 2 of 7")
+    await expect(rows.first()).toContainText("Adaptive Communication Protocols")
+    await expect(selection).toHaveText("10 of 68 row(s) selected.")
+
+    await rows.first().getByRole("checkbox").check()
+    await expect(selection).toHaveText("11 of 68 row(s) selected.")
+
+    await page.getByLabel("Rows per page").selectOption("20")
+    await expect(rows).toHaveCount(20)
+    await expect(pagination).toContainText("Page 1 of 4")
+
+    await page.getByRole("button", { name: "Go to last page" }).click()
+    await expect(rows).toHaveCount(8)
+    await expect(pagination).toContainText("Page 4 of 4")
+    await expect(page.getByRole("button", { name: "Go to next page" })).toBeDisabled()
+
+    await page.getByRole("button", { name: "Go to first page" }).click()
+    await expect(pagination).toContainText("Page 1 of 4")
+    await expect(page.getByRole("button", { name: "Go to previous page" })).toBeDisabled()
+  })
+
   test("tasks example renders the faceted toolbar and row metadata", async ({ page }) => {
     await page.goto("/examples/tasks")
     await waitForClientReady(page)

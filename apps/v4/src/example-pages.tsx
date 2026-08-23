@@ -52,6 +52,7 @@ interface LiveExamplePageProps {
 
 type DashboardRange = "90d" | "30d" | "7d"
 type DashboardView = "outline" | "past-performance" | "key-personnel" | "focus-documents"
+type DashboardPageSize = 10 | 20 | 30 | 40 | 50
 type PlaygroundMode = "complete" | "insert" | "edit"
 type DirectionMode = "rtl" | "ltr"
 
@@ -135,6 +136,64 @@ function resolveDashboardView(value: string | undefined): DashboardView | null {
   return value === "outline" || value === "past-performance" || value === "key-personnel" || value === "focus-documents"
     ? value
     : null
+}
+
+function resolveDashboardPageSize(value: string | undefined): DashboardPageSize | null {
+  const parsed = Number(value)
+  return parsed === 10 || parsed === 20 || parsed === 30 || parsed === 40 || parsed === 50
+    ? parsed
+    : null
+}
+
+function updateDashboardSelection(selectedRows: string, rowId: string, selected: boolean): string {
+  const token = `|${rowId}|`
+  if (selected) {
+    return selectedRows.includes(token) ? selectedRows : `${selectedRows}${rowId}|`
+  }
+
+  return selectedRows.replace(token, "|")
+}
+
+function countDashboardSelection(selectedRows: string): number {
+  let separators = 0
+  for (const character of selectedRows) {
+    if (character === "|") {
+      separators += 1
+    }
+  }
+
+  return Math.max(0, separators - 1)
+}
+
+function syncDashboardTableSelectionScope(scope: HTMLElement): void {
+  const selectedRows = scope.dataset.dashboardSelectedRows || "|"
+  const rowCheckboxes = scope.querySelectorAll<HTMLInputElement>("[data-dashboard-row-id]")
+  let selectedPageRows = 0
+
+  for (const checkbox of rowCheckboxes) {
+    const rowId = checkbox.dataset.dashboardRowId
+    const selected = Boolean(rowId && selectedRows.includes(`|${rowId}|`))
+    checkbox.checked = selected
+    checkbox.closest("tr")?.toggleAttribute("data-state", selected)
+    if (selected) {
+      checkbox.closest("tr")?.setAttribute("data-state", "selected")
+      selectedPageRows += 1
+    }
+  }
+
+  const selectAll = scope.querySelector<HTMLInputElement>("[data-dashboard-select-all]")
+  if (selectAll) {
+    const allSelected = rowCheckboxes.length > 0 && selectedPageRows === rowCheckboxes.length
+    selectAll.checked = allSelected
+    selectAll.indeterminate = selectedPageRows > 0 && !allSelected
+    selectAll.setAttribute("aria-checked", selectAll.indeterminate ? "mixed" : String(allSelected))
+  }
+}
+
+function syncDashboardTableSelections(): void {
+  document.querySelectorAll<HTMLElement>(".dashboard-table-selection-scope").forEach((scope) => {
+    syncDashboardTableSelectionScope(scope)
+  })
 }
 
 function resolveDirectionMode(value: string | undefined): DirectionMode | null {
@@ -424,6 +483,10 @@ function DashboardNavIcon(props: { name: string }) {
 function DashboardExample() {
   let timeRange = $state<DashboardRange>("7d")
   let activeView = $state<DashboardView>("outline")
+  let dashboardPageIndex = $state(0)
+  let dashboardPageSize = $state<DashboardPageSize>(DASHBOARD_PAGE_SIZE)
+  let selectedDashboardRows = $state("|")
+  let selectedDashboardCount = $state(0)
 
   const activeViewLabel = activeView === "past-performance"
     ? "past performance"
@@ -648,87 +711,138 @@ function DashboardExample() {
           {activeView === "outline" ? (
             <div class="dashboard-table-panel">
               <div class="dashboard-table-frame">
-                <table class="dashboard-data-table">
-                  <thead>
-                    <tr>
-                      <th class="dashboard-cell-drag"></th>
-                      <th class="dashboard-cell-select"></th>
-                      <th>Header</th>
-                      <th>Section Type</th>
-                      <th>Status</th>
-                      <th class="dashboard-cell-number">Target</th>
-                      <th class="dashboard-cell-number">Limit</th>
-                      <th>Reviewer</th>
-                      <th class="dashboard-cell-actions"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dashboardTableRows.slice(0, DASHBOARD_PAGE_SIZE).map((row) => (
-                      <tr key={row.id}>
-                        <td class="dashboard-cell-drag">
-                          <button type="button" class="dashboard-icon-button dashboard-drag-handle" aria-label="Drag to reorder">
-                            <TablerGripVerticalIcon class="dashboard-grip-icon" />
-                          </button>
-                        </td>
-                        <td class="dashboard-cell-select">
-                          <input type="checkbox" class="dashboard-checkbox" aria-label={`Select ${row.header}`} />
-                        </td>
-                        <td>
-                          <button type="button" class="dashboard-cell-link">{row.header}</button>
-                        </td>
-                        <td>
-                          <span class="dashboard-cell-badge">{row.type}</span>
-                        </td>
-                        <td>
-                          <span class="dashboard-cell-badge">
-                            <DashboardStatusIcon status={row.status} />
-                            {row.status}
-                          </span>
-                        </td>
-                        <td class="dashboard-cell-number">
-                          <input class="dashboard-cell-input" value={row.target} aria-label={`Target for ${row.header}`} />
-                        </td>
-                        <td class="dashboard-cell-number">
-                          <input class="dashboard-cell-input" value={row.limit} aria-label={`Limit for ${row.header}`} />
-                        </td>
-                        <td>
-                          <DashboardReviewerCell reviewer={row.reviewer} />
-                        </td>
-                        <td class="dashboard-cell-actions">
-                          <button type="button" class="dashboard-icon-button" aria-label="Open menu">
-                            <TablerDotsVerticalIcon />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <div
+                  class="dashboard-table-selection-scope"
+                  data-dashboard-selected-rows={selectedDashboardRows}
+                  onInput$={(event: Event) => {
+                    const target = event.target
+                    if (!(target instanceof HTMLInputElement) || target.type !== "checkbox") {
+                      return
+                    }
+
+                    const selectionScope = target.closest<HTMLElement>(".dashboard-table-selection-scope")
+                    if (!selectionScope) {
+                      return
+                    }
+
+                    let selectedRows = selectionScope.dataset.dashboardSelectedRows || "|"
+                    if (target.dataset.dashboardSelectAll === "true") {
+                      const rowCheckboxes = target
+                        .closest(".dashboard-table-frame")
+                        ?.querySelectorAll<HTMLInputElement>("[data-dashboard-row-id]")
+
+                      for (const checkbox of rowCheckboxes ?? []) {
+                        const rowId = checkbox.dataset.dashboardRowId
+                        if (!rowId) {
+                          continue
+                        }
+
+                        selectedRows = updateDashboardSelection(selectedRows, rowId, target.checked)
+                      }
+                    } else {
+                      const rowId = target.dataset.dashboardRowId
+                      if (!rowId) {
+                        return
+                      }
+
+                      selectedRows = updateDashboardSelection(selectedRows, rowId, target.checked)
+                    }
+
+                    selectionScope.dataset.dashboardSelectedRows = selectedRows
+                    selectedDashboardRows = selectedRows
+                    selectedDashboardCount = countDashboardSelection(selectedRows)
+                    window.requestAnimationFrame(syncDashboardTableSelections)
+                  }}
+                >
+                  <DashboardTablePage
+                    pageIndex={dashboardPageIndex}
+                    pageSize={dashboardPageSize}
+                  />
+                </div>
               </div>
 
               <div class="dashboard-table-footer">
-                <p class="dashboard-table-selection">0 of {dashboardTableRows.length} row(s) selected.</p>
+                <p class="dashboard-table-selection">{selectedDashboardCount} of {dashboardTableRows.length} row(s) selected.</p>
                 <div class="dashboard-table-pagination">
                   <div class="dashboard-rows-per-page">
                     <span class="dashboard-pagination-label">Rows per page</span>
-                    <span class="dashboard-select-trigger dashboard-select-trigger-narrow">
-                      <span>{DASHBOARD_PAGE_SIZE}</span>
+                    <label class="dashboard-select-trigger dashboard-select-trigger-narrow">
+                      <select
+                        class="dashboard-page-size-select"
+                        aria-label="Rows per page"
+                        value={dashboardPageSize}
+                        onInput$={(event: Event) => {
+                          const target = event.currentTarget
+                          if (!(target instanceof HTMLSelectElement)) {
+                            return
+                          }
+
+                          const nextPageSize = resolveDashboardPageSize(target.value)
+                          if (nextPageSize) {
+                            dashboardPageSize = nextPageSize
+                            dashboardPageIndex = 0
+                            window.requestAnimationFrame(syncDashboardTableSelections)
+                          }
+                        }}
+                      >
+                        {[10, 20, 30, 40, 50].map((pageSize) => (
+                          <option key={pageSize} value={pageSize}>{pageSize}</option>
+                        ))}
+                      </select>
                       <TablerChevronDownIcon class="dashboard-select-chevron" />
-                    </span>
+                    </label>
                   </div>
-                  <p class="dashboard-pagination-label">
-                    Page 1 of {Math.ceil(dashboardTableRows.length / DASHBOARD_PAGE_SIZE)}
-                  </p>
+                  <DashboardPaginationLabel pageIndex={dashboardPageIndex} pageSize={dashboardPageSize} />
                   <div class="dashboard-pagination-buttons">
-                    <button type="button" class="dashboard-pagination-button" aria-label="Go to first page" disabled>
+                    <button
+                      type="button"
+                      class="dashboard-pagination-button"
+                      aria-label="Go to first page"
+                      disabled={dashboardPageIndex === 0}
+                      onClick$={() => {
+                        dashboardPageIndex = 0
+                        window.requestAnimationFrame(syncDashboardTableSelections)
+                      }}
+                    >
                       <TablerChevronsLeftIcon />
                     </button>
-                    <button type="button" class="dashboard-pagination-button" aria-label="Go to previous page" disabled>
+                    <button
+                      type="button"
+                      class="dashboard-pagination-button"
+                      aria-label="Go to previous page"
+                      disabled={dashboardPageIndex === 0}
+                      onClick$={() => {
+                        dashboardPageIndex = Math.max(0, untrack(() => dashboardPageIndex) - 1)
+                        window.requestAnimationFrame(syncDashboardTableSelections)
+                      }}
+                    >
                       <TablerChevronLeftIcon />
                     </button>
-                    <button type="button" class="dashboard-pagination-button" aria-label="Go to next page">
+                    <button
+                      type="button"
+                      class="dashboard-pagination-button"
+                      aria-label="Go to next page"
+                      disabled={dashboardPageIndex >= Math.ceil(dashboardTableRows.length / dashboardPageSize) - 1}
+                      onClick$={() => {
+                        const lastPage = Math.ceil(dashboardTableRows.length / untrack(() => dashboardPageSize)) - 1
+                        dashboardPageIndex = Math.min(lastPage, untrack(() => dashboardPageIndex) + 1)
+                        window.requestAnimationFrame(syncDashboardTableSelections)
+                      }}
+                    >
                       <TablerChevronRightIcon />
                     </button>
-                    <button type="button" class="dashboard-pagination-button" aria-label="Go to last page">
+                    <button
+                      type="button"
+                      class="dashboard-pagination-button"
+                      aria-label="Go to last page"
+                      disabled={dashboardPageIndex >= Math.ceil(dashboardTableRows.length / dashboardPageSize) - 1}
+                      onClick$={() => {
+                        dashboardPageIndex = Math.ceil(
+                          dashboardTableRows.length / untrack(() => dashboardPageSize),
+                        ) - 1
+                        window.requestAnimationFrame(syncDashboardTableSelections)
+                      }}
+                    >
                       <TablerChevronsRightIcon />
                     </button>
                   </div>
@@ -743,6 +857,98 @@ function DashboardExample() {
         </section>
       </div>
     </div>
+  )
+}
+
+function DashboardTablePage(props: {
+  pageIndex: number
+  pageSize: DashboardPageSize
+}) {
+  const pageIndex = untrack(() => props.pageIndex)
+  const pageSize = untrack(() => props.pageSize)
+  const start = pageIndex * pageSize
+  const rows = dashboardTableRows.slice(start, start + pageSize)
+
+  return (
+    <table class="dashboard-data-table">
+      <thead>
+        <tr>
+          <th class="dashboard-cell-drag"></th>
+          <th class="dashboard-cell-select">
+            <input
+              type="checkbox"
+              class="dashboard-checkbox"
+              data-dashboard-select-all="true"
+              aria-checked="false"
+              aria-label="Select all"
+            />
+          </th>
+          <th>Header</th>
+          <th>Section Type</th>
+          <th>Status</th>
+          <th class="dashboard-cell-number">Target</th>
+          <th class="dashboard-cell-number">Limit</th>
+          <th>Reviewer</th>
+          <th class="dashboard-cell-actions"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr key={row.id}>
+            <td class="dashboard-cell-drag">
+              <button type="button" class="dashboard-icon-button dashboard-drag-handle" aria-label="Drag to reorder">
+                <TablerGripVerticalIcon class="dashboard-grip-icon" />
+              </button>
+            </td>
+            <td class="dashboard-cell-select">
+              <input
+                type="checkbox"
+                class="dashboard-checkbox"
+                data-dashboard-row-id={row.id}
+                aria-label={`Select ${row.header}`}
+              />
+            </td>
+            <td>
+              <button type="button" class="dashboard-cell-link">{row.header}</button>
+            </td>
+            <td>
+              <span class="dashboard-cell-badge">{row.type}</span>
+            </td>
+            <td>
+              <span class="dashboard-cell-badge">
+                <DashboardStatusIcon status={row.status} />
+                {row.status}
+              </span>
+            </td>
+            <td class="dashboard-cell-number">
+              <input class="dashboard-cell-input" value={row.target} aria-label={`Target for ${row.header}`} />
+            </td>
+            <td class="dashboard-cell-number">
+              <input class="dashboard-cell-input" value={row.limit} aria-label={`Limit for ${row.header}`} />
+            </td>
+            <td>
+              <DashboardReviewerCell reviewer={row.reviewer} />
+            </td>
+            <td class="dashboard-cell-actions">
+              <button type="button" class="dashboard-icon-button" aria-label="Open menu">
+                <TablerDotsVerticalIcon />
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+}
+
+function DashboardPaginationLabel(props: { pageIndex: number; pageSize: DashboardPageSize }) {
+  const pageIndex = untrack(() => props.pageIndex)
+  const pageSize = untrack(() => props.pageSize)
+
+  return (
+    <p class="dashboard-pagination-label">
+      Page {pageIndex + 1} of {Math.ceil(dashboardTableRows.length / pageSize)}
+    </p>
   )
 }
 
