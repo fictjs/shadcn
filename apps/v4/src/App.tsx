@@ -2692,7 +2692,7 @@ function RootItemDemoPreview() {
           </button>
         </div>
       </div>
-      <a class="ui-item" href="#">
+      <div class="ui-item">
         <span class="ui-item-media">
           <BadgeCheckIcon />
         </span>
@@ -2702,7 +2702,7 @@ function RootItemDemoPreview() {
         <span class="ui-item-actions">
           <ChevronRightIcon />
         </span>
-      </a>
+      </div>
     </div>
   )
 }

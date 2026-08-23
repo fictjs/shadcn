@@ -1285,6 +1285,23 @@ test.describe("shadcn v4 site", () => {
     await expect(report).toHaveCSS("border-radius", "10px 0px 0px 10px")
   })
 
+  test("rtl verified item matches the React presentation", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 1200 })
+    await page.goto("/examples/rtl")
+    await waitForClientReady(page)
+
+    const title = page.getByText("تم التحقق من ملفك الشخصي.", { exact: true })
+    const item = title.locator("xpath=ancestor::*[contains(concat(' ', normalize-space(@class), ' '), ' ui-item ')][1]")
+    await expect(item).toHaveCount(1)
+    expect(await item.evaluate((element) => element.tagName)).toBe("DIV")
+    expect(await item.locator(".ui-item-media").evaluate((element) => (
+      getComputedStyle(element).color === getComputedStyle(element.parentElement!).color
+    ))).toBe(true)
+    expect(await item.locator(".ui-item-actions").evaluate((element) => (
+      getComputedStyle(element).color === getComputedStyle(element.parentElement!).color
+    ))).toBe(true)
+  })
+
   test("rtl example matches the current localized input groups", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 1200 })
     await page.goto("/examples/rtl")

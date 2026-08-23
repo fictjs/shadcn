@@ -3342,7 +3342,7 @@ a.ui-item:hover {
   flex: none;
   align-items: center;
   justify-content: center;
-  color: var(--muted-foreground);
+  color: inherit;
 }
 
 .ui-item-media svg {
@@ -3383,7 +3383,7 @@ a.ui-item:hover {
   flex: none;
   align-items: center;
   gap: 0.5rem;
-  color: var(--muted-foreground);
+  color: inherit;
 }
 
 .ui-item-actions svg {
