@@ -1,5 +1,6 @@
 import { $effect, $state, untrack } from "fict"
 
+import { baseColors, baseColorsOKLCH } from "../registry/_legacy-base-colors"
 import { colors as tailwindColors } from "../registry/_legacy-colors"
 import type {
   BlockEntry,
@@ -27,6 +28,13 @@ interface ColorScaleEntry {
 interface ColorPalette {
   name: string
   scales: ColorScaleEntry[]
+}
+
+type ThemeCodeFormat = "v4-oklch" | "v4-hsl" | "v3"
+
+interface ThemeCodePalette {
+  light: Record<string, string>
+  dark: Record<string, string>
 }
 
 type ExampleRootCardKind =
@@ -3570,48 +3578,166 @@ function ThemeSelectorControl(props: { themes: ThemeEntry[]; activeThemeName: st
         options={createVisibleThemes.map((theme) => ({ value: theme.name, label: theme.title }))}
         onSelect={(themeName: string) => props.onThemeSelect(themeName)}
       />
-      <button
-        type="button"
-        class="button theme-selector-copy"
-        aria-label="Copy Code"
-        title="Copy Code"
-        data-theme-name={props.activeThemeName}
-        onClick$={(event: MouseEvent) => {
-          if (typeof navigator === "undefined" || !navigator.clipboard) {
-            return
-          }
-
-          const target = event.currentTarget
-          if (!(target instanceof HTMLButtonElement)) {
-            return
-          }
-
-          const themeName = target.dataset.themeName
-          if (!themeName) {
-            return
-          }
-
-          writeClipboardText(`pnpm dlx @fictjs/shadcn@latest theme apply ${themeName}`, target)
-        }}
-      >
-        <svg
-          class="theme-selector-copy-icon copy-icon-idle"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
-          <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
-        </svg>
-        <CheckIcon class="theme-selector-copy-icon copy-icon-done" />
-      </button>
+      <ThemeCodeControl
+        themeName={props.activeThemeName}
+        triggerClass="button theme-selector-copy"
+        iconOnly
+      />
     </div>
   )
+}
+
+function ThemeCodeControl(props: { themeName: string; triggerClass: string; iconOnly?: boolean }) {
+  let isOpen = $state(false)
+  let activeFormat = $state<ThemeCodeFormat>("v4-oklch")
+
+  const closeDialog = () => {
+    const trigger = typeof document === "undefined"
+      ? null
+      : document.querySelector<HTMLButtonElement>("[data-theme-code-trigger][aria-expanded='true']")
+    isOpen = false
+    if (trigger) {
+      window.requestAnimationFrame(() => trigger.focus())
+    }
+  }
+
+  return (
+    <>
+      <button
+        type="button"
+        class={props.triggerClass}
+        aria-label="Copy Code"
+        title="Copy Code"
+        aria-haspopup="dialog"
+        aria-expanded={isOpen}
+        data-theme-code-trigger
+        data-theme-name={props.themeName}
+        onClick$={() => {
+          activeFormat = "v4-oklch"
+          isOpen = true
+          if (typeof document !== "undefined") {
+            window.requestAnimationFrame(() => {
+              document.querySelector<HTMLButtonElement>("[data-theme-code-dialog] .theme-code-close")?.focus()
+            })
+          }
+        }}
+      >
+        <CopyIcon />
+        {props.iconOnly ? <span class="sr-only">Copy Code</span> : <span class="theme-copy-label">Copy Code</span>}
+      </button>
+
+      {isOpen ? (
+        <div
+          class="theme-code-overlay"
+          role="presentation"
+          data-theme-code-overlay
+          onClick$={(event: MouseEvent) => {
+            if (event.target === event.currentTarget) {
+              closeDialog()
+            }
+          }}
+        >
+          <section
+            class="theme-code-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="theme-code-title"
+            aria-describedby="theme-code-description"
+            data-theme-code-dialog
+          >
+            <button
+              type="button"
+              class="theme-code-close"
+              aria-label="Close"
+              onClick$={closeDialog}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </button>
+
+            <header class="theme-code-header">
+              <h2 id="theme-code-title">{props.themeName === "default" ? "Neutral" : props.themeName}</h2>
+              <p id="theme-code-description">Copy and paste the following code into your CSS file.</p>
+            </header>
+
+            <div
+              class="theme-code-tabs"
+              role="tablist"
+              aria-label="Theme code format"
+              onClick$={(event: MouseEvent) => {
+                const target = event.target
+                if (!(target instanceof Element)) {
+                  return
+                }
+
+                const tab = target.closest<HTMLElement>("[data-theme-code-format]")
+                const format = resolveThemeCodeFormat(tab?.dataset.themeCodeFormat)
+                if (format) {
+                  activeFormat = format
+                }
+              }}
+            >
+              {([
+                ["v4-oklch", "OKLCH"],
+                ["v4-hsl", "HSL"],
+                ["v3", "Tailwind v3"],
+              ] as const).map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  role="tab"
+                  class="theme-code-tab"
+                  data-theme-code-format={value}
+                  data-state={activeFormat === value ? "active" : "inactive"}
+                  aria-selected={activeFormat === value}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <figure class="theme-code-figure">
+              <figcaption class="theme-code-caption">
+                <span class="theme-code-css-icon" aria-hidden="true">#</span>
+                app/globals.css
+              </figcaption>
+              <div class="theme-code-body">
+                <button
+                  type="button"
+                  class="theme-code-copy"
+                  aria-label="Copy"
+                  onClick$={(event: MouseEvent) => {
+                    const target = event.currentTarget
+                    if (!(target instanceof HTMLButtonElement)) {
+                      return
+                    }
+
+                    const code = target.parentElement?.querySelector("code")?.textContent
+                    if (code) {
+                      writeClipboardText(code, target)
+                    }
+                  }}
+                >
+                  <CopyIcon class="copy-icon-idle" />
+                  <CheckIcon class="copy-icon-done" />
+                </button>
+                <ThemeCodeSource themeName={props.themeName} format={activeFormat} />
+              </div>
+            </figure>
+          </section>
+        </div>
+      ) : null}
+    </>
+  )
+}
+
+function ThemeCodeSource(props: { themeName: string; format: ThemeCodeFormat }) {
+  const themeName = untrack(() => props.themeName)
+  const format = untrack(() => props.format)
+
+  return <pre><code>{buildThemeCode(themeName, format)}</code></pre>
 }
 
 function AnnouncementBadge() {
@@ -5130,32 +5256,10 @@ function ThemesPage(props: { themes: ThemeEntry[]; activeThemeName: string; onTh
               />
             </div>
 
-            <button
-              type="button"
-              class="button button-secondary theme-copy-button"
-              data-theme-name={props.activeThemeName}
-              onClick$={(event: MouseEvent) => {
-                if (typeof navigator === "undefined" || !navigator.clipboard) {
-                  return
-                }
-
-                const target = event.currentTarget
-                if (!(target instanceof HTMLButtonElement)) {
-                  return
-                }
-
-                const themeName = target.dataset.themeName
-                if (!themeName) {
-                  return
-                }
-
-                writeClipboardText(`pnpm dlx @fictjs/shadcn@latest theme apply ${themeName}`, target)
-              }}
-            >
-              <CopyIcon class="copy-icon-idle" />
-              <CheckIcon class="copy-icon-done" />
-              Copy Code
-            </button>
+            <ThemeCodeControl
+              themeName={props.activeThemeName}
+              triggerClass="button button-secondary theme-copy-button"
+            />
           </div>
       </div>
 
@@ -5242,6 +5346,70 @@ function ColorsPage() {
       </div>
     </section>
   )
+}
+
+function buildThemeCode(themeName: string, format: ThemeCodeFormat): string {
+  const normalizedThemeName = themeName === "default" ? "neutral" : themeName
+  const legacyTheme = baseColors.find((theme) => theme.name === normalizedThemeName)
+    ?? baseColors.find((theme) => theme.name === "neutral")
+  const oklchThemes = baseColorsOKLCH as unknown as Record<string, ThemeCodePalette>
+  const oklchTheme = oklchThemes[normalizedThemeName] ?? oklchThemes.default
+
+  if (format === "v4-oklch") {
+    return buildThemeVariableCode(oklchTheme, "0.65rem", (value) => value)
+  }
+
+  const hslTheme = legacyTheme?.cssVars as unknown as ThemeCodePalette | undefined
+  if (!hslTheme) {
+    return ""
+  }
+
+  if (format === "v4-hsl") {
+    return buildThemeVariableCode(hslTheme, "0.65rem", (value) => `hsl(${value})`)
+  }
+
+  return buildTailwindV3ThemeCode(hslTheme)
+}
+
+function resolveThemeCodeFormat(value: string | undefined): ThemeCodeFormat | null {
+  return value === "v4-oklch" || value === "v4-hsl" || value === "v3" ? value : null
+}
+
+function buildThemeVariableCode(
+  palette: ThemeCodePalette | undefined,
+  radius: string,
+  formatValue: (value: string) => string,
+): string {
+  if (!palette) {
+    return ""
+  }
+
+  const formatSection = (selector: string, values: Record<string, string>) => {
+    const lines = Object.entries(values)
+      .filter(([key]) => key !== "radius")
+      .map(([key, value]) => `  --${key}: ${formatValue(value)};`)
+      .join("\n")
+
+    return `${selector} {\n  --radius: ${radius};\n${lines}\n}`
+  }
+
+  return `${formatSection(":root", palette.light)}\n\n${formatSection(".dark", palette.dark)}\n`
+}
+
+function buildTailwindV3ThemeCode(palette: ThemeCodePalette): string {
+  const formatSection = (selector: string, values: Record<string, string>, includeRadius: boolean) => {
+    const lines = Object.entries(values)
+      .filter(([key]) => key !== "radius")
+      .map(([key, value]) => `    --${key}: ${value};`)
+
+    if (includeRadius) {
+      lines.push("    --radius: 0.5rem;")
+    }
+
+    return `  ${selector} {\n${lines.join("\n")}\n  }`
+  }
+
+  return `@layer base {\n${formatSection(":root", palette.light, true)}\n\n${formatSection(".dark", palette.dark, false)}\n}\n`
 }
 
 function writeClipboardText(value: string, source?: EventTarget | null): void {

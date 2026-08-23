@@ -5255,6 +5255,225 @@ a.ui-item:hover {
   margin-left: auto;
 }
 
+.theme-copy-button .button-icon {
+  display: none;
+}
+
+.theme-code-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: color-mix(in oklab, black 35%, transparent);
+  backdrop-filter: blur(2px);
+}
+
+.theme-code-dialog {
+  position: relative;
+  display: grid;
+  width: 100%;
+  max-height: min(88vh, 46rem);
+  gap: 1rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 1rem 1rem 0 0;
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: 0 -18px 60px color-mix(in oklab, black 24%, transparent);
+  padding: 1.25rem 1rem 1rem;
+}
+
+.theme-code-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  z-index: 2;
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 0.45rem;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+}
+
+.theme-code-close:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.theme-code-close svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.theme-code-header {
+  display: grid;
+  gap: 0.25rem;
+  padding-right: 2.5rem;
+}
+
+.theme-code-header h2,
+.theme-code-header p {
+  margin: 0;
+}
+
+.theme-code-header h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+  text-transform: capitalize;
+}
+
+.theme-code-header p {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.4rem;
+}
+
+.theme-code-tabs {
+  display: inline-flex;
+  width: max-content;
+  max-width: 100%;
+  align-items: center;
+  gap: 0.2rem;
+  border-radius: var(--radius-md);
+  background: var(--muted);
+  padding: 0.2rem;
+}
+
+.theme-code-tab {
+  min-width: 0;
+  height: 1.75rem;
+  border: 0;
+  border-radius: calc(var(--radius-md) - 0.1rem);
+  background: transparent;
+  color: var(--muted-foreground);
+  padding: 0 0.7rem;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.theme-code-tab[data-state="active"] {
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: 0 1px 2px color-mix(in oklab, black 10%, transparent);
+}
+
+.theme-code-figure {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in oklab, var(--border) 75%, transparent);
+  border-radius: 0.75rem;
+  background: var(--code);
+  color: var(--code-foreground);
+  margin: 0;
+}
+
+.theme-code-caption {
+  display: flex;
+  height: 2.6rem;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 75%, transparent);
+  padding: 0 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+.theme-code-css-icon {
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-weight: 700;
+}
+
+.theme-code-body {
+  position: relative;
+  min-width: 0;
+}
+
+.theme-code-copy {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  z-index: 1;
+  display: inline-flex;
+  width: 1.75rem;
+  height: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--code);
+  color: var(--code-foreground);
+  cursor: pointer;
+}
+
+.theme-code-copy:hover {
+  background: var(--muted);
+}
+
+.theme-code-copy svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.theme-code-body pre {
+  max-height: min(52vh, 28rem);
+  overflow: auto;
+  margin: 0;
+  padding: 0.9rem 3rem 1rem 1rem;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.35rem;
+  tab-size: 2;
+}
+
+@media (min-width: 640px) {
+  .theme-copy-button .button-icon {
+    display: inline-block;
+  }
+
+  .theme-copy-button .theme-copy-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .theme-code-overlay {
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .theme-code-dialog {
+    width: min(42rem, 100%);
+    border: 0;
+    border-radius: 0.75rem;
+    box-shadow:
+      0 24px 80px color-mix(in oklab, black 28%, transparent),
+      0 0 0 4px color-mix(in oklab, var(--border) 80%, transparent);
+    padding: 1.5rem;
+  }
+}
+
 .theme-preview-shell {
   display: flex;
   flex: 1;

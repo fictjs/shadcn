@@ -342,6 +342,33 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".theme-preview-stage")).toHaveAttribute("data-theme-name", "blue")
   })
 
+  test("theme copy controls open the upstream code dialog", async ({ page }) => {
+    await page.goto("/themes")
+    await waitForClientReady(page)
+
+    await page.getByRole("button", { name: "Copy Code" }).click()
+
+    const dialog = page.getByRole("dialog", { name: "neutral" })
+    await expect(dialog).toBeVisible()
+    await expect(dialog).toContainText("Copy and paste the following code into your CSS file.")
+    await expect(dialog.getByRole("tab")).toHaveText(["OKLCH", "HSL", "Tailwind v3"])
+    await expect(dialog.locator(".theme-code-body code")).toContainText("--background: oklch(")
+
+    await dialog.getByRole("tab", { name: "HSL", exact: true }).click()
+    await expect(dialog.locator(".theme-code-body code")).toContainText("--background: hsl(")
+
+    await dialog.getByRole("tab", { name: "Tailwind v3" }).click()
+    await expect(dialog.locator(".theme-code-body code")).toContainText("@layer base")
+
+    await page.keyboard.press("Escape")
+    await expect(dialog).toHaveCount(0)
+    await expect(page.getByRole("button", { name: "Copy Code" })).toBeFocused()
+
+    await page.goto("/")
+    await page.getByRole("button", { name: "Copy Code" }).click()
+    await expect(page.getByRole("dialog", { name: "neutral" })).toBeVisible()
+  })
+
   test("active theme selector drives preview routes and persists across navigation", async ({ page }) => {
     await page.goto("/")
     await waitForClientReady(page)

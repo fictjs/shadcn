@@ -1210,6 +1210,20 @@ function wireColorModeManager(): void {
 }
 
 function wireSiteChrome(): void {
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") {
+      return
+    }
+
+    const themeCodeClose = document.querySelector<HTMLButtonElement>(
+      "[data-theme-code-dialog] .theme-code-close",
+    )
+    if (themeCodeClose) {
+      event.preventDefault()
+      themeCodeClose.click()
+    }
+  })
+
   document.addEventListener("click", (event) => {
     const target = event.target
     if (!(target instanceof Element)) {
