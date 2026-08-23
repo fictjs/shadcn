@@ -1442,6 +1442,7 @@ test.describe("shadcn v4 site", () => {
     const termsField = page.locator(".root-check-field")
     const checkbox = termsField.getByRole("checkbox", { name: "أوافق على الشروط والأحكام" })
     await expect(termsField).toHaveCSS("height", "41.25px")
+    await expect(termsField).toHaveCSS("border-top-color", "oklab(0.205 0 0 / 0.3)")
     await expect(checkbox).toHaveAttribute("aria-checked", "true")
     await termsField.getByText("أوافق على الشروط والأحكام", { exact: true }).click()
     await expect(checkbox).toHaveAttribute("aria-checked", "false")

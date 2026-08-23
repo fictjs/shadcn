@@ -3804,7 +3804,7 @@ a.ui-item:hover {
   width: 100%;
   align-items: center;
   gap: 0.5rem;
-  border: 1px solid color-mix(in oklab, var(--primary) 5%, transparent);
+  border: 1px solid color-mix(in oklab, var(--primary) 30%, transparent);
   border-radius: var(--radius-lg);
   background: color-mix(in oklab, var(--primary) 5%, transparent);
   padding: 0.625rem;
