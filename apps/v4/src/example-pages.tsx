@@ -2451,39 +2451,41 @@ function AuthenticationExample() {
       <section class="auth-form-panel">
         <div class="auth-form-shell">
           <div class="auth-shell-header">
-            <h3>Create an account</h3>
+            <h1>Create an account</h1>
             <p class="tasks-copy">Enter your email below to create your account</p>
           </div>
 
-          <form class="auth-field-group" data-auth-form>
-            <label class="sr-only" for="auth-email">Email</label>
-            <input
-              id="auth-email"
-              class="auth-input"
-              type="email"
-              placeholder="name@example.com"
-              autoCapitalize="none"
-              autoComplete="email"
-            />
-            <button class="auth-submit-button" type="submit">
+          <div class="auth-methods">
+            <form class="auth-field-group" data-auth-form>
+              <label class="sr-only" for="auth-email">Email</label>
+              <input
+                id="auth-email"
+                class="auth-input"
+                type="email"
+                placeholder="name@example.com"
+                autoCapitalize="none"
+                autoComplete="email"
+              />
+              <button class="auth-submit-button" type="submit">
+                <span class="auth-spinner" data-auth-spinner hidden aria-hidden="true"></span>
+                <span>Sign In with Email</span>
+              </button>
+            </form>
+
+            <div class="auth-divider">
+              <span />
+              <p>Or continue with</p>
+              <span />
+            </div>
+
+            <button class="auth-provider-button" type="button" data-auth-provider>
+              <span class="auth-provider-icon" data-auth-provider-icon>
+                <GitHubMarkIcon />
+              </span>
               <span class="auth-spinner" data-auth-spinner hidden aria-hidden="true"></span>
-              <span>Sign In with Email</span>
+              <span>GitHub</span>
             </button>
-          </form>
-
-          <div class="auth-divider">
-            <span />
-            <p>Or continue with</p>
-            <span />
           </div>
-
-          <button class="auth-provider-button" type="button" data-auth-provider>
-            <span class="auth-provider-icon" data-auth-provider-icon>
-              <GitHubMarkIcon />
-            </span>
-            <span class="auth-spinner" data-auth-spinner hidden aria-hidden="true"></span>
-            <span>GitHub</span>
-          </button>
 
           <p class="auth-footnote">
             By clicking continue, you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.

@@ -1096,11 +1096,50 @@ test.describe("shadcn v4 site", () => {
     await expect(email).toHaveValue("person@example.com")
   })
 
+  test("authentication example matches the React responsive layout", async ({ page }) => {
+    await page.setViewportSize({ width: 767, height: 1200 })
+    await page.goto("/examples/authentication")
+
+    const showcase = page.locator(".example-showcase-surface")
+    const liveStage = showcase.locator(".example-live-stage")
+    const mobileGallery = showcase.locator(".example-mobile-gallery")
+    const example = page.locator(".auth-example")
+    const brand = page.locator(".auth-brand-panel")
+    const formPanel = page.locator(".auth-form-panel")
+    const shell = page.locator(".auth-form-shell")
+    await expect(mobileGallery).toBeVisible()
+    await expect(liveStage).toBeHidden()
+
+    await page.setViewportSize({ width: 768, height: 1200 })
+    await expect(mobileGallery).toBeHidden()
+    await expect(liveStage).toBeVisible()
+    expect((await example.boundingBox())?.height).toBe(692)
+    await expect(brand).toBeHidden()
+    expect((await formPanel.boundingBox())?.width).toBe(350)
+    expect((await shell.boundingBox())?.height).toBe(338)
+    expect((await page.locator(".auth-methods").boundingBox())?.height).toBe(188)
+    expect((await page.locator(".auth-login-link").boundingBox())?.height).toBe(36)
+    await expect(page.getByRole("heading", { name: "Create an account", level: 1 })).toHaveCSS("font-size", "24px")
+    await expect(page.getByRole("heading", { name: "Create an account", level: 1 })).toHaveCSS("line-height", "32px")
+
+    await page.setViewportSize({ width: 1023, height: 1200 })
+    expect((await example.boundingBox())?.height).toBe(692)
+    await expect(brand).toBeHidden()
+    expect((await formPanel.boundingBox())?.width).toBe(350)
+
+    await page.setViewportSize({ width: 1024, height: 1200 })
+    expect((await example.boundingBox())?.height).toBe(1000)
+    await expect(brand).toBeVisible()
+    expect((await brand.boundingBox())?.height).toBe(1000)
+    expect((await formPanel.boundingBox())?.height).toBe(1000)
+    expect((await shell.boundingBox())?.height).toBe(338)
+  })
+
   test("authentication and rtl examples stay interactive", async ({ page }) => {
     await page.goto("/examples/authentication")
 
     await expect(page.locator(".auth-login-link")).toContainText("Login")
-    await expect(page.locator(".auth-form-shell h3")).toContainText("Create an account")
+    await expect(page.locator(".auth-form-shell h1")).toContainText("Create an account")
     await expect(page.locator(".auth-provider-button")).toHaveCount(1)
     await expect(page.locator(".auth-provider-button")).toContainText("GitHub")
     await expect(page.getByPlaceholder("name@example.com")).toBeVisible()
