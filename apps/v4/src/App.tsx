@@ -2478,24 +2478,24 @@ function RootFieldSliderPreview() {
   )
 }
 
-function RootInputGroupDemoPreview() {
+function RootInputGroupDemoPreview(props: { rtl?: boolean }) {
   return (
     <div class="root-input-group-stack">
       <div class="ui-input-group">
+        <input class="ui-input-group-input root-input-flush" placeholder="Search..." />
         <span class="ui-input-group-addon">
           <SearchIcon />
         </span>
-        <input class="ui-input-group-input root-input-flush" placeholder="Search..." />
-        <span class="ui-input-group-addon">12 results</span>
+        <span class="ui-input-group-addon ui-input-group-addon-end">12 results</span>
       </div>
       <div class="ui-input-group">
-        <span class="ui-input-group-addon">https://</span>
         <input class="ui-input-group-input root-input-flush" placeholder="example.com" />
-        <span class="ui-input-group-addon">
+        {!props.rtl ? <span class="ui-input-group-addon root-addon-flush">https://</span> : null}
+        <span class="ui-input-group-addon ui-input-group-addon-end">
           <button
             class="ui-input-group-button ui-input-group-button-icon"
             type="button"
-            aria-label="Info"
+            aria-label={props.rtl ? "Add" : "Info"}
             data-tooltip="This is content in a tooltip."
           >
             <InfoIcon />
@@ -2510,13 +2510,14 @@ function RootInputGroupDemoPreview() {
           </button>
           <span class="ui-menu" data-menu>
             <button
-              class="ui-input-group-button"
+              class="ui-input-group-button ui-input-group-button-icon"
               type="button"
               data-menu-trigger
               aria-haspopup="menu"
               aria-expanded="false"
+              aria-label="Auto"
             >
-              <span data-menu-label-target>Auto</span>
+              {props.rtl ? <ChevronDownIcon /> : <span data-menu-label-target>Auto</span>}
             </button>
             <div class="ui-menu-panel" data-menu-panel data-menu-side="top" data-menu-align="start" role="menu" hidden>
               <button class="ui-menu-item" type="button" role="menuitem" data-menu-item data-menu-value="Auto" data-selected="true">
@@ -2538,8 +2539,8 @@ function RootInputGroupDemoPreview() {
         </span>
       </div>
       <div class="ui-input-group">
-        <input class="ui-input-group-input" placeholder="@shadcn" />
-        <span class="ui-input-group-addon">
+        <input class="ui-input-group-input" placeholder={props.rtl ? "shadcn" : "@shadcn"} />
+        <span class="ui-input-group-addon ui-input-group-addon-end">
           <span class="root-verified-dot">
             <CheckIcon />
           </span>
@@ -2608,10 +2609,15 @@ function AudioLinesIcon() {
   )
 }
 
-function RootInputGroupButtonPreview() {
+function RootInputGroupButtonPreview(props: { rtl?: boolean }) {
   return (
     <div class="root-input-group-stack">
       <div class="ui-input-group ui-input-group-round">
+        <input
+          id={props.rtl ? "input-secure-rtl" : "input-secure"}
+          class={`ui-input-group-input ${props.rtl ? "root-input-flush-rtl" : "root-input-flush"}`}
+          aria-label={props.rtl ? "Price" : "Input Secure"}
+        />
         <span class="ui-input-group-addon ui-menu" data-menu>
           <button
             class="ui-input-group-button ui-input-group-button-icon ui-input-group-button-secondary"
@@ -2627,17 +2633,22 @@ function RootInputGroupButtonPreview() {
             class="ui-popover-panel root-secure-popover"
             data-menu-panel
             data-menu-side="bottom"
-            data-menu-align="start"
+            data-menu-align={props.rtl ? "end" : "start"}
             role="dialog"
             hidden
           >
-            <p class="ui-popover-title">Your connection is not secure.</p>
-            <p class="ui-popover-text">You should not enter any sensitive information on this site.</p>
+            <p class="ui-popover-title">
+              {props.rtl ? "Enter the price in Saudi riyals." : "Your connection is not secure."}
+            </p>
+            <p class="ui-popover-text">
+              {props.rtl
+                ? "The price will be converted automatically."
+                : "You should not enter any sensitive information on this site."}
+            </p>
           </div>
         </span>
-        <span class="ui-input-group-addon root-addon-flush">https://</span>
-        <input class="ui-input-group-input root-input-flush" aria-label="Input Secure" />
-        <span class="ui-input-group-addon">
+        <span class="ui-input-group-addon root-addon-flush">{props.rtl ? "SAR" : "https://"}</span>
+        <span class="ui-input-group-addon ui-input-group-addon-end">
           <button
             class="ui-input-group-button ui-input-group-button-icon"
             type="button"
@@ -3516,14 +3527,16 @@ function ChevronDownIcon(props: { class?: string }) {
 }
 
 function ExamplesRootPreview(props: { rtl?: boolean } = {}) {
+  const rtl = untrack(() => props.rtl ?? false)
+
   return (
     <div
-      class={props.rtl ? "examples-root-grid rtl-components" : "examples-root-grid"}
-      dir={props.rtl ? "rtl" : undefined}
-      data-lang={props.rtl ? "ar" : undefined}
-      data-slot={props.rtl ? "rtl-components" : undefined}
+      class={rtl ? "examples-root-grid rtl-components" : "examples-root-grid"}
+      dir={rtl ? "rtl" : undefined}
+      data-lang={rtl ? "ar" : undefined}
+      data-slot={rtl ? "rtl-components" : undefined}
     >
-      {props.rtl ? (
+      {rtl ? (
         <span class="ui-menu rtl-language-selector" data-menu>
           <button
             type="button"
@@ -3586,9 +3599,9 @@ function ExamplesRootPreview(props: { rtl?: boolean } = {}) {
 
               {entry === "field-slider" ? <RootFieldSliderPreview /> : null}
 
-              {entry === "input-group-demo" ? <RootInputGroupDemoPreview /> : null}
+              {entry === "input-group-demo" ? <RootInputGroupDemoPreview rtl={rtl} /> : null}
 
-              {entry === "input-group-button" ? <RootInputGroupButtonPreview /> : null}
+              {entry === "input-group-button" ? <RootInputGroupButtonPreview rtl={rtl} /> : null}
 
               {entry === "item-demo" ? <RootItemDemoPreview /> : null}
 

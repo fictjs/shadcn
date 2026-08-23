@@ -1213,6 +1213,33 @@ test.describe("shadcn v4 site", () => {
     await expect(gallery).toContainText("طريقة الدفع")
   })
 
+  test("rtl example matches the current localized input groups", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 1200 })
+    await page.goto("/examples/rtl")
+    await waitForClientReady(page)
+
+    const gallery = page.locator("[data-slot='rtl-components']")
+    await expect(gallery.getByText("https://", { exact: true })).toHaveCount(0)
+    await expect(gallery.getByPlaceholder("@shadcn")).toHaveCount(0)
+    await expect(gallery.getByPlaceholder("shadcn")).toBeVisible()
+    await expect(gallery.locator(".root-input-group-stack").nth(0)).toHaveCSS("height", "272px")
+
+    const priceInput = gallery.getByRole("textbox", { name: "السعر" })
+    await expect(priceInput).toBeVisible()
+    await expect(priceInput.locator("xpath=..")).toContainText("ر.س")
+
+    await gallery.getByRole("button", { name: "معلومات" }).click()
+    const pricePopover = gallery.locator(".root-secure-popover")
+    await expect(pricePopover).toBeVisible()
+    await expect(pricePopover).toContainText("أدخل السعر بالريال السعودي.")
+    await expect(pricePopover).toContainText("سيتم تحويل السعر تلقائياً.")
+
+    const favorite = gallery.getByRole("button", { name: "مفضل" })
+    await expect(favorite).toHaveAttribute("aria-pressed", "false")
+    await favorite.click()
+    await expect(favorite).toHaveAttribute("aria-pressed", "true")
+  })
+
   test("create route builds a live starter workspace", async ({ page }) => {
     await page.goto("/create")
 
