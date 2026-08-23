@@ -395,6 +395,32 @@ test.describe("shadcn v4 site", () => {
     await expect(reviewer).toHaveValue("Jamik Tashpulatov")
   })
 
+  test("dashboard row headers open the responsive detail drawer", async ({ page }) => {
+    await page.goto("/examples/dashboard")
+
+    const trigger = page.getByRole("button", { name: "Innovation and Advantages", exact: true })
+    await trigger.click()
+
+    const drawer = page.getByRole("dialog", { name: "Innovation and Advantages" })
+    await expect(drawer).toBeVisible()
+    await expect(drawer.getByText("Showing total visitors for the last 6 months", { exact: true })).toBeVisible()
+    await expect(drawer.getByLabel("Header")).toHaveValue("Innovation and Advantages")
+    await expect(drawer.getByLabel("Type")).toHaveValue("Narrative")
+    await expect(drawer.getByLabel("Status")).toHaveValue("Done")
+    await expect(drawer.getByLabel("Target")).toHaveValue("25")
+    await expect(drawer.getByLabel("Limit")).toHaveValue("26")
+    await expect(drawer.getByLabel("Reviewer")).toHaveValue("")
+    await expect(trigger).toHaveAttribute("aria-expanded", "true")
+
+    await page.keyboard.press("Escape")
+    await expect(drawer).toBeHidden()
+    await expect(trigger).toBeFocused()
+
+    await trigger.click()
+    await drawer.getByRole("button", { name: "Done" }).click()
+    await expect(drawer).toBeHidden()
+  })
+
   test("tasks example renders the faceted toolbar and row metadata", async ({ page }) => {
     await page.goto("/examples/tasks")
     await waitForClientReady(page)

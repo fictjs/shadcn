@@ -520,6 +520,62 @@ function wireShowcaseToggles(): void {
 }
 
 function wireDashboardTables(): void {
+  let activeDrawerTrigger: HTMLButtonElement | null = null
+
+  const closeDrawer = (overlay: HTMLElement): void => {
+    overlay.hidden = true
+    document.body.removeAttribute("data-dashboard-drawer-open")
+    if (activeDrawerTrigger) {
+      activeDrawerTrigger.setAttribute("aria-expanded", "false")
+      if (activeDrawerTrigger.isConnected) {
+        activeDrawerTrigger.focus()
+      }
+    }
+    activeDrawerTrigger = null
+  }
+
+  const openDrawer = (trigger: HTMLButtonElement): void => {
+    const dashboard = trigger.closest<HTMLElement>(".dashboard-example")
+    const overlay = dashboard?.querySelector<HTMLElement>("[data-dashboard-drawer]")
+    if (!overlay) {
+      return
+    }
+
+    const values: Record<string, string> = {
+      header: trigger.dataset.dashboardDrawerHeader ?? "",
+      type: trigger.dataset.dashboardDrawerType ?? "",
+      status: trigger.dataset.dashboardDrawerStatus ?? "",
+      target: trigger.dataset.dashboardDrawerTarget ?? "",
+      limit: trigger.dataset.dashboardDrawerLimit ?? "",
+      reviewer: trigger.dataset.dashboardDrawerReviewer === "Assign reviewer"
+        ? ""
+        : trigger.dataset.dashboardDrawerReviewer ?? "",
+    }
+
+    const title = overlay.querySelector<HTMLElement>("[data-dashboard-drawer-title]")
+    if (title) {
+      title.textContent = values.header
+    }
+
+    overlay.querySelectorAll<HTMLInputElement | HTMLSelectElement>("[data-dashboard-drawer-field]").forEach((field) => {
+      const name = field.dataset.dashboardDrawerField
+      if (name && values[name] !== undefined) {
+        field.value = values[name]
+      }
+    })
+
+    if (activeDrawerTrigger && activeDrawerTrigger !== trigger) {
+      activeDrawerTrigger.setAttribute("aria-expanded", "false")
+    }
+    activeDrawerTrigger = trigger
+    trigger.setAttribute("aria-expanded", "true")
+    overlay.hidden = false
+    document.body.dataset.dashboardDrawerOpen = "true"
+    window.requestAnimationFrame(() => {
+      overlay.querySelector<HTMLInputElement>("[data-dashboard-drawer-field='header']")?.focus()
+    })
+  }
+
   const updateSelection = (selectedRows: string, rowId: string, selected: boolean): string => {
     const token = `|${rowId}|`
     if (selected) {
@@ -620,6 +676,64 @@ function wireDashboardTables(): void {
       dashboard.dataset.dashboardSelectedRows = selectedRows
     }
     syncSelection(scope)
+  })
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const trigger = target.closest<HTMLButtonElement>("[data-dashboard-drawer-trigger]")
+    if (trigger) {
+      event.preventDefault()
+      openDrawer(trigger)
+      return
+    }
+
+    const overlay = target.closest<HTMLElement>("[data-dashboard-drawer]")
+    if (!overlay) {
+      return
+    }
+
+    if (target.closest("[data-dashboard-drawer-close]") || target === overlay) {
+      event.preventDefault()
+      closeDrawer(overlay)
+    }
+  })
+
+  document.addEventListener("keydown", (event) => {
+    const overlay = document.querySelector<HTMLElement>("[data-dashboard-drawer]:not([hidden])")
+    if (!overlay) {
+      return
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault()
+      closeDrawer(overlay)
+      return
+    }
+
+    if (event.key !== "Tab") {
+      return
+    }
+
+    const focusable = Array.from(
+      overlay.querySelectorAll<HTMLElement>("button:not(:disabled), input:not(:disabled), select:not(:disabled)"),
+    )
+    if (focusable.length === 0) {
+      return
+    }
+
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault()
+      last.focus()
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault()
+      first.focus()
+    }
   })
 }
 

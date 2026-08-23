@@ -503,6 +503,147 @@ function DashboardReviewerCell(props: { reviewer: string; header: string }) {
   )
 }
 
+function DashboardRowDrawer() {
+  return (
+    <div class="dashboard-row-drawer-overlay" data-dashboard-drawer role="presentation" hidden>
+      <aside
+        class="dashboard-row-drawer"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dashboard-row-drawer-title"
+        aria-describedby="dashboard-row-drawer-description"
+      >
+        <div class="dashboard-row-drawer-handle" aria-hidden="true"></div>
+        <header class="dashboard-row-drawer-header">
+          <h2 id="dashboard-row-drawer-title" data-dashboard-drawer-title>Section</h2>
+          <p id="dashboard-row-drawer-description">Showing total visitors for the last 6 months</p>
+        </header>
+
+        <div class="dashboard-row-drawer-body">
+          <section class="dashboard-row-drawer-insight" aria-label="Visitor trend">
+            <svg
+              class="dashboard-row-drawer-chart"
+              viewBox="0 0 320 176"
+              role="img"
+              aria-label="Desktop and mobile visitors from January to June"
+            >
+              <defs>
+                <linearGradient id="dashboardDrawerDesktop" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stop-color="var(--primary)" stop-opacity="0.65" />
+                  <stop offset="95%" stop-color="var(--primary)" stop-opacity="0.08" />
+                </linearGradient>
+                <linearGradient id="dashboardDrawerMobile" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stop-color="var(--primary)" stop-opacity="0.4" />
+                  <stop offset="95%" stop-color="var(--primary)" stop-opacity="0.04" />
+                </linearGradient>
+              </defs>
+              <g class="dashboard-row-drawer-grid">
+                <line x1="8" y1="32" x2="312" y2="32" />
+                <line x1="8" y1="76" x2="312" y2="76" />
+                <line x1="8" y1="120" x2="312" y2="120" />
+                <line x1="8" y1="164" x2="312" y2="164" />
+              </g>
+              <path
+                d="M8 131 C36 117 56 121 77 101 C101 79 118 91 136 76 C157 58 179 68 196 48 C219 23 239 42 256 29 C278 13 294 22 312 15 L312 164 L8 164 Z"
+                fill="url(#dashboardDrawerDesktop)"
+              />
+              <path
+                d="M8 145 C35 134 55 142 77 125 C96 111 117 119 136 103 C158 84 179 98 197 80 C219 57 239 73 257 59 C278 43 295 49 312 38 L312 164 L8 164 Z"
+                fill="url(#dashboardDrawerMobile)"
+              />
+              <path
+                d="M8 131 C36 117 56 121 77 101 C101 79 118 91 136 76 C157 58 179 68 196 48 C219 23 239 42 256 29 C278 13 294 22 312 15"
+                fill="none"
+                stroke="var(--primary)"
+                stroke-width="1.5"
+              />
+              <path
+                d="M8 145 C35 134 55 142 77 125 C96 111 117 119 136 103 C158 84 179 98 197 80 C219 57 239 73 257 59 C278 43 295 49 312 38"
+                fill="none"
+                stroke="var(--primary)"
+                stroke-opacity="0.65"
+                stroke-width="1.5"
+              />
+            </svg>
+            <div class="dashboard-row-drawer-separator"></div>
+            <div class="dashboard-row-drawer-trend">
+              <strong>Trending up by 5.2% this month <TablerTrendingUpIcon /></strong>
+              <p>
+                Showing total visitors for the last 6 months. This is just some random text to test the layout. It
+                spans multiple lines and should wrap around.
+              </p>
+            </div>
+            <div class="dashboard-row-drawer-separator"></div>
+          </section>
+
+          <form class="dashboard-row-drawer-form">
+            <label class="dashboard-row-drawer-field" for="dashboard-drawer-header">
+              <span>Header</span>
+              <input id="dashboard-drawer-header" data-dashboard-drawer-field="header" />
+            </label>
+            <div class="dashboard-row-drawer-grid-fields">
+              <label class="dashboard-row-drawer-field" for="dashboard-drawer-type">
+                <span>Type</span>
+                <span class="dashboard-row-drawer-select-shell">
+                  <select id="dashboard-drawer-type" data-dashboard-drawer-field="type">
+                    <option>Table of Contents</option>
+                    <option>Executive Summary</option>
+                    <option>Technical Approach</option>
+                    <option>Design</option>
+                    <option>Capabilities</option>
+                    <option>Focus Documents</option>
+                    <option>Narrative</option>
+                    <option>Cover Page</option>
+                  </select>
+                  <TablerChevronDownIcon />
+                </span>
+              </label>
+              <label class="dashboard-row-drawer-field" for="dashboard-drawer-status">
+                <span>Status</span>
+                <span class="dashboard-row-drawer-select-shell">
+                  <select id="dashboard-drawer-status" data-dashboard-drawer-field="status">
+                    <option>Done</option>
+                    <option>In Progress</option>
+                    <option>Not Started</option>
+                  </select>
+                  <TablerChevronDownIcon />
+                </span>
+              </label>
+            </div>
+            <div class="dashboard-row-drawer-grid-fields">
+              <label class="dashboard-row-drawer-field" for="dashboard-drawer-target">
+                <span>Target</span>
+                <input id="dashboard-drawer-target" data-dashboard-drawer-field="target" />
+              </label>
+              <label class="dashboard-row-drawer-field" for="dashboard-drawer-limit">
+                <span>Limit</span>
+                <input id="dashboard-drawer-limit" data-dashboard-drawer-field="limit" />
+              </label>
+            </div>
+            <label class="dashboard-row-drawer-field" for="dashboard-drawer-reviewer">
+              <span>Reviewer</span>
+              <span class="dashboard-row-drawer-select-shell">
+                <select id="dashboard-drawer-reviewer" data-dashboard-drawer-field="reviewer">
+                  <option value="">Select a reviewer</option>
+                  <option>Eddie Lake</option>
+                  <option>Jamik Tashpulatov</option>
+                  <option>Emily Whalen</option>
+                </select>
+                <TablerChevronDownIcon />
+              </span>
+            </label>
+          </form>
+        </div>
+
+        <footer class="dashboard-row-drawer-footer">
+          <button type="button" class="dashboard-row-drawer-submit">Submit</button>
+          <button type="button" class="dashboard-row-drawer-done" data-dashboard-drawer-close>Done</button>
+        </footer>
+      </aside>
+    </div>
+  )
+}
+
 function DashboardTrendIcon(props: { down: boolean }) {
   return props.down ? <TablerTrendingDownIcon /> : <TablerTrendingUpIcon />
 }
@@ -995,6 +1136,7 @@ function DashboardExample() {
           )}
         </section>
       </div>
+      <DashboardRowDrawer />
     </div>
   )
 }
@@ -1048,7 +1190,21 @@ function DashboardTablePage(props: {
               />
             </td>
             <td>
-              <button type="button" class="dashboard-cell-link">{row.header}</button>
+              <button
+                type="button"
+                class="dashboard-cell-link"
+                data-dashboard-drawer-trigger
+                data-dashboard-drawer-header={row.header}
+                data-dashboard-drawer-type={row.type}
+                data-dashboard-drawer-status={row.status}
+                data-dashboard-drawer-target={row.target}
+                data-dashboard-drawer-limit={row.limit}
+                data-dashboard-drawer-reviewer={row.reviewer}
+                aria-haspopup="dialog"
+                aria-expanded="false"
+              >
+                {row.header}
+              </button>
             </td>
             <td data-dashboard-column="type">
               <span class="dashboard-cell-badge">{row.type}</span>
