@@ -1907,7 +1907,7 @@ function PlaygroundExample() {
                 role="tab"
                 aria-selected={mode === "complete"}
                 class={mode === "complete" ? "playground-tab playground-tab-active" : "playground-tab"}
-                onClick={() => {
+                onClick$={() => {
                   mode = "complete"
                 }}
               >
@@ -1927,7 +1927,7 @@ function PlaygroundExample() {
                 role="tab"
                 aria-selected={mode === "insert"}
                 class={mode === "insert" ? "playground-tab playground-tab-active" : "playground-tab"}
-                onClick={() => {
+                onClick$={() => {
                   mode = "insert"
                 }}
               >
@@ -1945,7 +1945,7 @@ function PlaygroundExample() {
                 role="tab"
                 aria-selected={mode === "edit"}
                 class={mode === "edit" ? "playground-tab playground-tab-active" : "playground-tab"}
-                onClick={() => {
+                onClick$={() => {
                   mode = "edit"
                 }}
               >
@@ -1968,7 +1968,7 @@ function PlaygroundExample() {
               type="button"
               class="playground-model-trigger"
               aria-label="Model"
-              onClick={() => {
+              onClick$={() => {
                 const current = untrack(() => model)
                 model = current === "gpt-4.1" ? "gpt-4o-mini"
                   : current === "gpt-4o-mini" ? "claude-sonnet"
