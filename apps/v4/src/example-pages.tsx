@@ -228,8 +228,39 @@ function syncDashboardTableColumns(scope: HTMLElement): void {
     })
 }
 
+function syncDashboardTableRowOrder(scope: HTMLElement): void {
+  const dashboard = scope.closest<HTMLElement>(".dashboard-example")
+  const storedOrder = document.documentElement.dataset.dashboardRowOrder
+    || dashboard?.dataset.dashboardRowOrder
+    || ""
+  if (dashboard) {
+    dashboard.dataset.dashboardRowOrder = storedOrder
+  }
+  const order = storedOrder
+    .split(",")
+    .filter(Boolean)
+  if (order.length === 0) {
+    return
+  }
+
+  const indexes = new Map(order.map((rowId, index) => [rowId, index]))
+  const body = scope.querySelector<HTMLTableSectionElement>("tbody")
+  if (!body) {
+    return
+  }
+
+  const rows = Array.from(body.querySelectorAll<HTMLTableRowElement>("[data-dashboard-order-row]"))
+  rows.sort((left, right) => {
+    const leftIndex = indexes.get(left.dataset.dashboardOrderRow ?? "") ?? Number.MAX_SAFE_INTEGER
+    const rightIndex = indexes.get(right.dataset.dashboardOrderRow ?? "") ?? Number.MAX_SAFE_INTEGER
+    return leftIndex - rightIndex
+  })
+  body.append(...rows)
+}
+
 function syncDashboardTableSelections(): void {
   document.querySelectorAll<HTMLElement>(".dashboard-table-selection-scope").forEach((scope) => {
+    syncDashboardTableRowOrder(scope)
     syncDashboardTableSelectionScope(scope)
     syncDashboardTableColumns(scope)
   })
@@ -680,7 +711,10 @@ function DashboardExample() {
         : "outline"
 
   return (
-    <div class="live-example dashboard-example">
+    <div
+      class="live-example dashboard-example"
+      data-dashboard-row-order={dashboardTableRows.map((row) => row.id).join(",")}
+    >
       <aside class="dashboard-sidebar">
         <div class="dashboard-sidebar-header">
           <a class="dashboard-menu-button dashboard-brand-button" href="#acme-inc">
@@ -1138,6 +1172,7 @@ function DashboardExample() {
       </div>
       <DashboardRowDrawer />
       <div class="dashboard-toast-region" data-dashboard-toast-region role="status" aria-live="polite"></div>
+      <div class="sr-only" data-dashboard-reorder-status aria-live="assertive"></div>
     </div>
   )
 }
@@ -1176,9 +1211,15 @@ function DashboardTablePage(props: {
       </thead>
       <tbody>
         {rows.map((row) => (
-          <tr key={row.id}>
+          <tr key={row.id} data-dashboard-order-row={row.id}>
             <td class="dashboard-cell-drag">
-              <button type="button" class="dashboard-icon-button dashboard-drag-handle" aria-label="Drag to reorder">
+              <button
+                type="button"
+                class="dashboard-icon-button dashboard-drag-handle"
+                aria-label="Drag to reorder"
+                aria-grabbed="false"
+                data-dashboard-drag-handle
+              >
                 <TablerGripVerticalIcon class="dashboard-grip-icon" />
               </button>
             </td>

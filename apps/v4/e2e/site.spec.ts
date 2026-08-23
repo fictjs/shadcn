@@ -434,6 +434,33 @@ test.describe("shadcn v4 site", () => {
     await expect(target).toHaveValue("26")
   })
 
+  test("dashboard rows support pointer and keyboard reordering", async ({ page }) => {
+    await page.goto("/examples/dashboard")
+
+    const rowHeaders = page.locator("tbody [data-dashboard-drawer-trigger]")
+    const dragHandles = page.locator("[data-dashboard-drag-handle]")
+    await expect(rowHeaders.nth(0)).toHaveText("Cover page")
+    await dragHandles.nth(0).dragTo(dragHandles.nth(2))
+    await expect(rowHeaders.nth(0)).toHaveText("Table of contents")
+    await expect(rowHeaders.nth(1)).toHaveText("Executive summary")
+    await expect(rowHeaders.nth(2)).toHaveText("Cover page")
+
+    await page.getByLabel("Go to next page").click()
+    await page.getByLabel("Go to previous page").click()
+    await expect(rowHeaders.nth(0)).toHaveText("Table of contents")
+    await expect(rowHeaders.nth(2)).toHaveText("Cover page")
+
+    const keyboardHandle = page.locator('[data-dashboard-order-row="2"] [data-dashboard-drag-handle]')
+    await keyboardHandle.focus()
+    await keyboardHandle.press("Space")
+    await expect(keyboardHandle).toHaveAttribute("aria-grabbed", "true")
+    await keyboardHandle.press("ArrowDown")
+    await keyboardHandle.press("Space")
+    await expect(rowHeaders.nth(0)).toHaveText("Executive summary")
+    await expect(rowHeaders.nth(1)).toHaveText("Table of contents")
+    await expect(keyboardHandle).toHaveAttribute("aria-grabbed", "false")
+  })
+
   test("tasks example renders the faceted toolbar and row metadata", async ({ page }) => {
     await page.goto("/examples/tasks")
     await waitForClientReady(page)

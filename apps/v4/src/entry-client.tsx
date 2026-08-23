@@ -569,6 +569,91 @@ function wireShowcaseToggles(): void {
 
 function wireDashboardTables(): void {
   let activeDrawerTrigger: HTMLButtonElement | null = null
+  let pointerDragId: string | null = null
+  let keyboardDragId: string | null = null
+  let keyboardOriginalOrder = ""
+
+  const readRowOrder = (dashboard: HTMLElement): string[] => {
+    const storedOrder = document.documentElement.dataset.dashboardRowOrder
+      || dashboard.dataset.dashboardRowOrder
+      || ""
+    dashboard.dataset.dashboardRowOrder = storedOrder
+    return storedOrder
+      .split(",")
+      .filter(Boolean)
+  }
+
+  const syncRowOrder = (dashboard: HTMLElement): void => {
+    const order = readRowOrder(dashboard)
+    const indexes = new Map(order.map((rowId, index) => [rowId, index]))
+    dashboard.querySelectorAll<HTMLElement>(".dashboard-table-selection-scope").forEach((scope) => {
+      const body = scope.querySelector<HTMLTableSectionElement>("tbody")
+      if (!body) {
+        return
+      }
+
+      const rows = Array.from(body.querySelectorAll<HTMLTableRowElement>("[data-dashboard-order-row]"))
+      rows.sort((left, right) => {
+        const leftIndex = indexes.get(left.dataset.dashboardOrderRow ?? "") ?? Number.MAX_SAFE_INTEGER
+        const rightIndex = indexes.get(right.dataset.dashboardOrderRow ?? "") ?? Number.MAX_SAFE_INTEGER
+        return leftIndex - rightIndex
+      })
+      body.append(...rows)
+    })
+  }
+
+  const announceRowMove = (dashboard: HTMLElement, rowId: string, message?: string): void => {
+    const status = dashboard.querySelector<HTMLElement>("[data-dashboard-reorder-status]")
+    if (!status) {
+      return
+    }
+
+    if (message) {
+      status.textContent = message
+      return
+    }
+
+    const order = readRowOrder(dashboard)
+    const row = dashboard.querySelector<HTMLElement>(`[data-dashboard-order-row="${rowId}"]`)
+    const header = row?.querySelector<HTMLElement>("[data-dashboard-drawer-trigger]")?.textContent?.trim() ?? "Section"
+    status.textContent = `${header} moved to position ${order.indexOf(rowId) + 1} of ${order.length}.`
+  }
+
+  const moveDashboardRow = (dashboard: HTMLElement, activeId: string, overId: string): boolean => {
+    if (activeId === overId) {
+      return false
+    }
+
+    const order = readRowOrder(dashboard)
+    const oldIndex = order.indexOf(activeId)
+    const newIndex = order.indexOf(overId)
+    if (oldIndex < 0 || newIndex < 0) {
+      return false
+    }
+
+    order.splice(oldIndex, 1)
+    order.splice(newIndex, 0, activeId)
+    dashboard.dataset.dashboardRowOrder = order.join(",")
+    document.documentElement.dataset.dashboardRowOrder = order.join(",")
+    syncRowOrder(dashboard)
+    announceRowMove(dashboard, activeId)
+    return true
+  }
+
+  const clearDragPresentation = (dashboard: HTMLElement): void => {
+    dashboard.querySelectorAll<HTMLElement>("[data-dashboard-order-row]").forEach((row) => {
+      row.removeAttribute("data-dragging")
+      row.removeAttribute("data-drag-over")
+    })
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-dashboard-drag-handle]").forEach((handle) => {
+    handle.setAttribute("draggable", "true")
+  })
+  const initialDashboard = document.querySelector<HTMLElement>(".dashboard-example")
+  if (initialDashboard && !document.documentElement.dataset.dashboardRowOrder) {
+    document.documentElement.dataset.dashboardRowOrder = initialDashboard.dataset.dashboardRowOrder ?? ""
+  }
 
   const closeDrawer = (overlay: HTMLElement): void => {
     overlay.hidden = true
@@ -724,6 +809,159 @@ function wireDashboardTables(): void {
       dashboard.dataset.dashboardSelectedRows = selectedRows
     }
     syncSelection(scope)
+  })
+
+  document.addEventListener("dragstart", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const handle = target.closest<HTMLElement>("[data-dashboard-drag-handle]")
+    const row = handle?.closest<HTMLElement>("[data-dashboard-order-row]")
+    const rowId = row?.dataset.dashboardOrderRow
+    if (!handle || !row || !rowId) {
+      return
+    }
+
+    pointerDragId = rowId
+    row.dataset.dragging = "true"
+    handle.setAttribute("aria-grabbed", "true")
+    event.dataTransfer?.setData("text/plain", rowId)
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = "move"
+    }
+  })
+
+  document.addEventListener("dragover", (event) => {
+    if (!pointerDragId) {
+      return
+    }
+
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const row = target.closest<HTMLElement>("[data-dashboard-order-row]")
+    const dashboard = row?.closest<HTMLElement>(".dashboard-example")
+    if (!row || !dashboard || row.dataset.dashboardOrderRow === pointerDragId) {
+      return
+    }
+
+    event.preventDefault()
+    dashboard.querySelectorAll<HTMLElement>("[data-dashboard-order-row]").forEach((candidate) => {
+      candidate.toggleAttribute("data-drag-over", candidate === row)
+    })
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = "move"
+    }
+  })
+
+  document.addEventListener("drop", (event) => {
+    if (!pointerDragId) {
+      return
+    }
+
+    const target = event.target
+    const row = target instanceof Element
+      ? target.closest<HTMLElement>("[data-dashboard-order-row]")
+      : null
+    const dashboard = row?.closest<HTMLElement>(".dashboard-example")
+    const overId = row?.dataset.dashboardOrderRow
+    if (dashboard && overId) {
+      event.preventDefault()
+      moveDashboardRow(dashboard, pointerDragId, overId)
+      clearDragPresentation(dashboard)
+      dashboard
+        .querySelector<HTMLElement>(`[data-dashboard-order-row="${pointerDragId}"] [data-dashboard-drag-handle]`)
+        ?.setAttribute("aria-grabbed", "false")
+    }
+    pointerDragId = null
+  })
+
+  document.addEventListener("dragend", (event) => {
+    const target = event.target
+    const dashboard = target instanceof Element
+      ? target.closest<HTMLElement>(".dashboard-example")
+      : null
+    if (dashboard) {
+      clearDragPresentation(dashboard)
+      dashboard.querySelectorAll<HTMLElement>("[data-dashboard-drag-handle]").forEach((handle) => {
+        handle.setAttribute("aria-grabbed", "false")
+      })
+    }
+    pointerDragId = null
+  })
+
+  document.addEventListener("keydown", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const handle = target.closest<HTMLElement>("[data-dashboard-drag-handle]")
+    const row = handle?.closest<HTMLElement>("[data-dashboard-order-row]")
+    const dashboard = row?.closest<HTMLElement>(".dashboard-example")
+    const rowId = row?.dataset.dashboardOrderRow
+    if (!handle || !row || !dashboard || !rowId) {
+      return
+    }
+
+    if (event.key === " " || event.key === "Enter") {
+      event.preventDefault()
+      if (keyboardDragId === rowId) {
+        keyboardDragId = null
+        keyboardOriginalOrder = ""
+        handle.setAttribute("aria-grabbed", "false")
+        clearDragPresentation(dashboard)
+        announceRowMove(dashboard, rowId, "Section dropped.")
+      } else {
+        keyboardDragId = rowId
+        keyboardOriginalOrder = readRowOrder(dashboard).join(",")
+        handle.setAttribute("aria-grabbed", "true")
+        row.dataset.dragging = "true"
+        announceRowMove(dashboard, rowId, "Section picked up. Use the arrow keys to move it.")
+      }
+      return
+    }
+
+    if (keyboardDragId !== rowId) {
+      return
+    }
+
+    if (event.key === "Escape") {
+      event.preventDefault()
+      dashboard.dataset.dashboardRowOrder = keyboardOriginalOrder
+      document.documentElement.dataset.dashboardRowOrder = keyboardOriginalOrder
+      syncRowOrder(dashboard)
+      keyboardDragId = null
+      keyboardOriginalOrder = ""
+      handle.setAttribute("aria-grabbed", "false")
+      clearDragPresentation(dashboard)
+      announceRowMove(dashboard, rowId, "Reordering canceled.")
+      return
+    }
+
+    const delta = event.key === "ArrowUp" ? -1 : event.key === "ArrowDown" ? 1 : 0
+    if (delta === 0) {
+      return
+    }
+
+    event.preventDefault()
+    const visibleRows = Array.from(
+      row.closest("tbody")?.querySelectorAll<HTMLElement>("[data-dashboard-order-row]") ?? [],
+    )
+    const visibleIndex = visibleRows.findIndex((candidate) => candidate.dataset.dashboardOrderRow === rowId)
+    const overRow = visibleRows[visibleIndex + delta]
+    const overId = overRow?.dataset.dashboardOrderRow
+    if (overId && moveDashboardRow(dashboard, rowId, overId)) {
+      window.requestAnimationFrame(() => {
+        dashboard
+          .querySelector<HTMLElement>(`[data-dashboard-order-row="${rowId}"] [data-dashboard-drag-handle]`)
+          ?.focus()
+      })
+    }
   })
 
   document.addEventListener("click", (event) => {

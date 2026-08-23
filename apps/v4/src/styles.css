@@ -6514,6 +6514,16 @@ a.ui-item:hover {
   background: var(--muted);
 }
 
+.dashboard-data-table tbody tr[data-dragging="true"] {
+  position: relative;
+  z-index: 10;
+  opacity: 0.8;
+}
+
+.dashboard-data-table tbody tr[data-drag-over="true"] {
+  box-shadow: inset 0 2px 0 var(--ring);
+}
+
 .dashboard-data-table tbody tr:last-child {
   border-bottom: 0;
 }
@@ -6576,10 +6586,15 @@ a.ui-item:hover {
 .dashboard-drag-handle {
   width: 1.75rem;
   height: 1.75rem;
+  cursor: grab;
 }
 
 .dashboard-drag-handle:hover {
   background: transparent;
+}
+
+.dashboard-drag-handle[aria-grabbed="true"] {
+  cursor: grabbing;
 }
 
 .dashboard-grip-icon {
