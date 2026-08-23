@@ -2544,7 +2544,7 @@ function RootInputGroupDemoPreview(props: { rtl?: boolean }) {
               </button>
             </div>
           </span>
-          <span class="ui-input-group-addon-end">52% used</span>
+          <span class="root-input-group-usage">52% used</span>
           <span class="root-inline-divider" aria-hidden="true"></span>
           <button class="ui-input-group-button ui-input-group-button-icon ui-input-group-button-primary" type="button" aria-label="Send">
             <ArrowUpIcon />

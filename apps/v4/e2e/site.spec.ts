@@ -1350,6 +1350,19 @@ test.describe("shadcn v4 site", () => {
     await expect(favorite).toHaveAttribute("aria-pressed", "false")
     await favorite.click()
     await expect(favorite).toHaveAttribute("aria-pressed", "true")
+
+    const promptGroup = gallery.locator(".root-input-group-stack").first().locator(".ui-input-group-block")
+    const promptUsage = promptGroup.locator(".root-input-group-usage")
+    const promptSend = promptGroup.getByRole("button", { name: "إرسال" })
+    const promptAdd = promptGroup.getByRole("button", { name: "إضافة" })
+    const promptUsageBox = await promptUsage.boundingBox()
+    const promptSendBox = await promptSend.boundingBox()
+    const promptAddBox = await promptAdd.boundingBox()
+    expect(promptUsageBox).not.toBeNull()
+    expect(promptSendBox).not.toBeNull()
+    expect(promptAddBox).not.toBeNull()
+    expect(promptSendBox!.x + promptSendBox!.width).toBeLessThan(promptUsageBox!.x)
+    expect(promptAddBox!.x).toBeGreaterThan(promptUsageBox!.x + promptUsageBox!.width)
   })
 
   test("rtl payment form matches the localized React controls", async ({ page }) => {

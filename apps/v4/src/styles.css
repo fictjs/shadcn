@@ -3318,6 +3318,10 @@ h1 {
   background: var(--border);
 }
 
+.root-input-group-usage {
+  margin-left: auto;
+}
+
 .root-verified-dot {
   display: inline-flex;
   align-items: center;
