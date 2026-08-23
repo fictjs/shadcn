@@ -2409,6 +2409,12 @@ h1 {
   background-clip: padding-box;
 }
 
+.example-detail-card:has([data-menu-panel]:not([hidden])) {
+  position: relative;
+  z-index: 70;
+  overflow: visible;
+}
+
 @media (min-width: 1280px) {
   .example-detail-card {
     border-radius: var(--radius-xl);
@@ -5695,6 +5701,12 @@ a.ui-item:hover {
   background: var(--card);
 }
 
+.example-live-stage:has([data-menu-panel]:not([hidden])) {
+  position: relative;
+  z-index: 70;
+  overflow: visible;
+}
+
 .example-icon {
   width: 1rem;
   height: 1rem;
@@ -7216,6 +7228,37 @@ body[data-dashboard-drawer-open="true"] {
   height: 2.25rem;
   border-radius: 999px;
   object-fit: cover;
+}
+
+.tasks-user-nav[aria-expanded="true"] {
+  background: var(--muted);
+}
+
+.tasks-user-menu-panel {
+  width: 14rem;
+}
+
+.tasks-user-menu-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.375rem 0.5rem;
+}
+
+.tasks-user-menu-name {
+  font-size: 0.875rem;
+  line-height: 1;
+  font-weight: 500;
+}
+
+.tasks-user-menu-email {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.tasks-user-menu-panel > .ui-menu-item {
+  padding: 0.375rem 0.5rem;
 }
 
 .tasks-example {

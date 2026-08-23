@@ -1619,9 +1619,51 @@ function TasksExample() {
           <h2>Welcome back!</h2>
           <p class="tasks-copy">Here&apos;s a list of your tasks for this month.</p>
         </div>
-        <button type="button" class="tasks-user-nav" aria-label="Open user menu">
-          <img class="tasks-user-avatar" src="/avatars/shadcn.jpg" alt="shadcn" width="36" height="36" />
-        </button>
+        <span class="ui-menu tasks-user-menu" data-menu>
+          <button
+            type="button"
+            class="tasks-user-nav"
+            aria-label="Open user menu"
+            data-menu-trigger
+            aria-haspopup="menu"
+            aria-expanded="false"
+          >
+            <img class="tasks-user-avatar" src="/avatars/03.png" alt="@shadcn" width="36" height="36" />
+          </button>
+          <div
+            class="ui-menu-panel tasks-user-menu-panel"
+            data-menu-panel
+            data-menu-side="bottom"
+            data-menu-align="end"
+            role="menu"
+            aria-label="User menu"
+            hidden
+          >
+            <div class="tasks-user-menu-label">
+              <span class="tasks-user-menu-name">shadcn</span>
+              <span class="tasks-user-menu-email">m@example.com</span>
+            </div>
+            <span class="ui-menu-separator" role="separator"></span>
+            <button type="button" class="ui-menu-item" role="menuitem" data-menu-item>
+              <span>Profile</span>
+              <span class="tasks-menu-shortcut">⇧⌘P</span>
+            </button>
+            <button type="button" class="ui-menu-item" role="menuitem" data-menu-item>
+              <span>Billing</span>
+              <span class="tasks-menu-shortcut">⌘B</span>
+            </button>
+            <button type="button" class="ui-menu-item" role="menuitem" data-menu-item>
+              <span>Settings</span>
+              <span class="tasks-menu-shortcut">⌘S</span>
+            </button>
+            <button type="button" class="ui-menu-item" role="menuitem" data-menu-item>New Team</button>
+            <span class="ui-menu-separator" role="separator"></span>
+            <button type="button" class="ui-menu-item" role="menuitem" data-menu-item>
+              <span>Log out</span>
+              <span class="tasks-menu-shortcut">⇧⌘Q</span>
+            </button>
+          </div>
+        </span>
       </header>
 
       <div class="tasks-table-block">

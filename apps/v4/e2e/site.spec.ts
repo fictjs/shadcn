@@ -654,6 +654,28 @@ test.describe("shadcn v4 site", () => {
     await expect(labels.getByRole("menuitemradio", { name: "Bug" })).toHaveAttribute("aria-checked", "true")
   })
 
+  test("tasks user menu matches the React account controls", async ({ page }) => {
+    await page.goto("/examples/tasks")
+    await waitForClientReady(page)
+
+    const trigger = page.getByRole("button", { name: "Open user menu" })
+    await expect(trigger.locator("img")).toHaveAttribute("src", "/avatars/03.png")
+    await trigger.click()
+
+    const menu = page.getByRole("menu", { name: "User menu" })
+    await expect(menu).toContainText("shadcn")
+    await expect(menu).toContainText("m@example.com")
+    await expect(menu.getByRole("menuitem", { name: "Profile" })).toContainText("⇧⌘P")
+    await expect(menu.getByRole("menuitem", { name: "Billing" })).toContainText("⌘B")
+    await expect(menu.getByRole("menuitem", { name: "Settings" })).toContainText("⌘S")
+    await expect(menu.getByRole("menuitem", { name: "New Team" })).toBeVisible()
+    await expect(menu.getByRole("menuitem", { name: "Log out" })).toContainText("⇧⌘Q")
+
+    await menu.getByRole("menuitem", { name: "Profile" }).click()
+    await expect(menu).toBeHidden()
+    await expect(trigger).toHaveAttribute("aria-expanded", "false")
+  })
+
   test("playground example switches modes and updates controls", async ({ page }) => {
     await page.goto("/examples/playground")
 
