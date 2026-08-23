@@ -31,6 +31,7 @@ async function initResumableClient(): Promise<void> {
   wireShowcaseToggles()
   wireShowcaseMentions()
   wireShowcaseSelects()
+  wireDashboardTables()
   wireColorFormatSelectors()
   wireShowcaseTooltips()
   wireBlockViewer()
@@ -515,6 +516,110 @@ function wireShowcaseToggles(): void {
         input.placeholder = nextActive ? "Record and send audio..." : "Send a message..."
       }
     }
+  })
+}
+
+function wireDashboardTables(): void {
+  const updateSelection = (selectedRows: string, rowId: string, selected: boolean): string => {
+    const token = `|${rowId}|`
+    if (selected) {
+      return selectedRows.includes(token) ? selectedRows : `${selectedRows}${rowId}|`
+    }
+
+    return selectedRows.replace(token, "|")
+  }
+
+  const countSelection = (selectedRows: string): number => {
+    let separators = 0
+    for (const character of selectedRows) {
+      if (character === "|") {
+        separators += 1
+      }
+    }
+
+    return Math.max(0, separators - 1)
+  }
+
+  const syncSelection = (scope: HTMLElement): void => {
+    const dashboard = scope.closest<HTMLElement>(".dashboard-example")
+    const selectedRows = dashboard?.dataset.dashboardSelectedRows
+      || scope.dataset.dashboardSelectedRows
+      || "|"
+    scope.dataset.dashboardSelectedRows = selectedRows
+    if (dashboard) {
+      dashboard.dataset.dashboardSelectedRows = selectedRows
+    }
+    const rowCheckboxes = scope.querySelectorAll<HTMLInputElement>("[data-dashboard-row-id]")
+    let selectedPageRows = 0
+
+    for (const checkbox of rowCheckboxes) {
+      const rowId = checkbox.dataset.dashboardRowId
+      const selected = Boolean(rowId && selectedRows.includes(`|${rowId}|`))
+      checkbox.checked = selected
+      const row = checkbox.closest("tr")
+      if (selected) {
+        row?.setAttribute("data-state", "selected")
+        selectedPageRows += 1
+      } else {
+        row?.removeAttribute("data-state")
+      }
+    }
+
+    const selectAll = scope.querySelector<HTMLInputElement>("[data-dashboard-select-all]")
+    if (selectAll) {
+      const allSelected = rowCheckboxes.length > 0 && selectedPageRows === rowCheckboxes.length
+      selectAll.checked = allSelected
+      selectAll.indeterminate = selectedPageRows > 0 && !allSelected
+      selectAll.setAttribute("aria-checked", selectAll.indeterminate ? "mixed" : String(allSelected))
+    }
+
+    const block = scope.closest<HTMLElement>(".dashboard-table-block")
+    const selectionLabel = block?.querySelector<HTMLElement>("[data-dashboard-total-rows]")
+    if (selectionLabel) {
+      const totalRows = selectionLabel.dataset.dashboardTotalRows || "0"
+      selectionLabel.textContent = `${countSelection(selectedRows)} of ${totalRows} row(s) selected.`
+    }
+  }
+
+  document.addEventListener("input", (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLInputElement) || target.type !== "checkbox") {
+      return
+    }
+
+    if (target.dataset.dashboardSelectAll === undefined && target.dataset.dashboardRowId === undefined) {
+      return
+    }
+
+    const scope = target.closest<HTMLElement>(".dashboard-table-selection-scope")
+    if (!scope) {
+      return
+    }
+
+    const dashboard = scope.closest<HTMLElement>(".dashboard-example")
+    let selectedRows = dashboard?.dataset.dashboardSelectedRows
+      || scope.dataset.dashboardSelectedRows
+      || "|"
+    if (target.dataset.dashboardSelectAll !== undefined) {
+      for (const checkbox of scope.querySelectorAll<HTMLInputElement>("[data-dashboard-row-id]")) {
+        const rowId = checkbox.dataset.dashboardRowId
+        if (rowId) {
+          selectedRows = updateSelection(selectedRows, rowId, target.checked)
+        }
+      }
+    } else {
+      const rowId = target.dataset.dashboardRowId
+      if (!rowId) {
+        return
+      }
+      selectedRows = updateSelection(selectedRows, rowId, target.checked)
+    }
+
+    scope.dataset.dashboardSelectedRows = selectedRows
+    if (dashboard) {
+      dashboard.dataset.dashboardSelectedRows = selectedRows
+    }
+    syncSelection(scope)
   })
 }
 

@@ -384,6 +384,17 @@ test.describe("shadcn v4 site", () => {
     await expect(rowMenu).toBeHidden()
   })
 
+  test("dashboard reviewer cells expose the React select control", async ({ page }) => {
+    await page.goto("/examples/dashboard")
+
+    const reviewer = page.getByLabel("Reviewer for Innovation and Advantages")
+    await expect(reviewer).toHaveValue("")
+    await expect(reviewer).toContainText("Assign reviewer")
+
+    await reviewer.selectOption("Jamik Tashpulatov")
+    await expect(reviewer).toHaveValue("Jamik Tashpulatov")
+  })
+
   test("tasks example renders the faceted toolbar and row metadata", async ({ page }) => {
     await page.goto("/examples/tasks")
     await waitForClientReady(page)

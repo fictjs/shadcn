@@ -172,7 +172,14 @@ function countDashboardSelection(selectedRows: string): number {
 }
 
 function syncDashboardTableSelectionScope(scope: HTMLElement): void {
-  const selectedRows = scope.dataset.dashboardSelectedRows || "|"
+  const dashboard = scope.closest<HTMLElement>(".dashboard-example")
+  const selectedRows = dashboard?.dataset.dashboardSelectedRows
+    || scope.dataset.dashboardSelectedRows
+    || "|"
+  scope.dataset.dashboardSelectedRows = selectedRows
+  if (dashboard) {
+    dashboard.dataset.dashboardSelectedRows = selectedRows
+  }
   const rowCheckboxes = scope.querySelectorAll<HTMLInputElement>("[data-dashboard-row-id]")
   let selectedPageRows = 0
 
@@ -193,6 +200,13 @@ function syncDashboardTableSelectionScope(scope: HTMLElement): void {
     selectAll.checked = allSelected
     selectAll.indeterminate = selectedPageRows > 0 && !allSelected
     selectAll.setAttribute("aria-checked", selectAll.indeterminate ? "mixed" : String(allSelected))
+  }
+  const selectionLabel = scope
+    .closest<HTMLElement>(".dashboard-table-block")
+    ?.querySelector<HTMLElement>("[data-dashboard-total-rows]")
+  if (selectionLabel) {
+    const totalRows = selectionLabel.dataset.dashboardTotalRows || "0"
+    selectionLabel.textContent = `${countDashboardSelection(selectedRows)} of ${totalRows} row(s) selected.`
   }
 }
 
@@ -474,12 +488,16 @@ function DashboardStatusIcon(props: { status: string }) {
     : <TablerLoaderIcon />
 }
 
-function DashboardReviewerCell(props: { reviewer: string }) {
+function DashboardReviewerCell(props: { reviewer: string; header: string }) {
   return props.reviewer === "Assign reviewer" ? (
-    <span class="dashboard-select-trigger dashboard-select-trigger-reviewer">
-      <span class="dashboard-select-placeholder">Assign reviewer</span>
+    <label class="dashboard-select-trigger dashboard-select-trigger-reviewer">
+      <select class="dashboard-reviewer-select" aria-label={`Reviewer for ${props.header}`}>
+        <option value="">Assign reviewer</option>
+        <option value="Eddie Lake">Eddie Lake</option>
+        <option value="Jamik Tashpulatov">Jamik Tashpulatov</option>
+      </select>
       <TablerChevronDownIcon class="dashboard-select-chevron" />
-    </span>
+    </label>
   ) : (
     props.reviewer
   )
@@ -510,8 +528,6 @@ function DashboardExample() {
   let activeView = $state<DashboardView>("outline")
   let dashboardPageIndex = $state(0)
   let dashboardPageSize = $state<DashboardPageSize>(DASHBOARD_PAGE_SIZE)
-  let selectedDashboardRows = $state("|")
-  let selectedDashboardCount = $state(0)
   let hiddenDashboardColumns = $state("|")
 
   const activeViewLabel = activeView === "past-performance"
@@ -874,47 +890,8 @@ function DashboardExample() {
               <div class="dashboard-table-frame">
                 <div
                   class="dashboard-table-selection-scope"
-                  data-dashboard-selected-rows={selectedDashboardRows}
+                  data-dashboard-selected-rows="|"
                   data-dashboard-hidden-columns={hiddenDashboardColumns}
-                  onInput$={(event: Event) => {
-                    const target = event.target
-                    if (!(target instanceof HTMLInputElement) || target.type !== "checkbox") {
-                      return
-                    }
-
-                    const selectionScope = target.closest<HTMLElement>(".dashboard-table-selection-scope")
-                    if (!selectionScope) {
-                      return
-                    }
-
-                    let selectedRows = selectionScope.dataset.dashboardSelectedRows || "|"
-                    if (target.dataset.dashboardSelectAll === "true") {
-                      const rowCheckboxes = target
-                        .closest(".dashboard-table-frame")
-                        ?.querySelectorAll<HTMLInputElement>("[data-dashboard-row-id]")
-
-                      for (const checkbox of rowCheckboxes ?? []) {
-                        const rowId = checkbox.dataset.dashboardRowId
-                        if (!rowId) {
-                          continue
-                        }
-
-                        selectedRows = updateDashboardSelection(selectedRows, rowId, target.checked)
-                      }
-                    } else {
-                      const rowId = target.dataset.dashboardRowId
-                      if (!rowId) {
-                        return
-                      }
-
-                      selectedRows = updateDashboardSelection(selectedRows, rowId, target.checked)
-                    }
-
-                    selectionScope.dataset.dashboardSelectedRows = selectedRows
-                    selectedDashboardRows = selectedRows
-                    selectedDashboardCount = countDashboardSelection(selectedRows)
-                    window.requestAnimationFrame(syncDashboardTableSelections)
-                  }}
                 >
                   <DashboardTablePage
                     pageIndex={dashboardPageIndex}
@@ -924,7 +901,7 @@ function DashboardExample() {
               </div>
 
               <div class="dashboard-table-footer">
-                <p class="dashboard-table-selection">{selectedDashboardCount} of {dashboardTableRows.length} row(s) selected.</p>
+                <p class="dashboard-table-selection" data-dashboard-total-rows={dashboardTableRows.length}>0 of {dashboardTableRows.length} row(s) selected.</p>
                 <div class="dashboard-table-pagination">
                   <div class="dashboard-rows-per-page">
                     <span class="dashboard-pagination-label">Rows per page</span>
@@ -1089,7 +1066,7 @@ function DashboardTablePage(props: {
               <input class="dashboard-cell-input" value={row.limit} aria-label={`Limit for ${row.header}`} />
             </td>
             <td data-dashboard-column="reviewer">
-              <DashboardReviewerCell reviewer={row.reviewer} />
+              <DashboardReviewerCell reviewer={row.reviewer} header={row.header} />
             </td>
             <td class="dashboard-cell-actions">
               <span class="ui-menu dashboard-row-menu" data-menu>

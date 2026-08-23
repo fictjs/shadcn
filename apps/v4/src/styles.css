@@ -6674,7 +6674,8 @@ a.ui-item:hover {
   width: 5rem;
 }
 
-.dashboard-page-size-select {
+.dashboard-page-size-select,
+.dashboard-reviewer-select {
   min-width: 0;
   flex: 1;
   appearance: none;
@@ -6685,6 +6686,11 @@ a.ui-item:hover {
   font-size: 0.875rem;
   outline: none;
   cursor: pointer;
+}
+
+.dashboard-reviewer-select:has(option[value=""]:checked),
+.dashboard-reviewer-select option[value=""] {
+  color: var(--muted-foreground);
 }
 
 .dashboard-select-placeholder {
