@@ -1347,6 +1347,32 @@ test.describe("shadcn v4 site", () => {
     await expect(tinting).toHaveAttribute("aria-checked", "false")
   })
 
+  test("rtl prompt matches the localized React controls", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 1200 })
+    await page.goto("/examples/rtl")
+    await waitForClientReady(page)
+
+    const prompt = page.locator("#notion-prompt").locator("xpath=../..")
+    await expect(prompt).toHaveCSS("height", "158px")
+    await expect(prompt.getByRole("button", { name: "أضف سياق" })).toHaveCSS("height", "32px")
+    await expect(prompt.getByRole("button", { name: "إرفاق ملف" })).toHaveCSS("width", "32px")
+    await expect(prompt.getByRole("button", { name: "إرسال" })).toHaveCSS("width", "32px")
+
+    const model = prompt.locator(".root-pill-button").first()
+    await expect(model).toHaveText("تلقائي")
+    await model.click()
+    await prompt.getByRole("menuitemradio", { name: /وضع الوكيل/ }).click()
+    await expect(model).toHaveText("وضع الوكيل")
+
+    await prompt.getByRole("button", { name: "أضف سياق" }).click()
+    const mentionSearch = prompt.getByRole("textbox", { name: "البحث في الصفحات..." })
+    await mentionSearch.fill("لوحة")
+    const visibleMentions = prompt.locator(".root-mention-popover [data-mention-item]:not([hidden])")
+    await expect(visibleMentions).toHaveCount(1)
+    await visibleMentions.click()
+    await expect(prompt.locator("[data-mention-chip]")).toContainText("لوحة المشروع")
+  })
+
   test("create route builds a live starter workspace", async ({ page }) => {
     await page.goto("/create")
 
