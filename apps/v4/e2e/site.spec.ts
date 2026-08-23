@@ -421,6 +421,19 @@ test.describe("shadcn v4 site", () => {
     await expect(drawer).toBeHidden()
   })
 
+  test("dashboard target and limit forms report their save state", async ({ page }) => {
+    await page.goto("/examples/dashboard")
+
+    const target = page.getByLabel("Target for Innovation and Advantages")
+    await target.fill("26")
+    await target.press("Enter")
+
+    const status = page.getByRole("status")
+    await expect(status.getByText("Saving Innovation and Advantages", { exact: true })).toBeVisible()
+    await expect(status.getByText("Done", { exact: true })).toBeVisible({ timeout: 2000 })
+    await expect(target).toHaveValue("26")
+  })
+
   test("tasks example renders the faceted toolbar and row metadata", async ({ page }) => {
     await page.goto("/examples/tasks")
     await waitForClientReady(page)

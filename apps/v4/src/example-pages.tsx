@@ -1137,6 +1137,7 @@ function DashboardExample() {
         </section>
       </div>
       <DashboardRowDrawer />
+      <div class="dashboard-toast-region" data-dashboard-toast-region role="status" aria-live="polite"></div>
     </div>
   )
 }
@@ -1216,10 +1217,14 @@ function DashboardTablePage(props: {
               </span>
             </td>
             <td class="dashboard-cell-number" data-dashboard-column="target">
-              <input class="dashboard-cell-input" value={row.target} aria-label={`Target for ${row.header}`} />
+              <form class="dashboard-cell-value-form" data-dashboard-value-form data-dashboard-row-header={row.header}>
+                <input class="dashboard-cell-input" value={row.target} aria-label={`Target for ${row.header}`} />
+              </form>
             </td>
             <td class="dashboard-cell-number" data-dashboard-column="limit">
-              <input class="dashboard-cell-input" value={row.limit} aria-label={`Limit for ${row.header}`} />
+              <form class="dashboard-cell-value-form" data-dashboard-value-form data-dashboard-row-header={row.header}>
+                <input class="dashboard-cell-input" value={row.limit} aria-label={`Limit for ${row.header}`} />
+              </form>
             </td>
             <td data-dashboard-column="reviewer">
               <DashboardReviewerCell reviewer={row.reviewer} header={row.header} />

@@ -460,6 +460,54 @@ function wireShowcaseMenus(): void {
     }
   })
 
+  document.addEventListener("submit", (event) => {
+    const form = event.target
+    if (!(form instanceof HTMLFormElement) || form.dataset.dashboardValueForm === undefined) {
+      return
+    }
+
+    event.preventDefault()
+    const dashboard = form.closest<HTMLElement>(".dashboard-example")
+    const region = dashboard?.querySelector<HTMLElement>("[data-dashboard-toast-region]")
+    if (!region) {
+      return
+    }
+
+    const previousDoneTimer = Number.parseInt(region.dataset.dashboardToastDoneTimer ?? "", 10)
+    const previousDismissTimer = Number.parseInt(region.dataset.dashboardToastDismissTimer ?? "", 10)
+    if (Number.isFinite(previousDoneTimer)) {
+      window.clearTimeout(previousDoneTimer)
+    }
+    if (Number.isFinite(previousDismissTimer)) {
+      window.clearTimeout(previousDismissTimer)
+    }
+
+    const toast = document.createElement("div")
+    toast.className = "dashboard-toast"
+    toast.dataset.state = "loading"
+    const icon = document.createElement("span")
+    icon.className = "dashboard-toast-icon"
+    icon.setAttribute("aria-hidden", "true")
+    const message = document.createElement("span")
+    message.className = "dashboard-toast-message"
+    message.textContent = `Saving ${form.dataset.dashboardRowHeader ?? "section"}`
+    toast.append(icon, message)
+    region.replaceChildren(toast)
+
+    const doneTimer = window.setTimeout(() => {
+      toast.dataset.state = "success"
+      icon.textContent = "✓"
+      message.textContent = "Done"
+      const dismissTimer = window.setTimeout(() => {
+        if (toast.isConnected) {
+          toast.remove()
+        }
+      }, 2500)
+      region.dataset.dashboardToastDismissTimer = String(dismissTimer)
+    }, 1000)
+    region.dataset.dashboardToastDoneTimer = String(doneTimer)
+  })
+
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       closeShowcaseMenus()
