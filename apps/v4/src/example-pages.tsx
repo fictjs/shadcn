@@ -606,7 +606,7 @@ function DashboardExample() {
               class="dashboard-range-group"
               role="group"
               aria-label="Dashboard chart range"
-              onClick={(event: MouseEvent) => {
+              onClick$={(event: MouseEvent) => {
                 const target = event.target
                 if (!(target instanceof Element)) {
                   return
@@ -652,7 +652,7 @@ function DashboardExample() {
               class="dashboard-tabs-list"
               role="tablist"
               aria-label="Dashboard views"
-              onClick={(event: MouseEvent) => {
+              onClick$={(event: MouseEvent) => {
                 const target = event.target
                 if (!(target instanceof Element)) {
                   return
