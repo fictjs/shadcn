@@ -1243,6 +1243,13 @@ function wireTasksTables(): void {
           }
         }
       })
+
+      root.querySelectorAll<HTMLElement>("[data-task-column-toggle]").forEach((option) => {
+        const column = option.dataset.taskColumnToggle
+        const visible = Boolean(column && !hasToken(hiddenColumns, column))
+        option.dataset.selected = visible ? "true" : "false"
+        option.setAttribute("aria-checked", visible ? "true" : "false")
+      })
     }
 
     const syncFacet = (kind: FacetKind, query: string): void => {
@@ -1509,6 +1516,16 @@ function wireTasksTables(): void {
             }
           }
           root.dataset.tasksPageIndex = "0"
+          sync()
+        }
+        return
+      }
+
+      const columnToggle = target.closest<HTMLElement>("[data-task-column-toggle]")
+      if (columnToggle) {
+        const column = columnToggle.dataset.taskColumnToggle
+        if (column === "title" || column === "status" || column === "priority") {
+          root.dataset.tasksHiddenColumns = toggleToken(root.dataset.tasksHiddenColumns || "|", column)
           sync()
         }
         return

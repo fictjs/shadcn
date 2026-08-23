@@ -603,6 +603,32 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator('tbody [data-task-row]').first().locator('[data-task-column="priority"]')).toBeHidden()
   })
 
+  test("tasks view menu toggles and restores columns", async ({ page }) => {
+    await page.goto("/examples/tasks")
+    await waitForClientReady(page)
+
+    const priorityMenu = page.locator('[data-task-sort-menu="priority"]')
+    await priorityMenu.locator("[data-menu-trigger]").click()
+    await priorityMenu.getByRole("menuitem", { name: "Hide" }).click()
+
+    const viewMenu = page.locator("[data-task-view-menu]")
+    await viewMenu.getByRole("button", { name: "View" }).click()
+    await expect(viewMenu.getByText("Toggle columns", { exact: true })).toBeVisible()
+
+    const priorityToggle = viewMenu.getByRole("menuitemcheckbox", { name: "priority" })
+    await expect(priorityToggle).toHaveAttribute("aria-checked", "false")
+    await priorityToggle.click()
+    await expect(page.locator('th[data-task-column="priority"]')).toBeVisible()
+    await expect(priorityToggle).toHaveAttribute("aria-checked", "true")
+
+    const titleToggle = viewMenu.getByRole("menuitemcheckbox", { name: "title" })
+    await titleToggle.click()
+    await expect(page.locator('th[data-task-column="title"]')).toBeHidden()
+    await expect(titleToggle).toHaveAttribute("aria-checked", "false")
+    await titleToggle.click()
+    await expect(page.locator('th[data-task-column="title"]')).toBeVisible()
+  })
+
   test("playground example switches modes and updates controls", async ({ page }) => {
     await page.goto("/examples/playground")
 

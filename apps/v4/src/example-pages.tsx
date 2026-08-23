@@ -1567,10 +1567,46 @@ function TasksExample() {
             </button>
           </div>
           <div class="tasks-toolbar-actions">
-            <button type="button" class="tasks-outline-button">
-              <LucideSettings2Icon />
-              <span>View</span>
-            </button>
+            <span class="ui-menu tasks-view-menu" data-menu data-task-view-menu>
+              <button
+                type="button"
+                class="tasks-outline-button"
+                data-menu-trigger
+                aria-haspopup="menu"
+                aria-expanded="false"
+              >
+                <LucideSettings2Icon />
+                <span>View</span>
+              </button>
+              <div
+                class="ui-menu-panel tasks-view-panel"
+                data-menu-panel
+                data-menu-side="bottom"
+                data-menu-align="end"
+                role="menu"
+                aria-label="Toggle columns"
+                hidden
+              >
+                <span class="ui-menu-label tasks-view-label">Toggle columns</span>
+                <span class="ui-menu-separator" role="separator"></span>
+                {(["title", "status", "priority"] as const).map((column) => (
+                  <button
+                    type="button"
+                    class="ui-menu-item tasks-view-option"
+                    key={column}
+                    role="menuitemcheckbox"
+                    aria-checked="true"
+                    data-menu-item
+                    data-menu-keep-open
+                    data-task-column-toggle={column}
+                    data-selected="true"
+                  >
+                    <span class="tasks-view-check" aria-hidden="true"><LucideCheckIcon /></span>
+                    <span>{column}</span>
+                  </button>
+                ))}
+              </div>
+            </span>
             <button type="button" class="tasks-primary-button">Add Task</button>
           </div>
         </div>
