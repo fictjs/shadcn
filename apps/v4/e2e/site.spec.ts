@@ -574,6 +574,35 @@ test.describe("shadcn v4 site", () => {
     await expect(selection).toHaveText("50 of 100 row(s) selected.")
   })
 
+  test("tasks sortable column menus control order and visibility", async ({ page }) => {
+    await page.goto("/examples/tasks")
+    await waitForClientReady(page)
+
+    const titleMenu = page.locator('[data-task-sort-menu="title"]')
+    const titleTrigger = titleMenu.locator("[data-menu-trigger]")
+    const titles = page.locator(".tasks-data-table tbody [data-task-row] .tasks-title-text")
+    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" })
+
+    await titleTrigger.click()
+    await titleMenu.getByRole("menuitem", { name: "Asc" }).click()
+    const ascending = await titles.allTextContents()
+    expect(ascending).toEqual([...ascending].sort((left, right) => collator.compare(left, right)))
+    await expect(titleTrigger).toHaveAttribute("data-sort-direction", "asc")
+    await expect(page.locator('th[data-task-column="title"]')).toHaveAttribute("aria-sort", "ascending")
+
+    await titleTrigger.click()
+    await titleMenu.getByRole("menuitem", { name: "Desc" }).click()
+    const descending = await titles.allTextContents()
+    expect(descending).toEqual([...descending].sort((left, right) => collator.compare(right, left)))
+    await expect(titleTrigger).toHaveAttribute("data-sort-direction", "desc")
+
+    const priorityMenu = page.locator('[data-task-sort-menu="priority"]')
+    await priorityMenu.locator("[data-menu-trigger]").click()
+    await priorityMenu.getByRole("menuitem", { name: "Hide" }).click()
+    await expect(page.locator('th[data-task-column="priority"]')).toBeHidden()
+    await expect(page.locator('tbody [data-task-row]').first().locator('[data-task-column="priority"]')).toBeHidden()
+  })
+
   test("playground example switches modes and updates controls", async ({ page }) => {
     await page.goto("/examples/playground")
 

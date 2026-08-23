@@ -1180,10 +1180,68 @@ function wireTasksTables(): void {
       const query = (root.dataset.tasksQuery ?? "").trim().toLowerCase()
       const statusValues = getFacetValues("status")
       const priorityValues = getFacetValues("priority")
-      return allRows.filter((row) => {
+      const rows = allRows.filter((row) => {
         return matchesQuery(row, query)
           && matchesFacet(row, "status", statusValues)
           && matchesFacet(row, "priority", priorityValues)
+      })
+      const sortColumn = root.dataset.tasksSortColumn
+      const sortDirection = root.dataset.tasksSortDirection
+      if ((sortColumn !== "title" && sortColumn !== "status" && sortColumn !== "priority")
+        || (sortDirection !== "asc" && sortDirection !== "desc")) {
+        return rows
+      }
+
+      const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" })
+      rows.sort((left, right) => {
+        const leftValue = sortColumn === "title"
+          ? left.dataset.taskTitleText ?? ""
+          : sortColumn === "status"
+            ? left.dataset.taskStatus ?? ""
+            : left.dataset.taskPriority ?? ""
+        const rightValue = sortColumn === "title"
+          ? right.dataset.taskTitleText ?? ""
+          : sortColumn === "status"
+            ? right.dataset.taskStatus ?? ""
+            : right.dataset.taskPriority ?? ""
+        const compared = collator.compare(leftValue, rightValue)
+        if (compared === 0) {
+          return Number(left.dataset.taskIndex ?? 0) - Number(right.dataset.taskIndex ?? 0)
+        }
+        return sortDirection === "desc" ? -compared : compared
+      })
+      return rows
+    }
+
+    const syncColumns = (): void => {
+      const hiddenColumns = root.dataset.tasksHiddenColumns || "|"
+      root.querySelectorAll<HTMLElement>("thead [data-task-column]").forEach((header) => {
+        const column = header.dataset.taskColumn
+        header.hidden = Boolean(column && hasToken(hiddenColumns, column))
+      })
+      for (const row of allRows) {
+        row.querySelectorAll<HTMLElement>("[data-task-column]").forEach((cell) => {
+          const column = cell.dataset.taskColumn
+          cell.hidden = Boolean(column && hasToken(hiddenColumns, column))
+        })
+      }
+
+      const sortColumn = root.dataset.tasksSortColumn ?? ""
+      const sortDirection = root.dataset.tasksSortDirection ?? ""
+      root.querySelectorAll<HTMLElement>("[data-task-sort-trigger]").forEach((trigger) => {
+        const activeDirection = trigger.dataset.taskSortTrigger === sortColumn
+          && (sortDirection === "asc" || sortDirection === "desc")
+          ? sortDirection
+          : "none"
+        trigger.dataset.sortDirection = activeDirection
+        const header = trigger.closest<HTMLElement>("th")
+        if (header) {
+          if (activeDirection === "none") {
+            header.removeAttribute("aria-sort")
+          } else {
+            header.setAttribute("aria-sort", activeDirection === "asc" ? "ascending" : "descending")
+          }
+        }
       })
     }
 
@@ -1269,7 +1327,10 @@ function wireTasksTables(): void {
         emptyRow.className = "tasks-empty-row"
         emptyRow.dataset.tasksEmptyRow = "true"
         const cell = document.createElement("td")
-        cell.colSpan = 6
+        const hiddenColumnCount = ["title", "status", "priority"].filter((column) => {
+          return hasToken(root.dataset.tasksHiddenColumns || "|", column)
+        }).length
+        cell.colSpan = 6 - hiddenColumnCount
         cell.textContent = "No results."
         emptyRow.append(cell)
         body.append(emptyRow)
@@ -1333,6 +1394,8 @@ function wireTasksTables(): void {
       if (reset) {
         reset.hidden = query === "" && statusValues === "|" && priorityValues === "|"
       }
+
+      syncColumns()
     }
 
     root.addEventListener("input", (event) => {
@@ -1427,6 +1490,27 @@ function wireTasksTables(): void {
               : lastPageIndex
         root.dataset.tasksPageIndex = String(Math.min(lastPageIndex, Math.max(0, nextPageIndex)))
         sync()
+        return
+      }
+
+      const sortAction = target.closest<HTMLElement>("[data-task-sort-action]")
+      if (sortAction) {
+        const menu = sortAction.closest<HTMLElement>("[data-task-sort-menu]")
+        const column = menu?.dataset.taskSortMenu
+        const action = sortAction.dataset.taskSortAction
+        if (column === "title" || column === "status" || column === "priority") {
+          if (action === "asc" || action === "desc") {
+            root.dataset.tasksSortColumn = column
+            root.dataset.tasksSortDirection = action
+          } else if (action === "hide") {
+            const hiddenColumns = root.dataset.tasksHiddenColumns || "|"
+            if (!hasToken(hiddenColumns, column)) {
+              root.dataset.tasksHiddenColumns = toggleToken(hiddenColumns, column)
+            }
+          }
+          root.dataset.tasksPageIndex = "0"
+          sync()
+        }
         return
       }
 

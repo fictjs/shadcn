@@ -7535,6 +7535,15 @@ body[data-dashboard-drawer-open="true"] {
   border-radius: var(--radius-lg);
 }
 
+.tasks-table-frame:has([data-menu-panel]:not([hidden])) {
+  overflow: visible;
+}
+
+.tasks-data-table thead {
+  position: relative;
+  z-index: 2;
+}
+
 .tasks-data-table {
   width: 100%;
   border-collapse: collapse;
@@ -7621,6 +7630,38 @@ body[data-dashboard-drawer-open="true"] {
 .tasks-sort-button:hover {
   background: var(--accent);
   color: var(--accent-foreground);
+}
+
+.tasks-sort-menu {
+  display: inline-flex;
+}
+
+.tasks-sort-panel {
+  min-width: 8rem;
+}
+
+.tasks-sort-button[aria-expanded="true"] {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.tasks-sort-icon {
+  display: none;
+  width: 1rem;
+  height: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.tasks-sort-icon .example-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.tasks-sort-button[data-sort-direction="none"] [data-task-sort-icon="none"],
+.tasks-sort-button[data-sort-direction="asc"] [data-task-sort-icon="asc"],
+.tasks-sort-button[data-sort-direction="desc"] [data-task-sort-icon="desc"] {
+  display: inline-flex;
 }
 
 .tasks-title-cell {

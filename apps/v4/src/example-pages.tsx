@@ -48,6 +48,7 @@ import {
   LucideCirclePlusIcon,
   LucideCheckIcon,
   LucideEllipsisIcon,
+  LucideEyeOffIcon,
   LucideSettings2Icon,
   LucideTimerIcon,
   LucideXIcon,
@@ -1474,6 +1475,53 @@ function renderTaskTableRow(task: (typeof taskRows)[number], index: number) {
   )
 }
 
+function TaskSortHeader(props: { column: "title" | "status" | "priority"; title: string }) {
+  const column = untrack(() => props.column)
+  const title = untrack(() => props.title)
+
+  return (
+    <span class="ui-menu tasks-sort-menu" data-menu data-task-sort-menu={column}>
+      <button
+        type="button"
+        class="tasks-sort-button"
+        data-menu-trigger
+        data-task-sort-trigger={column}
+        data-sort-direction="none"
+        aria-haspopup="menu"
+        aria-expanded="false"
+      >
+        <span>{title}</span>
+        <span class="tasks-sort-icon" data-task-sort-icon="none"><LucideChevronsUpDownIcon /></span>
+        <span class="tasks-sort-icon" data-task-sort-icon="asc"><LucideArrowUpIcon /></span>
+        <span class="tasks-sort-icon" data-task-sort-icon="desc"><LucideArrowDownIcon /></span>
+      </button>
+      <div
+        class="ui-menu-panel tasks-sort-panel"
+        data-menu-panel
+        data-menu-side="bottom"
+        data-menu-align="start"
+        role="menu"
+        aria-label={`${title} column options`}
+        hidden
+      >
+        <button type="button" class="ui-menu-item" role="menuitem" data-menu-item data-task-sort-action="asc">
+          <LucideArrowUpIcon />
+          <span>Asc</span>
+        </button>
+        <button type="button" class="ui-menu-item" role="menuitem" data-menu-item data-task-sort-action="desc">
+          <LucideArrowDownIcon />
+          <span>Desc</span>
+        </button>
+        <span class="ui-menu-separator" role="separator"></span>
+        <button type="button" class="ui-menu-item" role="menuitem" data-menu-item data-task-sort-action="hide">
+          <LucideEyeOffIcon />
+          <span>Hide</span>
+        </button>
+      </div>
+    </span>
+  )
+}
+
 function TasksExample() {
   const pageRows = taskRows.slice(0, TASKS_PAGE_SIZE)
 
@@ -1486,6 +1534,9 @@ function TasksExample() {
       data-tasks-page-index="0"
       data-tasks-page-size={TASKS_PAGE_SIZE}
       data-tasks-selected-values="|"
+      data-tasks-sort-column=""
+      data-tasks-sort-direction=""
+      data-tasks-hidden-columns="|"
     >
       <header class="tasks-header">
         <div class="tasks-heading">
@@ -1540,23 +1591,14 @@ function TasksExample() {
                 <th>
                   <span class="tasks-column-header">Task</span>
                 </th>
-                <th>
-                  <button type="button" class="tasks-sort-button">
-                    <span>Title</span>
-                    <LucideChevronsUpDownIcon />
-                  </button>
+                <th data-task-column="title">
+                  <TaskSortHeader column="title" title="Title" />
                 </th>
-                <th>
-                  <button type="button" class="tasks-sort-button">
-                    <span>Status</span>
-                    <LucideChevronsUpDownIcon />
-                  </button>
+                <th data-task-column="status">
+                  <TaskSortHeader column="status" title="Status" />
                 </th>
-                <th>
-                  <button type="button" class="tasks-sort-button">
-                    <span>Priority</span>
-                    <LucideChevronsUpDownIcon />
-                  </button>
+                <th data-task-column="priority">
+                  <TaskSortHeader column="priority" title="Priority" />
                 </th>
                 <th class="tasks-cell-actions"></th>
               </tr>
