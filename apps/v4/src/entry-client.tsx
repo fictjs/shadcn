@@ -32,6 +32,7 @@ async function initResumableClient(): Promise<void> {
   wireShowcaseMentions()
   wireShowcaseSelects()
   wireDashboardTables()
+  wireTasksTables()
   wireColorFormatSelectors()
   wireShowcaseTooltips()
   wireBlockViewer()
@@ -1020,6 +1021,363 @@ function wireDashboardTables(): void {
       event.preventDefault()
       first.focus()
     }
+  })
+}
+
+function wireTasksTables(): void {
+  type FacetKind = "status" | "priority"
+
+  const hasToken = (values: string, value: string): boolean => values.includes(`|${value}|`)
+  const toggleToken = (values: string, value: string): string => {
+    const token = `|${value}|`
+    return values.includes(token) ? values.replace(token, "|") : `${values}${value}|`
+  }
+
+  document.querySelectorAll<HTMLElement>(".tasks-example").forEach((root) => {
+    const body = root.querySelector<HTMLTableSectionElement>(".tasks-data-table tbody")
+    const bank = root.querySelector<HTMLElement>("[data-tasks-row-bank]")
+    if (!body || !bank) {
+      return
+    }
+
+    const initialRows = Array.from(body.querySelectorAll<HTMLTableRowElement>("[data-task-row]"))
+    const statusIcons = new Map<string, Element>()
+    const priorityIcons = new Map<string, Element>()
+    for (const row of initialRows) {
+      const status = row.dataset.taskStatus
+      const priority = row.dataset.taskPriority
+      const statusIcon = row.querySelector(".tasks-status-cell .tasks-meta-icon")
+      const priorityIcon = row.querySelector("[data-task-column='priority'] .tasks-meta-icon")
+      if (status && statusIcon && !statusIcons.has(status)) {
+        statusIcons.set(status, statusIcon)
+      }
+      if (priority && priorityIcon && !priorityIcons.has(priority)) {
+        priorityIcons.set(priority, priorityIcon)
+      }
+    }
+    const actionIcon = initialRows[0]?.querySelector(".tasks-row-action .example-icon") ?? null
+
+    const formatLabel = (value: string): string => value.charAt(0).toUpperCase() + value.slice(1)
+    const createMetaIcon = (templates: Map<string, Element>, value: string): Node => {
+      const template = templates.get(value)
+      if (template) {
+        return template.cloneNode(true)
+      }
+      const fallback = document.createElement("span")
+      fallback.className = "tasks-meta-icon"
+      return fallback
+    }
+
+    const createRow = (record: HTMLElement): HTMLTableRowElement => {
+      const taskId = record.dataset.taskId ?? ""
+      const title = record.dataset.taskTitleText ?? ""
+      const status = record.dataset.taskStatus ?? ""
+      const priority = record.dataset.taskPriority ?? ""
+      const label = record.dataset.taskLabel ?? ""
+      const row = document.createElement("tr")
+      row.dataset.taskRow = "true"
+      row.dataset.taskIndex = record.dataset.taskIndex ?? "0"
+      row.dataset.taskId = taskId
+      row.dataset.taskTitle = record.dataset.taskTitle ?? title.toLowerCase()
+      row.dataset.taskTitleText = title
+      row.dataset.taskStatus = status
+      row.dataset.taskPriority = priority
+      row.dataset.taskLabel = label
+
+      const selectCell = document.createElement("td")
+      selectCell.className = "tasks-cell-select"
+      const checkbox = document.createElement("input")
+      checkbox.type = "checkbox"
+      checkbox.className = "tasks-checkbox"
+      checkbox.setAttribute("aria-label", `Select ${taskId}`)
+      selectCell.append(checkbox)
+
+      const idCell = document.createElement("td")
+      idCell.className = "tasks-cell-id"
+      idCell.textContent = taskId
+
+      const titleCell = document.createElement("td")
+      titleCell.dataset.taskColumn = "title"
+      const titleLayout = document.createElement("div")
+      titleLayout.className = "tasks-title-cell"
+      const badge = document.createElement("span")
+      badge.className = "tasks-label-badge"
+      badge.textContent = formatLabel(label)
+      const titleText = document.createElement("span")
+      titleText.className = "tasks-title-text"
+      titleText.textContent = title
+      titleLayout.append(badge, titleText)
+      titleCell.append(titleLayout)
+
+      const statusCell = document.createElement("td")
+      statusCell.dataset.taskColumn = "status"
+      const statusLayout = document.createElement("div")
+      statusLayout.className = "tasks-meta-cell tasks-status-cell"
+      const statusText = document.createElement("span")
+      statusText.textContent = status === "in progress" ? "In Progress" : formatLabel(status)
+      statusLayout.append(createMetaIcon(statusIcons, status), statusText)
+      statusCell.append(statusLayout)
+
+      const priorityCell = document.createElement("td")
+      priorityCell.dataset.taskColumn = "priority"
+      const priorityLayout = document.createElement("div")
+      priorityLayout.className = "tasks-meta-cell"
+      const priorityText = document.createElement("span")
+      priorityText.textContent = formatLabel(priority)
+      priorityLayout.append(createMetaIcon(priorityIcons, priority), priorityText)
+      priorityCell.append(priorityLayout)
+
+      const actionCell = document.createElement("td")
+      actionCell.className = "tasks-cell-actions"
+      const action = document.createElement("button")
+      action.type = "button"
+      action.className = "tasks-row-action"
+      action.setAttribute("aria-label", `Open menu for ${taskId}`)
+      if (actionIcon) {
+        action.append(actionIcon.cloneNode(true))
+      }
+      actionCell.append(action)
+
+      row.append(selectCell, idCell, titleCell, statusCell, priorityCell, actionCell)
+      return row
+    }
+
+    const allRows = [
+      ...initialRows,
+      ...Array.from(bank.querySelectorAll<HTMLElement>("[data-task-record]"), createRow),
+    ].sort((left, right) => {
+      return Number(left.dataset.taskIndex ?? 0) - Number(right.dataset.taskIndex ?? 0)
+    })
+
+    const getFacetValues = (kind: FacetKind): string => {
+      return kind === "status"
+        ? root.dataset.tasksStatusValues || "|"
+        : root.dataset.tasksPriorityValues || "|"
+    }
+
+    const setFacetValues = (kind: FacetKind, values: string): void => {
+      if (kind === "status") {
+        root.dataset.tasksStatusValues = values
+      } else {
+        root.dataset.tasksPriorityValues = values
+      }
+    }
+
+    const matchesQuery = (row: HTMLTableRowElement, query: string): boolean => {
+      return query === "" || (row.dataset.taskTitle ?? "").includes(query)
+    }
+
+    const matchesFacet = (row: HTMLTableRowElement, kind: FacetKind, values: string): boolean => {
+      if (values === "|") {
+        return true
+      }
+      const value = kind === "status" ? row.dataset.taskStatus : row.dataset.taskPriority
+      return Boolean(value && hasToken(values, value))
+    }
+
+    const syncFacet = (kind: FacetKind, query: string): void => {
+      const menu = root.querySelector<HTMLElement>(`[data-task-facet="${kind}"]`)
+      if (!menu) {
+        return
+      }
+
+      const selectedValues = getFacetValues(kind)
+      const otherKind: FacetKind = kind === "status" ? "priority" : "status"
+      const otherValues = getFacetValues(otherKind)
+      const selectedLabels: string[] = []
+
+      menu.querySelectorAll<HTMLElement>("[data-task-facet-option]").forEach((option) => {
+        const value = option.dataset.taskFacetOption ?? ""
+        const selected = hasToken(selectedValues, value)
+        option.dataset.selected = String(selected)
+        option.setAttribute("aria-selected", String(selected))
+        if (selected) {
+          const label = option.querySelector<HTMLElement>("span:nth-last-child(2)")?.textContent?.trim()
+          if (label) {
+            selectedLabels.push(label)
+          }
+        }
+
+        const count = allRows.filter((row) => {
+          const rowValue = kind === "status" ? row.dataset.taskStatus : row.dataset.taskPriority
+          return rowValue === value
+            && matchesQuery(row, query)
+            && matchesFacet(row, otherKind, otherValues)
+        }).length
+        const countTarget = option.querySelector<HTMLElement>("[data-task-facet-count]")
+        if (countTarget) {
+          countTarget.textContent = String(count)
+        }
+      })
+
+      const summary = menu.querySelector<HTMLElement>("[data-task-facet-summary]")
+      const compact = menu.querySelector<HTMLElement>("[data-task-facet-summary-compact]")
+      const wide = menu.querySelector<HTMLElement>("[data-task-facet-summary-wide]")
+      if (summary && compact && wide) {
+        summary.hidden = selectedLabels.length === 0
+        compact.textContent = String(selectedLabels.length)
+        wide.replaceChildren()
+        const labels = selectedLabels.length > 2
+          ? [`${selectedLabels.length} selected`]
+          : selectedLabels
+        for (const label of labels) {
+          const badge = document.createElement("span")
+          badge.className = "tasks-facet-summary-badge"
+          badge.textContent = label
+          wide.append(badge)
+        }
+      }
+
+      const clearWrap = menu.querySelector<HTMLElement>("[data-task-facet-clear-wrap]")
+      if (clearWrap) {
+        clearWrap.hidden = selectedLabels.length === 0
+      }
+    }
+
+    const sync = (): void => {
+      const query = (root.dataset.tasksQuery ?? "").trim().toLowerCase()
+      const statusValues = getFacetValues("status")
+      const priorityValues = getFacetValues("priority")
+      const filteredRows = allRows.filter((row) => {
+        return matchesQuery(row, query)
+          && matchesFacet(row, "status", statusValues)
+          && matchesFacet(row, "priority", priorityValues)
+      })
+      const pageSize = Number.parseInt(root.dataset.tasksPageSize ?? "25", 10) || 25
+      const pageCount = Math.ceil(filteredRows.length / pageSize)
+      const maximumPageIndex = Math.max(0, pageCount - 1)
+      const requestedPageIndex = Number.parseInt(root.dataset.tasksPageIndex ?? "0", 10) || 0
+      const pageIndex = Math.min(maximumPageIndex, Math.max(0, requestedPageIndex))
+      root.dataset.tasksPageIndex = String(pageIndex)
+
+      body.querySelectorAll("[data-task-row], [data-tasks-empty-row]").forEach((row) => row.remove())
+      const pageRows = filteredRows.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize)
+      for (const row of pageRows) {
+        body.append(row)
+      }
+
+      if (pageRows.length === 0) {
+        const emptyRow = document.createElement("tr")
+        emptyRow.className = "tasks-empty-row"
+        emptyRow.dataset.tasksEmptyRow = "true"
+        const cell = document.createElement("td")
+        cell.colSpan = 6
+        cell.textContent = "No results."
+        emptyRow.append(cell)
+        body.append(emptyRow)
+      }
+
+      const selectedValues = root.dataset.tasksSelectedValues || "|"
+      const selectedCount = filteredRows.filter((row) => {
+        const taskId = row.dataset.taskId
+        return Boolean(taskId && hasToken(selectedValues, taskId))
+      }).length
+      const selection = root.querySelector<HTMLElement>("[data-tasks-selection]")
+      if (selection) {
+        selection.textContent = `${selectedCount} of ${filteredRows.length} row(s) selected.`
+      }
+
+      const pageLabel = root.querySelector<HTMLElement>("[data-tasks-page-label]")
+      if (pageLabel) {
+        pageLabel.textContent = `Page ${pageIndex + 1} of ${pageCount}`
+      }
+
+      root.querySelectorAll<HTMLButtonElement>("[data-tasks-page-action]").forEach((button) => {
+        const action = button.dataset.tasksPageAction
+        button.disabled = action === "first" || action === "previous"
+          ? pageIndex === 0
+          : pageIndex >= maximumPageIndex
+      })
+
+      syncFacet("status", query)
+      syncFacet("priority", query)
+
+      const reset = root.querySelector<HTMLButtonElement>("[data-tasks-reset]")
+      if (reset) {
+        reset.hidden = query === "" && statusValues === "|" && priorityValues === "|"
+      }
+    }
+
+    root.addEventListener("input", (event) => {
+      const target = event.target
+      if (!(target instanceof HTMLInputElement)) {
+        return
+      }
+
+      if (target.dataset.tasksFilter !== undefined) {
+        root.dataset.tasksQuery = target.value
+        root.dataset.tasksPageIndex = "0"
+        sync()
+        return
+      }
+
+      if (target.dataset.taskFacetSearch !== undefined) {
+        const panel = target.closest<HTMLElement>("[data-menu-panel]")
+        if (!panel) {
+          return
+        }
+        const query = target.value.trim().toLowerCase()
+        let visible = 0
+        panel.querySelectorAll<HTMLElement>("[data-task-facet-option]").forEach((option) => {
+          const label = option.textContent?.toLowerCase() ?? ""
+          const matches = query === "" || label.includes(query)
+          option.hidden = !matches
+          if (matches) {
+            visible += 1
+          }
+        })
+        const empty = panel.querySelector<HTMLElement>("[data-task-facet-empty]")
+        if (empty) {
+          empty.hidden = visible > 0
+        }
+      }
+    })
+
+    root.addEventListener("click", (event) => {
+      const target = event.target
+      if (!(target instanceof Element)) {
+        return
+      }
+
+      const option = target.closest<HTMLElement>("[data-task-facet-option]")
+      if (option) {
+        const menu = option.closest<HTMLElement>("[data-task-facet]")
+        const kind = menu?.dataset.taskFacet
+        const value = option.dataset.taskFacetOption
+        if ((kind === "status" || kind === "priority") && value) {
+          setFacetValues(kind, toggleToken(getFacetValues(kind), value))
+          root.dataset.tasksPageIndex = "0"
+          sync()
+        }
+        return
+      }
+
+      const clear = target.closest<HTMLElement>("[data-task-facet-clear]")
+      if (clear) {
+        const menu = clear.closest<HTMLElement>("[data-task-facet]")
+        const kind = menu?.dataset.taskFacet
+        if (kind === "status" || kind === "priority") {
+          setFacetValues(kind, "|")
+          root.dataset.tasksPageIndex = "0"
+          sync()
+        }
+        return
+      }
+
+      if (target.closest("[data-tasks-reset]")) {
+        root.dataset.tasksQuery = ""
+        root.dataset.tasksStatusValues = "|"
+        root.dataset.tasksPriorityValues = "|"
+        root.dataset.tasksPageIndex = "0"
+        const filter = root.querySelector<HTMLInputElement>("[data-tasks-filter]")
+        if (filter) {
+          filter.value = ""
+        }
+        sync()
+      }
+    })
+
+    sync()
   })
 }
 

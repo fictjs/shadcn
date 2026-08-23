@@ -502,6 +502,44 @@ test.describe("shadcn v4 site", () => {
     await expect(firstRow.locator(".tasks-meta-cell").last()).toContainText("Medium")
   })
 
+  test("tasks title and faceted filters match the React table", async ({ page }) => {
+    await page.goto("/examples/tasks")
+    await waitForClientReady(page)
+
+    const rows = page.locator(".tasks-data-table tbody [data-task-row]")
+    const selection = page.locator("[data-tasks-selection]")
+    const reset = page.locator("[data-tasks-reset]")
+
+    await page.getByPlaceholder("Filter tasks...").fill("open-source SSD pixel")
+    await expect(rows).toHaveCount(1)
+    await expect(rows.first().locator(".tasks-cell-id")).toHaveText("TASK-8782")
+    await expect(selection).toHaveText("0 of 1 row(s) selected.")
+    await expect(reset).toBeVisible()
+
+    await reset.click()
+    await expect(rows).toHaveCount(25)
+    await expect(selection).toHaveText("0 of 100 row(s) selected.")
+
+    await page.locator('[data-task-facet="status"] [data-menu-trigger]').click()
+    const statusFilters = page.getByRole("dialog", { name: "Status filters" })
+    await statusFilters.locator('[data-task-facet-option="done"]').click()
+    await expect(rows).toHaveCount(19)
+    await expect(selection).toHaveText("0 of 19 row(s) selected.")
+    await expect(statusFilters).toBeVisible()
+    await expect(page.locator('[data-task-facet="status"] [data-task-facet-summary-wide]')).toContainText("Done")
+
+    await page.locator('[data-task-facet="priority"] [data-menu-trigger]').click()
+    const priorityFilters = page.getByRole("dialog", { name: "Priority filters" })
+    await priorityFilters.locator('[data-task-facet-option="high"]').click()
+    await expect(rows).toHaveCount(7)
+    await expect(selection).toHaveText("0 of 7 row(s) selected.")
+
+    await reset.click()
+    await expect(rows).toHaveCount(25)
+    await expect(selection).toHaveText("0 of 100 row(s) selected.")
+    await expect(reset).toBeHidden()
+  })
+
   test("playground example switches modes and updates controls", async ({ page }) => {
     await page.goto("/examples/playground")
 

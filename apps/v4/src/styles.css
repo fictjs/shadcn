@@ -7294,6 +7294,217 @@ body[data-dashboard-drawer-open="true"] {
   color: var(--accent-foreground);
 }
 
+.tasks-facet-menu {
+  display: inline-flex;
+}
+
+.tasks-facet-panel {
+  width: 12.5rem;
+  padding: 0;
+  overflow: hidden;
+}
+
+.tasks-facet-search-shell {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  padding: 0.25rem 0.5rem;
+}
+
+.tasks-facet-search {
+  width: 100%;
+  height: 2.25rem;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  padding: 0 0.25rem;
+  font: inherit;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.tasks-facet-search::placeholder {
+  color: var(--muted-foreground);
+}
+
+.tasks-facet-options {
+  display: grid;
+  gap: 0.125rem;
+  max-height: 18rem;
+  overflow-y: auto;
+  padding: 0.25rem;
+}
+
+.tasks-facet-option {
+  display: flex;
+  width: 100%;
+  min-height: 2rem;
+  align-items: center;
+  gap: 0.5rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--foreground);
+  padding: 0.375rem 0.5rem;
+  font: inherit;
+  font-size: 0.875rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tasks-facet-option:hover,
+.tasks-facet-option:focus-visible {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  outline: none;
+}
+
+.tasks-facet-checkbox {
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--input);
+  border-radius: 4px;
+  color: transparent;
+}
+
+.tasks-facet-checkbox .example-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.tasks-facet-option[data-selected="true"] .tasks-facet-checkbox {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.tasks-facet-count {
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.tasks-facet-empty {
+  margin: 0;
+  padding: 1.25rem 0.5rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.tasks-facet-clear-wrap {
+  border-top: 1px solid var(--border);
+  padding: 0.25rem;
+}
+
+.tasks-facet-clear {
+  width: 100%;
+  min-height: 2rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.tasks-facet-clear:hover {
+  background: var(--accent);
+}
+
+.tasks-facet-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.tasks-facet-summary-separator {
+  width: 1px;
+  height: 1rem;
+  background: var(--border);
+  margin: 0 0.25rem;
+}
+
+.tasks-facet-summary-compact,
+.tasks-facet-summary-badge {
+  display: inline-flex;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  padding: 0 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.tasks-facet-summary-wide {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.tasks-facet-summary-compact {
+  display: none;
+}
+
+.tasks-reset-button {
+  display: inline-flex;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--foreground);
+  padding: 0 0.625rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.tasks-reset-button:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.tasks-reset-button .example-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.tasks-reset-button[hidden],
+.tasks-facet-summary[hidden],
+.tasks-facet-clear-wrap[hidden],
+.tasks-facet-option[hidden],
+.tasks-facet-empty[hidden] {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .tasks-facet-summary-compact {
+    display: inline-flex;
+  }
+
+  .tasks-facet-summary-wide {
+    display: none;
+  }
+}
+
 .tasks-toolbar-actions {
   display: flex;
   align-items: center;
@@ -7337,6 +7548,11 @@ body[data-dashboard-drawer-open="true"] {
 
 .tasks-data-table tbody tr:last-child {
   border-bottom: 0;
+}
+
+.tasks-empty-row td {
+  height: 6rem;
+  text-align: center;
 }
 
 .tasks-data-table th {

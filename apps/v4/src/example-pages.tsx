@@ -46,9 +46,11 @@ import {
   LucideCircleIcon,
   LucideCircleOffIcon,
   LucideCirclePlusIcon,
+  LucideCheckIcon,
   LucideEllipsisIcon,
   LucideSettings2Icon,
   LucideTimerIcon,
+  LucideXIcon,
 } from "./example-icons"
 import { dashboardTableRows, taskRows, visitorChartData } from "./example-data"
 
@@ -1342,11 +1344,144 @@ function DashboardPaginationLabel(props: { pageIndex: number; pageSize: Dashboar
   )
 }
 
+const taskStatusValues = ["backlog", "todo", "in progress", "done", "canceled"] as const
+const taskPriorityValues = ["low", "medium", "high"] as const
+
+function TaskFacetMenu(props: {
+  kind: "status" | "priority"
+  title: string
+  values: readonly string[]
+}) {
+  const kind = untrack(() => props.kind)
+  const title = untrack(() => props.title)
+  const values = untrack(() => props.values)
+
+  return (
+    <span class="ui-menu tasks-facet-menu" data-menu data-task-facet={kind}>
+      <button
+        type="button"
+        class="tasks-facet-button"
+        data-menu-trigger
+        aria-haspopup="dialog"
+        aria-expanded="false"
+      >
+        <LucideCirclePlusIcon />
+        <span>{title}</span>
+        <span class="tasks-facet-summary" data-task-facet-summary hidden>
+          <span class="tasks-facet-summary-separator" aria-hidden="true"></span>
+          <span class="tasks-facet-summary-compact" data-task-facet-summary-compact></span>
+          <span class="tasks-facet-summary-wide" data-task-facet-summary-wide></span>
+        </span>
+      </button>
+      <div
+        class="ui-menu-panel tasks-facet-panel"
+        data-menu-panel
+        data-menu-side="bottom"
+        data-menu-align="start"
+        role="dialog"
+        aria-label={`${title} filters`}
+        hidden
+      >
+        <div class="tasks-facet-search-shell">
+          <input
+            class="tasks-facet-search"
+            type="search"
+            placeholder={title}
+            aria-label={`Search ${title.toLowerCase()}`}
+            data-task-facet-search
+          />
+        </div>
+        <div class="tasks-facet-options" role="listbox" aria-label={title} aria-multiselectable="true">
+          {values.map((value) => {
+            const count = taskRows.filter((task) => task[kind] === value).length
+            return (
+              <button
+                type="button"
+                class="tasks-facet-option"
+                key={value}
+                role="option"
+                aria-selected="false"
+                data-menu-item
+                data-menu-keep-open
+                data-task-facet-option={value}
+                data-selected="false"
+              >
+                <span class="tasks-facet-checkbox" aria-hidden="true"><LucideCheckIcon /></span>
+                {kind === "status"
+                  ? <TaskStatusIcon status={value} />
+                  : <TaskPriorityIcon priority={value} />}
+                <span>{kind === "status" ? formatTaskStatus(value) : formatTaskLabel(value)}</span>
+                <span class="tasks-facet-count" data-task-facet-count>{count}</span>
+              </button>
+            )
+          })}
+          <p class="tasks-facet-empty" data-task-facet-empty hidden>No results found.</p>
+        </div>
+        <div class="tasks-facet-clear-wrap" data-task-facet-clear-wrap hidden>
+          <button type="button" class="tasks-facet-clear" data-task-facet-clear>Clear filters</button>
+        </div>
+      </div>
+    </span>
+  )
+}
+
+function renderTaskTableRow(task: (typeof taskRows)[number], index: number) {
+  return (
+    <tr
+      key={task.id}
+      data-task-row
+      data-task-index={index}
+      data-task-id={task.id}
+      data-task-title={task.title.toLowerCase()}
+      data-task-title-text={task.title}
+      data-task-status={task.status}
+      data-task-priority={task.priority}
+      data-task-label={task.label}
+    >
+      <td class="tasks-cell-select">
+        <input type="checkbox" class="tasks-checkbox" aria-label={`Select ${task.id}`} />
+      </td>
+      <td class="tasks-cell-id">{task.id}</td>
+      <td data-task-column="title">
+        <div class="tasks-title-cell">
+          <span class="tasks-label-badge">{formatTaskLabel(task.label)}</span>
+          <span class="tasks-title-text">{task.title}</span>
+        </div>
+      </td>
+      <td data-task-column="status">
+        <div class="tasks-meta-cell tasks-status-cell">
+          <TaskStatusIcon status={task.status} />
+          <span>{formatTaskStatus(task.status)}</span>
+        </div>
+      </td>
+      <td data-task-column="priority">
+        <div class="tasks-meta-cell">
+          <TaskPriorityIcon priority={task.priority} />
+          <span>{formatTaskLabel(task.priority)}</span>
+        </div>
+      </td>
+      <td class="tasks-cell-actions">
+        <button type="button" class="tasks-row-action" aria-label={`Open menu for ${task.id}`}>
+          <LucideEllipsisIcon />
+        </button>
+      </td>
+    </tr>
+  )
+}
+
 function TasksExample() {
   const pageRows = taskRows.slice(0, TASKS_PAGE_SIZE)
 
   return (
-    <div class="live-example tasks-example">
+    <div
+      class="live-example tasks-example"
+      data-tasks-query=""
+      data-tasks-status-values="|"
+      data-tasks-priority-values="|"
+      data-tasks-page-index="0"
+      data-tasks-page-size={TASKS_PAGE_SIZE}
+      data-tasks-selected-values="|"
+    >
       <header class="tasks-header">
         <div class="tasks-heading">
           <h2>Welcome back!</h2>
@@ -1360,14 +1495,19 @@ function TasksExample() {
       <div class="tasks-table-block">
         <div class="tasks-toolbar">
           <div class="tasks-toolbar-filters">
-            <input id="tasks-filter" class="tasks-filter-input" type="text" placeholder="Filter tasks..." aria-label="Filter tasks" />
-            <button type="button" class="tasks-facet-button">
-              <LucideCirclePlusIcon />
-              <span>Status</span>
-            </button>
-            <button type="button" class="tasks-facet-button">
-              <LucideCirclePlusIcon />
-              <span>Priority</span>
+            <input
+              id="tasks-filter"
+              class="tasks-filter-input"
+              type="text"
+              placeholder="Filter tasks..."
+              aria-label="Filter tasks"
+              data-tasks-filter
+            />
+            <TaskFacetMenu kind="status" title="Status" values={taskStatusValues} />
+            <TaskFacetMenu kind="priority" title="Priority" values={taskPriorityValues} />
+            <button type="button" class="tasks-reset-button" data-tasks-reset hidden>
+              <span>Reset</span>
+              <LucideXIcon />
             </button>
           </div>
           <div class="tasks-toolbar-actions">
@@ -1411,43 +1551,29 @@ function TasksExample() {
               </tr>
             </thead>
             <tbody>
-              {pageRows.map((task) => (
-                <tr key={task.id}>
-                  <td class="tasks-cell-select">
-                    <input type="checkbox" class="tasks-checkbox" aria-label={`Select ${task.id}`} />
-                  </td>
-                  <td class="tasks-cell-id">{task.id}</td>
-                  <td>
-                    <div class="tasks-title-cell">
-                      <span class="tasks-label-badge">{formatTaskLabel(task.label)}</span>
-                      <span class="tasks-title-text">{task.title}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="tasks-meta-cell tasks-status-cell">
-                      <TaskStatusIcon status={task.status} />
-                      <span>{formatTaskStatus(task.status)}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="tasks-meta-cell">
-                      <TaskPriorityIcon priority={task.priority} />
-                      <span>{formatTaskLabel(task.priority)}</span>
-                    </div>
-                  </td>
-                  <td class="tasks-cell-actions">
-                    <button type="button" class="tasks-row-action" aria-label="Open menu">
-                      <LucideEllipsisIcon />
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {pageRows.map((task, index) => renderTaskTableRow(task, index))}
             </tbody>
           </table>
         </div>
 
+        <div data-tasks-row-bank hidden>
+          {taskRows.slice(TASKS_PAGE_SIZE).map((task, index) => (
+            <span
+              key={task.id}
+              data-task-record
+              data-task-index={index + TASKS_PAGE_SIZE}
+              data-task-id={task.id}
+              data-task-title={task.title.toLowerCase()}
+              data-task-title-text={task.title}
+              data-task-status={task.status}
+              data-task-priority={task.priority}
+              data-task-label={task.label}
+            ></span>
+          ))}
+        </div>
+
         <div class="tasks-pagination">
-          <p class="tasks-selection">0 of {taskRows.length} row(s) selected.</p>
+          <p class="tasks-selection" data-tasks-selection>0 of {taskRows.length} row(s) selected.</p>
           <div class="tasks-pagination-controls">
             <div class="tasks-rows-per-page">
               <span class="tasks-pagination-label">Rows per page</span>
@@ -1456,20 +1582,20 @@ function TasksExample() {
                 <LucideChevronsUpDownIcon class="tasks-select-chevron" />
               </span>
             </div>
-            <p class="tasks-pagination-label">
+            <p class="tasks-pagination-label" data-tasks-page-label>
               Page 1 of {Math.ceil(taskRows.length / TASKS_PAGE_SIZE)}
             </p>
             <div class="tasks-pagination-buttons">
-              <button type="button" class="tasks-pagination-button" aria-label="Go to first page" disabled>
+              <button type="button" class="tasks-pagination-button" aria-label="Go to first page" data-tasks-page-action="first" disabled>
                 <LucideChevronsLeftIcon />
               </button>
-              <button type="button" class="tasks-pagination-button" aria-label="Go to previous page" disabled>
+              <button type="button" class="tasks-pagination-button" aria-label="Go to previous page" data-tasks-page-action="previous" disabled>
                 <LucideChevronLeftIcon />
               </button>
-              <button type="button" class="tasks-pagination-button" aria-label="Go to next page">
+              <button type="button" class="tasks-pagination-button" aria-label="Go to next page" data-tasks-page-action="next">
                 <LucideChevronRightIcon />
               </button>
-              <button type="button" class="tasks-pagination-button" aria-label="Go to last page">
+              <button type="button" class="tasks-pagination-button" aria-label="Go to last page" data-tasks-page-action="last">
                 <LucideChevronsRightIcon />
               </button>
             </div>
