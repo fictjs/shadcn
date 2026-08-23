@@ -676,6 +676,32 @@ test.describe("shadcn v4 site", () => {
     await expect(trigger).toHaveAttribute("aria-expanded", "false")
   })
 
+  test("tasks responsive controls match the React breakpoints", async ({ page }) => {
+    await page.setViewportSize({ width: 767, height: 1100 })
+    await page.goto("/examples/tasks")
+    await expect(page.locator(".example-mobile-gallery")).toBeVisible()
+    await expect(page.locator(".example-live-stage")).toBeHidden()
+
+    await page.setViewportSize({ width: 768, height: 1100 })
+    await expect(page.locator(".example-mobile-gallery")).toBeHidden()
+    await expect(page.locator(".example-live-stage .tasks-example")).toBeVisible()
+    await expect(page.getByPlaceholder("Filter tasks...")).toHaveCSS("width", "150px")
+    await expect(page.getByRole("button", { name: "View" })).toBeHidden()
+    await expect(page.getByLabel("Go to first page")).toBeHidden()
+    await expect(page.getByLabel("Go to previous page")).toBeVisible()
+
+    await page.setViewportSize({ width: 1023, height: 1100 })
+    await expect(page.getByPlaceholder("Filter tasks...")).toHaveCSS("width", "150px")
+    await expect(page.getByRole("button", { name: "View" })).toBeHidden()
+    await expect(page.getByLabel("Go to last page")).toBeHidden()
+
+    await page.setViewportSize({ width: 1024, height: 1100 })
+    await expect(page.getByPlaceholder("Filter tasks...")).toHaveCSS("width", "250px")
+    await expect(page.getByRole("button", { name: "View" })).toBeVisible()
+    await expect(page.getByLabel("Go to first page")).toBeVisible()
+    await expect(page.getByLabel("Go to last page")).toBeVisible()
+  })
+
   test("playground example switches modes and updates controls", async ({ page }) => {
     await page.goto("/examples/playground")
 

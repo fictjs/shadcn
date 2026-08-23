@@ -8654,6 +8654,50 @@ body[data-dashboard-drawer-open="true"] {
   }
 }
 
+@media (min-width: 768px) and (max-width: 860px) {
+  .example-showcase-surface:has(.tasks-example) .example-mobile-gallery {
+    display: none;
+  }
+
+  .example-showcase-surface:has(.tasks-example) .example-live-stage {
+    display: block;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .tasks-example {
+    padding: 2rem;
+  }
+
+  .tasks-toolbar {
+    align-items: center;
+  }
+
+  .tasks-filter-input {
+    width: 9.375rem;
+  }
+
+  .tasks-view-menu,
+  .tasks-pagination-button[data-tasks-page-action="first"],
+  .tasks-pagination-button[data-tasks-page-action="last"] {
+    display: none;
+  }
+
+  .tasks-table-frame {
+    overflow: hidden;
+  }
+
+  .tasks-table-frame:has([data-menu-panel]:not([hidden])) {
+    overflow: visible;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tasks-pagination-controls {
+    gap: 2rem;
+  }
+}
+
 @media (max-width: 1139px) {
   .docs-layout {
     grid-template-columns: minmax(220px, 240px) minmax(0, 1fr);
