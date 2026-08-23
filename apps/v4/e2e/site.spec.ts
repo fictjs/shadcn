@@ -766,6 +766,24 @@ test.describe("shadcn v4 site", () => {
     await expect(dialog).toBeHidden()
   })
 
+  test("playground code dialog matches the React integration example", async ({ page }) => {
+    await page.goto("/examples/playground")
+    await waitForClientReady(page)
+
+    const trigger = page.getByRole("button", { name: "View code" })
+    await trigger.click()
+    const dialog = page.getByRole("dialog", { name: "View code" })
+    await expect(dialog).toContainText("start integrating your current prompt and settings")
+    await expect(dialog.locator("code")).toContainText("import openai")
+    await expect(dialog.locator("code")).toContainText("openai.Completion.create")
+    await expect(dialog.locator("code")).toContainText("OPENAI_API_KEY")
+    await expect(dialog).toContainText("environment variables or a secret management tool")
+
+    await page.keyboard.press("Escape")
+    await expect(dialog).toBeHidden()
+    await expect(trigger).toBeFocused()
+  })
+
   test("themes route renders the customizer shell", async ({ page }) => {
     await page.goto("/themes")
 

@@ -1944,7 +1944,15 @@ function PlaygroundExample() {
           >
             Save
           </button>
-          <button class="playground-header-button" type="button">View code</button>
+          <button
+            class="playground-header-button"
+            type="button"
+            data-playground-dialog-trigger="code"
+            aria-haspopup="dialog"
+            aria-expanded="false"
+          >
+            View code
+          </button>
           <button class="playground-header-button" type="button">Share</button>
           <button class="playground-header-button playground-header-button-icon" type="button" aria-label="Actions">
             <LucideEllipsisIcon />
@@ -2177,6 +2185,40 @@ function PlaygroundExample() {
           <footer class="playground-dialog-footer">
             <button type="submit" class="playground-primary-button">Save</button>
           </footer>
+        </section>
+      </div>
+
+      <div
+        class="playground-dialog-overlay"
+        data-playground-dialog="code"
+        role="presentation"
+        hidden
+      >
+        <section
+          class="playground-dialog playground-code-dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="playground-code-title"
+          aria-describedby="playground-code-description"
+        >
+          <button
+            type="button"
+            class="playground-dialog-close"
+            aria-label="Close"
+            data-playground-dialog-close
+          >
+            <LucideXIcon />
+          </button>
+          <header class="playground-dialog-header">
+            <h3 id="playground-code-title">View code</h3>
+            <p id="playground-code-description">
+              You can use the following code to start integrating your current prompt and settings into your application.
+            </p>
+          </header>
+          <pre class="playground-code-block"><code><span><b>import</b> os</span>{"\n"}<span><b>import</b> openai</span>{"\n\n"}<span>openai.api_key = os.getenv(<i>&quot;OPENAI_API_KEY&quot;</i>)</span>{"\n\n"}<span>response = openai.Completion.create(</span>{"\n"}<span>  model=<i>&quot;davinci&quot;</i>,</span>{"\n"}<span>  prompt=<em>&quot;&quot;</em>,</span>{"\n"}<span>  temperature=<em>0.9</em>,</span>{"\n"}<span>  max_tokens=<em>5</em>,</span>{"\n"}<span>  top_p=<em>1</em>,</span>{"\n"}<span>  frequency_penalty=<em>0</em>,</span>{"\n"}<span>  presence_penalty=<em>0</em>,</span>{"\n"}<span>)</span></code></pre>
+          <p class="playground-code-note">
+            Your API Key can be found here. You should use environment variables or a secret management tool to expose your key to your applications.
+          </p>
         </section>
       </div>
     </div>
