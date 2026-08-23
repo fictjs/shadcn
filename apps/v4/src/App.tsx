@@ -3354,6 +3354,7 @@ function RootFieldHearPreview() {
                 <span
                   class="ui-checkbox root-hear-check"
                   role="checkbox"
+                  tabIndex={0}
                   aria-checked={option.checked ? "true" : "false"}
                   aria-label={option.label}
                   data-checked={option.checked ? "true" : "false"}

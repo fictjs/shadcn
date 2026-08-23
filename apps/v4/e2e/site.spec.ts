@@ -1386,6 +1386,26 @@ test.describe("shadcn v4 site", () => {
     await expect(checkbox).toHaveAttribute("aria-checked", "false")
   })
 
+  test("rtl referral field matches the React checkbox cards", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 1200 })
+    await page.goto("/examples/rtl")
+    await waitForClientReady(page)
+
+    const referral = page.locator(".root-hear-card")
+    await expect(referral).toHaveCSS("height", "167.5px")
+    await expect(referral).toHaveCSS("border-top-width", "0px")
+
+    const social = referral.getByRole("checkbox", { name: "التواصل الاجتماعي" })
+    const search = referral.getByRole("checkbox", { name: "البحث" })
+    await expect(social).toHaveAttribute("aria-checked", "true")
+    await social.focus()
+    await page.keyboard.press("Space")
+    await expect(social).toHaveAttribute("aria-checked", "false")
+    await search.focus()
+    await page.keyboard.press("Enter")
+    await expect(search).toHaveAttribute("aria-checked", "true")
+  })
+
   test("create route builds a live starter workspace", async ({ page }) => {
     await page.goto("/create")
 

@@ -982,6 +982,18 @@ function wireShowcaseToggles(): void {
     })
   }
 
+  const toggleHearOption = (hearOption: HTMLElement, focus = false): void => {
+    const checked = hearOption.dataset.checked !== "true"
+    hearOption.dataset.checked = checked ? "true" : "false"
+    hearOption.querySelectorAll<HTMLElement>(".ui-checkbox").forEach((box) => {
+      box.dataset.checked = checked ? "true" : "false"
+      box.setAttribute("aria-checked", checked ? "true" : "false")
+      if (focus) {
+        box.focus()
+      }
+    })
+  }
+
   document.addEventListener("click", (event) => {
     const target = event.target
     if (!(target instanceof Element)) {
@@ -995,12 +1007,7 @@ function wireShowcaseToggles(): void {
 
     const hearOption = target.closest<HTMLElement>("[data-hear-option]")
     if (hearOption) {
-      const checked = hearOption.dataset.checked !== "true"
-      hearOption.dataset.checked = checked ? "true" : "false"
-      hearOption.querySelectorAll<HTMLElement>(".ui-checkbox").forEach((box) => {
-        box.dataset.checked = checked ? "true" : "false"
-        box.setAttribute("aria-checked", checked ? "true" : "false")
-      })
+      toggleHearOption(hearOption)
     }
 
     const toggle = target.closest<HTMLElement>("[data-toggle]")
@@ -1024,7 +1031,20 @@ function wireShowcaseToggles(): void {
 
   document.addEventListener("keydown", (event) => {
     const target = event.target
-    if (!(target instanceof HTMLElement) || !target.matches(".ui-radio[role='radio']")) {
+    if (!(target instanceof HTMLElement)) {
+      return
+    }
+
+    if (target.matches(".root-hear-check[role='checkbox']") && (event.key === " " || event.key === "Enter")) {
+      const hearOption = target.closest<HTMLElement>("[data-hear-option]")
+      if (hearOption) {
+        event.preventDefault()
+        toggleHearOption(hearOption, true)
+      }
+      return
+    }
+
+    if (!target.matches(".ui-radio[role='radio']")) {
       return
     }
     const group = target.closest<HTMLElement>("[data-radio-group]")

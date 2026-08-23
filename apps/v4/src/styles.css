@@ -3803,7 +3803,13 @@ a.ui-item:hover {
 }
 
 .root-hear-card {
-  padding: 1rem;
+  border: 0;
+  padding: 1rem 0;
+  box-shadow: none;
+}
+
+.root-hear-card form {
+  padding-inline: 1rem;
 }
 
 .root-hear-options {
@@ -3826,22 +3832,23 @@ a.ui-item:hover {
 
 .root-hear-option[data-checked="true"] {
   background: color-mix(in oklab, var(--muted) 60%, transparent);
-}
-
-.root-hear-option[data-checked="true"] {
-  padding-left: 0.5rem;
+  padding-inline: 0.5rem;
 }
 
 .root-hear-check {
   border-radius: 999px;
-  margin-left: -1.5rem;
-  transform: translateX(-0.25rem);
-  transition: margin-left 100ms linear, transform 100ms linear;
+  margin-inline-start: -1.5rem;
+  transform: translateX(0.25rem);
+  transition: margin-inline-start 100ms linear, transform 100ms linear;
 }
 
 .root-hear-option[data-checked="true"] .root-hear-check {
-  margin-left: 0;
+  margin-inline-start: 0;
   transform: translateX(0);
+}
+
+.root-hear-option .root-field-title {
+  line-height: 1.375;
 }
 
 .root-clamp-1 {
