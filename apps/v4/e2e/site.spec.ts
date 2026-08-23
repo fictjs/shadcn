@@ -803,6 +803,41 @@ test.describe("shadcn v4 site", () => {
     await expect(popover).toBeHidden()
   })
 
+  test("playground preset actions restore preferences and deletion feedback", async ({ page }) => {
+    await page.goto("/examples/playground")
+    await waitForClientReady(page)
+
+    const actionsTrigger = page.getByRole("button", { name: "Actions" })
+    await actionsTrigger.click()
+    const actions = page.getByRole("menu", { name: "Preset actions" })
+    await expect(actions.getByRole("menuitem", { name: "Content filter preferences" })).toBeVisible()
+    await expect(actions.getByRole("menuitem", { name: "Delete preset" })).toBeVisible()
+
+    await actions.getByRole("menuitem", { name: "Content filter preferences" }).click()
+    const preferences = page.getByRole("dialog", { name: "Content filter preferences" })
+    await expect(preferences).toContainText("powered by our moderation endpoint")
+    const warningSwitch = preferences.getByRole("switch")
+    await expect(warningSwitch).toHaveAttribute("aria-checked", "true")
+    await warningSwitch.click()
+    await expect(warningSwitch).toHaveAttribute("aria-checked", "false")
+    await preferences.getByRole("button", { name: "Close" }).last().click()
+    await expect(preferences).toBeHidden()
+    await expect(actionsTrigger).toBeFocused()
+
+    await actionsTrigger.click()
+    await actions.getByRole("menuitem", { name: "Delete preset" }).click()
+    const alert = page.getByRole("alertdialog", { name: "Are you absolutely sure?" })
+    await expect(alert).toContainText("This action cannot be undone")
+    await alert.getByRole("button", { name: "Cancel" }).click()
+    await expect(alert).toBeHidden()
+
+    await actionsTrigger.click()
+    await actions.getByRole("menuitem", { name: "Delete preset" }).click()
+    await alert.getByRole("button", { name: "Delete" }).click()
+    await expect(alert).toBeHidden()
+    await expect(page.getByRole("status")).toContainText("This preset has been deleted.")
+  })
+
   test("themes route renders the customizer shell", async ({ page }) => {
     await page.goto("/themes")
 

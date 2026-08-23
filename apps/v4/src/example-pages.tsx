@@ -1997,9 +1997,48 @@ function PlaygroundExample() {
               </div>
             </div>
           </span>
-          <button class="playground-header-button playground-header-button-icon" type="button" aria-label="Actions">
-            <LucideEllipsisIcon />
-          </button>
+          <span class="ui-menu playground-actions-menu" data-menu>
+            <button
+              class="playground-header-button playground-header-button-icon"
+              type="button"
+              aria-label="Actions"
+              data-menu-trigger
+              aria-haspopup="menu"
+              aria-expanded="false"
+            >
+              <LucideEllipsisIcon />
+            </button>
+            <div
+              class="ui-menu-panel playground-actions-panel"
+              data-menu-panel
+              data-menu-side="bottom"
+              data-menu-align="end"
+              role="menu"
+              aria-label="Preset actions"
+              hidden
+            >
+              <button
+                type="button"
+                class="ui-menu-item"
+                role="menuitem"
+                data-menu-item
+                data-playground-dialog-trigger="content-filter"
+              >
+                Content filter preferences
+              </button>
+              <span class="ui-menu-separator" role="separator"></span>
+              <button
+                type="button"
+                class="ui-menu-item"
+                role="menuitem"
+                data-menu-item
+                data-destructive="true"
+                data-playground-dialog-trigger="delete-preset"
+              >
+                Delete preset
+              </button>
+            </div>
+          </span>
         </div>
       </header>
 
@@ -2264,6 +2303,90 @@ function PlaygroundExample() {
           </p>
         </section>
       </div>
+
+      <div
+        class="playground-dialog-overlay"
+        data-playground-dialog="content-filter"
+        role="presentation"
+        hidden
+      >
+        <section
+          class="playground-dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="playground-filter-title"
+          aria-describedby="playground-filter-description"
+        >
+          <button type="button" class="playground-dialog-close" aria-label="Close" data-playground-dialog-close>
+            <LucideXIcon />
+          </button>
+          <header class="playground-dialog-header">
+            <h3 id="playground-filter-title">Content filter preferences</h3>
+            <p id="playground-filter-description">
+              The content filter flags text that may violate our content policy. It&apos;s powered by our moderation endpoint which is free to use to moderate your OpenAI API traffic. Learn more.
+            </p>
+          </header>
+          <div class="playground-filter-content">
+            <h4>Playground Warnings</h4>
+            <div class="playground-warning-row">
+              <button
+                type="button"
+                id="playground-show-warning"
+                class="ui-switch"
+                role="switch"
+                aria-checked="true"
+                data-checked="true"
+                onClick$={(event: MouseEvent) => {
+                  const target = event.currentTarget
+                  if (!(target instanceof HTMLButtonElement)) {
+                    return
+                  }
+                  const checked = target.dataset.checked !== "true"
+                  target.dataset.checked = checked ? "true" : "false"
+                  target.setAttribute("aria-checked", checked ? "true" : "false")
+                }}
+              >
+                <span></span>
+              </button>
+              <label class="playground-warning-copy" for="playground-show-warning">
+                <strong>Show a warning when content is flagged</strong>
+                <span>A warning will be shown when sexual, hateful, violent or self-harm content is detected.</span>
+              </label>
+            </div>
+          </div>
+          <footer class="playground-dialog-footer">
+            <button type="button" class="playground-header-button" data-playground-dialog-close>Close</button>
+          </footer>
+        </section>
+      </div>
+
+      <div
+        class="playground-dialog-overlay"
+        data-playground-dialog="delete-preset"
+        role="presentation"
+        hidden
+      >
+        <section
+          class="playground-dialog playground-alert-dialog"
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="playground-delete-title"
+          aria-describedby="playground-delete-description"
+        >
+          <header class="playground-dialog-header">
+            <h3 id="playground-delete-title">Are you absolutely sure?</h3>
+            <p id="playground-delete-description">
+              This action cannot be undone. This preset will no longer be accessible by you or others you&apos;ve shared it with.
+            </p>
+          </header>
+          <footer class="playground-dialog-footer playground-alert-footer">
+            <button type="button" class="playground-header-button" data-playground-dialog-close>Cancel</button>
+            <button type="button" class="playground-destructive-button" data-playground-delete-confirm>Delete</button>
+          </footer>
+        </section>
+      </div>
+
+      <div class="playground-toast-region" role="status" aria-live="polite" data-playground-toast-region></div>
     </div>
   )
 }

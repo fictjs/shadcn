@@ -76,9 +76,10 @@ function wirePlaygroundControls(): void {
   const openPlaygroundDialog = (dialog: HTMLElement, trigger: HTMLElement): void => {
     closePlaygroundDialog()
     activeDialog = dialog
-    activeDialogTrigger = trigger
+    const menu = trigger.closest<HTMLElement>("[data-menu]")
+    activeDialogTrigger = menu?.querySelector<HTMLElement>(":scope > [data-menu-trigger]") ?? trigger
     dialog.hidden = false
-    trigger.setAttribute("aria-expanded", "true")
+    activeDialogTrigger.setAttribute("aria-expanded", "true")
     window.requestAnimationFrame(() => {
       const autofocus = dialog.querySelector<HTMLElement>("[autofocus]")
       const firstFocusable = dialog.querySelector<HTMLElement>("button, input, textarea, select, [tabindex]:not([tabindex='-1'])")
@@ -235,6 +236,31 @@ function wirePlaygroundControls(): void {
         shareCopy.setAttribute("aria-label", "Copy")
       }, 2000)
       shareCopy.dataset.playgroundCopyTimer = String(timer)
+      return
+    }
+
+    const deleteConfirm = target.closest<HTMLButtonElement>("[data-playground-delete-confirm]")
+    if (deleteConfirm) {
+      event.preventDefault()
+      const scope = deleteConfirm.closest<HTMLElement>(".playground-example")
+      const region = scope?.querySelector<HTMLElement>("[data-playground-toast-region]")
+      closePlaygroundDialog()
+      if (region) {
+        const toast = document.createElement("div")
+        toast.className = "playground-toast"
+        toast.textContent = "This preset has been deleted."
+        region.replaceChildren(toast)
+        const previousTimer = Number.parseInt(region.dataset.playgroundToastTimer ?? "", 10)
+        if (Number.isFinite(previousTimer)) {
+          window.clearTimeout(previousTimer)
+        }
+        const timer = window.setTimeout(() => {
+          if (toast.isConnected) {
+            toast.remove()
+          }
+        }, 3000)
+        region.dataset.playgroundToastTimer = String(timer)
+      }
       return
     }
 
