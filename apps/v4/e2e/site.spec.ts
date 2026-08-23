@@ -1326,6 +1326,7 @@ test.describe("shadcn v4 site", () => {
     await expect(emptyStates).toHaveCount(2)
     await expect(emptyStates.first()).toHaveCSS("height", "224.75px")
     await expect(emptyStates.last()).toHaveCSS("height", "215.5px")
+    await expect(emptyStates.last()).toHaveCSS("border-top-style", "dashed")
     await expect(emptyStates.last().locator(".root-empty-media")).toHaveCSS("width", "32px")
   })
 

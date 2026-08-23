@@ -3868,7 +3868,7 @@ a.ui-item:hover {
 }
 
 .root-empty-solid {
-  border-style: solid;
+  border-style: dashed;
   padding: 1.5rem;
 }
 
