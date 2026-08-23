@@ -138,7 +138,7 @@ test.describe("shadcn v4 site", () => {
     await page.getByRole("link", { name: /Tasks/ }).click()
 
     await expect(page).toHaveURL(/\/examples\/tasks$/)
-    await expect(page.getByPlaceholder("Search issue, title, or team")).toBeVisible()
+    await expect(page.getByPlaceholder("Filter tasks...")).toBeVisible()
   })
 
   test("mobile header opens a dedicated menu overlay", async ({ page }) => {
