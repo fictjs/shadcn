@@ -8666,6 +8666,10 @@ body[data-dashboard-drawer-open="true"] {
   gap: 1.5rem;
 }
 
+.playground-editor-grid > [data-playground-mode-panel][hidden] {
+  display: none;
+}
+
 .playground-main-column {
   display: flex;
   flex-direction: column;

@@ -64,7 +64,6 @@ interface LiveExamplePageProps {
 type DashboardRange = "90d" | "30d" | "7d"
 type DashboardView = "outline" | "past-performance" | "key-personnel" | "focus-documents"
 type DashboardPageSize = 10 | 20 | 30 | 40 | 50
-type PlaygroundMode = "complete" | "insert" | "edit"
 type DirectionMode = "rtl" | "ltr"
 
 const dashboardStats = [
@@ -115,6 +114,11 @@ const playgroundPresets = [
   "Natural language to Python",
   "Explain code",
   "Chat",
+] as const
+const playgroundSliders = [
+  { label: "Temperature", name: "temperature", min: 0, max: 1, step: 0.1, value: 0.56 },
+  { label: "Maximum Length", name: "max-length", min: 0, max: 4000, step: 10, value: 256 },
+  { label: "Top P", name: "top-p", min: 0, max: 1, step: 0.1, value: 0.9 },
 ] as const
 const playgroundModels = [
   {
@@ -1873,8 +1877,6 @@ function TasksExample() {
 }
 
 function PlaygroundExample() {
-  let mode = $state<PlaygroundMode>("complete")
-
   return (
     <div class="live-example playground-example">
       <header class="playground-header">
@@ -2047,35 +2049,37 @@ function PlaygroundExample() {
 
       <div class="playground-shell">
         <section class="playground-main-column">
-          <div class="playground-editor-grid" data-mode={mode}>
-            {mode === "complete" ? (
-              <div class="playground-complete-panel">
-                <textarea class="playground-textarea" placeholder="Write a tagline for an ice cream shop"></textarea>
-              </div>
-            ) : null}
+          <div class="playground-editor-grid" data-mode="complete">
+            <div class="playground-complete-panel" data-playground-mode-panel="complete">
+              <textarea class="playground-textarea" placeholder="Write a tagline for an ice cream shop"></textarea>
+            </div>
 
-            {mode === "insert" ? (
-              <>
-                <div class="playground-textarea playground-copy-surface">We&apos;re writing to [inset]. Congrats from OpenAI!</div>
-                <div class="playground-surface-pane playground-surface-pane-muted" aria-label="Insertion preview"></div>
-              </>
-            ) : null}
+            <div class="playground-textarea playground-copy-surface" data-playground-mode-panel="insert" hidden>
+              We&apos;re writing to [inset]. Congrats from OpenAI!
+            </div>
+            <div
+              class="playground-surface-pane playground-surface-pane-muted"
+              aria-label="Insertion preview"
+              data-playground-mode-panel="insert"
+              hidden
+            ></div>
 
-            {mode === "edit" ? (
-              <>
-                <div class="playground-edit-stack">
-                  <label class="playground-field">
-                    <span class="sr-only">Input</span>
-                    <div class="playground-textarea playground-textarea-compact playground-copy-surface">We is going to the market.</div>
-                  </label>
-                  <label class="playground-field">
-                    <span>Instructions</span>
-                    <div class="playground-textarea playground-textarea-compact playground-copy-surface">Fix the grammar.</div>
-                  </label>
-                </div>
-                <div class="playground-surface-pane" aria-label="Edit preview"></div>
-              </>
-            ) : null}
+            <div class="playground-edit-stack" data-playground-mode-panel="edit" hidden>
+              <label class="playground-field">
+                <span class="sr-only">Input</span>
+                <div class="playground-textarea playground-textarea-compact playground-copy-surface">We is going to the market.</div>
+              </label>
+              <label class="playground-field">
+                <span>Instructions</span>
+                <div class="playground-textarea playground-textarea-compact playground-copy-surface">Fix the grammar.</div>
+              </label>
+            </div>
+            <div
+              class="playground-surface-pane"
+              aria-label="Edit preview"
+              data-playground-mode-panel="edit"
+              hidden
+            ></div>
           </div>
 
           <div class="playground-submit-row">
@@ -2093,11 +2097,9 @@ function PlaygroundExample() {
               <button
                 type="button"
                 role="tab"
-                aria-selected={mode === "complete"}
-                class={mode === "complete" ? "playground-tab playground-tab-active" : "playground-tab"}
-                onClick$={() => {
-                  mode = "complete"
-                }}
+                aria-selected="true"
+                class="playground-tab playground-tab-active"
+                data-playground-mode-trigger="complete"
               >
                 <svg viewBox="0 0 20 20" aria-hidden="true" class="playground-tab-icon">
                   <rect x="4" y="3" width="12" height="2" rx="1"></rect>
@@ -2113,11 +2115,10 @@ function PlaygroundExample() {
               <button
                 type="button"
                 role="tab"
-                aria-selected={mode === "insert"}
-                class={mode === "insert" ? "playground-tab playground-tab-active" : "playground-tab"}
-                onClick$={() => {
-                  mode = "insert"
-                }}
+                aria-selected="false"
+                class="playground-tab"
+                data-playground-mode-trigger="insert"
+                tabIndex={-1}
               >
                 <svg viewBox="0 0 20 20" aria-hidden="true" class="playground-tab-icon">
                   <path d="M10 3.5V10"></path>
@@ -2131,11 +2132,10 @@ function PlaygroundExample() {
               <button
                 type="button"
                 role="tab"
-                aria-selected={mode === "edit"}
-                class={mode === "edit" ? "playground-tab playground-tab-active" : "playground-tab"}
-                onClick$={() => {
-                  mode = "edit"
-                }}
+                aria-selected="false"
+                class="playground-tab"
+                data-playground-mode-trigger="edit"
+                tabIndex={-1}
               >
                 <svg viewBox="0 0 20 20" aria-hidden="true" class="playground-tab-icon">
                   <rect x="4" y="3" width="12" height="2" rx="1"></rect>
@@ -2224,9 +2224,45 @@ function PlaygroundExample() {
             </span>
           </section>
 
-          <PlaygroundSlider label="Temperature" name="temperature" min={0} max={1} step={0.1} value={0.56} />
-          <PlaygroundSlider label="Maximum Length" name="max-length" min={0} max={4000} step={10} value={256} />
-          <PlaygroundSlider label="Top P" name="top-p" min={0} max={1} step={0.1} value={0.9} />
+          {playgroundSliders.map((slider) => {
+            const percent = ((slider.value - slider.min) / (slider.max - slider.min || 1)) * 100
+
+            return (
+              <div class="playground-field" data-slider-scope={slider.name} key={slider.name}>
+                <div class="playground-field-head">
+                  <span>{slider.label}</span>
+                  <span class="playground-field-value" data-slider-output="0">
+                    {slider.value}
+                  </span>
+                </div>
+                <div
+                  class="ui-slider"
+                  data-slider={slider.name}
+                  data-slider-min={String(slider.min)}
+                  data-slider-max={String(slider.max)}
+                  data-slider-step={String(slider.step)}
+                  role="group"
+                  aria-label={slider.label}
+                >
+                  <span class="ui-slider-track">
+                    <span class="ui-slider-range" data-slider-range style={`left:0%;right:${100 - percent}%`}></span>
+                  </span>
+                  <span
+                    class="ui-slider-thumb"
+                    data-slider-thumb="0"
+                    data-slider-value={String(slider.value)}
+                    role="slider"
+                    tabIndex={0}
+                    aria-label={slider.label}
+                    aria-valuemin={slider.min}
+                    aria-valuemax={slider.max}
+                    aria-valuenow={slider.value}
+                    style={`left:${percent}%`}
+                  ></span>
+                </div>
+              </div>
+            )
+          })}
         </aside>
       </div>
 
@@ -2390,53 +2426,6 @@ function PlaygroundExample() {
       </div>
 
       <div class="playground-toast-region" role="status" aria-live="polite" data-playground-toast-region></div>
-    </div>
-  )
-}
-
-function PlaygroundSlider(props: {
-  label: string
-  name: string
-  min: number
-  max: number
-  step: number
-  value: number
-}) {
-  const percent = ((props.value - props.min) / (props.max - props.min || 1)) * 100
-
-  return (
-    <div class="playground-field" data-slider-scope={props.name}>
-      <div class="playground-field-head">
-        <span>{props.label}</span>
-        <span class="playground-field-value" data-slider-output="0">
-          {props.value}
-        </span>
-      </div>
-      <div
-        class="ui-slider"
-        data-slider={props.name}
-        data-slider-min={String(props.min)}
-        data-slider-max={String(props.max)}
-        data-slider-step={String(props.step)}
-        role="group"
-        aria-label={props.label}
-      >
-        <span class="ui-slider-track">
-          <span class="ui-slider-range" data-slider-range style={`left:0%;right:${100 - percent}%`}></span>
-        </span>
-        <span
-          class="ui-slider-thumb"
-          data-slider-thumb="0"
-          data-slider-value={String(props.value)}
-          role="slider"
-          tabIndex={0}
-          aria-label={props.label}
-          aria-valuemin={props.min}
-          aria-valuemax={props.max}
-          aria-valuenow={props.value}
-          style={`left:${percent}%`}
-        ></span>
-      </div>
     </div>
   )
 }

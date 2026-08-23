@@ -101,6 +101,29 @@ function wirePlaygroundControls(): void {
     }
   }
 
+  const setPlaygroundMode = (trigger: HTMLElement): void => {
+    const mode = trigger.dataset.playgroundModeTrigger
+    if (mode !== "complete" && mode !== "insert" && mode !== "edit") {
+      return
+    }
+    const scope = trigger.closest<HTMLElement>(".playground-example")
+    const editor = scope?.querySelector<HTMLElement>(".playground-editor-grid")
+    if (!scope || !editor) {
+      return
+    }
+
+    editor.dataset.mode = mode
+    scope.querySelectorAll<HTMLElement>("[data-playground-mode-trigger]").forEach((tab) => {
+      const active = tab.dataset.playgroundModeTrigger === mode
+      tab.classList.toggle("playground-tab-active", active)
+      tab.setAttribute("aria-selected", String(active))
+      tab.tabIndex = active ? 0 : -1
+    })
+    editor.querySelectorAll<HTMLElement>("[data-playground-mode-panel]").forEach((panel) => {
+      panel.hidden = panel.dataset.playgroundModePanel !== mode
+    })
+  }
+
   document.addEventListener("input", (event) => {
     const target = event.target
     if (!(target instanceof HTMLInputElement) || target.dataset.playgroundPresetSearch === undefined) {
@@ -198,6 +221,13 @@ function wirePlaygroundControls(): void {
   document.addEventListener("click", (event) => {
     const target = event.target
     if (!(target instanceof Element)) {
+      return
+    }
+
+    const modeTrigger = target.closest<HTMLElement>("[data-playground-mode-trigger]")
+    if (modeTrigger) {
+      event.preventDefault()
+      setPlaygroundMode(modeTrigger)
       return
     }
 
@@ -302,6 +332,35 @@ function wirePlaygroundControls(): void {
   })
 
   document.addEventListener("keydown", (event) => {
+    const eventTarget = event.target
+    const modeTrigger = eventTarget instanceof Element
+      ? eventTarget.closest<HTMLElement>("[data-playground-mode-trigger]")
+      : null
+    if (modeTrigger && ["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
+      const tabs = Array.from(
+        modeTrigger.closest<HTMLElement>("[role='tablist']")
+          ?.querySelectorAll<HTMLElement>("[data-playground-mode-trigger]") ?? [],
+      )
+      const currentIndex = tabs.indexOf(modeTrigger)
+      let nextIndex = currentIndex
+      if (event.key === "Home") {
+        nextIndex = 0
+      } else if (event.key === "End") {
+        nextIndex = tabs.length - 1
+      } else if (event.key === "ArrowRight") {
+        nextIndex = (currentIndex + 1) % tabs.length
+      } else if (event.key === "ArrowLeft") {
+        nextIndex = (currentIndex - 1 + tabs.length) % tabs.length
+      }
+      const nextTab = tabs[nextIndex]
+      if (nextTab) {
+        event.preventDefault()
+        setPlaygroundMode(nextTab)
+        nextTab.focus()
+      }
+      return
+    }
+
     if (!activeDialog) {
       return
     }

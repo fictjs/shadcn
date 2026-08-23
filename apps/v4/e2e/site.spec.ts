@@ -762,7 +762,7 @@ test.describe("shadcn v4 site", () => {
     expect((await page.locator(".playground-header").boundingBox())?.height).toBe(64)
     await expect(page.locator(".playground-shell")).toHaveCSS("padding", "24px 32px")
     await expect(page.locator(".playground-sidebar-panel")).toBeVisible()
-    await expect(page.locator(".playground-textarea")).toHaveCSS("min-height", "700px")
+    await expect(page.locator("textarea.playground-textarea")).toHaveCSS("min-height", "700px")
     await expect(page.getByRole("button", { name: "Show history" })).not.toContainText("Reset")
 
     const preset = page.getByRole("combobox", { name: "Load a preset..." })
@@ -775,7 +775,9 @@ test.describe("shadcn v4 site", () => {
     }
 
     await page.getByRole("tab", { name: "Insert", exact: true }).click()
-    const insertPanes = page.locator('.playground-editor-grid[data-mode="insert"] > *')
+    const insertPanes = page.locator(
+      '.playground-editor-grid[data-mode="insert"] > [data-playground-mode-panel]:not([hidden])',
+    )
     const narrowFirst = await insertPanes.nth(0).boundingBox()
     const narrowSecond = await insertPanes.nth(1).boundingBox()
     expect(narrowFirst?.height).toBe(300)
@@ -796,6 +798,33 @@ test.describe("shadcn v4 site", () => {
     expect(desktopSecond?.x).toBeGreaterThan((desktopFirst?.x ?? 0) + (desktopFirst?.width ?? 0))
     expect(desktopSecond?.y).toBe(desktopFirst?.y)
 
+  })
+
+  test("playground mode changes preserve one set of slider controls", async ({ page }) => {
+    await page.goto("/examples/playground")
+    await waitForClientReady(page)
+
+    const sliderFields = page.locator(".playground-field[data-slider-scope]")
+    const temperature = page.getByRole("slider", { name: "Temperature" })
+    await expect(sliderFields).toHaveCount(3)
+    await expect(temperature).toHaveCount(1)
+
+    await temperature.press("ArrowRight")
+    await expect(temperature).toHaveAttribute("aria-valuenow", "0.7")
+
+    for (const mode of ["Insert", "Edit", "Complete"]) {
+      await page.getByRole("tab", { name: mode, exact: true }).click()
+      await expect(sliderFields).toHaveCount(3)
+      await expect(page.getByRole("slider", { name: "Temperature" })).toHaveCount(1)
+      await expect(page.getByRole("slider", { name: "Temperature" })).toHaveAttribute("aria-valuenow", "0.7")
+    }
+
+    await page.getByRole("tab", { name: "Complete", exact: true }).press("ArrowRight")
+    await expect(page.getByRole("tab", { name: "Insert", exact: true })).toBeFocused()
+    await expect(page.getByRole("tab", { name: "Insert", exact: true })).toHaveAttribute("aria-selected", "true")
+    await expect(page.locator(".playground-editor-grid")).toHaveAttribute("data-mode", "insert")
+    await expect(sliderFields).toHaveCount(3)
+    await expect(page.getByRole("slider", { name: "Temperature" })).toHaveAttribute("aria-valuenow", "0.7")
   })
 
   test("playground save dialog matches the React preset form", async ({ page }) => {
