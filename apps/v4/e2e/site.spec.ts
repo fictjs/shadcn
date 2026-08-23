@@ -1149,6 +1149,7 @@ test.describe("shadcn v4 site", () => {
   test("rtl example matches the React component gallery breakpoints", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 1200 })
     await page.goto("/examples/rtl")
+    await waitForClientReady(page)
 
     const showcase = page.locator(".example-showcase-surface")
     const gallery = showcase.locator("[data-slot='rtl-components']")
@@ -1159,10 +1160,10 @@ test.describe("shadcn v4 site", () => {
     await expect(gallery).toHaveAttribute("data-lang", "ar")
     await expect(gallery.locator(".examples-root-column")).toHaveCount(4)
     await expect(gallery.locator(".example-root-panel")).toHaveCount(16)
-    await expect(gallery).toContainText("Payment Method")
-    await expect(gallery).toContainText("No Team Members")
-    await expect(gallery).toContainText("Appearance Settings")
-    await expect(gallery).toContainText("Processing your request")
+    await expect(gallery).toContainText("طريقة الدفع")
+    await expect(gallery).toContainText("لا يوجد أعضاء في الفريق")
+    await expect(gallery).toContainText("إعدادات المظهر")
+    await expect(gallery).toContainText("جارٍ معالجة طلبك")
     expect(await gallery.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(" ").length)).toBe(1)
     await expect(lastColumn).toBeVisible()
     await expect(lastColumn).toHaveCSS("order", "-1")
@@ -1181,6 +1182,35 @@ test.describe("shadcn v4 site", () => {
     expect(await gallery.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(" ").length)).toBe(4)
     await expect(lastColumn).toBeVisible()
     await expect(lastColumn).toHaveCSS("order", "0")
+  })
+
+  test("rtl example switches all component copy between Arabic and Hebrew", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 1200 })
+    await page.goto("/examples/rtl")
+    await waitForClientReady(page)
+
+    const gallery = page.locator("[data-slot='rtl-components']")
+    await expect(gallery).toHaveAttribute("data-lang", "ar")
+    await expect(gallery).toContainText("طريقة الدفع")
+    await expect(gallery).toContainText("بيئة الحوسبة")
+    await expect(gallery).toContainText("كيف سمعت عنا؟")
+    await expect(page.getByPlaceholder("اسأل، ابحث، أو أنشئ أي شيء...")).toBeVisible()
+    await expect(page.getByRole("button", { name: "إرفاق ملف" })).toBeVisible()
+
+    await page.getByRole("button", { name: "Language" }).click()
+    await page.getByRole("option", { name: "Hebrew (עברית)" }).click()
+    await expect(gallery).toHaveAttribute("data-lang", "he")
+    await expect(gallery).toHaveAttribute("lang", "he")
+    await expect(gallery).toContainText("אמצעי תשלום")
+    await expect(gallery).toContainText("סביבת מחשוב")
+    await expect(gallery).toContainText("איך שמעת עלינו?")
+    await expect(page.getByPlaceholder("שאל, חפש, או צור משהו...")).toBeVisible()
+    await expect(page.getByRole("button", { name: "צרף קובץ" })).toBeVisible()
+
+    await page.getByRole("button", { name: "Language" }).click()
+    await page.getByRole("option", { name: "Arabic (العربية)" }).click()
+    await expect(gallery).toHaveAttribute("data-lang", "ar")
+    await expect(gallery).toContainText("طريقة الدفع")
   })
 
   test("create route builds a live starter workspace", async ({ page }) => {

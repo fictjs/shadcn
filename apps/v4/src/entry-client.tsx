@@ -2,6 +2,7 @@ import { installResumableLoader } from "@fictjs/runtime/experimental/loader"
 
 import "./App"
 import "./styles.css"
+import { localizeRtlGallery, type RtlLanguage } from "./rtl-localization"
 
 async function loadManifest(): Promise<void> {
   if (!import.meta.env.PROD) {
@@ -28,6 +29,7 @@ async function initResumableClient(): Promise<void> {
   wireShowcaseSliders()
   wireShowcaseCounters()
   wireShowcaseMenus()
+  wireRtlLocalization()
   wireShowcaseToggles()
   wireShowcaseMentions()
   wireShowcaseSelects()
@@ -56,6 +58,35 @@ async function initResumableClient(): Promise<void> {
   wireCreateRoute()
   wireClientFilters()
   document.documentElement.dataset.clientReady = "true"
+}
+
+function wireRtlLocalization(): void {
+  document.querySelectorAll<HTMLElement>("[data-slot='rtl-components']").forEach((root) => {
+    localizeRtlGallery(root, "ar")
+  })
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+    const option = target.closest<HTMLElement>("[data-rtl-language]")
+    const language = option?.dataset.rtlLanguage as RtlLanguage | undefined
+    const root = option?.closest<HTMLElement>("[data-slot='rtl-components']")
+    if (!option || !root || (language !== "ar" && language !== "he")) {
+      return
+    }
+
+    root.querySelectorAll<HTMLElement>("[data-rtl-language]").forEach((item) => {
+      item.setAttribute("aria-selected", String(item === option))
+    })
+    const label = root.querySelector<HTMLElement>(".rtl-language-selector [data-menu-label-target]")
+    const selectedLabel = option.querySelector<HTMLElement>(".ui-select-item-label")
+    if (label && selectedLabel) {
+      label.textContent = selectedLabel.textContent
+    }
+    localizeRtlGallery(root, language)
+  })
 }
 
 function wireAuthenticationForm(): void {

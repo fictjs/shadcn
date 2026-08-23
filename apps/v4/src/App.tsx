@@ -3533,7 +3533,7 @@ function ExamplesRootPreview(props: { rtl?: boolean } = {}) {
             aria-expanded="false"
             data-menu-trigger
           >
-            <span data-menu-label-target>العربية</span>
+            <span data-menu-label-target>Arabic (العربية)</span>
             <ChevronDownIcon class="ui-select-chevron" />
           </button>
           <div
@@ -3551,10 +3551,10 @@ function ExamplesRootPreview(props: { rtl?: boolean } = {}) {
               role="option"
               aria-selected="true"
               data-menu-item
-              data-menu-value="العربية"
+              data-menu-value="Arabic (العربية)"
               data-rtl-language="ar"
             >
-              <span class="ui-select-item-label">العربية</span>
+              <span class="ui-select-item-label">Arabic (العربية)</span>
               <CheckIcon class="ui-select-item-check" />
             </button>
             <button
@@ -3563,10 +3563,10 @@ function ExamplesRootPreview(props: { rtl?: boolean } = {}) {
               role="option"
               aria-selected="false"
               data-menu-item
-              data-menu-value="עברית"
+              data-menu-value="Hebrew (עברית)"
               data-rtl-language="he"
             >
-              <span class="ui-select-item-label">עברית</span>
+              <span class="ui-select-item-label">Hebrew (עברית)</span>
               <CheckIcon class="ui-select-item-check" />
             </button>
           </div>
