@@ -285,6 +285,29 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".dashboard-chart-ticks text").first()).toBeVisible()
   })
 
+  test("dashboard compact layout uses the React responsive controls", async ({ page }) => {
+    await page.setViewportSize({ width: 1000, height: 900 })
+    await page.goto("/examples/dashboard")
+
+    const viewSelector = page.getByLabel("View", { exact: true })
+    await expect(page.locator(".example-live-stage")).toBeVisible()
+    await expect(viewSelector).toBeVisible()
+    await expect(page.locator(".dashboard-tabs-list")).toBeHidden()
+    const statColumns = await page.locator(".dashboard-stats-grid").evaluate((element) => {
+      return getComputedStyle(element).gridTemplateColumns.split(" ").length
+    })
+    expect(statColumns).toBe(2)
+
+    await expect(page.getByLabel("Go to first page")).toBeHidden()
+    await expect(page.getByLabel("Go to previous page")).toBeVisible()
+    await expect(page.getByLabel("Go to next page")).toBeVisible()
+    await expect(page.getByLabel("Go to last page")).toBeHidden()
+    await expect(page.locator(".dashboard-rows-per-page")).toBeHidden()
+
+    await viewSelector.selectOption("key-personnel")
+    await expect(page.locator('.dashboard-outline-placeholder[aria-label="key personnel"]')).toBeVisible()
+  })
+
   test("dashboard table selection and pagination match the React example", async ({ page }) => {
     await page.goto("/examples/dashboard")
     await waitForClientReady(page)

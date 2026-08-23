@@ -939,6 +939,31 @@ function DashboardExample() {
 
         <section class="dashboard-table-block">
           <div class="dashboard-table-toolbar">
+            <label class="dashboard-view-selector" for="dashboard-view-selector">
+              <span class="sr-only">View</span>
+              <select
+                id="dashboard-view-selector"
+                aria-label="View"
+                value={activeView}
+                onInput$={(event: Event) => {
+                  const target = event.currentTarget
+                  if (!(target instanceof HTMLSelectElement)) {
+                    return
+                  }
+
+                  const nextView = resolveDashboardView(target.value)
+                  if (nextView) {
+                    activeView = nextView
+                  }
+                }}
+              >
+                <option value="outline">Outline</option>
+                <option value="past-performance">Past Performance</option>
+                <option value="key-personnel">Key Personnel</option>
+                <option value="focus-documents">Focus Documents</option>
+              </select>
+              <TablerChevronDownIcon />
+            </label>
             <div
               class="dashboard-tabs-list"
               role="tablist"
@@ -1053,9 +1078,9 @@ function DashboardExample() {
                   ))}
                 </div>
               </span>
-              <button type="button" class="dashboard-outline-button">
+              <button type="button" class="dashboard-outline-button" aria-label="Add Section">
                 <TablerPlusIcon />
-                <span>Add Section</span>
+                <span class="dashboard-add-section-label">Add Section</span>
               </button>
             </div>
           </div>
@@ -1110,7 +1135,7 @@ function DashboardExample() {
                   <div class="dashboard-pagination-buttons">
                     <button
                       type="button"
-                      class="dashboard-pagination-button"
+                      class="dashboard-pagination-button dashboard-pagination-boundary"
                       aria-label="Go to first page"
                       disabled={dashboardPageIndex === 0}
                       onClick$={() => {
@@ -1147,7 +1172,7 @@ function DashboardExample() {
                     </button>
                     <button
                       type="button"
-                      class="dashboard-pagination-button"
+                      class="dashboard-pagination-button dashboard-pagination-boundary"
                       aria-label="Go to last page"
                       disabled={dashboardPageIndex >= Math.ceil(dashboardTableRows.length / dashboardPageSize) - 1}
                       onClick$={() => {
