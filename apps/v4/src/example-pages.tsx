@@ -1935,7 +1935,15 @@ function PlaygroundExample() {
               </div>
             </div>
           </span>
-          <button class="playground-header-button" type="button">Save</button>
+          <button
+            class="playground-header-button"
+            type="button"
+            data-playground-dialog-trigger="save"
+            aria-haspopup="dialog"
+            aria-expanded="false"
+          >
+            Save
+          </button>
           <button class="playground-header-button" type="button">View code</button>
           <button class="playground-header-button" type="button">Share</button>
           <button class="playground-header-button playground-header-button-icon" type="button" aria-label="Actions">
@@ -2127,6 +2135,49 @@ function PlaygroundExample() {
           <PlaygroundSlider label="Maximum Length" name="max-length" min={0} max={4000} step={10} value={256} />
           <PlaygroundSlider label="Top P" name="top-p" min={0} max={1} step={0.1} value={0.9} />
         </aside>
+      </div>
+
+      <div
+        class="playground-dialog-overlay"
+        data-playground-dialog="save"
+        role="presentation"
+        hidden
+      >
+        <section
+          class="playground-dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="playground-save-title"
+          aria-describedby="playground-save-description"
+        >
+          <button
+            type="button"
+            class="playground-dialog-close"
+            aria-label="Close"
+            data-playground-dialog-close
+          >
+            <LucideXIcon />
+          </button>
+          <header class="playground-dialog-header">
+            <h3 id="playground-save-title">Save preset</h3>
+            <p id="playground-save-description">
+              This will save the current playground state as a preset which you can access later or share with others.
+            </p>
+          </header>
+          <div class="playground-save-fields">
+            <label class="playground-field" for="playground-preset-name">
+              <span>Name</span>
+              <input id="playground-preset-name" class="playground-dialog-input" type="text" autofocus />
+            </label>
+            <label class="playground-field" for="playground-preset-description">
+              <span>Description</span>
+              <textarea id="playground-preset-description" class="playground-dialog-textarea"></textarea>
+            </label>
+          </div>
+          <footer class="playground-dialog-footer">
+            <button type="submit" class="playground-primary-button">Save</button>
+          </footer>
+        </section>
       </div>
     </div>
   )

@@ -58,6 +58,34 @@ async function initResumableClient(): Promise<void> {
 }
 
 function wirePlaygroundControls(): void {
+  let activeDialog: HTMLElement | null = null
+  let activeDialogTrigger: HTMLElement | null = null
+
+  const closePlaygroundDialog = (): void => {
+    if (!activeDialog) {
+      return
+    }
+    activeDialog.hidden = true
+    activeDialogTrigger?.setAttribute("aria-expanded", "false")
+    const trigger = activeDialogTrigger
+    activeDialog = null
+    activeDialogTrigger = null
+    trigger?.focus()
+  }
+
+  const openPlaygroundDialog = (dialog: HTMLElement, trigger: HTMLElement): void => {
+    closePlaygroundDialog()
+    activeDialog = dialog
+    activeDialogTrigger = trigger
+    dialog.hidden = false
+    trigger.setAttribute("aria-expanded", "true")
+    window.requestAnimationFrame(() => {
+      const autofocus = dialog.querySelector<HTMLElement>("[autofocus]")
+      const firstFocusable = dialog.querySelector<HTMLElement>("button, input, textarea, select, [tabindex]:not([tabindex='-1'])")
+      ;(autofocus ?? firstFocusable)?.focus()
+    })
+  }
+
   const resetPresetSearch = (panel: HTMLElement): void => {
     const input = panel.querySelector<HTMLInputElement>("[data-playground-preset-search]")
     if (input) {
@@ -171,6 +199,32 @@ function wirePlaygroundControls(): void {
     if (!(target instanceof Element)) {
       return
     }
+
+    const dialogTrigger = target.closest<HTMLElement>("[data-playground-dialog-trigger]")
+    if (dialogTrigger) {
+      const dialogId = dialogTrigger.dataset.playgroundDialogTrigger
+      const scope = dialogTrigger.closest<HTMLElement>(".playground-example")
+      const dialog = scope?.querySelector<HTMLElement>(`[data-playground-dialog="${dialogId}"]`)
+      if (dialog) {
+        event.preventDefault()
+        openPlaygroundDialog(dialog, dialogTrigger)
+      }
+      return
+    }
+
+    const dialogClose = target.closest<HTMLElement>("[data-playground-dialog-close]")
+    if (dialogClose) {
+      event.preventDefault()
+      closePlaygroundDialog()
+      return
+    }
+
+    const overlay = target.closest<HTMLElement>("[data-playground-dialog]")
+    if (overlay && target === overlay) {
+      closePlaygroundDialog()
+      return
+    }
+
     const option = target.closest<HTMLElement>("[data-playground-preset-option]")
     const panel = option?.closest<HTMLElement>("[data-menu-panel]")
     if (option && panel) {
@@ -192,6 +246,35 @@ function wirePlaygroundControls(): void {
       if (empty) {
         empty.hidden = true
       }
+    }
+  })
+
+  document.addEventListener("keydown", (event) => {
+    if (!activeDialog) {
+      return
+    }
+    if (event.key === "Escape") {
+      event.preventDefault()
+      closePlaygroundDialog()
+      return
+    }
+    if (event.key !== "Tab") {
+      return
+    }
+    const focusable = Array.from(activeDialog.querySelectorAll<HTMLElement>(
+      "button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex='-1'])",
+    )).filter((element) => !element.hidden)
+    if (focusable.length === 0) {
+      return
+    }
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault()
+      last.focus()
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault()
+      first.focus()
     }
   })
 }

@@ -744,6 +744,28 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".playground-edit-stack")).toContainText("Instructions")
   })
 
+  test("playground save dialog matches the React preset form", async ({ page }) => {
+    await page.goto("/examples/playground")
+    await waitForClientReady(page)
+
+    const trigger = page.getByRole("button", { name: "Save", exact: true }).first()
+    await trigger.click()
+    const dialog = page.getByRole("dialog", { name: "Save preset" })
+    await expect(dialog).toContainText("This will save the current playground state as a preset")
+    await expect(dialog.getByLabel("Name")).toBeFocused()
+    await dialog.getByLabel("Name").fill("My preset")
+    await dialog.getByLabel("Description").fill("A reusable prompt")
+    await expect(dialog.getByRole("button", { name: "Save", exact: true })).toBeVisible()
+
+    await page.keyboard.press("Escape")
+    await expect(dialog).toBeHidden()
+    await expect(trigger).toBeFocused()
+
+    await trigger.click()
+    await dialog.getByRole("button", { name: "Close" }).click()
+    await expect(dialog).toBeHidden()
+  })
+
   test("themes route renders the customizer shell", async ({ page }) => {
     await page.goto("/themes")
 
