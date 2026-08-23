@@ -4146,6 +4146,10 @@ a.ui-item:hover {
   font-family: "Noto Sans Hebrew Variable", sans-serif;
 }
 
+.rtl-components .root-item-stack .button-xs {
+  padding-inline: 0.6875rem;
+}
+
 .rtl-language-selector {
   position: absolute;
   top: -3rem;

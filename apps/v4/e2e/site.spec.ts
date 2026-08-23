@@ -1167,6 +1167,8 @@ test.describe("shadcn v4 site", () => {
     await expect(gallery).toContainText("جارٍ معالجة طلبك")
     expect(await gallery.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(" ").length)).toBe(1)
     await expect(gallery).toHaveCSS("width", "327px")
+    await expect(gallery).toHaveCSS("height", "2978.75px")
+    await expect(gallery.locator(".root-item-stack")).toHaveCSS("height", "153.25px")
     await expect(lastColumn).toBeVisible()
     await expect(lastColumn).toHaveCSS("order", "-1")
     await expect(page.getByRole("button", { name: "Language" })).toBeHidden()
