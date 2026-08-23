@@ -2130,21 +2130,21 @@ function RootFieldDemoPreview() {
               <label class="ui-label" for="checkout-card-name">
                 Name on Card
               </label>
-              <input class="ui-input" id="checkout-card-name" placeholder="John Doe" />
+                <input class="ui-input" id="checkout-card-name" placeholder="John Doe" required />
             </div>
             <div class="ui-field-row ui-field-row-3">
               <div class="ui-field ui-col-span-2">
                 <label class="ui-label" for="checkout-card-number">
                   Card Number
                 </label>
-                <input class="ui-input" id="checkout-card-number" placeholder="1234 5678 9012 3456" />
+                <input class="ui-input" id="checkout-card-number" placeholder="1234 5678 9012 3456" required />
                 <p class="ui-field-description">Enter your 16-digit number.</p>
               </div>
               <div class="ui-field">
                 <label class="ui-label" for="checkout-cvv">
                   CVV
                 </label>
-                <input class="ui-input" id="checkout-cvv" placeholder="123" />
+                <input class="ui-input" id="checkout-cvv" placeholder="123" required />
               </div>
             </div>
             <div class="ui-field-row ui-field-row-2">
@@ -2171,8 +2171,10 @@ function RootFieldDemoPreview() {
           <p class="ui-field-description">The billing address associated with your payment method</p>
           <div class="ui-field-group">
             <div class="ui-field ui-field-horizontal">
-              <UiCheckbox checked />
-              <span class="ui-label ui-label-normal">Same as shipping address</span>
+              <UiCheckbox id="checkout-same-as-shipping" checked />
+              <label class="ui-label ui-label-normal" for="checkout-same-as-shipping">
+                Same as shipping address
+              </label>
             </div>
           </div>
         </fieldset>
@@ -2191,7 +2193,7 @@ function RootFieldDemoPreview() {
         </fieldset>
 
         <div class="ui-field ui-field-horizontal">
-          <button class="button button-compact" type="button">
+          <button class="button button-compact" type="submit">
             Submit
           </button>
           <button class="button button-outline button-compact" type="button">
@@ -2211,6 +2213,7 @@ interface UiSelectOption {
 
 function UiSelectControl(props: {
   id?: string
+  triggerId?: string
   ariaLabel: string
   value: string
   placeholder?: string
@@ -2258,6 +2261,7 @@ function UiSelectControl(props: {
       </select>
 
       <button
+        id={props.triggerId}
         type="button"
         class={props.triggerClass ? `ui-select-trigger ${props.triggerClass}` : "ui-select-trigger"}
         role="combobox"
@@ -2311,7 +2315,8 @@ function UiSelectControl(props: {
 function UiSelect(props: { id?: string; placeholder: string; options: string[] }) {
   return (
     <UiSelectControl
-      id={props.id}
+      id={props.id ? `${props.id}-native` : undefined}
+      triggerId={props.id}
       ariaLabel={props.placeholder}
       value=""
       placeholder={props.placeholder}
@@ -2321,9 +2326,10 @@ function UiSelect(props: { id?: string; placeholder: string; options: string[] }
   )
 }
 
-function UiCheckbox(props: { checked?: boolean }) {
+function UiCheckbox(props: { id?: string; checked?: boolean }) {
   return (
     <button
+      id={props.id}
       type="button"
       class="ui-checkbox"
       role="checkbox"

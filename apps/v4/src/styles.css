@@ -2806,6 +2806,22 @@ h1 {
   background: var(--border);
 }
 
+.root-field-demo .ui-separator {
+  position: relative;
+  height: 1.25rem;
+  margin-block: -0.5rem;
+  background: transparent;
+}
+
+.root-field-demo .ui-separator::after {
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--border);
+  content: "";
+}
+
 .ui-field-separator {
   position: relative;
   display: flex;

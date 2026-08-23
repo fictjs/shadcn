@@ -1246,6 +1246,32 @@ test.describe("shadcn v4 site", () => {
     await expect(favorite).toHaveAttribute("aria-pressed", "true")
   })
 
+  test("rtl payment form matches the localized React controls", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 1200 })
+    await page.goto("/examples/rtl")
+    await waitForClientReady(page)
+
+    const gallery = page.locator("[data-slot='rtl-components']")
+    const payment = gallery.locator(".root-field-demo")
+    await expect(payment).toHaveCSS("height", "711.25px")
+    await expect(payment.getByLabel("رقم البطاقة")).toHaveAttribute(
+      "placeholder",
+      "١٢٣٤ ٥٦٧٨ ٩٠١٢ ٣٤٥٦",
+    )
+    await expect(payment.getByLabel("رمز الأمان")).toHaveAttribute("placeholder", "١٢٣")
+
+    const month = payment.getByRole("combobox", { name: "MM" })
+    await month.click()
+    await payment.getByRole("option", { name: "٠١", exact: true }).click()
+    await expect(month.locator("[data-select-value]")).toHaveText("٠١")
+
+    const sameAsShipping = payment.getByRole("checkbox", { name: "نفس عنوان الشحن" })
+    await expect(sameAsShipping).toHaveAttribute("aria-checked", "true")
+    await payment.getByText("نفس عنوان الشحن", { exact: true }).click()
+    await expect(sameAsShipping).toHaveAttribute("aria-checked", "false")
+    await expect(payment.getByRole("button", { name: "إرسال" })).toHaveAttribute("type", "submit")
+  })
+
   test("create route builds a live starter workspace", async ({ page }) => {
     await page.goto("/create")
 
