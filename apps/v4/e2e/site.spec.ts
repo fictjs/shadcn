@@ -744,6 +744,60 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".playground-edit-stack")).toContainText("Instructions")
   })
 
+  test("playground example matches the React responsive layout", async ({ page }) => {
+    await page.setViewportSize({ width: 767, height: 1100 })
+    await page.goto("/examples/playground")
+
+    const showcase = page.locator(".example-showcase-surface")
+    const liveStage = showcase.locator(".example-live-stage")
+    const mobileGallery = showcase.locator(".example-mobile-gallery")
+    await expect(mobileGallery).toBeVisible()
+    await expect(liveStage).toBeHidden()
+
+    await page.setViewportSize({ width: 768, height: 1100 })
+    await expect(mobileGallery).toBeHidden()
+    await expect(liveStage).toBeVisible()
+    await expect(page.getByRole("heading", { name: "Playground", level: 3 })).toHaveCSS("font-size", "18px")
+    await expect(page.getByRole("heading", { name: "Playground", level: 3 })).toHaveCSS("line-height", "28px")
+    expect((await page.locator(".playground-header").boundingBox())?.height).toBe(64)
+    await expect(page.locator(".playground-shell")).toHaveCSS("padding", "24px 32px")
+    await expect(page.locator(".playground-sidebar-panel")).toBeVisible()
+    await expect(page.locator(".playground-textarea")).toHaveCSS("min-height", "700px")
+    await expect(page.getByRole("button", { name: "Show history" })).not.toContainText("Reset")
+
+    const preset = page.getByRole("combobox", { name: "Load a preset..." })
+    expect((await preset.boundingBox())?.width).toBeLessThanOrEqual(200)
+
+    const sliderFields = page.locator(".playground-field[data-slider-scope]")
+    await expect(sliderFields).toHaveCount(3)
+    for (let index = 0; index < 3; index += 1) {
+      expect((await sliderFields.nth(index).boundingBox())?.height).toBe(56)
+    }
+
+    await page.getByRole("tab", { name: "Insert", exact: true }).click()
+    const insertPanes = page.locator('.playground-editor-grid[data-mode="insert"] > *')
+    const narrowFirst = await insertPanes.nth(0).boundingBox()
+    const narrowSecond = await insertPanes.nth(1).boundingBox()
+    expect(narrowFirst?.height).toBe(300)
+    expect(narrowSecond?.height).toBe(300)
+    expect(narrowSecond?.y).toBeGreaterThan((narrowFirst?.y ?? 0) + (narrowFirst?.height ?? 0))
+
+    await page.setViewportSize({ width: 1023, height: 1100 })
+    expect((await preset.boundingBox())?.width).toBeLessThanOrEqual(200)
+    const tabletFirst = await insertPanes.nth(0).boundingBox()
+    const tabletSecond = await insertPanes.nth(1).boundingBox()
+    expect(tabletSecond?.y).toBeGreaterThan((tabletFirst?.y ?? 0) + (tabletFirst?.height ?? 0))
+
+    await page.setViewportSize({ width: 1024, height: 1100 })
+    const desktopFirst = await insertPanes.nth(0).boundingBox()
+    const desktopSecond = await insertPanes.nth(1).boundingBox()
+    expect(desktopFirst?.height).toBe(700)
+    expect(desktopSecond?.height).toBe(700)
+    expect(desktopSecond?.x).toBeGreaterThan((desktopFirst?.x ?? 0) + (desktopFirst?.width ?? 0))
+    expect(desktopSecond?.y).toBe(desktopFirst?.y)
+
+  })
+
   test("playground save dialog matches the React preset form", async ({ page }) => {
     await page.goto("/examples/playground")
     await waitForClientReady(page)

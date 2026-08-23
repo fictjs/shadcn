@@ -50,6 +50,7 @@ import {
   LucideCopyIcon,
   LucideEllipsisIcon,
   LucideEyeOffIcon,
+  LucideRotateCcwIcon,
   LucideSettings2Icon,
   LucideTimerIcon,
   LucideXIcon,
@@ -2064,7 +2065,7 @@ function PlaygroundExample() {
               <>
                 <div class="playground-edit-stack">
                   <label class="playground-field">
-                    <span>Input</span>
+                    <span class="sr-only">Input</span>
                     <div class="playground-textarea playground-textarea-compact playground-copy-surface">We is going to the market.</div>
                   </label>
                   <label class="playground-field">
@@ -2079,7 +2080,9 @@ function PlaygroundExample() {
 
           <div class="playground-submit-row">
             <button class="playground-primary-button" type="button">Submit</button>
-            <button class="playground-ghost-button" type="button" aria-label="Show history">Reset</button>
+            <button class="playground-ghost-button" type="button" aria-label="Show history">
+              <LucideRotateCcwIcon />
+            </button>
           </div>
         </section>
 
