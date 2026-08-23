@@ -3515,9 +3515,63 @@ function ChevronDownIcon(props: { class?: string }) {
   )
 }
 
-function ExamplesRootPreview() {
+function ExamplesRootPreview(props: { rtl?: boolean } = {}) {
   return (
-    <div class="examples-root-grid">
+    <div
+      class={props.rtl ? "examples-root-grid rtl-components" : "examples-root-grid"}
+      dir={props.rtl ? "rtl" : undefined}
+      data-lang={props.rtl ? "ar" : undefined}
+      data-slot={props.rtl ? "rtl-components" : undefined}
+    >
+      {props.rtl ? (
+        <span class="ui-menu rtl-language-selector" data-menu>
+          <button
+            type="button"
+            class="ui-select-trigger"
+            aria-label="Language"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            data-menu-trigger
+          >
+            <span data-menu-label-target>العربية</span>
+            <ChevronDownIcon class="ui-select-chevron" />
+          </button>
+          <div
+            class="ui-select-content"
+            role="listbox"
+            aria-label="Language"
+            data-menu-panel
+            data-menu-side="bottom"
+            data-menu-align="start"
+            hidden
+          >
+            <button
+              type="button"
+              class="ui-select-item"
+              role="option"
+              aria-selected="true"
+              data-menu-item
+              data-menu-value="العربية"
+              data-rtl-language="ar"
+            >
+              <span class="ui-select-item-label">العربية</span>
+              <CheckIcon class="ui-select-item-check" />
+            </button>
+            <button
+              type="button"
+              class="ui-select-item"
+              role="option"
+              aria-selected="false"
+              data-menu-item
+              data-menu-value="עברית"
+              data-rtl-language="he"
+            >
+              <span class="ui-select-item-label">עברית</span>
+              <CheckIcon class="ui-select-item-check" />
+            </button>
+          </div>
+        </span>
+      ) : null}
       {examplesRootColumns.map((column, columnIndex) => (
         <div class={`examples-root-column${column.className ? ` ${column.className}` : ""}`} key={`column-${columnIndex}`}>
           {column.entries.map((entry) => (
@@ -4455,7 +4509,7 @@ function ExamplesPage(props: { route: ResolvedRoute; activeThemeName: string; on
             </div>
 
             <div class="example-live-stage">
-              <LiveExamplePage slug={activeShowcase.slug} />
+              {activeShowcase.slug === "rtl" ? <ExamplesRootPreview rtl /> : <LiveExamplePage slug={activeShowcase.slug} />}
             </div>
           </div>
         </article>

@@ -1135,7 +1135,7 @@ test.describe("shadcn v4 site", () => {
     expect((await shell.boundingBox())?.height).toBe(338)
   })
 
-  test("authentication and rtl examples stay interactive", async ({ page }) => {
+  test("authentication example keeps its reference controls", async ({ page }) => {
     await page.goto("/examples/authentication")
 
     await expect(page.locator(".auth-login-link")).toContainText("Login")
@@ -1144,13 +1144,43 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".auth-provider-button")).toContainText("GitHub")
     await expect(page.getByPlaceholder("name@example.com")).toBeVisible()
     await expect(page.getByRole("button", { name: "Sign In with Email" })).toBeVisible()
+  })
 
+  test("rtl example matches the React component gallery breakpoints", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 1200 })
     await page.goto("/examples/rtl")
 
-    await expect(page.locator(".rtl-preview-frame")).toHaveAttribute("dir", "rtl")
-    await page.getByRole("button", { name: "LTR" }).click()
-    await expect(page.locator(".rtl-preview-frame")).toHaveAttribute("dir", "ltr")
-    await expect(page.locator(".rtl-stat-card")).toHaveCount(3)
+    const showcase = page.locator(".example-showcase-surface")
+    const gallery = showcase.locator("[data-slot='rtl-components']")
+    const lastColumn = gallery.locator(".examples-root-column-last")
+    await expect(showcase.locator(".example-mobile-gallery")).toBeHidden()
+    await expect(showcase.locator(".example-live-stage")).toBeVisible()
+    await expect(gallery).toHaveAttribute("dir", "rtl")
+    await expect(gallery).toHaveAttribute("data-lang", "ar")
+    await expect(gallery.locator(".examples-root-column")).toHaveCount(4)
+    await expect(gallery.locator(".example-root-panel")).toHaveCount(16)
+    await expect(gallery).toContainText("Payment Method")
+    await expect(gallery).toContainText("No Team Members")
+    await expect(gallery).toContainText("Appearance Settings")
+    await expect(gallery).toContainText("Processing your request")
+    expect(await gallery.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(" ").length)).toBe(1)
+    await expect(lastColumn).toBeVisible()
+    await expect(lastColumn).toHaveCSS("order", "-1")
+    await expect(page.getByRole("button", { name: "Language" })).toBeHidden()
+
+    await page.setViewportSize({ width: 768, height: 1200 })
+    expect(await gallery.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(" ").length)).toBe(2)
+    await expect(lastColumn).toBeVisible()
+
+    await page.setViewportSize({ width: 1024, height: 1200 })
+    expect(await gallery.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(" ").length)).toBe(3)
+    await expect(lastColumn).toBeHidden()
+    await expect(page.getByRole("button", { name: "Language" })).toBeVisible()
+
+    await page.setViewportSize({ width: 1280, height: 1200 })
+    expect(await gallery.evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(" ").length)).toBe(4)
+    await expect(lastColumn).toBeVisible()
+    await expect(lastColumn).toHaveCSS("order", "0")
   })
 
   test("create route builds a live starter workspace", async ({ page }) => {

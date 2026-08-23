@@ -2415,6 +2415,12 @@ h1 {
   overflow: visible;
 }
 
+.example-detail-card:has([data-slot="rtl-components"]) {
+  overflow: visible;
+  border: 0;
+  background: transparent;
+}
+
 @media (min-width: 1280px) {
   .example-detail-card {
     border-radius: var(--radius-xl);
@@ -4019,6 +4025,30 @@ a.ui-item:hover {
   gap: 2rem;
   margin: 0 auto;
   padding: 0.25rem 0;
+}
+
+.rtl-components {
+  position: relative;
+  padding: 0.25rem;
+  direction: rtl;
+}
+
+.rtl-language-selector {
+  position: absolute;
+  top: -3rem;
+  right: 13rem;
+  z-index: 80;
+  display: none;
+}
+
+.rtl-language-selector > .ui-select-trigger {
+  width: 8rem;
+  height: 2rem;
+  border-radius: var(--radius-lg);
+}
+
+.rtl-language-selector > .ui-select-content {
+  width: 8rem;
 }
 
 .examples-root-column {
@@ -5705,6 +5735,18 @@ a.ui-item:hover {
   position: relative;
   z-index: 70;
   overflow: visible;
+}
+
+.example-showcase-surface:has([data-slot="rtl-components"]) .example-mobile-gallery {
+  display: none;
+}
+
+.example-showcase-surface:has([data-slot="rtl-components"]) .example-live-stage {
+  display: block;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .example-icon {
@@ -9570,6 +9612,10 @@ body[data-dashboard-drawer-open="true"] {
 @media (min-width: 1024px) {
   .examples-root-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .rtl-language-selector {
+    display: inline-flex;
   }
 
   .examples-root-column-last {
