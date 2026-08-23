@@ -1284,6 +1284,40 @@ test.describe("shadcn v4 site", () => {
     await expect(emptyStates.last().locator(".root-empty-media")).toHaveCSS("width", "32px")
   })
 
+  test("rtl price slider matches React geometry and direction", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 1200 })
+    await page.goto("/examples/rtl")
+    await waitForClientReady(page)
+
+    const sliderField = page.locator("[data-slider-scope='price-range']")
+    const slider = sliderField.locator("[data-slider='price-range']")
+    const thumbs = slider.locator("[data-slider-thumb]")
+    await expect(sliderField).toHaveCSS("height", "64.25px")
+    await expect(slider).toHaveCSS("height", "4px")
+    await expect(thumbs.first()).toHaveCSS("width", "12px")
+
+    const lowBox = await thumbs.first().boundingBox()
+    const highBox = await thumbs.last().boundingBox()
+    expect(lowBox).not.toBeNull()
+    expect(highBox).not.toBeNull()
+    expect(lowBox!.x).toBeGreaterThan(highBox!.x)
+
+    const sliderBox = await slider.boundingBox()
+    expect(sliderBox).not.toBeNull()
+    await page.mouse.click(sliderBox!.x + sliderBox!.width * 0.75, sliderBox!.y + sliderBox!.height / 2)
+    await expect(thumbs.first()).toHaveAttribute("aria-valuenow", "240")
+    await expect(sliderField.locator('[data-slider-output="0"]')).toHaveText("٢٤٠")
+
+    await thumbs.first().focus()
+    await page.keyboard.press("ArrowRight")
+    await expect(thumbs.first()).toHaveAttribute("aria-valuenow", "230")
+    await expect(sliderField.locator('[data-slider-output="0"]')).toHaveText("٢٣٠")
+    await page.keyboard.press("ArrowLeft")
+    await page.keyboard.press("ArrowLeft")
+    await expect(thumbs.first()).toHaveAttribute("aria-valuenow", "250")
+    await expect(sliderField.locator('[data-slider-output="0"]')).toHaveText("٢٥٠")
+  })
+
   test("create route builds a live starter workspace", async ({ page }) => {
     await page.goto("/create")
 

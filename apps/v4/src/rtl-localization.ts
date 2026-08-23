@@ -210,4 +210,16 @@ export function localizeRtlGallery(root: HTMLElement, language: RtlLanguage): vo
       }
     })
   })
+
+  root.querySelectorAll<HTMLElement>("[data-slider-output]").forEach((output) => {
+    const scope = output.closest<HTMLElement>("[data-slider-scope]")
+    const index = Number.parseInt(output.dataset.sliderOutput ?? "", 10)
+    const thumb = scope?.querySelectorAll<HTMLElement>("[data-slider-thumb]")[index]
+    const value = Number.parseFloat(thumb?.dataset.sliderValue ?? "")
+    if (Number.isFinite(value)) {
+      output.textContent = language === "ar"
+        ? new Intl.NumberFormat("ar-SA", { useGrouping: false }).format(value)
+        : String(value)
+    }
+  })
 }

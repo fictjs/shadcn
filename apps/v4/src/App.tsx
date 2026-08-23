@@ -2434,9 +2434,9 @@ function RootButtonGroupInputPreview() {
   )
 }
 
-function RootFieldSliderPreview() {
+function RootFieldSliderPreview(props: { rtl?: boolean }) {
   return (
-    <div class="ui-field" data-slider-scope="price-range">
+    <div class="ui-field root-field-slider" data-slider-scope="price-range">
       <p class="ui-empty-title root-field-title">Price Range</p>
       <p class="ui-field-description">
         Set your budget range ($
@@ -2449,11 +2449,18 @@ function RootFieldSliderPreview() {
         data-slider-min="0"
         data-slider-max="1000"
         data-slider-step="10"
+        data-slider-direction={props.rtl ? "rtl" : "ltr"}
         role="group"
         aria-label="Price Range"
       >
         <span class="ui-slider-track">
-          <span class="ui-slider-range" data-slider-range style="left:20%;right:20%"></span>
+          <span
+            class="ui-slider-range"
+            data-slider-range
+            style={props.rtl
+              ? "inset-inline-start:calc(20% + 3.6px);width:calc(60% - 7.2px)"
+              : "left:20%;right:20%"}
+          ></span>
         </span>
         <span
           class="ui-slider-thumb"
@@ -2465,7 +2472,7 @@ function RootFieldSliderPreview() {
           aria-valuemin={0}
           aria-valuemax={1000}
           aria-valuenow={200}
-          style="left:20%"
+          style={props.rtl ? "inset-inline-start:calc(20% + 3.6px)" : "left:20%"}
         ></span>
         <span
           class="ui-slider-thumb"
@@ -2477,7 +2484,7 @@ function RootFieldSliderPreview() {
           aria-valuemin={0}
           aria-valuemax={1000}
           aria-valuenow={800}
-          style="left:80%"
+          style={props.rtl ? "inset-inline-start:calc(80% - 3.6px)" : "left:80%"}
         ></span>
       </div>
     </div>
@@ -3603,7 +3610,7 @@ function ExamplesRootPreview(props: { rtl?: boolean } = {}) {
 
               {entry === "button-group-input" ? <RootButtonGroupInputPreview /> : null}
 
-              {entry === "field-slider" ? <RootFieldSliderPreview /> : null}
+              {entry === "field-slider" ? <RootFieldSliderPreview rtl={rtl} /> : null}
 
               {entry === "input-group-demo" ? <RootInputGroupDemoPreview rtl={rtl} /> : null}
 

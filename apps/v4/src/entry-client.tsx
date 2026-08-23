@@ -516,10 +516,23 @@ function wireShowcaseSliders(): void {
     const scope = scopeName
       ? document.querySelector<HTMLElement>(`[data-slider-scope="${scopeName}"]`)
       : slider.parentElement
+    const isRtl = slider.dataset.sliderDirection === "rtl"
+
+    const logicalPosition = (ratio: number): string => {
+      const percent = ratio * 100
+      const correction = 6 * (1 - ratio * 2)
+      const operator = correction < 0 ? "-" : "+"
+      return `calc(${percent}% ${operator} ${Math.abs(correction)}px)`
+    }
 
     thumbs.forEach((thumb, index) => {
-      const percent = ((values[index] - min) / span) * 100
-      thumb.style.left = `${percent}%`
+      const ratio = (values[index] - min) / span
+      if (isRtl) {
+        thumb.style.left = ""
+        thumb.style.insetInlineStart = logicalPosition(ratio)
+      } else {
+        thumb.style.left = `${ratio * 100}%`
+      }
       thumb.setAttribute("aria-valuenow", String(values[index]))
     })
 
@@ -527,15 +540,27 @@ function wireShowcaseSliders(): void {
     if (range) {
       const lowest = values.length > 1 ? Math.min(...values) : min
       const highest = Math.max(...values)
-      range.style.left = `${((lowest - min) / span) * 100}%`
-      range.style.right = `${100 - ((highest - min) / span) * 100}%`
+      const lowRatio = (lowest - min) / span
+      const highRatio = (highest - min) / span
+      if (isRtl) {
+        range.style.left = ""
+        range.style.right = ""
+        range.style.insetInlineStart = logicalPosition(lowRatio)
+        range.style.width = `calc(${(highRatio - lowRatio) * 100}% - ${(highRatio - lowRatio) * 12}px)`
+      } else {
+        range.style.left = `${lowRatio * 100}%`
+        range.style.right = `${100 - highRatio * 100}%`
+      }
     }
 
     if (scope) {
       scope.querySelectorAll<HTMLElement>("[data-slider-output]").forEach((output) => {
         const index = Number.parseInt(output.dataset.sliderOutput ?? "", 10)
         if (Number.isFinite(index) && values[index] !== undefined) {
-          output.textContent = String(values[index])
+          const language = slider.closest<HTMLElement>("[data-slot='rtl-components']")?.dataset.lang
+          output.textContent = language === "ar"
+            ? new Intl.NumberFormat("ar-SA", { useGrouping: false }).format(values[index])
+            : String(values[index])
         }
       })
     }
@@ -570,7 +595,12 @@ function wireShowcaseSliders(): void {
     const min = readNumber(slider.dataset.sliderMin, 0)
     const max = readNumber(slider.dataset.sliderMax, 100)
     const rect = slider.getBoundingClientRect()
-    const ratio = rect.width > 0 ? (clientX - rect.left) / rect.width : 0
+    const isRtl = slider.dataset.sliderDirection === "rtl"
+    const ratio = rect.width > 0
+      ? isRtl
+        ? (rect.right - clientX - 6) / Math.max(1, rect.width - 12)
+        : (clientX - rect.left) / rect.width
+      : 0
     return min + Math.min(1, Math.max(0, ratio)) * (max - min)
   }
 
@@ -633,10 +663,11 @@ function wireShowcaseSliders(): void {
 
     const step = readNumber(slider.dataset.sliderStep, 1) || 1
     const current = readNumber(thumb.dataset.sliderValue, 0)
+    const horizontalStep = slider.dataset.sliderDirection === "rtl" ? -step : step
     const deltas: Record<string, number> = {
-      ArrowRight: step,
+      ArrowRight: horizontalStep,
       ArrowUp: step,
-      ArrowLeft: -step,
+      ArrowLeft: -horizontalStep,
       ArrowDown: -step,
       PageUp: step * 10,
       PageDown: step * -10,

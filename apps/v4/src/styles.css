@@ -3248,6 +3248,24 @@ h1 {
   line-height: 1.25rem;
 }
 
+.root-field-slider .root-field-title {
+  line-height: 1.375;
+}
+
+.root-field-slider .ui-field-description {
+  margin-top: -0.25rem;
+}
+
+.rtl-components .root-field-slider .ui-slider {
+  height: 4px;
+}
+
+.rtl-components .root-field-slider .ui-slider-thumb {
+  width: 0.75rem;
+  height: 0.75rem;
+  transform: translate(50%, -50%);
+}
+
 .root-numeric {
   font-weight: 500;
   font-variant-numeric: tabular-nums;
