@@ -8178,6 +8178,74 @@ body[data-dashboard-drawer-open="true"] {
   color: var(--accent-foreground);
 }
 
+.playground-model-menu {
+  display: block;
+  width: 100%;
+}
+
+.playground-model-panel {
+  width: 15.625rem;
+  padding: 0;
+  overflow: visible;
+}
+
+.playground-model-list {
+  max-height: 25rem;
+}
+
+.playground-command-group[hidden] {
+  display: none;
+}
+
+.playground-model-option[data-selected="true"] {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.playground-model-peek {
+  position: absolute;
+  top: 0;
+  right: calc(100% + 0.25rem);
+  width: 16.25rem;
+  min-height: 17.5rem;
+  border-radius: var(--radius-lg);
+  background: var(--popover);
+  color: var(--popover-foreground);
+  padding: 1rem;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent),
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.playground-model-peek h4,
+.playground-model-peek h5,
+.playground-model-peek p {
+  margin: 0;
+}
+
+.playground-model-peek h4,
+.playground-model-peek h5 {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.playground-model-peek > p,
+.playground-model-peek [data-playground-model-strengths] {
+  margin-top: 0.5rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.playground-model-peek [data-playground-model-strengths-wrap] {
+  margin-top: 1rem;
+}
+
+.playground-model-peek [data-playground-model-strengths-wrap][hidden] {
+  display: none;
+}
+
 .playground-model-chevron {
   opacity: 0.5;
 }

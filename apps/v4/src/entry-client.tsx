@@ -99,6 +99,73 @@ function wirePlaygroundControls(): void {
     }
   })
 
+  const updateModelPeek = (option: HTMLElement): void => {
+    const panel = option.closest<HTMLElement>("[data-menu-panel]")
+    const peek = panel?.querySelector<HTMLElement>("[data-playground-model-peek]")
+    if (!peek) {
+      return
+    }
+    const title = peek.querySelector<HTMLElement>("h4")
+    const description = peek.querySelector<HTMLElement>("[data-playground-model-description]")
+    const strengths = peek.querySelector<HTMLElement>("[data-playground-model-strengths]")
+    const strengthsWrap = peek.querySelector<HTMLElement>("[data-playground-model-strengths-wrap]")
+    if (title) {
+      title.textContent = option.dataset.menuValue ?? ""
+    }
+    if (description) {
+      description.textContent = option.dataset.modelDescription ?? ""
+    }
+    const strengthsText = option.dataset.modelStrengths ?? ""
+    if (strengths) {
+      strengths.textContent = strengthsText
+    }
+    if (strengthsWrap) {
+      strengthsWrap.hidden = strengthsText === ""
+    }
+  }
+
+  document.addEventListener("input", (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLInputElement) || target.dataset.playgroundModelSearch === undefined) {
+      return
+    }
+    const panel = target.closest<HTMLElement>("[data-menu-panel]")
+    if (!panel) {
+      return
+    }
+    const query = target.value.trim().toLowerCase()
+    let visibleCount = 0
+    panel.querySelectorAll<HTMLElement>("[data-playground-model-group]").forEach((group) => {
+      let groupVisibleCount = 0
+      group.querySelectorAll<HTMLElement>("[data-playground-model-option]").forEach((option) => {
+        const matches = query === "" || (option.textContent?.toLowerCase() ?? "").includes(query)
+        option.hidden = !matches
+        if (matches) {
+          groupVisibleCount += 1
+          visibleCount += 1
+        }
+      })
+      group.hidden = groupVisibleCount === 0
+    })
+    const empty = panel.querySelector<HTMLElement>("[data-playground-model-empty]")
+    if (empty) {
+      empty.hidden = visibleCount > 0
+    }
+  })
+
+  const handleModelPeek = (event: Event): void => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+    const option = target.closest<HTMLElement>("[data-playground-model-option]")
+    if (option) {
+      updateModelPeek(option)
+    }
+  }
+  document.addEventListener("pointerover", handleModelPeek)
+  document.addEventListener("focusin", handleModelPeek)
+
   document.addEventListener("click", (event) => {
     const target = event.target
     if (!(target instanceof Element)) {
@@ -108,6 +175,23 @@ function wirePlaygroundControls(): void {
     const panel = option?.closest<HTMLElement>("[data-menu-panel]")
     if (option && panel) {
       resetPresetSearch(panel)
+    }
+
+    const modelOption = target.closest<HTMLElement>("[data-playground-model-option]")
+    const modelPanel = modelOption?.closest<HTMLElement>("[data-menu-panel]")
+    if (modelOption && modelPanel) {
+      updateModelPeek(modelOption)
+      const input = modelPanel.querySelector<HTMLInputElement>("[data-playground-model-search]")
+      if (input) {
+        input.value = ""
+      }
+      modelPanel.querySelectorAll<HTMLElement>("[data-playground-model-group], [data-playground-model-option]").forEach((element) => {
+        element.hidden = false
+      })
+      const empty = modelPanel.querySelector<HTMLElement>("[data-playground-model-empty]")
+      if (empty) {
+        empty.hidden = true
+      }
     }
   })
 }

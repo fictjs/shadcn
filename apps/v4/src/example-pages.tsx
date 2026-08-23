@@ -114,7 +114,44 @@ const playgroundPresets = [
   "Explain code",
   "Chat",
 ] as const
-const playgroundModels = ["gpt-4.1", "gpt-4o-mini", "claude-sonnet", "gemini-pro"] as const
+const playgroundModels = [
+  {
+    name: "text-davinci-003",
+    type: "GPT-3",
+    description: "Most capable GPT-3 model. Can do any task the other models can do, often with higher quality, longer output and better instruction-following. Also supports inserting completions within text.",
+    strengths: "Complex intent, cause and effect, creative generation, search, summarization for audience",
+  },
+  {
+    name: "text-curie-001",
+    type: "GPT-3",
+    description: "Very capable, but faster and lower cost than Davinci.",
+    strengths: "Language translation, complex classification, sentiment, summarization",
+  },
+  {
+    name: "text-babbage-001",
+    type: "GPT-3",
+    description: "Capable of straightforward tasks, very fast, and lower cost.",
+    strengths: "Moderate classification, semantic search",
+  },
+  {
+    name: "text-ada-001",
+    type: "GPT-3",
+    description: "Capable of very simple tasks, usually the fastest model in the GPT-3 series, and lowest cost.",
+    strengths: "Parsing text, simple classification, address correction, keywords",
+  },
+  {
+    name: "code-davinci-002",
+    type: "Codex",
+    description: "Most capable Codex model. Particularly good at translating natural language to code. In addition to completing code, also supports inserting completions within code.",
+    strengths: "",
+  },
+  {
+    name: "code-cushman-001",
+    type: "Codex",
+    description: "Almost as capable as Davinci Codex, but slightly faster. This speed advantage may make it preferable for real-time applications.",
+    strengths: "Real-time application where low-latency is preferable",
+  },
+] as const
 
 const rtlSampleRows = [
   { title: "تحسين تجربة تسجيل الدخول", owner: "فريق المنتج", state: "قيد التنفيذ" },
@@ -1835,7 +1872,6 @@ function TasksExample() {
 
 function PlaygroundExample() {
   let mode = $state<PlaygroundMode>("complete")
-  let model = $state<string>(playgroundModels[0])
 
   return (
     <div class="live-example playground-example">
@@ -2015,21 +2051,76 @@ function PlaygroundExample() {
 
           <section class="playground-field">
             <span>Model</span>
-            <button
-              type="button"
-              class="playground-model-trigger"
-              aria-label="Model"
-              onClick$={() => {
-                const current = untrack(() => model)
-                model = current === "gpt-4.1" ? "gpt-4o-mini"
-                  : current === "gpt-4o-mini" ? "claude-sonnet"
-                  : current === "claude-sonnet" ? "gemini-pro"
-                  : "gpt-4.1"
-              }}
-            >
-              <span>{model}</span>
-              <LucideChevronsUpDownIcon class="playground-model-chevron" />
-            </button>
+            <span class="ui-menu playground-model-menu" data-menu data-playground-model-menu>
+              <button
+                type="button"
+                class="playground-model-trigger"
+                role="combobox"
+                aria-label="Select a model"
+                aria-haspopup="dialog"
+                aria-expanded="false"
+                data-menu-trigger
+              >
+                <span data-menu-label-target>{playgroundModels[0].name}</span>
+                <LucideChevronsUpDownIcon class="playground-model-chevron" />
+              </button>
+              <div
+                class="ui-menu-panel playground-model-panel"
+                data-menu-panel
+                data-menu-side="bottom"
+                data-menu-align="end"
+                role="dialog"
+                aria-label="Model selector"
+                hidden
+              >
+                <aside class="playground-model-peek" data-playground-model-peek>
+                  <h4>{playgroundModels[0].name}</h4>
+                  <p data-playground-model-description>{playgroundModels[0].description}</p>
+                  <div data-playground-model-strengths-wrap>
+                    <h5>Strengths</h5>
+                    <p data-playground-model-strengths>{playgroundModels[0].strengths}</p>
+                  </div>
+                </aside>
+                <div class="playground-command-search-shell">
+                  <input
+                    class="playground-command-search"
+                    type="search"
+                    placeholder="Search Models..."
+                    aria-label="Search models"
+                    data-playground-model-search
+                  />
+                </div>
+                <div class="playground-command-list playground-model-list">
+                  <p class="playground-command-empty" data-playground-model-empty hidden>No Models found.</p>
+                  {(["GPT-3", "Codex"] as const).map((type) => (
+                    <section class="playground-command-group" key={type} data-playground-model-group>
+                      <p class="playground-command-heading">{type}</p>
+                      {playgroundModels.filter((model) => model.type === type).map((model, index) => {
+                        const selected = type === "GPT-3" && index === 0
+                        return (
+                          <button
+                            type="button"
+                            class="ui-menu-item playground-command-item playground-model-option"
+                            key={model.name}
+                            role="option"
+                            aria-selected={selected ? "true" : "false"}
+                            data-menu-item
+                            data-menu-value={model.name}
+                            data-playground-model-option
+                            data-model-description={model.description}
+                            data-model-strengths={model.strengths}
+                            data-selected={selected ? "true" : "false"}
+                          >
+                            <span>{model.name}</span>
+                            <LucideCheckIcon class="ui-menu-item-check" />
+                          </button>
+                        )
+                      })}
+                    </section>
+                  ))}
+                </div>
+              </div>
+            </span>
           </section>
 
           <PlaygroundSlider label="Temperature" name="temperature" min={0} max={1} step={0.1} value={0.56} />
