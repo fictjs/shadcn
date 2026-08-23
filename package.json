@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@fictjs/radix-ui": "^0.3.3",
+    "@fictjs/radix-ui": "^0.3.4",
     "@playwright/test": "^1.58.0",
     "@storybook/addon-a11y": "^10.2.10",
     "@storybook/html": "^10.2.10",

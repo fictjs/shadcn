@@ -28,8 +28,8 @@ importers:
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.0.0(jiti@2.6.1))
       '@fictjs/radix-ui':
-        specifier: ^0.3.3
-        version: 0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)
+        specifier: ^0.3.4
+        version: 0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)
       '@playwright/test':
         specifier: ^1.58.0
         version: 1.58.2
@@ -316,386 +316,386 @@ packages:
     resolution: {integrity: sha512-bIZEUzOI1jkhviX2cp5vNyXQc6olzb2ohewQubuYlMXZ2Q/XjBO0x0XhGPvc9fjSIiUN0vw+0hq53BJ4eQSJKQ==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@fictjs/accessible-icon@0.3.3':
-    resolution: {integrity: sha512-DqyqZb7lXh4poH5BJq+uXSCtvBC6Q3NUEJ0fo9cQj4F+yGwoC2SxxOY+YyrQURhSqHDaW/ciNVJ/PqeRqG3+jw==}
+  '@fictjs/accessible-icon@0.3.4':
+    resolution: {integrity: sha512-wQmDoXsYNhIm0cpjCpsv86i870Of/kViey1GRXCvOVQ8f9haePCB1hc1jvF1K69/T4Y+f5bJkur+0WVbovlXhQ==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/accordion@0.3.3':
-    resolution: {integrity: sha512-rEVZuQXMmor4hRozrwccpiCOdNMu9x7rTulr0Gxk+ycfqWPB9RJK3UyPwhuo5gAe7/FtCpHptMUvIlYmOOkdKQ==}
+  '@fictjs/accordion@0.3.4':
+    resolution: {integrity: sha512-kR9R84CgxkvmulAuyCt7H9rNlv20MOuhcpMI9xKWZMQtfTPwrooJpoUvC2wm/AuLNoUwqrlPNXI7RWu1jtkOaA==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/alert-dialog@0.3.3':
-    resolution: {integrity: sha512-U67c+VcFvMUd/o1OhVfM46m7ovY+zvKFtV+p15Blg5VT6LOfeO0jPGVOShfkhSnbviVfJOoVeRase6urehevqg==}
+  '@fictjs/alert-dialog@0.3.4':
+    resolution: {integrity: sha512-wapxUBBja2rXYkGgl7TxWdOykK23WcEL3KRoRJhS4/aP8g2NE5BD/M2OcU9kkAQlFns7TgcS2D1NUXuX1QaQlg==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/arrow@0.3.3':
-    resolution: {integrity: sha512-WBgBnB+TXX3J6i7KOkmAvFZpvt7Awcf6XYz3I+4JbBcmInpRR5U7fkWDgBgfYPbp2gSrTLTAYMPGFkvUljOeGw==}
+  '@fictjs/arrow@0.3.4':
+    resolution: {integrity: sha512-XO+xAkILQB7TD2MNZsU8CKn9JOz0PKhH7xE51BHCiU978ZIagSende7nqj2OfhRKF+9ZI0/b4jlZ3wBiJsJXIw==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/aspect-ratio@0.3.3':
-    resolution: {integrity: sha512-40pqYxhTZsMpeJg4yuQrnzFGMnmzRlqTLchiRqgXYx5biMLGtypK0I+JNCL73u54dthykeXXL+vdcE6ezDpRdQ==}
+  '@fictjs/aspect-ratio@0.3.4':
+    resolution: {integrity: sha512-4dQHBaQbEjALZ1SzNMKH3/CQW+ylm+7o/bn0o6l6K8/72C1qKXy/Q8GK0d1YNUp0b5u4MMQ4ZMAwOP+eOFAZrA==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/avatar@0.3.3':
-    resolution: {integrity: sha512-kXtM5K78bfmHA2wOGM6bctQDEPlHIurCiuZ33ZPdJ56ao4z067p0dYIOjLLZnVAi2lZx/gC9w12M/evdT8zW+Q==}
+  '@fictjs/avatar@0.3.4':
+    resolution: {integrity: sha512-XOooj1MhpIY3Ahkac7uKXQ0mfMA0vAgobB1vKyfGE1IiEFXhaOXCILk4p5bI0dEt3LzpMfTKxivJMpHsdVw57g==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/checkbox@0.3.3':
-    resolution: {integrity: sha512-Bg5OrQOvZtE241c1ESkRWNYgWS8/tJy0SsTq3qatTQQWpgls9GA9ktJ/leRFe0tOCR1UDUWlvL292jyq9ZxeSQ==}
+  '@fictjs/checkbox@0.3.4':
+    resolution: {integrity: sha512-1YIoxvbfMWKClElyno9TeQJyyomb6c9iJqfFyM/3KPptQmXOBn/yY5xv5BVfWtaspvOPHfpw05A8RLgS32/mTw==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/collapsible@0.3.3':
-    resolution: {integrity: sha512-i+wBWacIUerV9wNUe9tC6fqrK2/sivMN/8RLSG2GxUb4mwkfrZi2yPCZy9CWfOVvl4NgEie3v5EPdsx0HGBlbg==}
+  '@fictjs/collapsible@0.3.4':
+    resolution: {integrity: sha512-/CiS2kAjt/vaPLZkguEAwmIAus34GwqOJGt9JId7yqiZbcaPh+rirzZG7eZNM/oohSphdXMKyS4rA1bolNZ0nw==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/collection@0.3.3':
-    resolution: {integrity: sha512-y4JnQqAdYDaUH5yAFMCc/0BWstpzh/J+EN8Hmh1rkMZ9jg70jTZJ56auXeWamb1QwuFIWopUthOS7raus+wj1Q==}
+  '@fictjs/collection@0.3.4':
+    resolution: {integrity: sha512-Qo/22UqhKId1/D7SAZR5ZGMOuiCxty2p7tq1bAdsvSbg6vF0BS6sDX9pDHEzumZlGHIemsLopQMYTYwt/eOVHw==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/compose-refs@0.3.3':
-    resolution: {integrity: sha512-1wQsD6qBS9bpucFaIBkX+dssytFB/ZLj680TIrgGP137PxhanC8QwM4Zn71dy3qmUsFOjH/kb1XKJZN4OekzXA==}
+  '@fictjs/compose-refs@0.3.4':
+    resolution: {integrity: sha512-VpL1Fwozt7QMvOO4YGzSCvYGlkZmae3zJ8J8SIZSCk4t4O+fXdy9xbyRZPM0NRG6PLYwISCnrPwL0liRoPc7ZQ==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/context-menu@0.3.3':
-    resolution: {integrity: sha512-nMQG8GpjcOKZCrl1e3uo0pibiavGZgPrdjMn+8BJqouXbYZN+Ik0s3MzkhmUUjCrOAxDxK2Ju8Uk6M9mIL1HHA==}
+  '@fictjs/context-menu@0.3.4':
+    resolution: {integrity: sha512-doO5pBieus6KG0WuBm+DobS4JeG4S3D4c1nz2v5omKiZu3waYRjBBX6ItP5ywSs5wF20QXhVVE8XOggPFp7esw==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/context@0.3.3':
-    resolution: {integrity: sha512-8zqBb+etOnQw0BCkgFp6drAxQuaECm3yfj/5bGc7D9Bkqw25j/Umg/KaM1QEYFb50lQhYpq7gR9dIuKXFRTxdA==}
+  '@fictjs/context@0.3.4':
+    resolution: {integrity: sha512-cKEoh6i8zPb89xGMeNTyq0DNVI/ivncPFZDpA/vTlN0fFAaj6+7MnqZC6I79+PunRg1O3qjt/RvULXrPsg1nyQ==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/core-primitive@0.2.4':
-    resolution: {integrity: sha512-MHWQ+Vih4kymOHo4MNlKIdbQ8WI6Tz77ZL1z23MW6SnkQ3eRztoJ7M1zyM7O8Gmb4+6RoQ6Iswa6sfC13xMtWg==}
+  '@fictjs/core-primitive@0.3.4':
+    resolution: {integrity: sha512-T/1rCL0C9FkIEC4pKFfkTUvEqJFqPVt+ytlAnzN99XMcEOSubjB8akVJeTAUejVpsHMIaBE6bJUcYBjupUUL5g==}
     engines: {node: '>=22.13.0'}
 
-  '@fictjs/dialog@0.3.3':
-    resolution: {integrity: sha512-AfyQxsH7n43FeVUvVIoFQwErc6vKueOopAxb43mM8MU8janPri4hyYSdJcZwra4jcasK2VYaoqYiuJkJIAWXgw==}
-    engines: {node: '>=22.13.0'}
-    peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
-
-  '@fictjs/direction@0.3.3':
-    resolution: {integrity: sha512-Twm9wJDkWQd0PO+wvIqzc9bTdeZsgj1+TneW/y4b5LBlE1SjANfef/SV92UKO1k4ERmNm0TZQ+0Q7Z3Nqx+jvQ==}
+  '@fictjs/dialog@0.3.4':
+    resolution: {integrity: sha512-XTBuPH6L2VE3OH9NN0sWOgZgJR0BMvysTjHRNkgy5rugo4MIKN9zOj4MvPygz+OV8oZpaSi/M5AoNg3wPtW/Sg==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/dismissable-layer@0.3.3':
-    resolution: {integrity: sha512-ZM/m/Qq/ANTgBP9URNTD7rzoMkI4mJkyAvr1yfyQUIlhk4xZI/2xOIDodbhM5raB1qWWEtxX420Fwpmx1hVxsg==}
+  '@fictjs/direction@0.3.4':
+    resolution: {integrity: sha512-ykuHr0Kdh0+H96GOcXTuEzokSTOeqjtiPisMjSBK4RQLxvw2ZRKdY6Q7qhxqy2fid0yhNijWx0WVl3biNbgFFg==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/dropdown-menu@0.3.3':
-    resolution: {integrity: sha512-cYx8OlVECtnVeKLpdVfrTzK41hZggI3Y5F1O5rreVujznHGDzoTYkXHcE4ePvSjCXYicH+gU0jf8k4VewsYTGg==}
+  '@fictjs/dismissable-layer@0.3.4':
+    resolution: {integrity: sha512-ebrgKxyocrupsMeifJHFExsWIAD6pTuyiqODwt+JDYwHDc6SU0UEUk9fEVtJ8KTBcPVj/kzhxZOEIOxLZK1m8Q==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/fict-remove-scroll-bar@0.3.3':
-    resolution: {integrity: sha512-u+L01pV2w8M88frQYHxzajWSqWBIShx6O88UNhaVt7Zem/+n/1B84weM0oOB1sWimqFk23GwkaeMW9EtcFkT4A==}
+  '@fictjs/dropdown-menu@0.3.4':
+    resolution: {integrity: sha512-tZWPUQvOy3vVbM/S5pgEvn1xdxvyLw2jEAvU9PeTy/6+AXohVqPBargzeeEzJFBLUkfhvsiMO/tFt0WiR1YauQ==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      fict: ^0.32.0
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/fict-remove-scroll@0.3.3':
-    resolution: {integrity: sha512-oQKnm3U76J2SP7TnLDEqXdj/Sau+StriKlz00HQONuP5j+dDDRvICaLQqhVz3tEM7sVyJQBSazf1DsjAHCaXmw==}
+  '@fictjs/fict-remove-scroll-bar@0.3.4':
+    resolution: {integrity: sha512-VJMumVU2ER1p5/ij5J60e0+v7BkGfSuu+zZLfNgOuLpmtpqaeUludyuhK2EeZ0NxC1w12AljWBuRurcK5AuinA==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      fict: ^0.32.0
+      fict: ^0.33.0
 
-  '@fictjs/fict-style-singleton@0.3.3':
-    resolution: {integrity: sha512-uvKIV7mbG+ha86l5WqTR0u5DO2/ir7kalpU4b87o1HPQm1/ZOv2H88J6RTv1na0zmxfQXFPCWVUCkKKcAQa39A==}
+  '@fictjs/fict-remove-scroll@0.3.4':
+    resolution: {integrity: sha512-WIx9qXCnFgmrqlhuJBpfFWh04CnFbpe4JlDGFUg1oIjxdUeLQx/CiKAdtFuYznNL1JbicGeb8ZrWQPwHWCmSiQ==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      fict: ^0.32.0
+      fict: ^0.33.0
 
-  '@fictjs/floating-ui-dom@0.3.3':
-    resolution: {integrity: sha512-l8cKdBZ6VrdtuzNanbUarhyAd3mv2KpiXeboRgbZE/iIv3RgmCWBLCQau4vzYc4Se+/NXYd6ZeX1jRtLaeQ3nw==}
+  '@fictjs/fict-style-singleton@0.3.4':
+    resolution: {integrity: sha512-D2ikIbyJ+3CkFFf8n2BxRqtmE/Z8w9KmZMVR7DSQomycu5V6fdHyUND8ckv6x+UtQhFrwS6CcAi9EQPi0eOY7A==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      fict: ^0.33.0
 
-  '@fictjs/focus-guards@0.3.3':
-    resolution: {integrity: sha512-yKM6TpSJ+67c/TMttgI7hKnCxha6NbYU8ExJ4yqipBpkrMZNqS3h2fQl7M72W7YiY16N1Gpei/NLYsdWnoQBnQ==}
+  '@fictjs/floating-ui-dom@0.3.4':
+    resolution: {integrity: sha512-MV9es+H+Nvfi0Wfe6xJDvQMbtlP552ADPxhYv3NRtc7U0iSlfHDSxlgG8BeKMvttb1+glIEpeyQqxa/GP7TmbQ==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/focus-scope@0.3.3':
-    resolution: {integrity: sha512-w5vWwQkTIZryIE5Tgz9c6V7DfOd2IB4ROsPDbyABRfrb+BvqkEnErcJ/sUfd2ey8oSnRb7YgLIg73+wybiyoSA==}
+  '@fictjs/focus-guards@0.3.4':
+    resolution: {integrity: sha512-tABy+Eyj3DklDZZF6zXrLYUViQdnSGE3WlVqhCLoSXvGXiBim9bu0Vw9U2Zr5s6tb1Fo4MAp5iRrg4YjCgkSvg==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/form@0.3.3':
-    resolution: {integrity: sha512-xW0AjRc3MgHk3BYB4P70pJdTqu+J8q6gZ3xH+qPtZf6qsYEhKRQqnjkuCatGW8HImps5gMM7vV931cSHY0tFNg==}
+  '@fictjs/focus-scope@0.3.4':
+    resolution: {integrity: sha512-OqfD+XzO6o8lai+ectxZZiNxFOlyHfZW8KDlgcfUsGVc5r3jgwlJhvm3lf/RsEIKY17qTMEfrpF7zhTNHPIrOg==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/hover-card@0.3.3':
-    resolution: {integrity: sha512-JgFH+idRnRfO8tkzEO9V0BvoKsEgHF8uqJEI+4CESWN0BlkeATZjfOhaYZ+v+ovAhsUIvJXaqYWBxJYBYtqdyw==}
+  '@fictjs/form@0.3.4':
+    resolution: {integrity: sha512-yoKDhYZXsUFxoXm47d+YR39VnjrD64TurQ8eiLIqC/duvzNrYQeM1CbjTSDFLTsaTpvaOuF2ULljgciFJ4lRnA==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/id@0.3.3':
-    resolution: {integrity: sha512-xHI6WegLf5MQv2BZSrwcmh/7ukTb+7qhfSutylBnnRFQUE5B0oC0/35sXysbJKPC0B993k9DN+mRXVhjK9A0qw==}
+  '@fictjs/hover-card@0.3.4':
+    resolution: {integrity: sha512-euQJSxChqmppSnAe9NJ9cSVEJ7cIddtmietEZnVOCx//w/WDNA1yv1ZP0sI5q4eTx2RD84Ci770iImGuWvdUVA==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/label@0.3.3':
-    resolution: {integrity: sha512-Mc8Neng9JCDf+lx+j5+A/ABgWF3ufSQ+chp1oAcsoKjIAldiiSrJax28NTGPDa+I1THT7oOYeSXwCzyZeHCcQQ==}
+  '@fictjs/id@0.3.4':
+    resolution: {integrity: sha512-3cVmsjEAa5dPddMFoDYciGAlkms/lcG7V8Pqh9nGc57oX8lthwt/SJUSn0inGxqc0GUBPxB69sACxB7QOIzRMw==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/menu@0.3.3':
-    resolution: {integrity: sha512-yzEXLid9YbHT+UBUO9lpZ5nDgGx+2xcF/AWi2h4+cxCJYNujV/Z5CCDCEpOFraqVJ1/+MoFkxadM20KqS8OLag==}
+  '@fictjs/label@0.3.4':
+    resolution: {integrity: sha512-IfGwNmCTx/1kKL1TxzPBcZ6Ql5rBHil9pFAS3B8lTHDdrgaOfyWWRGG7t72IU+cHTF20bwjqWdf5cB8+/QiGFA==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/menubar@0.3.3':
-    resolution: {integrity: sha512-zr4cSgD8xesxq3AFNu4zjyaFIj+IHogTMFfDhnrs7XuGTUM+ITccKtZfx719MGcbchqBRcrxPlhyibb9QW7/CQ==}
+  '@fictjs/menu@0.3.4':
+    resolution: {integrity: sha512-eo0guOXMK1MFFxA6YluCSbZCzUf021n2NY7NcmyxLDwGXOtUxwjhvIisZaFHW+hUGj+10xOAoDSWrSkcYu7xRg==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/navigation-menu@0.3.3':
-    resolution: {integrity: sha512-/h3Hmuk2sLYWhf0TWewzfTKN5soItBFFWkp7t5NsYyL38u4xnGISu+5uX4B08chyQg2jzypVclYUtYB5/4B+aw==}
+  '@fictjs/menubar@0.3.4':
+    resolution: {integrity: sha512-G+lJi2QGiwxzWxQAcF2q2zUq5Ihtevq3glrsYHYKzhcZV9PTdxZIetxjvUmCnmEYCoMMZBDXHqou2bcUpEF97A==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/one-time-password-field@0.3.3':
-    resolution: {integrity: sha512-S8+XwrBZ8ZhKaavYNyQaC3Jok/2BhPkT221go9AHeFOIC5Us+VeXS0eAIS7RxNN4EUzAL+5qlbdDw6wKLq8VhQ==}
+  '@fictjs/navigation-menu@0.3.4':
+    resolution: {integrity: sha512-ohHyOpkWUmw9qondrfQfkJ5TWztAAEs92/o10fBb2GMooFs8wdXlH4h9PLZjqG62Bg4m1yWIvpGueigIt/V6yA==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/password-toggle-field@0.3.3':
-    resolution: {integrity: sha512-esomQ/6EJxzNMFeqUY8yRLjQwrmwzPbt4X/Q02hscQBtetuaigo3+OjtWf0uLT70TwtMgvHPkFtxse3xxcjiJQ==}
+  '@fictjs/one-time-password-field@0.3.4':
+    resolution: {integrity: sha512-ujF5An1g06ebDi25zEKYAI5qpi5RZbtXtaQKusJwIF6M9rgnT5udseVduWvdmU92FtXijA2F1Tq2pjxTy5YFMw==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/popover@0.3.3':
-    resolution: {integrity: sha512-wmC7ZCa0XDBGdPOmIVajL5RXrre8962K37MfOoE01gvzsM5hIaudJ7NK6ligv4HdCx+YJvg7nopCjLH0YWDLdQ==}
+  '@fictjs/password-toggle-field@0.3.4':
+    resolution: {integrity: sha512-QmydTyUjCaePde6J2a6QwfLnyRq88tlxurPqnwPFYg9MRlp5WNzWjIBMtqno++WWpfwvUCeRs8BBJyqXlXU7Tw==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/popper@0.3.3':
-    resolution: {integrity: sha512-k8xhBf5nr+Yq66LJmrDS2ZAIrUIlaeEEjpvRqxdcuQB7SXYAwjoE5Ax8787KzSkoGK+Yiu3DokZBtaXePPG2WA==}
+  '@fictjs/popover@0.3.4':
+    resolution: {integrity: sha512-GKjkjxud4eMsxQIliTlgXqifmQmmTDpObHb0rIASsIFNxqVYe0QZnmgkKiF63V6LpJCgbIikLCkjMHXiDoWGHw==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/portal@0.3.3':
-    resolution: {integrity: sha512-KLj7ZcVnSs1whTgvz0GULawiJlaXzimM7HXIDTQ70mdwnvG2h1IZSlJ5qWZpdwR61hJBuk8h2wDtlJKwDpBbcg==}
+  '@fictjs/popper@0.3.4':
+    resolution: {integrity: sha512-CTj1bRRk1VpN8kEzHBSmbBfjmOJrurPyI32jXi6XOw0QUOWzYkIdIya7C9euSXXPjBWPLBHBfmxNrp6AEyIYlA==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/presence@0.3.3':
-    resolution: {integrity: sha512-qZj0EKarkyPbPDn4zn7TNfhQ7y+crbIaBDE/et210DNr0Q8Zq/2gE8E71snd+kySjzW6A69DR4TTMOcU5H/Ymw==}
+  '@fictjs/portal@0.3.4':
+    resolution: {integrity: sha512-xyFhyypCCPD2xWVm3QYmzsHJjUo6r3L1SHHKOcYyLacgsGSLm0PEA2OpZdFJ8h1MVC0sDFvHcB69hlI7UQ9mmA==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/primitive@0.3.3':
-    resolution: {integrity: sha512-tRceA4xkJ9CwAkWpiovkCBEWiLqkE2Ode3uIJPZODJom/dQ1yWvtYKpnaAaqpw1kFknkZIA4UQpyeOAeU4Hsiw==}
+  '@fictjs/presence@0.3.4':
+    resolution: {integrity: sha512-Bp4o+iijdTVGbiUQL0OaUWzoDWpOKyPxfFcmfXj5lcwB7uaZegQqk/GOBci5IDJyM3j3Xv5R9V424hgd34GTSQ==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/progress@0.3.3':
-    resolution: {integrity: sha512-EAgHg6S4oz5kDR2zxj+L3eo9fP9cQ0qxHKEyFrfG5m+SDQHMScZPhB7iG2fq3qzQyaJFUcsc5dmdKVF6OaJzMw==}
+  '@fictjs/primitive@0.3.4':
+    resolution: {integrity: sha512-bgDQynmUooWhoBdVqzazcvneAw9f4lwDOSp/zuhhAtn1AhAZ7sOhhykHsiogl0PoxZuGEBUxMW4oQPLfUatfNw==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/radio-group@0.3.3':
-    resolution: {integrity: sha512-K4dTIVPb7yg22AqK4yPFn307kgWklsS9bI1k0kFgSOFsf+E/WiPjfFpReW671Yene30ZuYLspRqyBoVxK/lSFg==}
+  '@fictjs/progress@0.3.4':
+    resolution: {integrity: sha512-1zgxjmeARIP9MCbVy72S97dTe+qqJ5mWCXXilHmBcoUQvPiBoqRvvx9BMCMAVBu2bl0JmLmJ3L9TVZu5CnyIuA==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/radix-ui@0.3.3':
-    resolution: {integrity: sha512-+aNLCml80haBpg8EsR8kitVlqs1gbT52lZXp7iqjU72NEBh8oMHjqBB0wHLHzG9ietSphmCnk2bMqe6MqPFkng==}
+  '@fictjs/radio-group@0.3.4':
+    resolution: {integrity: sha512-eIYwZf0aAVDSZyTHV1MUYhneDZ3Apmts9CH6dladVNRPf1DLPnAzX5hkbFox08esuvhPWOViGpeqvjBKQWBulw==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/rect@0.2.4':
-    resolution: {integrity: sha512-ujG5liMr6d3H8GH2nQt77KL+z3eGg5//P6pJfIf3UrsWe54fqPUGoT+sfhbyTbiV1G9FmmanS53qdIisYPJbIA==}
-    engines: {node: '>=22.13.0'}
-
-  '@fictjs/roving-focus@0.3.3':
-    resolution: {integrity: sha512-VFfmlPqPNRxcNO+erOkWonQ0sWp4TdTdKKaF0udsO+WNtYHfPWeZSWXPqufwDGDHKGAwo/Kp5d0fTRVPhm5Jqg==}
+  '@fictjs/radix-ui@0.3.4':
+    resolution: {integrity: sha512-a3zwShR62hJHtG1dUYCVguZWS1OPZ3zE9uysap1EJhJpANDU2q4ivLGHKblOlv5IyEhmd6Gv2bE0ML78ug8Kpg==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
+
+  '@fictjs/rect@0.3.4':
+    resolution: {integrity: sha512-jqoLf8mrsqDNCKc2YQymgJUIFnMDLCfmCGBn0aU1xA5UbESJEK1PD5voJ9fW2bt9wZO2B3RUkBuF2imBbO+iXg==}
+    engines: {node: '>=22.13.0'}
+
+  '@fictjs/roving-focus@0.3.4':
+    resolution: {integrity: sha512-0uzL+QgYNc0APpeImenF+tobtw4vhduViaIYtsebNNDZhwtdVyhpzU7RvuY5lyrv4GG1Gm0k9FlPcsZIKDx5yQ==}
+    engines: {node: '>=22.13.0'}
+    peerDependencies:
+      '@fictjs/runtime': '>=0.33.0'
 
   '@fictjs/runtime@0.33.0':
     resolution: {integrity: sha512-5i0h+psf1Ew2dN3qEYG19iFFsb/IJGdNp8jqwVd+5ypi+FER3vGUREXJZ4vsr83t9T5VFgkQe12kDnVf4eAUeQ==}
 
-  '@fictjs/scroll-area@0.3.3':
-    resolution: {integrity: sha512-1eFHKS+8VcFxHnlfMIbN9SVwCoWqfSsJFOrC3M9N8Pdz0+h8OlgtoQGOeOa7XEionDAN/4IxYSydODaJwn3vtQ==}
+  '@fictjs/scroll-area@0.3.4':
+    resolution: {integrity: sha512-R3xuFcMzPhKQkaVBUf0YjTuPr1NALeuA0zsqii2pyp9/FZ4frI4eRfkR6O3hUCxABaiH2Kw1OSxrp531EeLJGA==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/select@0.3.3':
-    resolution: {integrity: sha512-lsORKVhNfdtrBNn0uY1Tj/QqBWOOskvuQLouDN4uMck9PSP7wO8V3kmamTS3sSkakgjEU0gEjc9JbMvodubTMA==}
+  '@fictjs/select@0.3.4':
+    resolution: {integrity: sha512-1e5o91eOiSmE2B6mj/Db7ffTIOzpH4s/ON7izxeO7aEIFG9AFqcnmQmLuCpqTKuo+FgMdoH6aJSvH5G1kDY2IQ==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/separator@0.3.3':
-    resolution: {integrity: sha512-D4QrrKuesl5otl54ZIBh2sdgXlslt1hh5XB/Gf2ZJ/w352Aa+LQcgT9DGFsWUhZ0wX98qXY41wkIQCw8L1HXJg==}
+  '@fictjs/separator@0.3.4':
+    resolution: {integrity: sha512-SfZDbsK85nKt3nop+L7q0tsvWk+GdAIFYNZNlNx/YlHoBWj87HRlwHh9g77QNBDG9Or/VfBJhfDIm3x7gyRV9w==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/slider@0.3.3':
-    resolution: {integrity: sha512-5R/z7bGIqCBN6bAib7GoUWFLcYJTSfE0nIFTBpivmBGwbCpP4ujCZ3tnG4R89N4fkKT+lkMKT/lovv/Ei7wHuw==}
+  '@fictjs/slider@0.3.4':
+    resolution: {integrity: sha512-xF+XysGDu4rZRcpVzRuF4PDQ0mg4+UgOj5zKiTunPRT7J1kUyzA59q7nwxKSJOrrIykzI6cdRfWmLzZUGDke9w==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/slot@0.3.3':
-    resolution: {integrity: sha512-Net3Ry1w2e7kH+g13j0gzIFKhQbFmIwJZyD1RfOy+ZxrMesZcFgtB5yte8swc4r30VNHSHqSczw7d08sTzh5pw==}
+  '@fictjs/slot@0.3.4':
+    resolution: {integrity: sha512-vsG3W5hRleHarERveOmBJA2kOja7vAOx7gDA2C2EPzIyu9lmvgUujR7pmpDQfTPM0APXagXqRorhzj16p5mGCg==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/switch@0.3.3':
-    resolution: {integrity: sha512-lvRto4BXH6K9/PQzwdQ6UyP0E3SxomUFoAq2IGuVcnz/ZIr7vL03Ei1lnMhTuF64sahGGOSsLetsHBOwYYyidg==}
+  '@fictjs/switch@0.3.4':
+    resolution: {integrity: sha512-KOn7lKX9pP97Bm0HNRscW3tWRAebg5IWaXm9KxEHeDrp/Y8JVvZwLYPIaNci38N0+EJWJ2IzfmHm2+eQTIFxqQ==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/tabs@0.3.3':
-    resolution: {integrity: sha512-Y5Mq2+fFzo8csMIcDHXNLHqD5xqDu7kzCOSIS02tZ5dXgVvf3OCP4UCTuCnW42NtFPI3bof0yWFFLlRTfc1Zrw==}
+  '@fictjs/tabs@0.3.4':
+    resolution: {integrity: sha512-opcw3eSjquTErH4/LIW9VAeg9SUPdYsHu+0qas3Nv6gfTRg/Pya62nWGnH2jzSEE69f7Cppl8gkSG0rZkGoTVQ==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/toast@0.3.3':
-    resolution: {integrity: sha512-7GUjiKYEWQ+QKPnurCsz0yVoMdkSddrY9SMfkSy8tirP9INtMxsMb19g6KXdg60xxiFn/AyiXyn9kIryS/KooA==}
+  '@fictjs/toast@0.3.4':
+    resolution: {integrity: sha512-TNwwGetnCBrIENwpQ9RAKGwQAS4TJcZ+HdGrd/VEG9TAtDubYw4pz0aUauybyjJnWka7ssZLL5tfZtCvqIV0eQ==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/toggle-group@0.3.3':
-    resolution: {integrity: sha512-lDsqIoFhyIdALA2if+vAHNvNqgGdjmof/y3Ko8CAEVstheo4wf9bcYU2nWWNHhfu0Q/d7iTUzM8+AKLdG+A+AQ==}
+  '@fictjs/toggle-group@0.3.4':
+    resolution: {integrity: sha512-pHfjAPlxt61w4XnaA711lSguQJ0q0ccvKvr1ig0iSUs+W1HQGtGdo/kXgLvtbcc+Nx+QTosZYUjc6nipKqWpxw==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/toggle@0.3.3':
-    resolution: {integrity: sha512-JX0VKLJPKdmSotqbeU8t5ViSxXZvM0wPppwouGnH5p5au8W9ZyiySNGSq2+DD3/geG+rmrIanm9gLrbp7TL5uA==}
+  '@fictjs/toggle@0.3.4':
+    resolution: {integrity: sha512-//mrFvbcWwcvy9WwEn1nXTu0587euqE5+e8SzvicnHxoZEhdaCc0bzu1MzC+cvOHWa5Rimu9wIJHiaR7NKaBkw==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/toolbar@0.3.3':
-    resolution: {integrity: sha512-rCYDDaEegC3RxNmRzUFaPQ8mNFbTVZMp4sB+TyBsaQuKT1wA2F8Ax0CVhk+8YHu+8IYbQMlCWP3UokydHfdBeg==}
+  '@fictjs/toolbar@0.3.4':
+    resolution: {integrity: sha512-evCkqiISBmBSOvFfsvnQO2w+vmZmcesUOH1FN1ZmhK4bCsHV+/ivhzUQff9S0/TM5dR8BA+DgfhX2sOyTgmKHA==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/tooltip@0.3.3':
-    resolution: {integrity: sha512-XH5R0bLjxOOocakVzFte6qQzT5kOcP5Gsavihxwq28mPnko/2jJgi3cHv/pXmpJCid+c8hSXmeKsEun4alOuUw==}
+  '@fictjs/tooltip@0.3.4':
+    resolution: {integrity: sha512-dHg29wL2msUtDCPQ3dzb6XzIMwGJbpSkIkkSw3VrRmph64XjJOgHq/lw7E6qZ7VtF5mnaIP52AT2EJJznYanwg==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/use-callback-ref@0.2.5':
-    resolution: {integrity: sha512-N2tSOPvprSyREsBkqJcuL7asyXNAl6oWIRW4e2mwrFrjUYYUyRkvYlOuiA8qaJrnGo0BJ0fhfKDlNjnCKRFsJA==}
+  '@fictjs/use-callback-ref@0.3.4':
+    resolution: {integrity: sha512-66MPXQFZTcILOR9snC0T7hKiyNd/wEt3jqL/B1QosLMv7LwidUPvP48PGeKgM2UJtpp/C87/kelvQqXaqk2dPw==}
     engines: {node: '>=22.13.0'}
 
-  '@fictjs/use-controllable-state@0.3.3':
-    resolution: {integrity: sha512-nYgAE+wVKBnYzJGPfQeqkiwudTakQmEq7C8NskrGFMs+hHFZ/rvdSWhc83zdyWSSkEMHlXiLt6iqqfnvF6hBmg==}
-    engines: {node: '>=22.13.0'}
-    peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
-
-  '@fictjs/use-effect-event@0.3.3':
-    resolution: {integrity: sha512-RE+wL5calj9JONFWW+uqp2uYMSeEBF6IE9Hd+i3hTi8LO8Rr/7IYrT/YBd3dmxYlP8LamA9j6shOd/pmr1+ODw==}
+  '@fictjs/use-controllable-state@0.3.4':
+    resolution: {integrity: sha512-VJ3SFoqGEmyiwFWsZBc6v3jUjruDef1D4swu8OQg8NDMeXvEx1T8Zkygy4zr5s5pzNs8JSkQa3EDYq5169O1+Q==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/use-escape-keydown@0.3.3':
-    resolution: {integrity: sha512-Z0tTr8LW2hFEw6EN5PKW7NqUOMkTZ7j/lu31S6p0jix242InRNyORrHzEd1qpNyR+MxxO7DV2/XtpspRyvN0Dg==}
+  '@fictjs/use-effect-event@0.3.4':
+    resolution: {integrity: sha512-HY+/Io5Ea/0U+sKTJf9rvBCBq2flgwdQZw7yh58zeJpLEaKVcmy05CpzNZRZg1fQ2sAilUgAuPy1rmWnCJZscg==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/use-is-hydrated@0.3.3':
-    resolution: {integrity: sha512-qSnw2jq+WtZxPUIUT57qi1x3yjzpSOLLs4bSuWSOeWhMzoJOPaL3sDRFDBl1N+Y1DCI0KhXJeRc6PjVCMypmsw==}
+  '@fictjs/use-escape-keydown@0.3.4':
+    resolution: {integrity: sha512-vgG+tNggqqEbXq1vPuSaYid6kTqnKBgNiq2cjLoe6r/zFpxMHGMijAIUJDZBcRn0zavwwuxLETzwDJOfXh0cIA==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/use-layout-effect@0.3.3':
-    resolution: {integrity: sha512-6NSLOHGQoAGEjvz3qoEZ1ANygVCtQ53tyoguAwQnLCcoOjn0gAD/Uu+vPRQReyfFJDuY24GVSSMv93/RV730Ig==}
+  '@fictjs/use-is-hydrated@0.3.4':
+    resolution: {integrity: sha512-uKuUH2TSngKoF4AFJ+hPgWGcZRHx7uG4WIcid2wI6Z54Vz0UFN2hPW5BHfjcrzJHi5k1jKIJCjyOZNvM8V4EeQ==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/use-previous@0.3.3':
-    resolution: {integrity: sha512-5kvOj0f7HDXFH8c7qqzHC1uP9Md5Vclqag0XWtoo0tA9V2FfjF0NFr+z3+6oQLo5ZH9fjkhw9/Oleyr0Fwdbog==}
+  '@fictjs/use-layout-effect@0.3.4':
+    resolution: {integrity: sha512-oZ9ZI9l2rPvADaKGCTgEP2U0MCcVvH6BCuLDr3KtXReaBH6ZvC0MmFXAVVlWAP5adUGQFQK1oPC/QWsdlM3yvg==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/use-sidecar@0.3.3':
-    resolution: {integrity: sha512-P70cCW4RAjVj35NIpdnB4arauUqlzk6nk3NM9Vy9XTy6Iy4bDlIMivyP0J3wZzBmDOkEeRqOcuRiWLyNHxz6zw==}
+  '@fictjs/use-previous@0.3.4':
+    resolution: {integrity: sha512-tBXoDwiDMb81hkTX8xtLNIuCPO44aGpzKu4+VgO4/JikGNyjZSneZ6vDH4BZ0OId8vtaUWVIKosCDM1drHkz9w==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/use-size@0.3.3':
-    resolution: {integrity: sha512-ZrTt8onE4lmuBkuLWPGUnreQie1TBo7fvvtdKADJSCpdIslRn/6IvA1AUP8jsMpMzTs6KPCz3w068SLLoKDmSQ==}
+  '@fictjs/use-sidecar@0.3.4':
+    resolution: {integrity: sha512-SlnvHhkw9yUqZSacPyq4HQpyH8uNOriKhoUD4E5XUDwHSkCwD3cQ/8W3HIFiXzY6fC2xOuie1H7KYTMJMT3jAw==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
 
-  '@fictjs/visually-hidden@0.3.3':
-    resolution: {integrity: sha512-GcK+hFNsHALPCBlo7CwpAqABREWej9J0X9Knywm27O/wQOnTFAPXn8fnyV8vCYQxbmMVDx5QIreWNErmdruSqg==}
+  '@fictjs/use-size@0.3.4':
+    resolution: {integrity: sha512-VBdMlcZwGTV2oxNpdunheZU6g4edBI66Zxw++fgDNZ69SIQN4LbzQ38Pjxnlce2Cuo+AqqbDpZInn0Fa5ckK3w==}
     engines: {node: '>=22.13.0'}
     peerDependencies:
-      '@fictjs/runtime': '>=0.32.0'
+      '@fictjs/runtime': '>=0.33.0'
+
+  '@fictjs/visually-hidden@0.3.4':
+    resolution: {integrity: sha512-bmOaGnQw189IYovrAA5NREHG2WtGEUcxtbG4jRzo9tg3u/EkvcfRhjUWMbPAf8GpZg/CFtrqUFEiDexxTEnSLQ==}
+    engines: {node: '>=22.13.0'}
+    peerDependencies:
+      '@fictjs/runtime': '>=0.33.0'
 
   '@floating-ui/core@1.8.0':
     resolution: {integrity: sha512-0CIZ5itps/8x7BG8dEIhs53BvCUH2PCoogtakwRTut+Arm58sJooJ0AuZhLw2HJYIR5cMLNPBSS728sPho2khQ==}
@@ -2283,635 +2283,635 @@ snapshots:
       '@eslint/core': 1.1.0
       levn: 0.4.1
 
-  '@fictjs/accessible-icon@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/accessible-icon@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
       '@fictjs/runtime': 0.33.0
-      '@fictjs/visually-hidden': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/visually-hidden': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/accordion@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/accordion@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/collapsible': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/collection': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/direction': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/id': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/collapsible': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/collection': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/direction': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/id': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/alert-dialog@0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)':
+  '@fictjs/alert-dialog@0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)':
     dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/dialog': 0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/dialog': 0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/slot': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/slot': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
     transitivePeerDependencies:
       - fict
 
-  '@fictjs/arrow@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/arrow@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/aspect-ratio@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/aspect-ratio@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/runtime': 0.33.0
-
-  '@fictjs/avatar@0.3.3(@fictjs/runtime@0.33.0)':
-    dependencies:
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/runtime': 0.33.0
-      '@fictjs/use-callback-ref': 0.2.5
-      '@fictjs/use-is-hydrated': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
-
-  '@fictjs/checkbox@0.3.3(@fictjs/runtime@0.33.0)':
-    dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/presence': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-previous': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-size': 0.3.3(@fictjs/runtime@0.33.0)
-
-  '@fictjs/collapsible@0.3.3(@fictjs/runtime@0.33.0)':
-    dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/id': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/presence': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
-
-  '@fictjs/collection@0.3.3(@fictjs/runtime@0.33.0)':
-    dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/runtime': 0.33.0
-      '@fictjs/slot': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
-
-  '@fictjs/compose-refs@0.3.3(@fictjs/runtime@0.33.0)':
-    dependencies:
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
 
-  '@fictjs/context-menu@0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)':
+  '@fictjs/avatar@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/menu': 0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-callback-ref': 0.3.4
+      '@fictjs/use-is-hydrated': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
+
+  '@fictjs/checkbox@0.3.4(@fictjs/runtime@0.33.0)':
+    dependencies:
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/presence': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/runtime': 0.33.0
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-previous': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-size': 0.3.4(@fictjs/runtime@0.33.0)
+
+  '@fictjs/collapsible@0.3.4(@fictjs/runtime@0.33.0)':
+    dependencies:
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/id': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/presence': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/runtime': 0.33.0
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
+
+  '@fictjs/collection@0.3.4(@fictjs/runtime@0.33.0)':
+    dependencies:
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/runtime': 0.33.0
+      '@fictjs/slot': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
+
+  '@fictjs/compose-refs@0.3.4(@fictjs/runtime@0.33.0)':
+    dependencies:
+      '@fictjs/runtime': 0.33.0
+
+  '@fictjs/context-menu@0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)':
+    dependencies:
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/menu': 0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/runtime': 0.33.0
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
     transitivePeerDependencies:
       - fict
 
-  '@fictjs/context@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/context@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
       '@fictjs/runtime': 0.33.0
 
-  '@fictjs/core-primitive@0.2.4': {}
+  '@fictjs/core-primitive@0.3.4': {}
 
-  '@fictjs/dialog@0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)':
+  '@fictjs/dialog@0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)':
     dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/dismissable-layer': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/fict-remove-scroll': 0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)
-      '@fictjs/focus-guards': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/focus-scope': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/id': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/portal': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/presence': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/dismissable-layer': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/fict-remove-scroll': 0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)
+      '@fictjs/focus-guards': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/focus-scope': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/id': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/portal': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/presence': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
       aria-hidden: 1.2.6
     transitivePeerDependencies:
       - fict
 
-  '@fictjs/direction@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/direction@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
       '@fictjs/runtime': 0.33.0
 
-  '@fictjs/dismissable-layer@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/dismissable-layer@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-callback-ref': 0.2.5
-      '@fictjs/use-escape-keydown': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-callback-ref': 0.3.4
+      '@fictjs/use-escape-keydown': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/dropdown-menu@0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)':
+  '@fictjs/dropdown-menu@0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)':
     dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/id': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/menu': 0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/id': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/menu': 0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
     transitivePeerDependencies:
       - fict
 
-  '@fictjs/fict-remove-scroll-bar@0.3.3(fict@0.33.0)':
+  '@fictjs/fict-remove-scroll-bar@0.3.4(fict@0.33.0)':
     dependencies:
-      '@fictjs/fict-style-singleton': 0.3.3(fict@0.33.0)
+      '@fictjs/fict-style-singleton': 0.3.4(fict@0.33.0)
       fict: 0.33.0
 
-  '@fictjs/fict-remove-scroll@0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)':
+  '@fictjs/fict-remove-scroll@0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)':
     dependencies:
-      '@fictjs/fict-remove-scroll-bar': 0.3.3(fict@0.33.0)
-      '@fictjs/fict-style-singleton': 0.3.3(fict@0.33.0)
-      '@fictjs/use-callback-ref': 0.2.5
-      '@fictjs/use-sidecar': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/fict-remove-scroll-bar': 0.3.4(fict@0.33.0)
+      '@fictjs/fict-style-singleton': 0.3.4(fict@0.33.0)
+      '@fictjs/use-callback-ref': 0.3.4
+      '@fictjs/use-sidecar': 0.3.4(@fictjs/runtime@0.33.0)
       fict: 0.33.0
     transitivePeerDependencies:
       - '@fictjs/runtime'
 
-  '@fictjs/fict-style-singleton@0.3.3(fict@0.33.0)':
+  '@fictjs/fict-style-singleton@0.3.4(fict@0.33.0)':
     dependencies:
       fict: 0.33.0
       get-nonce: 1.0.1
 
-  '@fictjs/floating-ui-dom@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/floating-ui-dom@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
       '@fictjs/runtime': 0.33.0
       '@floating-ui/dom': 1.8.0
 
-  '@fictjs/focus-guards@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/focus-guards@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
       '@fictjs/runtime': 0.33.0
 
-  '@fictjs/focus-scope@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/focus-scope@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-callback-ref': 0.2.5
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-callback-ref': 0.3.4
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/form@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/form@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/id': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/label': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/id': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/label': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/hover-card@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/hover-card@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/dismissable-layer': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/popper': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/portal': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/presence': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/dismissable-layer': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/popper': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/portal': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/presence': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/id@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/id@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/label@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/label@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
 
-  '@fictjs/menu@0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)':
+  '@fictjs/menu@0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)':
     dependencies:
-      '@fictjs/collection': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/direction': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/dismissable-layer': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/fict-remove-scroll': 0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)
-      '@fictjs/focus-guards': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/focus-scope': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/id': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/popper': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/portal': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/presence': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/roving-focus': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/collection': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/direction': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/dismissable-layer': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/fict-remove-scroll': 0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)
+      '@fictjs/focus-guards': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/focus-scope': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/id': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/popper': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/portal': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/presence': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/roving-focus': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/slot': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-callback-ref': 0.2.5
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/slot': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-callback-ref': 0.3.4
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
       aria-hidden: 1.2.6
     transitivePeerDependencies:
       - fict
 
-  '@fictjs/menubar@0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)':
+  '@fictjs/menubar@0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)':
     dependencies:
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/direction': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/id': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/menu': 0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/direction': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/id': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/menu': 0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
     transitivePeerDependencies:
       - fict
 
-  '@fictjs/navigation-menu@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/navigation-menu@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/direction': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/dismissable-layer': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/id': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/presence': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/direction': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/dismissable-layer': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/id': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/presence': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/one-time-password-field@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/one-time-password-field@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/direction': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/direction': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-is-hydrated': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-is-hydrated': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/password-toggle-field@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/password-toggle-field@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/id': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/id': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-effect-event': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-is-hydrated': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-effect-event': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-is-hydrated': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/popover@0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)':
+  '@fictjs/popover@0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)':
     dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/dismissable-layer': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/fict-remove-scroll': 0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)
-      '@fictjs/focus-guards': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/focus-scope': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/id': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/popper': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/portal': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/presence': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/dismissable-layer': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/fict-remove-scroll': 0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)
+      '@fictjs/focus-guards': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/focus-scope': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/id': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/popper': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/portal': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/presence': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
       aria-hidden: 1.2.6
     transitivePeerDependencies:
       - fict
 
-  '@fictjs/popper@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/popper@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/arrow': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/floating-ui-dom': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/rect': 0.2.4
+      '@fictjs/arrow': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/floating-ui-dom': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/rect': 0.3.4
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-callback-ref': 0.2.5
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-size': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-callback-ref': 0.3.4
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-size': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/portal@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/portal@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/presence@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/presence@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/primitive@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/primitive@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
       '@fictjs/runtime': 0.33.0
-      '@fictjs/slot': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/slot': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/progress@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/progress@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
 
-  '@fictjs/radio-group@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/radio-group@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/direction': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/presence': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/roving-focus': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/direction': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/presence': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/roving-focus': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-previous': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-size': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-previous': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-size': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/radix-ui@0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)':
+  '@fictjs/radix-ui@0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)':
     dependencies:
-      '@fictjs/accessible-icon': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/accordion': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/alert-dialog': 0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)
-      '@fictjs/arrow': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/aspect-ratio': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/avatar': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/checkbox': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/collapsible': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/collection': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context-menu': 0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/dialog': 0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)
-      '@fictjs/direction': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/dismissable-layer': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/dropdown-menu': 0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)
-      '@fictjs/focus-guards': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/focus-scope': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/form': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/hover-card': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/label': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/menu': 0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)
-      '@fictjs/menubar': 0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)
-      '@fictjs/navigation-menu': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/one-time-password-field': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/password-toggle-field': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/popover': 0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)
-      '@fictjs/popper': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/portal': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/presence': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/progress': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/radio-group': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/roving-focus': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/accessible-icon': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/accordion': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/alert-dialog': 0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)
+      '@fictjs/arrow': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/aspect-ratio': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/avatar': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/checkbox': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/collapsible': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/collection': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context-menu': 0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/dialog': 0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)
+      '@fictjs/direction': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/dismissable-layer': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/dropdown-menu': 0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)
+      '@fictjs/focus-guards': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/focus-scope': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/form': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/hover-card': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/label': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/menu': 0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)
+      '@fictjs/menubar': 0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)
+      '@fictjs/navigation-menu': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/one-time-password-field': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/password-toggle-field': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/popover': 0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)
+      '@fictjs/popper': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/portal': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/presence': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/progress': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/radio-group': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/roving-focus': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/scroll-area': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/select': 0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)
-      '@fictjs/separator': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/slider': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/slot': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/switch': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/tabs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/toast': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/toggle': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/toggle-group': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/toolbar': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/tooltip': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-callback-ref': 0.2.5
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-effect-event': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-escape-keydown': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-is-hydrated': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-size': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/visually-hidden': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/scroll-area': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/select': 0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)
+      '@fictjs/separator': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/slider': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/slot': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/switch': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/tabs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/toast': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/toggle': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/toggle-group': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/toolbar': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/tooltip': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-callback-ref': 0.3.4
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-effect-event': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-escape-keydown': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-is-hydrated': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-size': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/visually-hidden': 0.3.4(@fictjs/runtime@0.33.0)
     transitivePeerDependencies:
       - fict
 
-  '@fictjs/rect@0.2.4': {}
+  '@fictjs/rect@0.3.4': {}
 
-  '@fictjs/roving-focus@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/roving-focus@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/collection': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/direction': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/id': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/collection': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/direction': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/id': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-callback-ref': 0.2.5
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-callback-ref': 0.3.4
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
 
   '@fictjs/runtime@0.33.0': {}
 
-  '@fictjs/scroll-area@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/scroll-area@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/direction': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/presence': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/direction': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/presence': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/select@0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)':
+  '@fictjs/select@0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)':
     dependencies:
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/id': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/menu': 0.3.3(@fictjs/runtime@0.33.0)(fict@0.33.0)
-      '@fictjs/presence': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/id': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/menu': 0.3.4(@fictjs/runtime@0.33.0)(fict@0.33.0)
+      '@fictjs/presence': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
     transitivePeerDependencies:
       - fict
 
-  '@fictjs/separator@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/separator@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
 
-  '@fictjs/slider@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/slider@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/collection': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/direction': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/collection': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/direction': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-previous': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-size': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-previous': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-size': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/slot@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/slot@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/runtime': 0.33.0
-
-  '@fictjs/switch@0.3.3(@fictjs/runtime@0.33.0)':
-    dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-previous': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-size': 0.3.3(@fictjs/runtime@0.33.0)
-
-  '@fictjs/tabs@0.3.3(@fictjs/runtime@0.33.0)':
-    dependencies:
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/direction': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/id': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/presence': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/roving-focus': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
-
-  '@fictjs/toast@0.3.3(@fictjs/runtime@0.33.0)':
-    dependencies:
-      '@fictjs/collection': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/dismissable-layer': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/portal': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/presence': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/runtime': 0.33.0
-      '@fictjs/use-callback-ref': 0.2.5
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/visually-hidden': 0.3.3(@fictjs/runtime@0.33.0)
-
-  '@fictjs/toggle-group@0.3.3(@fictjs/runtime@0.33.0)':
-    dependencies:
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/direction': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/roving-focus': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/runtime': 0.33.0
-      '@fictjs/toggle': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
-
-  '@fictjs/toggle@0.3.3(@fictjs/runtime@0.33.0)':
-    dependencies:
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/runtime': 0.33.0
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-
-  '@fictjs/toolbar@0.3.3(@fictjs/runtime@0.33.0)':
-    dependencies:
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/direction': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/roving-focus': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/runtime': 0.33.0
-      '@fictjs/separator': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/toggle-group': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
-
-  '@fictjs/tooltip@0.3.3(@fictjs/runtime@0.33.0)':
-    dependencies:
-      '@fictjs/compose-refs': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/context': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/core-primitive': 0.2.4
-      '@fictjs/dismissable-layer': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/id': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/popper': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/portal': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/presence': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/runtime': 0.33.0
-      '@fictjs/slot': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-controllable-state': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/visually-hidden': 0.3.3(@fictjs/runtime@0.33.0)
-
-  '@fictjs/use-callback-ref@0.2.5': {}
-
-  '@fictjs/use-controllable-state@0.3.3(@fictjs/runtime@0.33.0)':
-    dependencies:
-      '@fictjs/runtime': 0.33.0
-      '@fictjs/use-effect-event': 0.3.3(@fictjs/runtime@0.33.0)
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
-
-  '@fictjs/use-effect-event@0.3.3(@fictjs/runtime@0.33.0)':
-    dependencies:
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
 
-  '@fictjs/use-escape-keydown@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/switch@0.3.4(@fictjs/runtime@0.33.0)':
+    dependencies:
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/runtime': 0.33.0
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-previous': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-size': 0.3.4(@fictjs/runtime@0.33.0)
+
+  '@fictjs/tabs@0.3.4(@fictjs/runtime@0.33.0)':
+    dependencies:
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/direction': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/id': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/presence': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/roving-focus': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/runtime': 0.33.0
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
+
+  '@fictjs/toast@0.3.4(@fictjs/runtime@0.33.0)':
+    dependencies:
+      '@fictjs/collection': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/dismissable-layer': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/portal': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/presence': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/runtime': 0.33.0
+      '@fictjs/use-callback-ref': 0.3.4
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/visually-hidden': 0.3.4(@fictjs/runtime@0.33.0)
+
+  '@fictjs/toggle-group@0.3.4(@fictjs/runtime@0.33.0)':
+    dependencies:
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/direction': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/roving-focus': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/runtime': 0.33.0
+      '@fictjs/toggle': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
+
+  '@fictjs/toggle@0.3.4(@fictjs/runtime@0.33.0)':
+    dependencies:
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/runtime': 0.33.0
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+
+  '@fictjs/toolbar@0.3.4(@fictjs/runtime@0.33.0)':
+    dependencies:
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/direction': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/roving-focus': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/runtime': 0.33.0
+      '@fictjs/separator': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/toggle-group': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
+
+  '@fictjs/tooltip@0.3.4(@fictjs/runtime@0.33.0)':
+    dependencies:
+      '@fictjs/compose-refs': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/context': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/core-primitive': 0.3.4
+      '@fictjs/dismissable-layer': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/id': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/popper': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/portal': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/presence': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/runtime': 0.33.0
+      '@fictjs/slot': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-controllable-state': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/visually-hidden': 0.3.4(@fictjs/runtime@0.33.0)
+
+  '@fictjs/use-callback-ref@0.3.4': {}
+
+  '@fictjs/use-controllable-state@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-callback-ref': 0.2.5
+      '@fictjs/use-effect-event': 0.3.4(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/use-is-hydrated@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/use-effect-event@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
       '@fictjs/runtime': 0.33.0
 
-  '@fictjs/use-layout-effect@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/use-escape-keydown@0.3.4(@fictjs/runtime@0.33.0)':
+    dependencies:
+      '@fictjs/runtime': 0.33.0
+      '@fictjs/use-callback-ref': 0.3.4
+
+  '@fictjs/use-is-hydrated@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
       '@fictjs/runtime': 0.33.0
 
-  '@fictjs/use-previous@0.3.3(@fictjs/runtime@0.33.0)':
-    dependencies:
-      '@fictjs/runtime': 0.33.0
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
-
-  '@fictjs/use-sidecar@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/use-layout-effect@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
       '@fictjs/runtime': 0.33.0
 
-  '@fictjs/use-size@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/use-previous@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
       '@fictjs/runtime': 0.33.0
-      '@fictjs/use-layout-effect': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
 
-  '@fictjs/visually-hidden@0.3.3(@fictjs/runtime@0.33.0)':
+  '@fictjs/use-sidecar@0.3.4(@fictjs/runtime@0.33.0)':
     dependencies:
-      '@fictjs/primitive': 0.3.3(@fictjs/runtime@0.33.0)
+      '@fictjs/runtime': 0.33.0
+
+  '@fictjs/use-size@0.3.4(@fictjs/runtime@0.33.0)':
+    dependencies:
+      '@fictjs/runtime': 0.33.0
+      '@fictjs/use-layout-effect': 0.3.4(@fictjs/runtime@0.33.0)
+
+  '@fictjs/visually-hidden@0.3.4(@fictjs/runtime@0.33.0)':
+    dependencies:
+      '@fictjs/primitive': 0.3.4(@fictjs/runtime@0.33.0)
       '@fictjs/runtime': 0.33.0
 
   '@floating-ui/core@1.8.0':
