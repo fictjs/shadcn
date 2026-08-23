@@ -9,24 +9,24 @@ importers:
   .:
     dependencies:
       '@fictjs/runtime':
-        specifier: 0.32.0
-        version: 0.32.0
+        specifier: 0.33.0
+        version: 0.33.0
       '@fictjs/ssr':
-        specifier: 0.28.5
-        version: 0.28.5
+        specifier: 0.33.0
+        version: 0.33.0
       express:
         specifier: ^5.1.0
         version: 5.2.1
       fict:
-        specifier: 0.32.0
-        version: 0.32.0
+        specifier: 0.33.0
+        version: 0.33.0
     devDependencies:
       '@fictjs/compiler':
-        specifier: 0.32.0
-        version: 0.32.0
+        specifier: 0.33.0
+        version: 0.33.0
       '@fictjs/vite-plugin':
-        specifier: 0.32.0
-        version: 0.32.0(vite@7.3.1(@types/node@24.11.0)(jiti@2.6.1)(lightningcss@1.31.1))
+        specifier: 0.33.0
+        version: 0.33.0(vite@7.3.1(@types/node@24.11.0)(jiti@2.6.1)(lightningcss@1.31.1))
       '@playwright/test':
         specifier: 1.58.2
         version: 1.58.2
@@ -201,65 +201,65 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@fictjs/compiler-darwin-arm64@0.32.0':
-    resolution: {integrity: sha512-kjLPIiSOcAa9z6Gz3USZOXF4mloJR1zaglCJDjuNeWt1cXH9cws2Hl4N/jJYOh596LCg+BMi7FmHJ6OCv9Hvkw==}
+  '@fictjs/compiler-darwin-arm64@0.33.0':
+    resolution: {integrity: sha512-n1ofjzocHasKn/ty4Ctx93FkyRZ+Su/6/vTuPrvs7vepI7nu4D1NoHLB9or7qrpzB3jSIOzrueQ7OYToQC1dOQ==}
     engines: {node: '>=22.18.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@fictjs/compiler-darwin-x64@0.32.0':
-    resolution: {integrity: sha512-4qTCPQjZFV7/eu2KrbElYgZnZfNsLTC4Aj0MRo5o3iijj9pM9YJMkCcrGsMFH3Fk5aVBSajQ1g0LAi/xSqeIJg==}
+  '@fictjs/compiler-darwin-x64@0.33.0':
+    resolution: {integrity: sha512-qaXhfGJw8Nt2lkBWLNhjBWdELe8vxtg22gKMgXdC4ogOrGCzPbMKex3NaU7FTp8X/hfOGkR499td9kgKfhvk0A==}
     engines: {node: '>=22.18.0'}
     cpu: [x64]
     os: [darwin]
 
-  '@fictjs/compiler-linux-arm64-gnu@0.32.0':
-    resolution: {integrity: sha512-AM5KCDPzlilKwqJG13eI0uzANuQGkpLEAj+kpddPWtDcyfpZq8WwoAS2fOo6Ug+xcQAe7bJvfDIdH4d7ELehGQ==}
+  '@fictjs/compiler-linux-arm64-gnu@0.33.0':
+    resolution: {integrity: sha512-cmbUqAWoBc91eXLbChDaC0C1McO/povJPKMaEXeX53UZMduB/NrOHvZnU30uNAIxzURYnTamuT6TNvbxXR/d0w==}
     engines: {node: '>=22.18.0'}
     cpu: [arm64]
     os: [linux]
 
-  '@fictjs/compiler-linux-arm64-musl@0.32.0':
-    resolution: {integrity: sha512-XuqWmtU5nQ5Elyj1BGlXZ187RGK7K7z2NwNLkEUVvRkb2nEZaBpvMs4waooRrWrmnGyR48Bh20JbBsIlQBE9SA==}
+  '@fictjs/compiler-linux-arm64-musl@0.33.0':
+    resolution: {integrity: sha512-VZPYVlgZMyhm/FsycR1qYQ1Vl1qdPdp2i7exk3Gec0nx5IMgUuqhaKiiJ8NsgtHH9MdepZhTupT8qmGcYl3BCA==}
     engines: {node: '>=22.18.0'}
     cpu: [arm64]
     os: [linux]
 
-  '@fictjs/compiler-linux-x64-gnu@0.32.0':
-    resolution: {integrity: sha512-vDSxmMztCRw0SOB4hBdENDC5X5gLe08yx8yuUGTzZLp9t9TC0Y2CCMwjw2vzWZXeaqQj5qV4+qKdY1EXyxBjrg==}
+  '@fictjs/compiler-linux-x64-gnu@0.33.0':
+    resolution: {integrity: sha512-aSs+rqg+rZaDgt8/Nzz7jxWsn8LFtRmSNzxR9pLQo+8zRIh52LPSB7b9HKPuQD0SY3VQISgzycmLe6k/r7+ezQ==}
     engines: {node: '>=22.18.0'}
     cpu: [x64]
     os: [linux]
 
-  '@fictjs/compiler-linux-x64-musl@0.32.0':
-    resolution: {integrity: sha512-x32dQOJM2GQRrhmuomgIHZZdj1R69xKY7xS91VMFYhevDdyhWgIHNmJU4MEf5dHMV2Iy/WX+L0O50DywYfEzLw==}
+  '@fictjs/compiler-linux-x64-musl@0.33.0':
+    resolution: {integrity: sha512-jus4mONTJvr3VLfGZR50BCh5WJb9h/H5VdRE5namibhdJo/983+jygyQ+Nvrgbbpg06eYs4rLA2G7ghibOVotw==}
     engines: {node: '>=22.18.0'}
     cpu: [x64]
     os: [linux]
 
-  '@fictjs/compiler-win32-arm64-msvc@0.32.0':
-    resolution: {integrity: sha512-QkRdX+kc+11R+kQ0r/5sZYdI+9vbbmeNj0FxmN3KNTy3wwABf6it5gdCQ+uqeeg7+Pysh/mIvtq3xP6h9CoMaQ==}
+  '@fictjs/compiler-win32-arm64-msvc@0.33.0':
+    resolution: {integrity: sha512-ny9OnOtO28e9Rd6gbK4DE7utiU7I5BrgXcp5tUN3b9D7dMuIJ02NaQxb7+aS82/fWzbuZvXjNGYfRhldrXdIQg==}
     engines: {node: '>=22.18.0'}
     cpu: [arm64]
     os: [win32]
 
-  '@fictjs/compiler-win32-x64-msvc@0.32.0':
-    resolution: {integrity: sha512-KuXMtC4fpVgP1TjmWVreZ+SPHA5yXk26Nma5U0GiHu23WRWh16FhnRPo5u4jBNzXv0xLhAyr53gsT0iuKuzlAg==}
+  '@fictjs/compiler-win32-x64-msvc@0.33.0':
+    resolution: {integrity: sha512-eDIdCR7aSywouwpxEEtFtyO7MxDc4wjYSkNDFdVooFYOymSPCyyUWEX4+w+nMFtA+4JSI3eIvn/3hEXAJLsgEQ==}
     engines: {node: '>=22.18.0'}
     cpu: [x64]
     os: [win32]
 
-  '@fictjs/compiler@0.32.0':
-    resolution: {integrity: sha512-OELEmFBKdf0tsp02tNzxE4+MAfqeKuNrOqgyQlUrt+oj6NbaH68aFzvUgGrLQ4AGDe4ZflHHaRptR1YVDLJ+VQ==}
+  '@fictjs/compiler@0.33.0':
+    resolution: {integrity: sha512-FBMt7L4j8fz709BKYaMR15JXdcsUMB9Qlco8QWAqbbpCzWGKUgYy3ae8fajnVefPnmbXU1M0dj6PG/Avh1dm+A==}
 
-  '@fictjs/runtime@0.32.0':
-    resolution: {integrity: sha512-hjAclIF2XXX9zC5FP+LiL4P3ISDevk3hA92Yrhe56G+vUNp0I5+7vbiAlPfIcNM/Putk2Lfkw7y1+bdV7icyUg==}
+  '@fictjs/runtime@0.33.0':
+    resolution: {integrity: sha512-5i0h+psf1Ew2dN3qEYG19iFFsb/IJGdNp8jqwVd+5ypi+FER3vGUREXJZ4vsr83t9T5VFgkQe12kDnVf4eAUeQ==}
 
-  '@fictjs/ssr@0.28.5':
-    resolution: {integrity: sha512-IBIywPwUokv0TVwljIJ2OYxtOfVuPzDtjs4j76SD3I3OKtEdCb0ZalejE8QXyC1Rnf4UGukL2vChos9kE/Z/Bw==}
+  '@fictjs/ssr@0.33.0':
+    resolution: {integrity: sha512-I+nIfzUiJ2jRSBvKvXAdWlH02/t9RTaeT/LuOJLwtEVVwyknMsKejaqFbu9WNPT0lryGE01DXv1aKdl5YL7WlQ==}
 
-  '@fictjs/vite-plugin@0.32.0':
-    resolution: {integrity: sha512-Pmc1OJg4kMuBvtI90uzW+x7ybLimA+K5d/3C5mHOSoXFTgWJpVfxZUlr65DVz1EtIwaiN7fV6d4O/4DBiyrzPw==}
+  '@fictjs/vite-plugin@0.33.0':
+    resolution: {integrity: sha512-itTGmex7KleTLzOkeASNXRhC5M7lccPaBUe/Myp1VNKoZn5u7qtT2FzFuInpuTwaifvxs4G5xdzqjo9vDAIsKg==}
     peerDependencies:
       vite: '>=7.0.0'
 
@@ -581,8 +581,8 @@ packages:
       picomatch:
         optional: true
 
-  fict@0.32.0:
-    resolution: {integrity: sha512-mJnB/vlQkSZdb8sJGoLHcQaM/XatUCTpgiyHOP00Iv6bexE1FdYk2dx4d7MPTn4V/+isWpEEuBQk2SdkktiTug==}
+  fict@0.33.0:
+    resolution: {integrity: sha512-QUK/KlFa/NTUHYL1DTSTeAbwQeSyZ8GVPgT/ZYPYYYMhImc8CocKelARPa9LiMHWnCnwM4RtQvVO8VF20HC96w==}
 
   finalhandler@2.1.1:
     resolution: {integrity: sha512-S8KoZgRZN+a5rNwqTxlZZePjT/4cnm0ROV70LedRHZ0p8u9fRID0hJUZQpkKLzro8LfmC8sx23bY6tVNxv8pQA==}
@@ -817,8 +817,8 @@ packages:
     resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}
     engines: {node: '>= 0.10'}
 
-  qs@6.15.0:
-    resolution: {integrity: sha512-mAZTtNCeetKMH+pSjrb76NAM8V9a05I9aBZOHztWy/UqcJdQYNsf59vrRKWnojAT9Y+GbIvoTBC++CPHqpDBhQ==}
+  qs@6.15.3:
+    resolution: {integrity: sha512-O9gl3zCl5h5blw1KGUzQKhA5oUXSl8rwUIM5o0S3nCXMliSvy5Dzx7/DJcI+SwgICv+IneSZwhBh1oSyEHA71A==}
     engines: {node: '>=0.6'}
 
   range-parser@1.2.1:
@@ -852,8 +852,8 @@ packages:
   setprototypeof@1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
 
-  side-channel-list@1.0.0:
-    resolution: {integrity: sha512-FCLHtRD/gnpCiCHEiJLOwdmFP+wzCmDEkc9y7NsYxeF4u7Btsn1ZuwgwJGxImImHicJArLP4R0yX4c2KCrMrTA==}
+  side-channel-list@1.0.1:
+    resolution: {integrity: sha512-mjn/0bi/oUURjc5Xl7IaWi/OJJJumuoJFQJfDDyO46+hBWsfaVM65TBHq2eoZBhzl9EchxOijpkbRC8SVBQU0w==}
     engines: {node: '>= 0.4'}
 
   side-channel-map@1.0.1:
@@ -864,8 +864,8 @@ packages:
     resolution: {integrity: sha512-WPS/HvHQTYnHisLo9McqBHOJk2FkHO/tlpvldyrnem4aeQp4hai3gythswg6p01oSoTl58rcpiFAjF2br2Ak2A==}
     engines: {node: '>= 0.4'}
 
-  side-channel@1.1.0:
-    resolution: {integrity: sha512-ZX99e6tRweoUXqR+VBrslhda51Nh5MTQwou5tnUDgbtyM0dBgmhEDtWGP/xbKn6hqfPRHujUNwz5fy/wbbhnpw==}
+  side-channel@1.1.1:
+    resolution: {integrity: sha512-6x6dK6zJdpTzF4sQeNYxwtvBzf6Eg4GtlesS94HOvTudUeyK2WXAaIfmDgsyslYrRBeFIlsi54AYsFGUuhmvrQ==}
     engines: {node: '>= 0.4'}
 
   source-map-js@1.2.1:
@@ -1030,55 +1030,55 @@ snapshots:
   '@esbuild/win32-x64@0.27.3':
     optional: true
 
-  '@fictjs/compiler-darwin-arm64@0.32.0':
+  '@fictjs/compiler-darwin-arm64@0.33.0':
     optional: true
 
-  '@fictjs/compiler-darwin-x64@0.32.0':
+  '@fictjs/compiler-darwin-x64@0.33.0':
     optional: true
 
-  '@fictjs/compiler-linux-arm64-gnu@0.32.0':
+  '@fictjs/compiler-linux-arm64-gnu@0.33.0':
     optional: true
 
-  '@fictjs/compiler-linux-arm64-musl@0.32.0':
+  '@fictjs/compiler-linux-arm64-musl@0.33.0':
     optional: true
 
-  '@fictjs/compiler-linux-x64-gnu@0.32.0':
+  '@fictjs/compiler-linux-x64-gnu@0.33.0':
     optional: true
 
-  '@fictjs/compiler-linux-x64-musl@0.32.0':
+  '@fictjs/compiler-linux-x64-musl@0.33.0':
     optional: true
 
-  '@fictjs/compiler-win32-arm64-msvc@0.32.0':
+  '@fictjs/compiler-win32-arm64-msvc@0.33.0':
     optional: true
 
-  '@fictjs/compiler-win32-x64-msvc@0.32.0':
+  '@fictjs/compiler-win32-x64-msvc@0.33.0':
     optional: true
 
-  '@fictjs/compiler@0.32.0':
+  '@fictjs/compiler@0.33.0':
     dependencies:
       '@oxc-project/runtime': 0.139.0
     optionalDependencies:
-      '@fictjs/compiler-darwin-arm64': 0.32.0
-      '@fictjs/compiler-darwin-x64': 0.32.0
-      '@fictjs/compiler-linux-arm64-gnu': 0.32.0
-      '@fictjs/compiler-linux-arm64-musl': 0.32.0
-      '@fictjs/compiler-linux-x64-gnu': 0.32.0
-      '@fictjs/compiler-linux-x64-musl': 0.32.0
-      '@fictjs/compiler-win32-arm64-msvc': 0.32.0
-      '@fictjs/compiler-win32-x64-msvc': 0.32.0
+      '@fictjs/compiler-darwin-arm64': 0.33.0
+      '@fictjs/compiler-darwin-x64': 0.33.0
+      '@fictjs/compiler-linux-arm64-gnu': 0.33.0
+      '@fictjs/compiler-linux-arm64-musl': 0.33.0
+      '@fictjs/compiler-linux-x64-gnu': 0.33.0
+      '@fictjs/compiler-linux-x64-musl': 0.33.0
+      '@fictjs/compiler-win32-arm64-msvc': 0.33.0
+      '@fictjs/compiler-win32-x64-msvc': 0.33.0
 
-  '@fictjs/runtime@0.32.0': {}
+  '@fictjs/runtime@0.33.0': {}
 
-  '@fictjs/ssr@0.28.5':
+  '@fictjs/ssr@0.33.0':
     dependencies:
-      '@fictjs/runtime': 0.32.0
+      '@fictjs/runtime': 0.33.0
       linkedom: 0.18.12
     transitivePeerDependencies:
       - canvas
 
-  '@fictjs/vite-plugin@0.32.0(vite@7.3.1(@types/node@24.11.0)(jiti@2.6.1)(lightningcss@1.31.1))':
+  '@fictjs/vite-plugin@0.33.0(vite@7.3.1(@types/node@24.11.0)(jiti@2.6.1)(lightningcss@1.31.1))':
     dependencies:
-      '@fictjs/compiler': 0.32.0
+      '@fictjs/compiler': 0.33.0
       '@jridgewell/remapping': 2.3.5
       magic-string: 0.30.21
       vite: 7.3.1(@types/node@24.11.0)(jiti@2.6.1)(lightningcss@1.31.1)
@@ -1239,7 +1239,7 @@ snapshots:
       http-errors: 2.0.1
       iconv-lite: 0.7.2
       on-finished: 2.4.1
-      qs: 6.15.0
+      qs: 6.15.3
       raw-body: 3.0.2
       type-is: 2.0.1
     transitivePeerDependencies:
@@ -1383,7 +1383,7 @@ snapshots:
       once: 1.4.0
       parseurl: 1.3.3
       proxy-addr: 2.0.7
-      qs: 6.15.0
+      qs: 6.15.3
       range-parser: 1.2.1
       router: 2.2.0
       send: 1.2.1
@@ -1398,9 +1398,9 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.3
 
-  fict@0.32.0:
+  fict@0.33.0:
     dependencies:
-      '@fictjs/runtime': 0.32.0
+      '@fictjs/runtime': 0.33.0
 
   finalhandler@2.1.1:
     dependencies:
@@ -1602,9 +1602,10 @@ snapshots:
       forwarded: 0.2.0
       ipaddr.js: 1.9.1
 
-  qs@6.15.0:
+  qs@6.15.3:
     dependencies:
-      side-channel: 1.1.0
+      es-define-property: 1.0.1
+      side-channel: 1.1.1
 
   range-parser@1.2.1: {}
 
@@ -1685,7 +1686,7 @@ snapshots:
 
   setprototypeof@1.2.0: {}
 
-  side-channel-list@1.0.0:
+  side-channel-list@1.0.1:
     dependencies:
       es-errors: 1.3.0
       object-inspect: 1.13.4
@@ -1705,11 +1706,11 @@ snapshots:
       object-inspect: 1.13.4
       side-channel-map: 1.0.1
 
-  side-channel@1.1.0:
+  side-channel@1.1.1:
     dependencies:
       es-errors: 1.3.0
       object-inspect: 1.13.4
-      side-channel-list: 1.0.0
+      side-channel-list: 1.0.1
       side-channel-map: 1.0.1
       side-channel-weakmap: 1.0.2
 

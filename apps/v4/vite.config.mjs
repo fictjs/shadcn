@@ -5,8 +5,7 @@ export default defineConfig({
   plugins: [
     fict({
       resumable: true,
-      autoExtractHandlers: true,
-      autoExtractThreshold: 1,
+      autoExtractHandlers: false,
     }),
   ],
   build: {
