@@ -1328,6 +1328,15 @@ test.describe("shadcn v4 site", () => {
     await expect(emptyStates.last()).toHaveCSS("height", "215.5px")
     await expect(emptyStates.last()).toHaveCSS("border-top-style", "dashed")
     await expect(emptyStates.last().locator(".root-empty-media")).toHaveCSS("width", "32px")
+
+    const avatarGroup = emptyStates.first().locator(".ui-avatar-group")
+    await expect(avatarGroup).toHaveCSS("width", "80px")
+    await expect(avatarGroup.locator("img").first()).toHaveAttribute("src", "https://github.com/shadcn.png")
+    const avatarBoxes = await avatarGroup.locator(".ui-avatar").evaluateAll((avatars) => (
+      avatars.map((avatar) => avatar.getBoundingClientRect().x)
+    ))
+    expect(avatarBoxes[0] - avatarBoxes[1]).toBe(24)
+    expect(avatarBoxes[1] - avatarBoxes[2]).toBe(24)
   })
 
   test("rtl price slider matches React geometry and direction", async ({ page }) => {

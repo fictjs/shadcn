@@ -2940,11 +2940,11 @@ h1 {
 }
 
 .ui-avatar-group > * {
-  margin-left: -0.5rem;
+  margin-inline-start: -0.5rem;
 }
 
 .ui-avatar-group > *:first-child {
-  margin-left: 0;
+  margin-inline-start: 0;
 }
 
 .ui-avatar {

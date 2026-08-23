@@ -2359,13 +2359,13 @@ function RootAvatarEmptyPreview() {
       <div class="ui-empty-header">
         <div class="ui-avatar-group">
           <span class="ui-avatar">
-            <img src="/avatars/01.png" alt="@shadcn" />
+            <img src="https://github.com/shadcn.png" alt="@shadcn" />
           </span>
           <span class="ui-avatar">
-            <img src="/avatars/02.png" alt="@maxleiter" />
+            <img src="https://github.com/maxleiter.png" alt="@maxleiter" />
           </span>
           <span class="ui-avatar">
-            <img src="/avatars/03.png" alt="@evilrabbit" />
+            <img src="https://github.com/evilrabbit.png" alt="@evilrabbit" />
           </span>
         </div>
         <p class="ui-empty-title">No Team Members</p>
