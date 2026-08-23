@@ -34,6 +34,7 @@ async function initResumableClient(): Promise<void> {
   wireDashboardTables()
   wireTasksTables()
   wirePlaygroundControls()
+  wireAuthenticationForm()
   wireColorFormatSelectors()
   wireShowcaseTooltips()
   wireBlockViewer()
@@ -55,6 +56,50 @@ async function initResumableClient(): Promise<void> {
   wireCreateRoute()
   wireClientFilters()
   document.documentElement.dataset.clientReady = "true"
+}
+
+function wireAuthenticationForm(): void {
+  const setLoading = (scope: HTMLElement, loading: boolean): void => {
+    const form = scope.querySelector<HTMLFormElement>("[data-auth-form]")
+    if (!form) {
+      return
+    }
+    form.dataset.authLoading = String(loading)
+    form.setAttribute("aria-busy", String(loading))
+    form.querySelectorAll<HTMLInputElement | HTMLButtonElement>("input, button").forEach((control) => {
+      control.disabled = loading
+    })
+    const provider = scope.querySelector<HTMLButtonElement>("[data-auth-provider]")
+    if (provider) {
+      provider.disabled = loading
+    }
+    scope.querySelectorAll<HTMLElement>("[data-auth-spinner]").forEach((spinner) => {
+      spinner.hidden = !loading
+    })
+    const providerIcon = scope.querySelector<HTMLElement>("[data-auth-provider-icon]")
+    if (providerIcon) {
+      providerIcon.hidden = loading
+    }
+  }
+
+  document.addEventListener("submit", (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLFormElement) || target.dataset.authForm === undefined) {
+      return
+    }
+    event.preventDefault()
+    const scope = target.closest<HTMLElement>(".auth-example")
+    if (!scope || target.dataset.authLoading === "true") {
+      return
+    }
+
+    setLoading(scope, true)
+    window.setTimeout(() => {
+      if (scope.isConnected) {
+        setLoading(scope, false)
+      }
+    }, 3000)
+  })
 }
 
 function wirePlaygroundControls(): void {

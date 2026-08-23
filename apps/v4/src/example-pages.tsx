@@ -2433,7 +2433,7 @@ function PlaygroundExample() {
 function AuthenticationExample() {
   return (
     <div class="live-example auth-example">
-      <a class="auth-login-link" href="#auth-login">
+      <a class="auth-login-link" href="/examples/authentication">
         Login
       </a>
       <section class="auth-brand-panel">
@@ -2455,10 +2455,21 @@ function AuthenticationExample() {
             <p class="tasks-copy">Enter your email below to create your account</p>
           </div>
 
-          <div class="auth-field-group">
-            <input class="auth-input" type="email" placeholder="name@example.com" aria-label="Email" autoComplete="email" />
-            <button class="auth-submit-button" type="button">Sign In with Email</button>
-          </div>
+          <form class="auth-field-group" data-auth-form>
+            <label class="sr-only" for="auth-email">Email</label>
+            <input
+              id="auth-email"
+              class="auth-input"
+              type="email"
+              placeholder="name@example.com"
+              autoCapitalize="none"
+              autoComplete="email"
+            />
+            <button class="auth-submit-button" type="submit">
+              <span class="auth-spinner" data-auth-spinner hidden aria-hidden="true"></span>
+              <span>Sign In with Email</span>
+            </button>
+          </form>
 
           <div class="auth-divider">
             <span />
@@ -2466,13 +2477,16 @@ function AuthenticationExample() {
             <span />
           </div>
 
-          <button class="auth-provider-button" type="button">
-            <GitHubMarkIcon />
+          <button class="auth-provider-button" type="button" data-auth-provider>
+            <span class="auth-provider-icon" data-auth-provider-icon>
+              <GitHubMarkIcon />
+            </span>
+            <span class="auth-spinner" data-auth-spinner hidden aria-hidden="true"></span>
             <span>GitHub</span>
           </button>
 
           <p class="auth-footnote">
-            By clicking continue, you agree to our <a href="#terms">Terms of Service</a> and <a href="#privacy">Privacy Policy</a>.
+            By clicking continue, you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.
           </p>
         </div>
       </section>

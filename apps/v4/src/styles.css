@@ -8856,6 +8856,7 @@ body[data-dashboard-drawer-open="true"] {
   height: 2.25rem;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   border: 0;
   border-radius: var(--radius-md);
   background: var(--primary);
@@ -8887,6 +8888,33 @@ body[data-dashboard-drawer-open="true"] {
 .auth-provider-button:hover {
   background: var(--accent);
   color: var(--accent-foreground);
+}
+
+.auth-submit-button:disabled,
+.auth-provider-button:disabled,
+.auth-input:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.auth-provider-icon {
+  display: inline-flex;
+}
+
+.auth-provider-icon[hidden],
+.auth-spinner[hidden] {
+  display: none;
+}
+
+.auth-spinner {
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 999px;
+  animation: ui-spin 0.8s linear infinite;
 }
 
 .auth-divider {

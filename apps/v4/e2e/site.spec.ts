@@ -1071,6 +1071,31 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator("[data-select-trigger]").nth(1)).toContainText("hsl")
   })
 
+  test("authentication submission mirrors the React loading state", async ({ page }) => {
+    await page.goto("/examples/authentication")
+    await waitForClientReady(page)
+
+    const email = page.getByLabel("Email")
+    const submit = page.getByRole("button", { name: "Sign In with Email" })
+    const provider = page.getByRole("button", { name: "GitHub" })
+    await email.fill("person@example.com")
+    await submit.click()
+
+    await expect(email).toBeDisabled()
+    await expect(submit).toBeDisabled()
+    await expect(provider).toBeDisabled()
+    await expect(submit.locator("[data-auth-spinner]")).toBeVisible()
+    await expect(provider.locator("[data-auth-spinner]")).toBeVisible()
+    await expect(provider.locator("[data-auth-provider-icon]")).toBeHidden()
+
+    await expect(submit).toBeEnabled({ timeout: 4000 })
+    await expect(email).toBeEnabled()
+    await expect(provider).toBeEnabled()
+    await expect(provider.locator("[data-auth-spinner]")).toBeHidden()
+    await expect(provider.locator("[data-auth-provider-icon]")).toBeVisible()
+    await expect(email).toHaveValue("person@example.com")
+  })
+
   test("authentication and rtl examples stay interactive", async ({ page }) => {
     await page.goto("/examples/authentication")
 
