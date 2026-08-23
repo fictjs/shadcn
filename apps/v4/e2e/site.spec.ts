@@ -1283,6 +1283,20 @@ test.describe("shadcn v4 site", () => {
     const report = gallery.getByRole("button", { name: "إبلاغ", exact: true })
     await expect(archive).toHaveCSS("border-radius", "0px 10px 10px 0px")
     await expect(report).toHaveCSS("border-radius", "10px 0px 0px 10px")
+
+    await gallery.getByRole("button", { name: "خيارات أخرى" }).click()
+    const actionsMenu = gallery.locator(".root-actions-menu")
+    await actionsMenu.getByRole("menuitem", { name: "تصنيف كـ..." }).click()
+    const labelMenu = actionsMenu.locator(".ui-menu-sub [data-menu-panel]")
+    await expect(labelMenu).toBeVisible()
+    await expect(labelMenu).toHaveAttribute("data-menu-preferred-side", "left")
+    const labelMenuBox = await labelMenu.boundingBox()
+    expect(labelMenuBox).not.toBeNull()
+    expect(labelMenuBox!.x).toBeGreaterThanOrEqual(0)
+    expect(labelMenuBox!.x + labelMenuBox!.width).toBeLessThanOrEqual(1280)
+    expect(await actionsMenu.locator(".root-menu-trailing-icon").evaluate((icon) => (
+      Number.parseFloat(getComputedStyle(icon).marginRight)
+    ))).toBeGreaterThan(0)
   })
 
   test("rtl verified item matches the React presentation", async ({ page }) => {

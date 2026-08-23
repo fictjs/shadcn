@@ -4136,11 +4136,11 @@ a.ui-item:hover {
 .root-menu-trailing {
   display: inline-flex;
   align-items: center;
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 
 .root-menu-trailing-icon {
-  margin-left: auto;
+  margin-inline-start: auto;
   width: 1rem;
   height: 1rem;
   color: var(--muted-foreground);

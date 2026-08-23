@@ -2896,7 +2896,7 @@ const mentionUsers = [
   { title: "evilrabbit", image: "/avatars/03.png" },
 ]
 
-function RootPromptPreview() {
+function RootPromptPreview(props: { rtl?: boolean }) {
   return (
     <form class="ui-field">
       <label class="sr-only" for="notion-prompt">
@@ -3087,7 +3087,7 @@ function RootPromptPreview() {
                 <div
                   class="ui-menu-panel root-knowledge-menu"
                   data-menu-panel
-                  data-menu-side="right"
+                  data-menu-side={props.rtl ? "left" : "right"}
                   role="menu"
                   hidden
                 >
@@ -3149,7 +3149,7 @@ function RootPromptPreview() {
   )
 }
 
-function RootButtonGroupDemoPreview() {
+function RootButtonGroupDemoPreview(props: { rtl?: boolean }) {
   return (
     <div class="ui-button-group">
       <button class="ui-icon-button ui-icon-button-sm" type="button" aria-label="Go Back">
@@ -3221,7 +3221,7 @@ function RootButtonGroupDemoPreview() {
                 Label As...
                 <ChevronRightIcon class="root-menu-trailing-icon" />
               </button>
-              <div class="ui-menu-panel" data-menu-panel data-menu-side="right" role="menu" hidden>
+              <div class="ui-menu-panel" data-menu-panel data-menu-side={props.rtl ? "left" : "right"} role="menu" hidden>
                 <button class="ui-menu-item" type="button" role="menuitemradio" data-menu-item data-menu-value="Personal" data-selected="true">
                   Personal
                   <CheckIcon class="ui-menu-item-check" />
@@ -3630,9 +3630,9 @@ function ExamplesRootPreview(props: { rtl?: boolean } = {}) {
 
               {entry === "appearance-settings" ? <RootAppearanceSettingsPreview /> : null}
 
-              {entry === "notion-prompt" ? <RootPromptPreview /> : null}
+              {entry === "notion-prompt" ? <RootPromptPreview rtl={rtl} /> : null}
 
-              {entry === "button-group-demo" ? <RootButtonGroupDemoPreview /> : null}
+              {entry === "button-group-demo" ? <RootButtonGroupDemoPreview rtl={rtl} /> : null}
 
               {entry === "field-checkbox" ? <RootFieldCheckboxPreview /> : null}
 
