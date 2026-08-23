@@ -1400,6 +1400,10 @@ test.describe("shadcn v4 site", () => {
     await expect(payment.getByLabel("رمز الأمان")).toHaveAttribute("placeholder", "١٢٣")
 
     const month = payment.getByRole("combobox", { name: "MM" })
+    await expect(month).toHaveCSS("padding-top", "8px")
+    await expect(month).toHaveCSS("padding-bottom", "8px")
+    await expect(month).toHaveCSS("padding-right", "10px")
+    await expect(month).toHaveCSS("padding-left", "8px")
     await month.click()
     await payment.getByRole("option", { name: "٠١", exact: true }).click()
     await expect(month.locator("[data-select-value]")).toHaveText("٠١")
