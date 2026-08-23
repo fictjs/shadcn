@@ -1272,6 +1272,18 @@ test.describe("shadcn v4 site", () => {
     await expect(payment.getByRole("button", { name: "إرسال" })).toHaveAttribute("type", "submit")
   })
 
+  test("rtl empty states match the React component dimensions", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 1200 })
+    await page.goto("/examples/rtl")
+    await waitForClientReady(page)
+
+    const emptyStates = page.locator("[data-slot='rtl-components'] .ui-empty")
+    await expect(emptyStates).toHaveCount(2)
+    await expect(emptyStates.first()).toHaveCSS("height", "224.75px")
+    await expect(emptyStates.last()).toHaveCSS("height", "215.5px")
+    await expect(emptyStates.last().locator(".root-empty-media")).toHaveCSS("width", "32px")
+  })
+
   test("create route builds a live starter workspace", async ({ page }) => {
     await page.goto("/create")
 
