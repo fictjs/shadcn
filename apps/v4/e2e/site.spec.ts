@@ -708,10 +708,19 @@ test.describe("shadcn v4 site", () => {
     const tabs = page.getByRole("tab")
     const insertTab = page.getByRole("tab", { name: "Insert", exact: true })
     const editTab = page.getByRole("tab", { name: "Edit", exact: true })
-    const presetButton = page.getByRole("button", { name: "Load a preset..." })
+    const presetButton = page.getByRole("combobox", { name: "Load a preset..." })
 
     await expect(tabs).toHaveCount(3)
-    await expect(presetButton).toContainText("Explain quantum computing")
+    await expect(presetButton).toContainText("Load a preset...")
+
+    await presetButton.click()
+    const presetDialog = page.getByRole("dialog", { name: "Preset selector" })
+    await expect(presetDialog.getByRole("option")).toHaveCount(10)
+    await presetDialog.getByPlaceholder("Search presets...").fill("grammatical")
+    await expect(presetDialog.locator("[data-playground-preset-option]:visible")).toHaveCount(1)
+    await presetDialog.getByRole("option", { name: "Grammatical Standard English" }).click()
+    await expect(presetButton).toContainText("Grammatical Standard English")
+
     await insertTab.click()
     await expect(insertTab).toHaveClass(/playground-tab-active/)
     await expect(page.locator(".playground-surface-pane-muted")).toBeVisible()
@@ -721,9 +730,6 @@ test.describe("shadcn v4 site", () => {
     await expect(modelTrigger).toContainText("gpt-4.1")
     await modelTrigger.click()
     await expect(modelTrigger).toContainText("gpt-4o-mini")
-
-    await presetButton.click()
-    await expect(presetButton).toContainText("Write release notes")
 
     await editTab.click()
     await expect(page.locator(".playground-edit-stack")).toContainText("Input")

@@ -102,7 +102,18 @@ const dashboardNavItems = ["Dashboard", "Lifecycle", "Analytics", "Projects", "T
 const dashboardDocumentItems = ["Data Library", "Reports", "Word Assistant"] as const
 const dashboardSecondaryItems = ["Settings", "Get Help", "Search"] as const
 const dashboardViewTabs = ["Outline", "Past Performance", "Key Personnel", "Focus Documents"] as const
-const playgroundPresets = ["Explain quantum computing", "Write release notes", "Draft support reply"] as const
+const playgroundPresets = [
+  "Grammatical Standard English",
+  "Summarize for a 2nd grader",
+  "Text to command",
+  "Q&A",
+  "English to other languages",
+  "Parse unstructured data",
+  "Classification",
+  "Natural language to Python",
+  "Explain code",
+  "Chat",
+] as const
 const playgroundModels = ["gpt-4.1", "gpt-4o-mini", "claude-sonnet", "gemini-pro"] as const
 
 const rtlSampleRows = [
@@ -1824,7 +1835,6 @@ function TasksExample() {
 
 function PlaygroundExample() {
   let mode = $state<PlaygroundMode>("complete")
-  let preset = $state<string>(playgroundPresets[0])
   let model = $state<string>(playgroundModels[0])
 
   return (
@@ -1832,22 +1842,63 @@ function PlaygroundExample() {
       <header class="playground-header">
         <h3>Playground</h3>
         <div class="playground-top-actions">
-          <button
-            class="playground-header-button playground-header-button-wide"
-            type="button"
-            aria-label="Load a preset..."
-            onClick$={() => {
-              const currentPreset = untrack(() => preset)
-              preset = currentPreset === playgroundPresets[0]
-                ? playgroundPresets[1]
-                : currentPreset === playgroundPresets[1]
-                  ? playgroundPresets[2]
-                  : playgroundPresets[0]
-            }}
-          >
-            <span class="playground-header-button-label">Load a preset...</span>
-            <span class="playground-header-button-value">{preset}</span>
-          </button>
+          <span class="ui-menu playground-preset-menu" data-menu>
+            <button
+              class="playground-header-button playground-header-button-wide"
+              type="button"
+              role="combobox"
+              aria-label="Load a preset..."
+              aria-haspopup="dialog"
+              aria-expanded="false"
+              data-menu-trigger
+            >
+              <span class="playground-header-button-value" data-menu-label-target>Load a preset...</span>
+              <LucideChevronsUpDownIcon class="playground-model-chevron" />
+            </button>
+            <div
+              class="ui-menu-panel playground-preset-panel"
+              data-menu-panel
+              data-menu-side="bottom"
+              data-menu-align="start"
+              role="dialog"
+              aria-label="Preset selector"
+              hidden
+            >
+              <div class="playground-command-search-shell">
+                <input
+                  class="playground-command-search"
+                  type="search"
+                  placeholder="Search presets..."
+                  aria-label="Search presets"
+                  data-playground-preset-search
+                />
+              </div>
+              <div class="playground-command-list">
+                <p class="playground-command-empty" data-playground-preset-empty hidden>No presets found.</p>
+                <p class="playground-command-heading">Examples</p>
+                {playgroundPresets.map((preset) => (
+                  <button
+                    type="button"
+                    class="ui-menu-item playground-command-item"
+                    key={preset}
+                    role="option"
+                    aria-selected="false"
+                    data-menu-item
+                    data-menu-value={preset}
+                    data-playground-preset-option
+                    data-selected="false"
+                  >
+                    <span>{preset}</span>
+                    <LucideCheckIcon class="ui-menu-item-check" />
+                  </button>
+                ))}
+                <span class="ui-menu-separator" role="separator"></span>
+                <button type="button" class="ui-menu-item playground-command-item" data-menu-item>
+                  More examples
+                </button>
+              </div>
+            </div>
+          </span>
           <button class="playground-header-button" type="button">Save</button>
           <button class="playground-header-button" type="button">View code</button>
           <button class="playground-header-button" type="button">Share</button>

@@ -33,6 +33,7 @@ async function initResumableClient(): Promise<void> {
   wireShowcaseSelects()
   wireDashboardTables()
   wireTasksTables()
+  wirePlaygroundControls()
   wireColorFormatSelectors()
   wireShowcaseTooltips()
   wireBlockViewer()
@@ -54,6 +55,61 @@ async function initResumableClient(): Promise<void> {
   wireCreateRoute()
   wireClientFilters()
   document.documentElement.dataset.clientReady = "true"
+}
+
+function wirePlaygroundControls(): void {
+  const resetPresetSearch = (panel: HTMLElement): void => {
+    const input = panel.querySelector<HTMLInputElement>("[data-playground-preset-search]")
+    if (input) {
+      input.value = ""
+    }
+    panel.querySelectorAll<HTMLElement>("[data-playground-preset-option]").forEach((option) => {
+      option.hidden = false
+    })
+    const empty = panel.querySelector<HTMLElement>("[data-playground-preset-empty]")
+    if (empty) {
+      empty.hidden = true
+    }
+  }
+
+  document.addEventListener("input", (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLInputElement) || target.dataset.playgroundPresetSearch === undefined) {
+      return
+    }
+
+    const panel = target.closest<HTMLElement>("[data-menu-panel]")
+    if (!panel) {
+      return
+    }
+
+    const query = target.value.trim().toLowerCase()
+    let visibleCount = 0
+    panel.querySelectorAll<HTMLElement>("[data-playground-preset-option]").forEach((option) => {
+      const matches = query === "" || (option.textContent?.toLowerCase() ?? "").includes(query)
+      option.hidden = !matches
+      if (matches) {
+        visibleCount += 1
+      }
+    })
+
+    const empty = panel.querySelector<HTMLElement>("[data-playground-preset-empty]")
+    if (empty) {
+      empty.hidden = visibleCount > 0
+    }
+  })
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+    const option = target.closest<HTMLElement>("[data-playground-preset-option]")
+    const panel = option?.closest<HTMLElement>("[data-menu-panel]")
+    if (option && panel) {
+      resetPresetSearch(panel)
+    }
+  })
 }
 
 function wireDocTabsFallback(): void {
@@ -440,7 +496,11 @@ function wireShowcaseMenus(): void {
       if (item.dataset.menuValue !== undefined) {
         menu.querySelectorAll<HTMLElement>("[data-menu-item]").forEach((sibling) => {
           if (sibling.dataset.menuValue !== undefined) {
-            sibling.dataset.selected = sibling === item ? "true" : "false"
+            const selected = sibling === item
+            sibling.dataset.selected = selected ? "true" : "false"
+            if (sibling.getAttribute("role") === "option") {
+              sibling.setAttribute("aria-selected", selected ? "true" : "false")
+            }
           }
         })
 
