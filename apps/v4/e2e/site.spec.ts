@@ -1264,6 +1264,27 @@ test.describe("shadcn v4 site", () => {
     await expect(voiceInput).toHaveAttribute("placeholder", "הקלט ושלח אודיו...")
   })
 
+  test("rtl buttons match the React primitive details", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 1200 })
+    await page.goto("/examples/rtl")
+    await waitForClientReady(page)
+
+    const gallery = page.locator("[data-slot='rtl-components']")
+    const invite = gallery.getByRole("button", { name: "دعوة أعضاء" })
+    await expect(invite).toHaveCSS("border-top-width", "1px")
+    await expect(invite).toHaveCSS("border-radius", "8px")
+    await expect(invite).toHaveCSS("gap", "4px")
+    await expect(invite).toHaveCSS("line-height", "18.2857px")
+
+    const submit = gallery.getByRole("button", { name: "إرسال", exact: true }).first()
+    await expect(submit).toHaveCSS("border-top-width", "1px")
+
+    const archive = gallery.getByRole("button", { name: "أرشفة", exact: true }).first()
+    const report = gallery.getByRole("button", { name: "إبلاغ", exact: true })
+    await expect(archive).toHaveCSS("border-radius", "0px 10px 10px 0px")
+    await expect(report).toHaveCSS("border-radius", "10px 0px 0px 10px")
+  })
+
   test("rtl example matches the current localized input groups", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 1200 })
     await page.goto("/examples/rtl")
