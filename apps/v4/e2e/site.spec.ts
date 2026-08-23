@@ -1221,6 +1221,31 @@ test.describe("shadcn v4 site", () => {
     await expect(gallery).toContainText("طريقة الدفع")
   })
 
+  test("rtl voice mode preserves the active language", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 1200 })
+    await page.goto("/examples/rtl")
+    await waitForClientReady(page)
+
+    const gallery = page.locator("[data-slot='rtl-components']")
+    const voiceToggle = gallery.locator('[data-toggle="voice"]')
+    const voiceInput = gallery.locator(".ui-button-group > .ui-input-group-round input")
+
+    await voiceToggle.click()
+    await expect(voiceToggle).toHaveAttribute("aria-pressed", "true")
+    await expect(voiceInput).toBeDisabled()
+    await expect(voiceInput).toHaveAttribute("placeholder", "سجل وأرسل صوتًا...")
+
+    await voiceToggle.click()
+    await expect(voiceInput).toBeEnabled()
+    await expect(voiceInput).toHaveAttribute("placeholder", "أرسل رسالة...")
+
+    await page.getByRole("button", { name: "Language" }).click()
+    await page.getByRole("option", { name: "Hebrew (עברית)" }).click()
+    await voiceToggle.click()
+    await expect(voiceInput).toBeDisabled()
+    await expect(voiceInput).toHaveAttribute("placeholder", "הקלט ושלח אודיו...")
+  })
+
   test("rtl example matches the current localized input groups", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 1200 })
     await page.goto("/examples/rtl")

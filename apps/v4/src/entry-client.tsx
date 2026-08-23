@@ -2,7 +2,7 @@ import { installResumableLoader } from "@fictjs/runtime/experimental/loader"
 
 import "./App"
 import "./styles.css"
-import { localizeRtlGallery, type RtlLanguage } from "./rtl-localization"
+import { localizeRtlGallery, translateRtlValue, type RtlLanguage } from "./rtl-localization"
 
 async function loadManifest(): Promise<void> {
   if (!import.meta.env.PROD) {
@@ -1024,7 +1024,11 @@ function wireShowcaseToggles(): void {
       const input = group?.querySelector<HTMLInputElement>("input")
       if (input) {
         input.disabled = nextActive
-        input.placeholder = nextActive ? "Record and send audio..." : "Send a message..."
+        const placeholder = nextActive ? "Record and send audio..." : "Send a message..."
+        const language = toggle.closest<HTMLElement>("[data-slot='rtl-components']")?.dataset.lang
+        input.placeholder = language === "ar" || language === "he"
+          ? translateRtlValue(placeholder, language)
+          : placeholder
       }
     }
   })

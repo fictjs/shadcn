@@ -169,7 +169,7 @@ for (const [english, translation] of Object.entries(rtlTranslations)) {
   reverseTranslations.set(translation.he, translation)
 }
 
-function translateValue(value: string, language: RtlLanguage): string {
+export function translateRtlValue(value: string, language: RtlLanguage): string {
   const translation = reverseTranslations.get(value)
   return translation?.[language] ?? value
 }
@@ -184,7 +184,7 @@ export function localizeRtlGallery(root: HTMLElement, language: RtlLanguage): vo
     const raw = node.nodeValue ?? ""
     const trimmed = raw.trim()
     if (trimmed) {
-      const translated = translateValue(trimmed, language)
+      const translated = translateRtlValue(trimmed, language)
       if (translated !== trimmed) {
         const leading = raw.slice(0, raw.indexOf(trimmed))
         const trailing = raw.slice(raw.indexOf(trimmed) + trimmed.length)
@@ -206,7 +206,7 @@ export function localizeRtlGallery(root: HTMLElement, language: RtlLanguage): vo
     translatedAttributes.forEach((attribute) => {
       const value = element.getAttribute(attribute)
       if (value) {
-        element.setAttribute(attribute, translateValue(value, language))
+        element.setAttribute(attribute, translateRtlValue(value, language))
       }
     })
   })
