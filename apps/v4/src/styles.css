@@ -4146,6 +4146,11 @@ a.ui-item:hover {
   color: var(--muted-foreground);
 }
 
+.rtl-components .root-rtl-directional-icon,
+.rtl-components .root-menu-trailing-icon {
+  transform: rotate(180deg);
+}
+
 .root-menu-avatar {
   width: 1rem;
   height: 1rem;

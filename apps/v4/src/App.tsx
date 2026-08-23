@@ -2700,7 +2700,7 @@ function RootItemDemoPreview() {
           <p class="ui-item-title">Your profile has been verified.</p>
         </div>
         <span class="ui-item-actions">
-          <ChevronRightIcon />
+          <ChevronRightIcon class="root-rtl-directional-icon" />
         </span>
       </div>
     </div>
@@ -3153,7 +3153,7 @@ function RootButtonGroupDemoPreview() {
   return (
     <div class="ui-button-group">
       <button class="ui-icon-button ui-icon-button-sm" type="button" aria-label="Go Back">
-        <ArrowLeftGlyph />
+        <ArrowLeftGlyph class="root-rtl-directional-icon" />
       </button>
       <span class="ui-button-group ui-button-group-attached root-button-group-inline">
         <button class="button button-outline button-xs" type="button">
@@ -3274,10 +3274,10 @@ function RootNestedButtonsPreview() {
         </span>
         <span class="ui-button-group ui-button-group-attached root-button-group-inline">
           <button class="ui-icon-button ui-icon-button-sm" type="button" aria-label="Previous">
-            <ArrowLeftGlyph />
+            <ArrowLeftGlyph class="root-rtl-directional-icon" />
           </button>
           <button class="ui-icon-button ui-icon-button-sm" type="button" aria-label="Next">
-            <ArrowRightGlyph />
+            <ArrowRightGlyph class="root-rtl-directional-icon" />
           </button>
         </span>
       </div>
@@ -3420,18 +3420,18 @@ function GlobeIcon() {
   )
 }
 
-function ArrowLeftGlyph() {
+function ArrowLeftGlyph(props: { class?: string }) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <svg class={props.class} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="m12 19-7-7 7-7" />
       <path d="M19 12H5" />
     </svg>
   )
 }
 
-function ArrowRightGlyph() {
+function ArrowRightGlyph(props: { class?: string }) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <svg class={props.class} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M5 12h14" />
       <path d="m12 5 7 7-7 7" />
     </svg>

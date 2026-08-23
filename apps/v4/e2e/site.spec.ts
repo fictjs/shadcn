@@ -1300,6 +1300,12 @@ test.describe("shadcn v4 site", () => {
     expect(await item.locator(".ui-item-actions").evaluate((element) => (
       getComputedStyle(element).color === getComputedStyle(element.parentElement!).color
     ))).toBe(true)
+
+    const directionalIcons = page.locator("[data-slot='rtl-components'] .root-rtl-directional-icon")
+    await expect(directionalIcons).toHaveCount(4)
+    for (const icon of await directionalIcons.all()) {
+      await expect(icon).toHaveCSS("transform", "matrix(-1, 0, 0, -1, 0, 0)")
+    }
   })
 
   test("rtl example matches the current localized input groups", async ({ page }) => {
