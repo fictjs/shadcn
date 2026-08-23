@@ -8084,6 +8084,69 @@ body[data-dashboard-drawer-open="true"] {
   overflow: hidden;
 }
 
+.playground-share-menu {
+  display: inline-flex;
+}
+
+.playground-share-panel {
+  width: min(32.5rem, calc(100vw - 2rem));
+  padding: 1rem;
+}
+
+.playground-share-header {
+  display: grid;
+  gap: 0.25rem;
+  text-align: left;
+}
+
+.playground-share-header h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.playground-share-header p {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.playground-share-field {
+  position: relative;
+  margin-top: 1rem;
+}
+
+.playground-share-field .playground-dialog-input {
+  padding-right: 2.5rem;
+}
+
+.playground-share-copy {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  display: inline-flex;
+  width: 1.75rem;
+  height: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+}
+
+.playground-share-copy:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.playground-share-copy .example-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
 .playground-command-search-shell {
   display: flex;
   align-items: center;

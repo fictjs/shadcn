@@ -212,6 +212,32 @@ function wirePlaygroundControls(): void {
       return
     }
 
+    const shareCopy = target.closest<HTMLButtonElement>("[data-playground-share-copy]")
+    if (shareCopy) {
+      event.preventDefault()
+      const input = shareCopy.parentElement?.querySelector<HTMLInputElement>("input")
+      if (!input) {
+        return
+      }
+      if (navigator.clipboard) {
+        void navigator.clipboard.writeText(input.value)
+      } else {
+        input.select()
+        document.execCommand("copy")
+        input.setSelectionRange(0, 0)
+      }
+      shareCopy.setAttribute("aria-label", "Copied")
+      const previousTimer = Number.parseInt(shareCopy.dataset.playgroundCopyTimer ?? "", 10)
+      if (Number.isFinite(previousTimer)) {
+        window.clearTimeout(previousTimer)
+      }
+      const timer = window.setTimeout(() => {
+        shareCopy.setAttribute("aria-label", "Copy")
+      }, 2000)
+      shareCopy.dataset.playgroundCopyTimer = String(timer)
+      return
+    }
+
     const dialogClose = target.closest<HTMLElement>("[data-playground-dialog-close]")
     if (dialogClose) {
       event.preventDefault()

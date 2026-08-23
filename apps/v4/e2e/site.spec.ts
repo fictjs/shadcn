@@ -784,6 +784,25 @@ test.describe("shadcn v4 site", () => {
     await expect(trigger).toBeFocused()
   })
 
+  test("playground share popover exposes and copies the React preset link", async ({ page }) => {
+    await page.goto("/examples/playground")
+    await waitForClientReady(page)
+
+    const trigger = page.getByRole("button", { name: "Share" })
+    await trigger.click()
+    const popover = page.getByRole("dialog", { name: "Share preset" })
+    await expect(popover).toContainText("Anyone who has this link and an OpenAI account")
+    const link = popover.getByLabel("Link")
+    await expect(link).toHaveValue("https://platform.openai.com/playground/p/7bbKYQvsVkNmVb8NGcdUOLae?model=text-davinci-003")
+    await expect(link).toHaveAttribute("readonly", "")
+
+    await popover.getByRole("button", { name: "Copy" }).click()
+    await expect(popover.getByRole("button", { name: "Copied" })).toBeVisible()
+
+    await page.keyboard.press("Escape")
+    await expect(popover).toBeHidden()
+  })
+
   test("themes route renders the customizer shell", async ({ page }) => {
     await page.goto("/themes")
 

@@ -47,6 +47,7 @@ import {
   LucideCircleOffIcon,
   LucideCirclePlusIcon,
   LucideCheckIcon,
+  LucideCopyIcon,
   LucideEllipsisIcon,
   LucideEyeOffIcon,
   LucideSettings2Icon,
@@ -1953,7 +1954,49 @@ function PlaygroundExample() {
           >
             View code
           </button>
-          <button class="playground-header-button" type="button">Share</button>
+          <span class="ui-menu playground-share-menu" data-menu>
+            <button
+              class="playground-header-button"
+              type="button"
+              data-menu-trigger
+              aria-haspopup="dialog"
+              aria-expanded="false"
+            >
+              Share
+            </button>
+            <div
+              class="ui-menu-panel playground-share-panel"
+              data-menu-panel
+              data-menu-side="bottom"
+              data-menu-align="end"
+              role="dialog"
+              aria-labelledby="playground-share-title"
+              hidden
+            >
+              <header class="playground-share-header">
+                <h3 id="playground-share-title">Share preset</h3>
+                <p>Anyone who has this link and an OpenAI account will be able to view this.</p>
+              </header>
+              <div class="playground-share-field">
+                <label class="sr-only" for="playground-share-link">Link</label>
+                <input
+                  id="playground-share-link"
+                  class="playground-dialog-input"
+                  type="text"
+                  value="https://platform.openai.com/playground/p/7bbKYQvsVkNmVb8NGcdUOLae?model=text-davinci-003"
+                  readonly
+                />
+                <button
+                  type="button"
+                  class="playground-share-copy"
+                  aria-label="Copy"
+                  data-playground-share-copy
+                >
+                  <LucideCopyIcon />
+                </button>
+              </div>
+            </div>
+          </span>
           <button class="playground-header-button playground-header-button-icon" type="button" aria-label="Actions">
             <LucideEllipsisIcon />
           </button>
