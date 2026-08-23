@@ -3551,6 +3551,7 @@ function ExamplesRootPreview(props: { rtl?: boolean } = {}) {
       dir={rtl ? "rtl" : undefined}
       data-lang={rtl ? "ar" : undefined}
       data-slot={rtl ? "rtl-components" : undefined}
+      lang={rtl ? "ar" : undefined}
     >
       {rtl ? (
         <span class="ui-menu rtl-language-selector" data-menu>
@@ -4538,7 +4539,12 @@ function ExamplesPage(props: { route: ResolvedRoute; activeThemeName: string; on
             </div>
 
             <div class="example-live-stage">
-              {activeShowcase.slug === "rtl" ? <ExamplesRootPreview rtl /> : <LiveExamplePage slug={activeShowcase.slug} />}
+              {activeShowcase.slug === "rtl" ? (
+                <>
+                  <ExamplesRootPreview rtl />
+                  <template data-rtl-server-end />
+                </>
+              ) : <LiveExamplePage slug={activeShowcase.slug} />}
             </div>
           </div>
         </article>

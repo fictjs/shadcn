@@ -1191,6 +1191,24 @@ test.describe("shadcn v4 site", () => {
     await expect(lastColumn).toHaveCSS("order", "0")
   })
 
+  test("rtl example is localized in the server response", async ({ request }) => {
+    const response = await request.get("/examples/rtl")
+    expect(response.ok()).toBe(true)
+    const html = await response.text()
+    const start = html.indexOf('data-slot="rtl-components"')
+    const end = html.indexOf("data-rtl-server-end", start)
+    expect(start).toBeGreaterThan(-1)
+    expect(end).toBeGreaterThan(start)
+    const gallery = html.slice(start, end)
+
+    expect(gallery).toContain('lang="ar"')
+    expect(gallery).toContain("طريقة الدفع")
+    expect(gallery).toContain('placeholder="أرسل رسالة..."')
+    expect(gallery).toContain('aria-label="الوضع الصوتي"')
+    expect(gallery).not.toContain("Payment Method")
+    expect(gallery).not.toContain("Send a message...")
+  })
+
   test("rtl example switches all component copy between Arabic and Hebrew", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 1200 })
     await page.goto("/examples/rtl")

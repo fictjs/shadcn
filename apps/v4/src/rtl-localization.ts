@@ -174,6 +174,75 @@ export function translateRtlValue(value: string, language: RtlLanguage): string 
   return translation?.[language] ?? value
 }
 
+const translatedAttributes = [
+  "aria-label",
+  "data-mention-title",
+  "data-menu-value",
+  "data-tooltip",
+  "placeholder",
+  "title",
+]
+
+function decodeHtmlValue(value: string): string {
+  return value
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
+}
+
+function encodeHtmlValue(value: string, quote?: string): string {
+  let encoded = value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+  if (quote === '"') {
+    encoded = encoded.replace(/"/g, "&quot;")
+  } else if (quote === "'") {
+    encoded = encoded.replace(/'/g, "&#39;")
+  }
+  return encoded
+}
+
+function translateSerializedValue(value: string, language: RtlLanguage, quote?: string): string {
+  const trimmed = value.trim()
+  if (!trimmed) {
+    return value
+  }
+  const translated = translateRtlValue(decodeHtmlValue(trimmed), language)
+  if (translated === decodeHtmlValue(trimmed)) {
+    return value
+  }
+  const start = value.indexOf(trimmed)
+  return `${value.slice(0, start)}${encodeHtmlValue(translated, quote)}${value.slice(start + trimmed.length)}`
+}
+
+export function localizeRtlMarkup(markup: string, language: RtlLanguage): string {
+  const slotIndex = markup.indexOf('data-slot="rtl-components"')
+  const boundaryIndex = markup.indexOf("data-rtl-server-end", slotIndex)
+  if (slotIndex === -1 || boundaryIndex === -1) {
+    return markup
+  }
+
+  const start = markup.lastIndexOf("<", slotIndex)
+  const end = markup.lastIndexOf("<", boundaryIndex)
+  if (start === -1 || end <= start) {
+    return markup
+  }
+
+  const attributeNames = translatedAttributes.join("|")
+  const attributePattern = new RegExp(`((?:${attributeNames})=)(["'])(.*?)\\2`, "g")
+  const localized = markup
+    .slice(start, end)
+    .replace(attributePattern, (match, prefix: string, quote: string, value: string) => (
+      `${prefix}${quote}${translateSerializedValue(value, language, quote)}${quote}`
+    ))
+    .replace(/>([^<>]+)</g, (match, value: string) => `>${translateSerializedValue(value, language)}<`)
+
+  return `${markup.slice(0, start)}${localized}${markup.slice(end)}`
+}
+
 export function localizeRtlGallery(root: HTMLElement, language: RtlLanguage): void {
   root.dataset.lang = language
   root.lang = language
@@ -194,14 +263,6 @@ export function localizeRtlGallery(root: HTMLElement, language: RtlLanguage): vo
     node = walker.nextNode()
   }
 
-  const translatedAttributes = [
-    "aria-label",
-    "data-mention-title",
-    "data-menu-value",
-    "data-tooltip",
-    "placeholder",
-    "title",
-  ]
   root.querySelectorAll<HTMLElement>("*").forEach((element) => {
     translatedAttributes.forEach((attribute) => {
       const value = element.getAttribute(attribute)

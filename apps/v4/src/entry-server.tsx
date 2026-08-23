@@ -1,6 +1,7 @@
 import { renderToString } from "@fictjs/ssr"
 
 import { App } from "./App"
+import { localizeRtlMarkup } from "./rtl-localization"
 import { resolveRoute } from "./server-data"
 import "./styles.css"
 
@@ -12,11 +13,14 @@ export interface RenderResult {
 
 export function render(url: string): RenderResult {
   const route = resolveRoute(url)
-  const html = renderToString(() => <App route={route} />, {
+  let html = renderToString(() => <App route={route} />, {
     includeContainer: true,
     includeSnapshot: true,
     containerId: "app",
   })
+  if (route.exampleSlug === "rtl") {
+    html = localizeRtlMarkup(html, "ar")
+  }
 
   return {
     html,
