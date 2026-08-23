@@ -348,6 +348,42 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator('th[data-dashboard-column="reviewer"]')).toBeVisible()
   })
 
+  test("dashboard document, user, and row action menus match React", async ({ page }) => {
+    await page.goto("/examples/dashboard")
+    await waitForClientReady(page)
+
+    await page.getByRole("button", { name: "More options for Data Library" }).click()
+    const documentMenu = page.getByRole("menu", { name: "Data Library actions" })
+    await expect(documentMenu).toBeVisible()
+    await expect(documentMenu.getByRole("menuitem")).toHaveText(["Open", "Share", "Delete"])
+    await page.keyboard.press("Escape")
+    await expect(documentMenu).toBeHidden()
+
+    await page.getByRole("button", { name: "Open user menu" }).click()
+    const userMenu = page.getByRole("menu", { name: "User menu" })
+    await expect(userMenu).toBeVisible()
+    await expect(userMenu.getByRole("menuitem")).toHaveText([
+      "Account",
+      "Billing",
+      "Notifications",
+      "Log out",
+    ])
+    await userMenu.getByRole("menuitem", { name: "Account" }).click()
+    await expect(userMenu).toBeHidden()
+
+    await page.getByRole("button", { name: "Open menu for Cover page" }).click()
+    const rowMenu = page.getByRole("menu", { name: "Cover page actions" })
+    await expect(rowMenu).toBeVisible()
+    await expect(rowMenu.getByRole("menuitem")).toHaveText([
+      "Edit",
+      "Make a copy",
+      "Favorite",
+      "Delete",
+    ])
+    await page.mouse.click(900, 40)
+    await expect(rowMenu).toBeHidden()
+  })
+
   test("tasks example renders the faceted toolbar and row metadata", async ({ page }) => {
     await page.goto("/examples/tasks")
     await waitForClientReady(page)

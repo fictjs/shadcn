@@ -5797,6 +5797,12 @@ a.ui-item:hover {
 
 .dashboard-menu-item {
   position: relative;
+  display: block;
+  width: 100%;
+}
+
+.dashboard-document-menu {
+  width: 6rem;
 }
 
 .dashboard-menu-button {
@@ -5884,6 +5890,33 @@ a.ui-item:hover {
 }
 
 .dashboard-menu-action:hover {
+  background: var(--sidebar-accent);
+  color: var(--sidebar-accent-foreground);
+}
+
+.dashboard-menu-action[aria-expanded="true"] {
+  background: var(--sidebar-accent);
+  color: var(--sidebar-accent-foreground);
+  opacity: 1;
+}
+
+.dashboard-user-menu {
+  width: 100%;
+}
+
+.dashboard-user-menu-panel {
+  width: 14rem;
+  border-radius: var(--radius-lg);
+}
+
+.dashboard-user-menu-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem;
+}
+
+.dashboard-user-menu > [data-menu-trigger][aria-expanded="true"] {
   background: var(--sidebar-accent);
   color: var(--sidebar-accent-foreground);
 }
@@ -6449,6 +6482,15 @@ a.ui-item:hover {
   border-radius: var(--radius-lg);
 }
 
+.dashboard-table-frame:has([data-menu-panel]:not([hidden])) {
+  overflow: visible;
+}
+
+.dashboard-example:has(.dashboard-sidebar [data-menu-panel]:not([hidden])),
+.dashboard-sidebar-content:has([data-menu-panel]:not([hidden])) {
+  overflow: visible;
+}
+
 .dashboard-table-selection-scope {
   min-width: 0;
 }
@@ -6520,6 +6562,15 @@ a.ui-item:hover {
 .dashboard-icon-button:hover {
   background: var(--accent);
   color: var(--accent-foreground);
+}
+
+.dashboard-row-menu-panel {
+  width: 8rem;
+}
+
+.dashboard-row-menu > [data-menu-trigger][aria-expanded="true"] {
+  background: var(--muted);
+  color: var(--foreground);
 }
 
 .dashboard-drag-handle {

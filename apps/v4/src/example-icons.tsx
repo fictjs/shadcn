@@ -52,6 +52,26 @@ export function TablerFolderIcon(props: IconProps) {
   )
 }
 
+export function TablerShare3Icon(props: IconProps) {
+  return (
+    <svg class={props.class ? `example-icon ${props.class}` : "example-icon"} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M13 4v4c-6.575 1.028 -9.02 6.788 -10 12c-.037 .206 5.384 -5.962 10 -6v4l8 -7l-8 -7z" />
+    </svg>
+  )
+}
+
+export function TablerTrashIcon(props: IconProps) {
+  return (
+    <svg class={props.class ? `example-icon ${props.class}` : "example-icon"} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 7h16" />
+      <path d="M10 11v6" />
+      <path d="M14 11v6" />
+      <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+    </svg>
+  )
+}
+
 export function TablerUsersIcon(props: IconProps) {
   return (
     <svg class={props.class ? `example-icon ${props.class}` : "example-icon"} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -59,6 +79,46 @@ export function TablerUsersIcon(props: IconProps) {
       <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
       <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+    </svg>
+  )
+}
+
+export function TablerUserCircleIcon(props: IconProps) {
+  return (
+    <svg class={props.class ? `example-icon ${props.class}` : "example-icon"} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+      <path d="M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+      <path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855" />
+    </svg>
+  )
+}
+
+export function TablerCreditCardIcon(props: IconProps) {
+  return (
+    <svg class={props.class ? `example-icon ${props.class}` : "example-icon"} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+      <path d="M3 10h18" />
+      <path d="M7 15h.01" />
+      <path d="M11 15h2" />
+    </svg>
+  )
+}
+
+export function TablerNotificationIcon(props: IconProps) {
+  return (
+    <svg class={props.class ? `example-icon ${props.class}` : "example-icon"} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M10 6h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />
+      <path d="M17 7m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+    </svg>
+  )
+}
+
+export function TablerLogoutIcon(props: IconProps) {
+  return (
+    <svg class={props.class ? `example-icon ${props.class}` : "example-icon"} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+      <path d="M9 12h12l-3 -3" />
+      <path d="m18 15 3 -3" />
     </svg>
   )
 }

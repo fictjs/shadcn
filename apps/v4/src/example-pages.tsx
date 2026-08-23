@@ -8,6 +8,7 @@ import {
   TablerChevronsLeftIcon,
   TablerChevronsRightIcon,
   TablerCircleCheckFilledIcon,
+  TablerCreditCardIcon,
   TablerDashboardIcon,
   TablerDatabaseIcon,
   TablerDotsIcon,
@@ -20,12 +21,17 @@ import {
   TablerInnerShadowTopIcon,
   TablerListDetailsIcon,
   TablerLoaderIcon,
+  TablerLogoutIcon,
   TablerPlusIcon,
+  TablerNotificationIcon,
   TablerReportIcon,
   TablerSearchIcon,
+  TablerShare3Icon,
   TablerSettingsIcon,
   TablerTrendingDownIcon,
   TablerTrendingUpIcon,
+  TablerTrashIcon,
+  TablerUserCircleIcon,
   TablerUsersIcon,
   LucideArrowDownIcon,
   LucideArrowRightIcon,
@@ -547,14 +553,44 @@ function DashboardExample() {
             <p class="dashboard-sidebar-group-label">Documents</p>
             <nav class="dashboard-sidebar-menu" aria-label="Dashboard documents">
               {dashboardDocumentItems.map((item) => (
-                <div class="dashboard-menu-item" key={item}>
+                <div class="dashboard-menu-item ui-menu" data-menu key={item}>
                   <a class="dashboard-menu-button" href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}>
                     <DashboardNavIcon name={item} />
                     <span>{item}</span>
                   </a>
-                  <button class="dashboard-menu-action" type="button" aria-label={`More options for ${item}`}>
+                  <button
+                    class="dashboard-menu-action"
+                    type="button"
+                    aria-label={`More options for ${item}`}
+                    data-menu-trigger
+                    aria-haspopup="menu"
+                    aria-expanded="false"
+                  >
                     <TablerDotsIcon />
                   </button>
+                  <div
+                    class="ui-menu-panel dashboard-document-menu"
+                    data-menu-panel
+                    data-menu-side="right"
+                    data-menu-align="start"
+                    role="menu"
+                    aria-label={`${item} actions`}
+                    hidden
+                  >
+                    <button type="button" class="ui-menu-item" role="menuitem" data-menu-item>
+                      <TablerFolderIcon />
+                      <span>Open</span>
+                    </button>
+                    <button type="button" class="ui-menu-item" role="menuitem" data-menu-item>
+                      <TablerShare3Icon />
+                      <span>Share</span>
+                    </button>
+                    <span class="ui-menu-separator" role="separator"></span>
+                    <button type="button" class="ui-menu-item" role="menuitem" data-menu-item data-destructive="true">
+                      <TablerTrashIcon />
+                      <span>Delete</span>
+                    </button>
+                  </div>
                 </div>
               ))}
               <button class="dashboard-menu-button dashboard-menu-button-muted" type="button">
@@ -577,14 +613,58 @@ function DashboardExample() {
         </div>
 
         <div class="dashboard-sidebar-footer">
-          <button class="dashboard-menu-button dashboard-menu-button-lg" type="button">
-            <img class="dashboard-user-avatar" src="/avatars/shadcn.jpg" alt="shadcn" width="32" height="32" />
-            <span class="dashboard-user-meta">
-              <span class="dashboard-user-name">shadcn</span>
-              <span class="dashboard-user-email">m@example.com</span>
-            </span>
-            <TablerDotsVerticalIcon class="dashboard-user-more" />
-          </button>
+          <span class="ui-menu dashboard-user-menu" data-menu>
+            <button
+              class="dashboard-menu-button dashboard-menu-button-lg"
+              type="button"
+              data-menu-trigger
+              aria-haspopup="menu"
+              aria-expanded="false"
+              aria-label="Open user menu"
+            >
+              <img class="dashboard-user-avatar" src="/avatars/shadcn.jpg" alt="shadcn" width="32" height="32" />
+              <span class="dashboard-user-meta">
+                <span class="dashboard-user-name">shadcn</span>
+                <span class="dashboard-user-email">m@example.com</span>
+              </span>
+              <TablerDotsVerticalIcon class="dashboard-user-more" />
+            </button>
+            <div
+              class="ui-menu-panel dashboard-user-menu-panel"
+              data-menu-panel
+              data-menu-side="right"
+              data-menu-align="end"
+              role="menu"
+              aria-label="User menu"
+              hidden
+            >
+              <div class="dashboard-user-menu-label">
+                <img class="dashboard-user-avatar" src="/avatars/shadcn.jpg" alt="" width="32" height="32" />
+                <span class="dashboard-user-meta">
+                  <span class="dashboard-user-name">shadcn</span>
+                  <span class="dashboard-user-email">m@example.com</span>
+                </span>
+              </div>
+              <span class="ui-menu-separator" role="separator"></span>
+              <button type="button" class="ui-menu-item" role="menuitem" data-menu-item>
+                <TablerUserCircleIcon />
+                <span>Account</span>
+              </button>
+              <button type="button" class="ui-menu-item" role="menuitem" data-menu-item>
+                <TablerCreditCardIcon />
+                <span>Billing</span>
+              </button>
+              <button type="button" class="ui-menu-item" role="menuitem" data-menu-item>
+                <TablerNotificationIcon />
+                <span>Notifications</span>
+              </button>
+              <span class="ui-menu-separator" role="separator"></span>
+              <button type="button" class="ui-menu-item" role="menuitem" data-menu-item>
+                <TablerLogoutIcon />
+                <span>Log out</span>
+              </button>
+            </div>
+          </span>
         </div>
       </aside>
 
@@ -1012,9 +1092,33 @@ function DashboardTablePage(props: {
               <DashboardReviewerCell reviewer={row.reviewer} />
             </td>
             <td class="dashboard-cell-actions">
-              <button type="button" class="dashboard-icon-button" aria-label="Open menu">
-                <TablerDotsVerticalIcon />
-              </button>
+              <span class="ui-menu dashboard-row-menu" data-menu>
+                <button
+                  type="button"
+                  class="dashboard-icon-button"
+                  aria-label={`Open menu for ${row.header}`}
+                  data-menu-trigger
+                  aria-haspopup="menu"
+                  aria-expanded="false"
+                >
+                  <TablerDotsVerticalIcon />
+                </button>
+                <div
+                  class="ui-menu-panel dashboard-row-menu-panel"
+                  data-menu-panel
+                  data-menu-side="bottom"
+                  data-menu-align="end"
+                  role="menu"
+                  aria-label={`${row.header} actions`}
+                  hidden
+                >
+                  <button type="button" class="ui-menu-item" role="menuitem" data-menu-item>Edit</button>
+                  <button type="button" class="ui-menu-item" role="menuitem" data-menu-item>Make a copy</button>
+                  <button type="button" class="ui-menu-item" role="menuitem" data-menu-item>Favorite</button>
+                  <span class="ui-menu-separator" role="separator"></span>
+                  <button type="button" class="ui-menu-item" role="menuitem" data-menu-item data-destructive="true">Delete</button>
+                </div>
+              </span>
             </td>
           </tr>
         ))}
