@@ -7757,6 +7757,66 @@ body[data-dashboard-drawer-open="true"] {
   color: var(--accent-foreground);
 }
 
+.tasks-row-action[aria-expanded="true"] {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.tasks-row-menu-panel {
+  width: 10rem;
+}
+
+.tasks-row-menu-panel > .ui-menu-item,
+.tasks-label-sub-trigger,
+.tasks-label-option {
+  padding: 0.375rem 0.5rem;
+}
+
+.tasks-label-sub-trigger[data-state="open"] {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.tasks-label-sub-trigger .example-icon {
+  margin-left: auto;
+}
+
+.tasks-label-panel {
+  min-width: 8rem;
+}
+
+.tasks-label-option {
+  padding-left: 2rem;
+}
+
+.tasks-label-radio {
+  position: absolute;
+  left: 0.5rem;
+  display: inline-flex;
+  width: 0.875rem;
+  height: 0.875rem;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+
+.tasks-label-radio .example-icon {
+  width: 0.5rem;
+  height: 0.5rem;
+  fill: currentColor;
+}
+
+.tasks-label-option[data-selected="true"] .tasks-label-radio {
+  opacity: 1;
+}
+
+.tasks-menu-shortcut {
+  margin-left: auto;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+}
+
 .tasks-pagination {
   display: flex;
   align-items: center;

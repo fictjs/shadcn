@@ -1426,6 +1426,84 @@ function TaskFacetMenu(props: {
   )
 }
 
+function TaskRowActions(props: { task: (typeof taskRows)[number] }) {
+  const task = untrack(() => props.task)
+
+  return (
+    <span class="ui-menu tasks-row-menu" data-menu data-task-row-menu>
+      <button
+        type="button"
+        class="tasks-row-action"
+        aria-label={`Open menu for ${task.id}`}
+        data-menu-trigger
+        aria-haspopup="menu"
+        aria-expanded="false"
+      >
+        <LucideEllipsisIcon />
+      </button>
+      <div
+        class="ui-menu-panel tasks-row-menu-panel"
+        data-menu-panel
+        data-menu-side="bottom"
+        data-menu-align="end"
+        role="menu"
+        aria-label={`${task.id} actions`}
+        hidden
+      >
+        <button type="button" class="ui-menu-item" role="menuitem" data-menu-item>Edit</button>
+        <button type="button" class="ui-menu-item" role="menuitem" data-menu-item>Make a copy</button>
+        <button type="button" class="ui-menu-item" role="menuitem" data-menu-item>Favorite</button>
+        <span class="ui-menu-separator" role="separator"></span>
+        <span class="ui-menu-sub tasks-label-submenu">
+          <button
+            type="button"
+            class="ui-menu-item tasks-label-sub-trigger"
+            role="menuitem"
+            aria-haspopup="menu"
+            aria-expanded="false"
+            data-menu-item
+            data-menu-keep-open
+            data-task-label-trigger
+          >
+            <span>Labels</span>
+            <LucideChevronRightIcon />
+          </button>
+          <div
+            class="ui-menu-panel tasks-label-panel"
+            data-task-label-panel
+            data-menu-side="right"
+            data-menu-align="start"
+            role="menu"
+            aria-label={`Labels for ${task.id}`}
+            hidden
+          >
+            {(["bug", "feature", "documentation"] as const).map((label) => (
+              <button
+                type="button"
+                class="ui-menu-item tasks-label-option"
+                key={label}
+                role="menuitemradio"
+                aria-checked={task.label === label}
+                data-menu-item
+                data-task-label-value={label}
+                data-selected={task.label === label}
+              >
+                <span class="tasks-label-radio" aria-hidden="true"><LucideCircleIcon /></span>
+                <span>{formatTaskLabel(label)}</span>
+              </button>
+            ))}
+          </div>
+        </span>
+        <span class="ui-menu-separator" role="separator"></span>
+        <button type="button" class="ui-menu-item" role="menuitem" data-menu-item data-destructive="true">
+          <span>Delete</span>
+          <span class="tasks-menu-shortcut">⌘⌫</span>
+        </button>
+      </div>
+    </span>
+  )
+}
+
 function renderTaskTableRow(task: (typeof taskRows)[number], index: number) {
   return (
     <tr
@@ -1467,9 +1545,7 @@ function renderTaskTableRow(task: (typeof taskRows)[number], index: number) {
         </div>
       </td>
       <td class="tasks-cell-actions">
-        <button type="button" class="tasks-row-action" aria-label={`Open menu for ${task.id}`}>
-          <LucideEllipsisIcon />
-        </button>
+        <TaskRowActions task={task} />
       </td>
     </tr>
   )

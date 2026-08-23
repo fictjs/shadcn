@@ -629,6 +629,31 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator('th[data-task-column="title"]')).toBeVisible()
   })
 
+  test("tasks row actions expose labels and preserve the selected label", async ({ page }) => {
+    await page.goto("/examples/tasks")
+    await waitForClientReady(page)
+
+    const firstRow = page.locator("[data-task-row]").first()
+    await firstRow.getByRole("button", { name: /Open menu for TASK-/ }).click()
+    const actions = firstRow.getByRole("menu", { name: /TASK-.* actions/ })
+    await expect(actions.getByRole("menuitem", { name: "Edit" })).toBeVisible()
+    await expect(actions.getByRole("menuitem", { name: "Make a copy" })).toBeVisible()
+    await expect(actions.getByRole("menuitem", { name: "Favorite" })).toBeVisible()
+    await expect(actions.getByRole("menuitem", { name: "Delete" })).toContainText("⌘⌫")
+
+    await actions.getByRole("menuitem", { name: "Labels" }).hover()
+    const labels = firstRow.getByRole("menu", { name: /Labels for TASK-/ })
+    await expect(labels).toBeVisible()
+    await expect(labels.getByRole("menuitemradio", { name: "Documentation" })).toHaveAttribute("aria-checked", "true")
+
+    await labels.getByRole("menuitemradio", { name: "Bug" }).click()
+    await expect(firstRow.locator(".tasks-label-badge")).toHaveText("Bug")
+
+    await firstRow.getByRole("button", { name: /Open menu for TASK-/ }).click()
+    await actions.getByRole("menuitem", { name: "Labels" }).hover()
+    await expect(labels.getByRole("menuitemradio", { name: "Bug" })).toHaveAttribute("aria-checked", "true")
+  })
+
   test("playground example switches modes and updates controls", async ({ page }) => {
     await page.goto("/examples/playground")
 

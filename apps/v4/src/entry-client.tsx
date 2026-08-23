@@ -1055,7 +1055,7 @@ function wireTasksTables(): void {
         priorityIcons.set(priority, priorityIcon)
       }
     }
-    const actionIcon = initialRows[0]?.querySelector(".tasks-row-action .example-icon") ?? null
+    const actionMenuTemplate = initialRows[0]?.querySelector<HTMLElement>("[data-task-row-menu]") ?? null
 
     const formatLabel = (value: string): string => value.charAt(0).toUpperCase() + value.slice(1)
     const createMetaIcon = (templates: Map<string, Element>, value: string): Node => {
@@ -1130,14 +1130,31 @@ function wireTasksTables(): void {
 
       const actionCell = document.createElement("td")
       actionCell.className = "tasks-cell-actions"
-      const action = document.createElement("button")
-      action.type = "button"
-      action.className = "tasks-row-action"
-      action.setAttribute("aria-label", `Open menu for ${taskId}`)
-      if (actionIcon) {
-        action.append(actionIcon.cloneNode(true))
+      if (actionMenuTemplate) {
+        const actionMenu = actionMenuTemplate.cloneNode(true) as HTMLElement
+        const action = actionMenu.querySelector<HTMLElement>(".tasks-row-action")
+        const panel = actionMenu.querySelector<HTMLElement>(":scope > [data-menu-panel]")
+        const labelPanel = actionMenu.querySelector<HTMLElement>("[data-task-label-panel]")
+        if (action) {
+          action.setAttribute("aria-label", `Open menu for ${taskId}`)
+          action.setAttribute("aria-expanded", "false")
+        }
+        if (panel) {
+          panel.setAttribute("aria-label", `${taskId} actions`)
+          panel.hidden = true
+        }
+        if (labelPanel) {
+          labelPanel.setAttribute("aria-label", `Labels for ${taskId}`)
+          labelPanel.hidden = true
+        }
+        actionCell.append(actionMenu)
+      } else {
+        const action = document.createElement("button")
+        action.type = "button"
+        action.className = "tasks-row-action"
+        action.setAttribute("aria-label", `Open menu for ${taskId}`)
+        actionCell.append(action)
       }
-      actionCell.append(action)
 
       row.append(selectCell, idCell, titleCell, statusCell, priorityCell, actionCell)
       return row
@@ -1211,6 +1228,21 @@ function wireTasksTables(): void {
         return sortDirection === "desc" ? -compared : compared
       })
       return rows
+    }
+
+    const syncRowActions = (): void => {
+      for (const row of allRows) {
+        const label = row.dataset.taskLabel ?? ""
+        const badge = row.querySelector<HTMLElement>(".tasks-label-badge")
+        if (badge) {
+          badge.textContent = formatLabel(label)
+        }
+        row.querySelectorAll<HTMLElement>("[data-task-label-value]").forEach((option) => {
+          const selected = option.dataset.taskLabelValue === label
+          option.dataset.selected = selected ? "true" : "false"
+          option.setAttribute("aria-checked", selected ? "true" : "false")
+        })
+      }
     }
 
     const syncColumns = (): void => {
@@ -1403,7 +1435,30 @@ function wireTasksTables(): void {
       }
 
       syncColumns()
+      syncRowActions()
     }
+
+    const openTaskLabelPanel = (trigger: HTMLElement, panel: HTMLElement): void => {
+      const shouldOpen = panel.hidden
+      panel.hidden = !shouldOpen
+      trigger.setAttribute("aria-expanded", shouldOpen ? "true" : "false")
+      trigger.dataset.state = shouldOpen ? "open" : "closed"
+      if (shouldOpen) {
+        positionShowcaseMenu(panel)
+      }
+    }
+
+    root.addEventListener("pointerover", (event) => {
+      const target = event.target
+      if (!(target instanceof Element)) {
+        return
+      }
+      const trigger = target.closest<HTMLElement>("[data-task-label-trigger]")
+      const panel = trigger?.parentElement?.querySelector<HTMLElement>(":scope > [data-task-label-panel]")
+      if (trigger && panel && panel.hidden) {
+        openTaskLabelPanel(trigger, panel)
+      }
+    })
 
     root.addEventListener("input", (event) => {
       const target = event.target
@@ -1478,6 +1533,41 @@ function wireTasksTables(): void {
     root.addEventListener("click", (event) => {
       const target = event.target
       if (!(target instanceof Element)) {
+        return
+      }
+
+      const rowMenuTrigger = target.closest<HTMLElement>("[data-task-row-menu] > [data-menu-trigger]")
+      if (rowMenuTrigger) {
+        const menu = rowMenuTrigger.closest<HTMLElement>("[data-task-row-menu]")
+        const labelTrigger = menu?.querySelector<HTMLElement>("[data-task-label-trigger]")
+        const labelPanel = menu?.querySelector<HTMLElement>("[data-task-label-panel]")
+        if (labelTrigger) {
+          labelTrigger.setAttribute("aria-expanded", "false")
+          labelTrigger.dataset.state = "closed"
+        }
+        if (labelPanel) {
+          labelPanel.hidden = true
+        }
+        return
+      }
+
+      const labelTrigger = target.closest<HTMLElement>("[data-task-label-trigger]")
+      if (labelTrigger) {
+        const panel = labelTrigger.parentElement?.querySelector<HTMLElement>(":scope > [data-task-label-panel]")
+        if (panel?.hidden) {
+          openTaskLabelPanel(labelTrigger, panel)
+        }
+        return
+      }
+
+      const labelOption = target.closest<HTMLElement>("[data-task-label-value]")
+      if (labelOption) {
+        const row = labelOption.closest<HTMLTableRowElement>("[data-task-row]")
+        const label = labelOption.dataset.taskLabelValue
+        if (row && (label === "bug" || label === "feature" || label === "documentation")) {
+          row.dataset.taskLabel = label
+          syncRowActions()
+        }
         return
       }
 
