@@ -1373,6 +1373,19 @@ test.describe("shadcn v4 site", () => {
     await expect(prompt.locator("[data-mention-chip]")).toContainText("لوحة المشروع")
   })
 
+  test("rtl terms field matches the React checkbox", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 1200 })
+    await page.goto("/examples/rtl")
+    await waitForClientReady(page)
+
+    const termsField = page.locator(".root-check-field")
+    const checkbox = termsField.getByRole("checkbox", { name: "أوافق على الشروط والأحكام" })
+    await expect(termsField).toHaveCSS("height", "41.25px")
+    await expect(checkbox).toHaveAttribute("aria-checked", "true")
+    await termsField.getByText("أوافق على الشروط والأحكام", { exact: true }).click()
+    await expect(checkbox).toHaveAttribute("aria-checked", "false")
+  })
+
   test("create route builds a live starter workspace", async ({ page }) => {
     await page.goto("/create")
 

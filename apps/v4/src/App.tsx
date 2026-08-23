@@ -3250,8 +3250,8 @@ function RootButtonGroupDemoPreview() {
 
 function RootFieldCheckboxPreview() {
   return (
-    <label class="ui-field ui-field-horizontal root-check-field">
-      <UiCheckbox checked />
+    <label class="ui-field ui-field-horizontal root-check-field" for="checkbox-demo-rtl">
+      <UiCheckbox id="checkbox-demo-rtl" checked />
       <span class="ui-label ui-label-normal">I agree to the terms and conditions</span>
     </label>
   )
