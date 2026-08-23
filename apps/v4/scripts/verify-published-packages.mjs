@@ -15,6 +15,7 @@ const publishedPackages = [
   { name: '@fictjs/runtime', section: 'dependencies' },
   { name: '@fictjs/ssr', section: 'dependencies' },
   { name: '@fictjs/compiler', section: 'devDependencies' },
+  { name: '@fictjs/hooks', section: 'devDependencies' },
   { name: '@fictjs/vite-plugin', section: 'devDependencies' },
 ]
 
@@ -59,6 +60,9 @@ for (const dependencyName of ['@fictjs/runtime', '@fictjs/compiler', '@fictjs/vi
     `${dependencyName} must stay aligned with fict`,
   )
 }
+
+const hooksModule = await import('@fictjs/hooks')
+assert.equal(typeof hooksModule.useMediaQuery, 'function')
 
 function findPackageManifest(resolvedEntry, expectedName) {
   let currentDirectory = path.dirname(resolvedEntry)

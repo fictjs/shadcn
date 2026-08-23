@@ -24,6 +24,9 @@ importers:
       '@fictjs/compiler':
         specifier: 0.33.0
         version: 0.33.0
+      '@fictjs/hooks':
+        specifier: 0.30.0
+        version: 0.30.0(@fictjs/runtime@0.33.0)
       '@fictjs/vite-plugin':
         specifier: 0.33.0
         version: 0.33.0(vite@7.3.1(@types/node@24.11.0)(jiti@2.6.1)(lightningcss@1.31.1))
@@ -251,6 +254,12 @@ packages:
 
   '@fictjs/compiler@0.33.0':
     resolution: {integrity: sha512-FBMt7L4j8fz709BKYaMR15JXdcsUMB9Qlco8QWAqbbpCzWGKUgYy3ae8fajnVefPnmbXU1M0dj6PG/Avh1dm+A==}
+
+  '@fictjs/hooks@0.30.0':
+    resolution: {integrity: sha512-gHELOJPU9tTkEdY5eC+hExmrl8Xsaj7edCZ4NRMfxM1bwqWPgKISfLxcx2AWsk2zFBHpSe49Vyieha9UcY/qHA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@fictjs/runtime': ^0.33.0
 
   '@fictjs/runtime@0.33.0':
     resolution: {integrity: sha512-5i0h+psf1Ew2dN3qEYG19iFFsb/IJGdNp8jqwVd+5ypi+FER3vGUREXJZ4vsr83t9T5VFgkQe12kDnVf4eAUeQ==}
@@ -1066,6 +1075,10 @@ snapshots:
       '@fictjs/compiler-linux-x64-musl': 0.33.0
       '@fictjs/compiler-win32-arm64-msvc': 0.33.0
       '@fictjs/compiler-win32-x64-msvc': 0.33.0
+
+  '@fictjs/hooks@0.30.0(@fictjs/runtime@0.33.0)':
+    dependencies:
+      '@fictjs/runtime': 0.33.0
 
   '@fictjs/runtime@0.33.0': {}
 
