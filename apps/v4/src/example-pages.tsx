@@ -190,9 +190,28 @@ function syncDashboardTableSelectionScope(scope: HTMLElement): void {
   }
 }
 
+function syncDashboardTableColumns(scope: HTMLElement): void {
+  const hiddenColumns = scope.dataset.dashboardHiddenColumns || "|"
+  scope.querySelectorAll<HTMLElement>("[data-dashboard-column]").forEach((cell) => {
+    const column = cell.dataset.dashboardColumn
+    cell.hidden = Boolean(column && hiddenColumns.includes(`|${column}|`))
+  })
+
+  scope
+    .closest<HTMLElement>(".dashboard-table-block")
+    ?.querySelectorAll<HTMLElement>("[data-dashboard-column-toggle]")
+    .forEach((item) => {
+      const column = item.dataset.dashboardColumnToggle
+      const isVisible = Boolean(column && !hiddenColumns.includes(`|${column}|`))
+      item.setAttribute("aria-checked", String(isVisible))
+      item.dataset.selected = String(isVisible)
+    })
+}
+
 function syncDashboardTableSelections(): void {
   document.querySelectorAll<HTMLElement>(".dashboard-table-selection-scope").forEach((scope) => {
     syncDashboardTableSelectionScope(scope)
+    syncDashboardTableColumns(scope)
   })
 }
 
@@ -487,6 +506,7 @@ function DashboardExample() {
   let dashboardPageSize = $state<DashboardPageSize>(DASHBOARD_PAGE_SIZE)
   let selectedDashboardRows = $state("|")
   let selectedDashboardCount = $state(0)
+  let hiddenDashboardColumns = $state("|")
 
   const activeViewLabel = activeView === "past-performance"
     ? "past performance"
@@ -696,11 +716,72 @@ function DashboardExample() {
             </div>
 
             <div class="dashboard-table-actions">
-              <button type="button" class="dashboard-outline-button">
-                <TablerLayoutColumnsIcon />
-                <span>Customize Columns</span>
-                <TablerChevronDownIcon />
-              </button>
+              <span class="ui-menu dashboard-columns-menu" data-menu>
+                <button
+                  type="button"
+                  class="dashboard-outline-button"
+                  data-menu-trigger
+                  aria-haspopup="menu"
+                  aria-expanded="false"
+                >
+                  <TablerLayoutColumnsIcon />
+                  <span class="dashboard-columns-label-wide">Customize Columns</span>
+                  <span class="dashboard-columns-label-compact">Columns</span>
+                  <TablerChevronDownIcon />
+                </button>
+                <div
+                  class="ui-menu-panel dashboard-columns-panel"
+                  data-menu-panel
+                  data-menu-side="bottom"
+                  data-menu-align="end"
+                  role="menu"
+                  aria-label="Customize columns"
+                  hidden
+                  onClick$={(event: MouseEvent) => {
+                    const target = event.target
+                    if (!(target instanceof Element)) {
+                      return
+                    }
+
+                    const item = target.closest<HTMLElement>("[data-dashboard-column-toggle]")
+                    const column = item?.dataset.dashboardColumnToggle
+                    if (!item || !column) {
+                      return
+                    }
+
+                    const isVisible = item.getAttribute("aria-checked") !== "false"
+                    const selectionScope = item
+                      .closest<HTMLElement>(".dashboard-table-block")
+                      ?.querySelector<HTMLElement>(".dashboard-table-selection-scope")
+                    const nextHiddenColumns = updateDashboardSelection(
+                      selectionScope?.dataset.dashboardHiddenColumns || "|",
+                      column,
+                      isVisible,
+                    )
+                    hiddenDashboardColumns = nextHiddenColumns
+                    item.setAttribute("aria-checked", isVisible ? "false" : "true")
+                    item.dataset.selected = isVisible ? "false" : "true"
+                    window.requestAnimationFrame(syncDashboardTableSelections)
+                  }}
+                >
+                  {["type", "status", "target", "limit", "reviewer"].map((column) => (
+                    <button
+                      key={column}
+                      type="button"
+                      class="ui-menu-item dashboard-column-item"
+                      role="menuitemcheckbox"
+                      aria-checked="true"
+                      data-selected="true"
+                      data-menu-item
+                      data-menu-keep-open
+                      data-dashboard-column-toggle={column}
+                    >
+                      <span>{column}</span>
+                      <span class="dashboard-column-check" aria-hidden="true">✓</span>
+                    </button>
+                  ))}
+                </div>
+              </span>
               <button type="button" class="dashboard-outline-button">
                 <TablerPlusIcon />
                 <span>Add Section</span>
@@ -714,6 +795,7 @@ function DashboardExample() {
                 <div
                   class="dashboard-table-selection-scope"
                   data-dashboard-selected-rows={selectedDashboardRows}
+                  data-dashboard-hidden-columns={hiddenDashboardColumns}
                   onInput$={(event: Event) => {
                     const target = event.target
                     if (!(target instanceof HTMLInputElement) || target.type !== "checkbox") {
@@ -884,11 +966,11 @@ function DashboardTablePage(props: {
             />
           </th>
           <th>Header</th>
-          <th>Section Type</th>
-          <th>Status</th>
-          <th class="dashboard-cell-number">Target</th>
-          <th class="dashboard-cell-number">Limit</th>
-          <th>Reviewer</th>
+          <th data-dashboard-column="type">Section Type</th>
+          <th data-dashboard-column="status">Status</th>
+          <th class="dashboard-cell-number" data-dashboard-column="target">Target</th>
+          <th class="dashboard-cell-number" data-dashboard-column="limit">Limit</th>
+          <th data-dashboard-column="reviewer">Reviewer</th>
           <th class="dashboard-cell-actions"></th>
         </tr>
       </thead>
@@ -911,22 +993,22 @@ function DashboardTablePage(props: {
             <td>
               <button type="button" class="dashboard-cell-link">{row.header}</button>
             </td>
-            <td>
+            <td data-dashboard-column="type">
               <span class="dashboard-cell-badge">{row.type}</span>
             </td>
-            <td>
+            <td data-dashboard-column="status">
               <span class="dashboard-cell-badge">
                 <DashboardStatusIcon status={row.status} />
                 {row.status}
               </span>
             </td>
-            <td class="dashboard-cell-number">
+            <td class="dashboard-cell-number" data-dashboard-column="target">
               <input class="dashboard-cell-input" value={row.target} aria-label={`Target for ${row.header}`} />
             </td>
-            <td class="dashboard-cell-number">
+            <td class="dashboard-cell-number" data-dashboard-column="limit">
               <input class="dashboard-cell-input" value={row.limit} aria-label={`Limit for ${row.header}`} />
             </td>
-            <td>
+            <td data-dashboard-column="reviewer">
               <DashboardReviewerCell reviewer={row.reviewer} />
             </td>
             <td class="dashboard-cell-actions">

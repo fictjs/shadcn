@@ -323,6 +323,31 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByRole("button", { name: "Go to previous page" })).toBeDisabled()
   })
 
+  test("dashboard column visibility menu controls the live table", async ({ page }) => {
+    await page.goto("/examples/dashboard")
+    await waitForClientReady(page)
+
+    await page.getByRole("button", { name: "Customize Columns" }).click()
+    const menu = page.getByRole("menu", { name: "Customize columns" })
+    const reviewerItem = menu.getByRole("menuitemcheckbox", { name: "reviewer" })
+    await expect(menu).toBeVisible()
+    await expect(reviewerItem).toHaveAttribute("aria-checked", "true")
+
+    await reviewerItem.click()
+    await expect(reviewerItem).toHaveAttribute("aria-checked", "false")
+    await expect(page.locator('th[data-dashboard-column="reviewer"]')).toBeHidden()
+    await expect(page.locator('td[data-dashboard-column="reviewer"]')).toHaveCount(10)
+    await expect(page.locator('td[data-dashboard-column="reviewer"]').first()).toBeHidden()
+
+    await page.getByRole("button", { name: "Go to next page" }).click()
+    await expect(page.locator('th[data-dashboard-column="reviewer"]')).toBeHidden()
+
+    await page.getByRole("button", { name: "Customize Columns" }).click()
+    await expect(reviewerItem).toHaveAttribute("aria-checked", "false")
+    await reviewerItem.click()
+    await expect(page.locator('th[data-dashboard-column="reviewer"]')).toBeVisible()
+  })
+
   test("tasks example renders the faceted toolbar and row metadata", async ({ page }) => {
     await page.goto("/examples/tasks")
     await waitForClientReady(page)

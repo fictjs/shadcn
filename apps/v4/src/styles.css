@@ -6382,6 +6382,37 @@ a.ui-item:hover {
   gap: 0.5rem;
 }
 
+.dashboard-columns-label-compact {
+  display: none;
+}
+
+.dashboard-columns-panel {
+  width: 14rem;
+}
+
+.dashboard-column-item {
+  text-transform: capitalize;
+}
+
+.dashboard-column-check {
+  margin-left: auto;
+  opacity: 0;
+}
+
+.dashboard-column-item[data-selected="true"] .dashboard-column-check {
+  opacity: 1;
+}
+
+@media (max-width: 1023px) {
+  .dashboard-columns-label-wide {
+    display: none;
+  }
+
+  .dashboard-columns-label-compact {
+    display: inline;
+  }
+}
+
 .dashboard-outline-button {
   display: inline-flex;
   height: 2rem;
