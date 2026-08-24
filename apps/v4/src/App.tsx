@@ -4259,7 +4259,9 @@ function DocComponentBlock(props: { block: DocContentBlock }) {
 function DocComponentPreviewSurface(props: { family: string; name: string }) {
   const family = untrack(() => props.family)
 
-  return family === "avatar" ? (
+  return family === "accordion" ? (
+    <DocAccordionPreview name={props.name} />
+  ) : family === "avatar" ? (
     <div class="doc-preview-avatar-row">
       <span>CN</span>
       <span>ER</span>
@@ -4317,7 +4319,7 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <path d="M20 106 L72 78 L124 90 L176 54 L228 64 L280 34 L280 124 L20 124 Z" class="doc-preview-chart-fill" />
       <path d="M20 106 L72 78 L124 90 L176 54 L228 64 L280 34" class="doc-preview-chart-line" />
     </svg>
-  ) : family === "tabs" || family === "accordion" || family === "collapsible" || family === "navigation-menu" || family === "menubar" || family === "context-menu" || family === "dropdown-menu" || family === "breadcrumb" || family === "pagination" || family === "sidebar" ? (
+  ) : family === "tabs" || family === "collapsible" || family === "navigation-menu" || family === "menubar" || family === "context-menu" || family === "dropdown-menu" || family === "breadcrumb" || family === "pagination" || family === "sidebar" ? (
     <div class="doc-preview-nav-shell">
       <div class="doc-preview-chip-row">
         <span class="is-primary">Overview</span>
@@ -4350,6 +4352,309 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <p>Registry preview surface for this documentation example.</p>
     </div>
   )
+}
+
+interface DocAccordionItem {
+  value: string
+  trigger: string
+  content: string
+  disabled?: boolean
+}
+
+const docAccordionItems: Record<string, DocAccordionItem[]> = {
+  "accordion-demo": [
+    {
+      value: "shipping",
+      trigger: "What are your shipping options?",
+      content:
+        "We offer standard (5-7 days), express (2-3 days), and overnight shipping. Free shipping on international orders.",
+    },
+    {
+      value: "returns",
+      trigger: "What is your return policy?",
+      content:
+        "Returns accepted within 30 days. Items must be unused and in original packaging. Refunds processed within 5-7 business days.",
+    },
+    {
+      value: "support",
+      trigger: "How can I contact customer support?",
+      content:
+        "Reach us via email, live chat, or phone. We respond within 24 hours during business days.",
+    },
+  ],
+  "accordion-basic": [
+    {
+      value: "item-1",
+      trigger: "How do I reset my password?",
+      content:
+        "Click on 'Forgot Password' on the login page, enter your email address, and we'll send you a link to reset your password. The link will expire in 24 hours.",
+    },
+    {
+      value: "item-2",
+      trigger: "Can I change my subscription plan?",
+      content:
+        "Yes, you can upgrade or downgrade your plan at any time from your account settings. Changes will be reflected in your next billing cycle.",
+    },
+    {
+      value: "item-3",
+      trigger: "What payment methods do you accept?",
+      content:
+        "We accept all major credit cards, PayPal, and bank transfers. All payments are processed securely through our payment partners.",
+    },
+  ],
+  "accordion-multiple": [
+    {
+      value: "notifications",
+      trigger: "Notification Settings",
+      content:
+        "Manage how you receive notifications. You can enable email alerts for updates or push notifications for mobile devices.",
+    },
+    {
+      value: "privacy",
+      trigger: "Privacy & Security",
+      content:
+        "Control your privacy settings and security preferences. Enable two-factor authentication, manage connected devices, review active sessions, and configure data sharing preferences. You can also download your data or delete your account.",
+    },
+    {
+      value: "billing",
+      trigger: "Billing & Subscription",
+      content:
+        "View your current plan, payment history, and upcoming invoices. Update your payment method, change your subscription tier, or cancel your subscription.",
+    },
+  ],
+  "accordion-disabled": [
+    {
+      value: "item-1",
+      trigger: "Can I access my account history?",
+      content:
+        "Yes, you can view your complete account history including all transactions, plan changes, and support tickets in the Account History section of your dashboard.",
+    },
+    {
+      value: "item-2",
+      trigger: "Premium feature information",
+      content:
+        "This section contains information about premium features. Upgrade your plan to access this content.",
+      disabled: true,
+    },
+    {
+      value: "item-3",
+      trigger: "How do I update my email address?",
+      content:
+        "You can update your email address in your account settings. You'll receive a verification email at your new address to confirm the change.",
+    },
+  ],
+  "accordion-borders": [
+    {
+      value: "billing",
+      trigger: "How does billing work?",
+      content:
+        "We offer monthly and annual subscription plans. Billing is charged at the beginning of each cycle, and you can cancel anytime. All plans include automatic backups, 24/7 support, and unlimited team members.",
+    },
+    {
+      value: "security",
+      trigger: "Is my data secure?",
+      content:
+        "Yes. We use end-to-end encryption, SOC 2 Type II compliance, and regular third-party security audits. All data is encrypted at rest and in transit using industry-standard protocols.",
+    },
+    {
+      value: "integration",
+      trigger: "What integrations do you support?",
+      content:
+        "We integrate with 500+ popular tools including Slack, Zapier, Salesforce, HubSpot, and more. You can also build custom integrations using our REST API and webhooks.",
+    },
+  ],
+  "accordion-card": [
+    {
+      value: "plans",
+      trigger: "What subscription plans do you offer?",
+      content:
+        "We offer three subscription tiers: Starter ($9/month), Professional ($29/month), and Enterprise ($99/month). Each plan includes increasing storage limits, API access, priority support, and team collaboration features.",
+    },
+    {
+      value: "billing",
+      trigger: "How does billing work?",
+      content:
+        "Billing occurs automatically at the start of each billing cycle. We accept all major credit cards, PayPal, and ACH transfers for enterprise customers. You'll receive an invoice via email after each payment.",
+    },
+    {
+      value: "cancel",
+      trigger: "How do I cancel my subscription?",
+      content:
+        "You can cancel your subscription anytime from your account settings. There are no cancellation fees or penalties. Your access will continue until the end of your current billing period.",
+    },
+  ],
+}
+
+const docAccordionRtlItems: Record<"en" | "ar" | "he", DocAccordionItem[]> = {
+  en: docAccordionItems["accordion-basic"],
+  ar: [
+    {
+      value: "item-1",
+      trigger: "كيف يمكنني إعادة تعيين كلمة المرور؟",
+      content:
+        "انقر على 'نسيت كلمة المرور' في صفحة تسجيل الدخول، أدخل عنوان بريدك الإلكتروني، وسنرسل لك رابطًا لإعادة تعيين كلمة المرور. سينتهي صلاحية الرابط خلال 24 ساعة.",
+    },
+    {
+      value: "item-2",
+      trigger: "هل يمكنني تغيير خطة الاشتراك الخاصة بي؟",
+      content:
+        "نعم، يمكنك ترقية أو تخفيض خطتك في أي وقت من إعدادات حسابك. ستظهر التغييرات في دورة الفوترة التالية.",
+    },
+    {
+      value: "item-3",
+      trigger: "ما هي طرق الدفع التي تقبلونها؟",
+      content:
+        "نقبل جميع بطاقات الائتمان الرئيسية و PayPal والتحويلات المصرفية. تتم معالجة جميع المدفوعات بأمان من خلال شركاء الدفع لدينا.",
+    },
+  ],
+  he: [
+    {
+      value: "item-1",
+      trigger: "איך אני מאפס את הסיסמה שלי?",
+      content:
+        "לחץ על 'שכחתי סיסמה' בעמוד ההתחברות, הזן את כתובת האימייל שלך, ונשלח לך קישור לאיפוס הסיסמה. הקישור יפוג תוך 24 שעות.",
+    },
+    {
+      value: "item-2",
+      trigger: "האם אני יכול לשנות את תוכנית המנוי שלי?",
+      content:
+        "כן, אתה יכול לשדרג או להוריד את התוכנית שלך בכל עת מההגדרות של החשבון שלך. השינויים יבואו לידי ביטוי במחזור החיוב הבא.",
+    },
+    {
+      value: "item-3",
+      trigger: "אילו אמצעי תשלום אתם מקבלים?",
+      content: "אנו מקבלים כרטיסי אשראי, PayPal והעברות בנקאיות.",
+    },
+  ],
+}
+
+function DocAccordionPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const isMultiple = name === "accordion-multiple"
+  const isRtl = name === "accordion-rtl"
+  const initialValue =
+    name === "accordion-demo"
+      ? "shipping"
+      : name === "accordion-multiple"
+        ? "notifications"
+        : name === "accordion-borders"
+          ? "billing"
+          : name === "accordion-card"
+            ? "plans"
+            : name === "accordion-disabled"
+              ? ""
+              : "item-1"
+  const items = isRtl ? docAccordionRtlItems.ar : docAccordionItems[name] || docAccordionItems["accordion-basic"]
+
+  const accordion = (
+    <div
+      class={`doc-accordion${name === "accordion-borders" ? " doc-accordion-bordered" : ""}`}
+      data-slot="accordion"
+      data-doc-accordion
+      data-accordion-type={isMultiple ? "multiple" : "single"}
+      dir={isRtl ? "rtl" : "ltr"}
+    >
+      {items.map((item) => {
+        const open = initialValue === item.value
+        const triggerId = `doc-${name}-${item.value}-trigger`
+        const contentId = `doc-${name}-${item.value}-content`
+        const rtlIndex = isRtl ? docAccordionRtlItems.ar.findIndex((candidate) => candidate.value === item.value) : -1
+        const englishItem = rtlIndex >= 0 ? docAccordionRtlItems.en[rtlIndex] : undefined
+        const hebrewItem = rtlIndex >= 0 ? docAccordionRtlItems.he[rtlIndex] : undefined
+        return (
+          <div
+            class="doc-accordion-item"
+            data-slot="accordion-item"
+            data-state={open ? "open" : "closed"}
+            data-disabled={item.disabled ? "true" : undefined}
+            key={item.value}
+          >
+            <h3 class="doc-accordion-heading">
+              <button
+                id={triggerId}
+                type="button"
+                class="doc-accordion-trigger"
+                data-slot="accordion-trigger"
+                aria-controls={contentId}
+                aria-expanded={open ? "true" : "false"}
+                data-state={open ? "open" : "closed"}
+                data-doc-accordion-trigger
+                disabled={item.disabled}
+              >
+                <span
+                  data-doc-accordion-label
+                  data-label-ar={isRtl ? item.trigger : undefined}
+                  data-label-en={englishItem?.trigger}
+                  data-label-he={hebrewItem?.trigger}
+                >
+                  {item.trigger}
+                </span>
+                <svg
+                  class="doc-accordion-chevron"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path data-doc-accordion-chevron d={open ? "m18 15-6-6-6 6" : "m6 9 6 6 6-6"}></path>
+                </svg>
+              </button>
+            </h3>
+            <div
+              id={contentId}
+              class="doc-accordion-content"
+              data-slot="accordion-content"
+              data-state={open ? "open" : "closed"}
+              role="region"
+              aria-labelledby={triggerId}
+              hidden={!open}
+            >
+              <div
+                class="doc-accordion-content-inner"
+                data-doc-accordion-content
+                data-content-ar={isRtl ? item.content : undefined}
+                data-content-en={englishItem?.content}
+                data-content-he={hebrewItem?.content}
+              >
+                {item.content}
+              </div>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+
+  return isRtl ? (
+    <div class="doc-rtl-preview-shell">
+      <div class="doc-rtl-preview-toolbar" dir="ltr">
+        <select
+          aria-label="Preview language"
+          value="ar"
+          data-doc-rtl-language
+        >
+          <option value="ar">Arabic (العربية)</option>
+          <option value="he">Hebrew (עברית)</option>
+          <option value="en">English</option>
+        </select>
+        <button type="button" class="doc-rtl-info-button" aria-label="Toggle language information">
+          <InfoIcon />
+        </button>
+      </div>
+      <div class="doc-rtl-preview" dir="rtl">{accordion}</div>
+    </div>
+  ) : name === "accordion-card" ? (
+    <div class="doc-accordion-card">
+      <div class="doc-accordion-card-header">
+        <h4>Subscription &amp; Billing</h4>
+        <p>Common questions about your account, plans, payments and cancellations.</p>
+      </div>
+      <div class="doc-accordion-card-content">{accordion}</div>
+    </div>
+  ) : accordion
 }
 
 function getDocPreviewFamily(name: string): string {

@@ -2044,6 +2044,247 @@ h1 {
   background: var(--accent);
 }
 
+.doc-component-card[data-doc-preview-name^="accordion-"] .doc-component-preview-stage {
+  place-items: start center;
+}
+
+.doc-component-card[data-doc-preview-name="accordion-demo"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="accordion-basic"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="accordion-disabled"] .doc-component-preview-stage {
+  height: 18.75rem;
+  min-height: 18.75rem;
+}
+
+.doc-component-card[data-doc-preview-name="accordion-multiple"] .doc-component-preview-stage {
+  height: 30rem;
+  min-height: 30rem;
+}
+
+.doc-component-card[data-doc-preview-name="accordion-borders"] .doc-component-preview-stage {
+  height: 20rem;
+  min-height: 20rem;
+}
+
+.doc-component-card[data-doc-preview-name="accordion-card"] .doc-component-preview-stage {
+  height: 28rem;
+  min-height: 28rem;
+}
+
+.doc-component-card[data-doc-preview-name="accordion-rtl"] .doc-component-preview-stage {
+  display: block;
+  height: 22rem;
+  min-height: 22rem;
+  padding: 0;
+}
+
+.doc-accordion {
+  display: flex;
+  width: 100%;
+  max-width: 24rem;
+  flex-direction: column;
+}
+
+.doc-accordion-item:not(:last-child) {
+  border-bottom: 1px solid var(--border);
+}
+
+.doc-body .doc-accordion-heading {
+  display: flex;
+  margin: 0;
+  font: inherit;
+}
+
+.doc-accordion-trigger {
+  display: flex;
+  width: 100%;
+  min-height: 2.625rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.625rem;
+  background: transparent;
+  color: var(--foreground);
+  padding: 0.625rem 0;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  text-align: start;
+  cursor: pointer;
+  outline: none;
+}
+
+.doc-accordion-trigger:hover:not(:disabled) span:first-child {
+  text-decoration: underline;
+}
+
+.doc-accordion-trigger:focus-visible {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
+}
+
+.doc-accordion-trigger:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.doc-accordion-chevron {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  color: var(--muted-foreground);
+}
+
+.doc-accordion-content {
+  overflow: hidden;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.doc-accordion-content[data-state="open"] {
+  animation: doc-accordion-down 180ms ease-out;
+}
+
+.doc-accordion-content-inner {
+  padding: 0 0 0.625rem;
+}
+
+.doc-accordion-bordered {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 0.625rem;
+}
+
+.doc-accordion-bordered .doc-accordion-item {
+  padding: 0 1rem;
+}
+
+.doc-accordion-card {
+  display: flex;
+  width: 100%;
+  max-width: 24rem;
+  flex-direction: column;
+  gap: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--card);
+  color: var(--card-foreground);
+  padding: 1rem 0;
+  box-shadow: 0 1px 2px color-mix(in oklab, var(--foreground) 8%, transparent);
+}
+
+.doc-accordion-card-header {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0 1rem;
+}
+
+.doc-accordion-card-header h4,
+.doc-accordion-card-header p {
+  margin: 0;
+}
+
+.doc-accordion-card-header h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+}
+
+.doc-accordion-card-header p {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.doc-accordion-card-content {
+  padding: 0 0.9375rem;
+}
+
+.doc-rtl-preview-shell {
+  width: 100%;
+}
+
+.doc-rtl-preview-toolbar {
+  display: flex;
+  height: 4rem;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  padding: 0 1rem;
+}
+
+.doc-rtl-preview-toolbar select {
+  width: 9rem;
+  height: 1.75rem;
+  border: 1px solid var(--input);
+  border-radius: 0.5rem;
+  background: var(--background);
+  color: var(--foreground);
+  padding: 0 0.5rem;
+  font: inherit;
+  font-size: 0.875rem;
+}
+
+.doc-rtl-info-button {
+  display: inline-grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  place-items: center;
+  margin-inline-start: auto;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--foreground);
+  padding: 0;
+  cursor: pointer;
+}
+
+.doc-rtl-info-button:hover {
+  background: var(--accent);
+}
+
+.doc-rtl-info-button svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.doc-rtl-preview {
+  display: flex;
+  height: 18rem;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2.5rem;
+}
+
+@keyframes doc-accordion-down {
+  from {
+    max-height: 0;
+    opacity: 0;
+  }
+  to {
+    max-height: 12rem;
+    opacity: 1;
+  }
+}
+
+@media (max-width: 767px) {
+  .doc-component-card[data-doc-preview-name="accordion-multiple"] .doc-component-preview-stage {
+    height: 36rem;
+    min-height: 36rem;
+  }
+
+  .doc-component-card[data-doc-preview-name="accordion-borders"] .doc-component-preview-stage {
+    height: 24rem;
+    min-height: 24rem;
+  }
+
+  .doc-component-card[data-doc-preview-name="accordion-card"] .doc-component-preview-stage {
+    height: 32rem;
+    min-height: 32rem;
+  }
+}
+
 .doc-preview-avatar-row,
 .doc-preview-chip-row {
   display: flex;

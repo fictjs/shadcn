@@ -27,6 +27,7 @@ async function initResumableClient(): Promise<void> {
   wireSiteChrome()
   wireDocTabsFallback()
   wireDocPreviewCode()
+  wireDocAccordions()
   wireShowcaseSliders()
   wireShowcaseCounters()
   wireShowcaseMenus()
@@ -546,6 +547,88 @@ function wireDocPreviewCode(): void {
           copy.textContent = "Copy"
         }
       }, 1200)
+    })
+  })
+}
+
+function wireDocAccordions(): void {
+  const setItemState = (item: HTMLElement, open: boolean): void => {
+    const trigger = item.querySelector<HTMLButtonElement>("[data-doc-accordion-trigger]")
+    const content = item.querySelector<HTMLElement>("[data-slot='accordion-content']")
+    const chevron = item.querySelector<SVGPathElement>("[data-doc-accordion-chevron]")
+    if (!trigger || !content || !chevron) {
+      return
+    }
+
+    const state = open ? "open" : "closed"
+    item.dataset.state = state
+    trigger.dataset.state = state
+    trigger.setAttribute("aria-expanded", String(open))
+    content.dataset.state = state
+    content.hidden = !open
+    chevron.setAttribute("d", open ? "m18 15-6-6-6 6" : "m6 9 6 6 6-6")
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const trigger = target.closest<HTMLButtonElement>("[data-doc-accordion-trigger]")
+    if (!trigger || trigger.disabled) {
+      return
+    }
+
+    const accordion = trigger.closest<HTMLElement>("[data-doc-accordion]")
+    const item = trigger.closest<HTMLElement>("[data-slot='accordion-item']")
+    if (!accordion || !item) {
+      return
+    }
+
+    const shouldOpen = trigger.getAttribute("aria-expanded") !== "true"
+    if (accordion.dataset.accordionType === "single" && shouldOpen) {
+      for (const candidate of accordion.querySelectorAll<HTMLElement>("[data-slot='accordion-item']")) {
+        if (candidate !== item) {
+          setItemState(candidate, false)
+        }
+      }
+    }
+    setItemState(item, shouldOpen)
+  })
+
+  document.addEventListener("input", (event) => {
+    const select = event.target
+    if (!(select instanceof HTMLSelectElement) || !select.matches("[data-doc-rtl-language]")) {
+      return
+    }
+
+    const language = select.value
+    const shell = select.closest<HTMLElement>(".doc-rtl-preview-shell")
+    const preview = shell?.querySelector<HTMLElement>(".doc-rtl-preview")
+    const accordion = shell?.querySelector<HTMLElement>("[data-doc-accordion]")
+    if (!preview || !accordion || !["ar", "he", "en"].includes(language)) {
+      return
+    }
+
+    const direction = language === "en" ? "ltr" : "rtl"
+    preview.dir = direction
+    preview.dataset.lang = language
+    accordion.dir = direction
+
+    const items = [...accordion.querySelectorAll<HTMLElement>("[data-slot='accordion-item']")]
+    items.forEach((item, index) => {
+      const label = item.querySelector<HTMLElement>("[data-doc-accordion-label]")
+      const content = item.querySelector<HTMLElement>("[data-doc-accordion-content]")
+      const nextLabel = label?.getAttribute(`data-label-${language}`)
+      const nextContent = content?.getAttribute(`data-content-${language}`)
+      if (label && nextLabel) {
+        label.textContent = nextLabel
+      }
+      if (content && nextContent) {
+        content.textContent = nextContent
+      }
+      setItemState(item, index === 0)
     })
   })
 }

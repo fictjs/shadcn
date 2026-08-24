@@ -286,6 +286,60 @@ test.describe("shadcn v4 site", () => {
     expect(await card.evaluate((element) => element.getBoundingClientRect().height)).toBeGreaterThan(collapsedHeight)
   })
 
+  test("accordion docs match every React preview and interaction", async ({ page }) => {
+    await page.goto("/docs/components/radix/accordion")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(7)
+
+    const expectedStageHeights = [300, 300, 480, 300, 320, 448, 352]
+    for (let index = 0; index < expectedStageHeights.length; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS(
+        "height",
+        `${expectedStageHeights[index]}px`,
+      )
+    }
+
+    const demo = page.locator('[data-doc-preview-name="accordion-demo"]')
+    const demoTriggers = demo.locator("[data-doc-accordion-trigger]")
+    await expect(demoTriggers).toHaveCount(3)
+    await expect(demoTriggers.nth(0)).toHaveAttribute("aria-expanded", "true")
+    await demoTriggers.nth(1).click()
+    await expect(demoTriggers.nth(0)).toHaveAttribute("aria-expanded", "false")
+    await expect(demoTriggers.nth(1)).toHaveAttribute("aria-expanded", "true")
+    await expect(demo.locator("[data-slot='accordion-content']").nth(1)).toBeVisible()
+    await demoTriggers.nth(1).click()
+    await expect(demoTriggers.nth(1)).toHaveAttribute("aria-expanded", "false")
+
+    const multiple = page.locator('[data-doc-preview-name="accordion-multiple"]')
+    const multipleTriggers = multiple.locator("[data-doc-accordion-trigger]")
+    await multipleTriggers.nth(1).click()
+    await expect(multipleTriggers.nth(0)).toHaveAttribute("aria-expanded", "true")
+    await expect(multipleTriggers.nth(1)).toHaveAttribute("aria-expanded", "true")
+    await multipleTriggers.nth(0).click()
+    await expect(multipleTriggers.nth(0)).toHaveAttribute("aria-expanded", "false")
+    await expect(multipleTriggers.nth(1)).toHaveAttribute("aria-expanded", "true")
+
+    const disabled = page.locator('[data-doc-preview-name="accordion-disabled"]')
+    const disabledTrigger = disabled.getByRole("button", { name: "Premium feature information" })
+    await expect(disabledTrigger).toBeDisabled()
+    await expect(disabledTrigger).toHaveAttribute("aria-expanded", "false")
+
+    const rtl = page.locator('[data-doc-preview-name="accordion-rtl"]')
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.locator(".doc-rtl-preview")).toHaveAttribute("dir", "rtl")
+    await expect(rtl.locator("[data-doc-accordion-label]").first()).toHaveText("איך אני מאפס את הסיסמה שלי?")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtl.locator(".doc-rtl-preview")).toHaveAttribute("dir", "ltr")
+    await expect(rtl.locator("[data-doc-accordion-label]").first()).toHaveText("How do I reset my password?")
+
+    await page.setViewportSize({ width: 700, height: 900 })
+    await expect(previews.nth(2).locator(".doc-component-preview-stage")).toHaveCSS("height", "576px")
+    await expect(previews.nth(4).locator(".doc-component-preview-stage")).toHaveCSS("height", "384px")
+    await expect(previews.nth(5).locator(".doc-component-preview-stage")).toHaveCSS("height", "512px")
+  })
+
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
     await page.goto("/examples/dashboard")
 
