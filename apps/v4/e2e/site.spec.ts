@@ -1237,6 +1237,29 @@ test.describe("shadcn v4 site", () => {
     expect(visibleWidths.every((width) => width === 0)).toBe(true)
   })
 
+  test("home price slider thumbs match React in light and dark themes", async ({ page }) => {
+    await page.goto("/")
+    await waitForClientReady(page)
+
+    const thumbs = page.locator(".root-field-slider .ui-slider-thumb")
+    await expect(thumbs).toHaveCount(2)
+
+    for (let index = 0; index < 2; index += 1) {
+      await expect(thumbs.nth(index)).toHaveCSS("width", "12px")
+      await expect(thumbs.nth(index)).toHaveCSS("height", "12px")
+      await expect(thumbs.nth(index)).toHaveCSS("background-color", "rgb(255, 255, 255)")
+    }
+
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(page.locator("html")).toHaveClass(/dark/)
+
+    for (let index = 0; index < 2; index += 1) {
+      await expect(thumbs.nth(index)).toHaveCSS("width", "12px")
+      await expect(thumbs.nth(index)).toHaveCSS("height", "12px")
+      await expect(thumbs.nth(index)).toHaveCSS("background-color", "rgb(255, 255, 255)")
+    }
+  })
+
   test("home form controls use the React focus ring", async ({ page }) => {
     await page.goto("/")
     await waitForClientReady(page)

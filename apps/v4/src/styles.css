@@ -3295,13 +3295,17 @@ h1 {
   margin-top: -0.25rem;
 }
 
+.root-field-slider .ui-slider-thumb {
+  width: 0.75rem;
+  height: 0.75rem;
+  background: #fff;
+}
+
 .rtl-components .root-field-slider .ui-slider {
   height: 4px;
 }
 
 .rtl-components .root-field-slider .ui-slider-thumb {
-  width: 0.75rem;
-  height: 0.75rem;
   transform: translate(50%, -50%);
 }
 
