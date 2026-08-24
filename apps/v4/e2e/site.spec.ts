@@ -864,6 +864,55 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator(".doc-calendar-weekday").first()).toHaveText("Su")
   })
 
+  test("card docs match React layouts, fields, image, sizes, and RTL content", async ({ page }) => {
+    await page.goto("/docs/components/base/card")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    const cards = page.locator('[data-slot="card"]')
+    await expect(previews).toHaveCount(4)
+    await expect(cards).toHaveCount(4)
+    await expect(previews.nth(0).locator(".doc-component-preview-stage")).toHaveCSS("height", "480px")
+    await expect(previews.nth(1).locator(".doc-component-preview-stage")).toHaveCSS("height", "384px")
+    await expect(previews.nth(2).locator(".doc-component-preview-stage")).toHaveCSS("height", "512px")
+    await expect(previews.nth(3).locator(".doc-component-preview-stage")).toHaveCSS("height", "480px")
+
+    const expectedHeights = ["357px", "172.25px", "379px", "357px"]
+    for (let index = 0; index < expectedHeights.length; index += 1) {
+      await expect(cards.nth(index)).toHaveCSS("width", "384px")
+      await expect(cards.nth(index)).toHaveCSS("height", expectedHeights[index])
+    }
+
+    const demo = cards.nth(0)
+    await expect(demo.locator('[data-slot="card-header"]')).toHaveCSS("height", "66px")
+    await expect(demo.locator('[data-slot="card-content"]')).toHaveCSS("height", "138px")
+    await expect(demo.locator('[data-slot="card-footer"]')).toHaveCSS("height", "105px")
+    await expect(demo.getByRole("button", { name: "Login", exact: true })).toHaveCSS("width", "352px")
+    await demo.getByLabel("Email").fill("person@example.com")
+    await expect(demo.getByLabel("Email")).toHaveValue("person@example.com")
+    await demo.getByLabel("Password").fill("secret")
+    await expect(demo.getByLabel("Password")).toHaveValue("secret")
+
+    const small = cards.nth(1)
+    await expect(small).toHaveAttribute("data-size", "sm")
+    await expect(small.getByRole("button", { name: "Action" })).toHaveCSS("height", "32px")
+    await expect(small.locator('[data-slot="card-footer"]')).toHaveCSS("border-top-width", "1px")
+
+    const image = cards.nth(2)
+    await expect(image.getByRole("img", { name: "Event cover" })).toHaveCSS("height", "216px")
+    await expect(image.locator('[data-slot="badge"]')).toHaveText("Featured")
+    await expect(image.getByRole("button", { name: "View Event" })).toBeVisible()
+
+    const rtl = page.locator('[data-doc-preview-name="card-rtl"]')
+    await expect(rtl.getByRole("button", { name: "تسجيل الدخول", exact: true })).toBeVisible()
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.getByRole("heading", { name: "התחבר לחשבון שלך" })).toBeVisible()
+    await expect(cards.nth(3)).toHaveAttribute("dir", "rtl")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtl.getByRole("heading", { name: "Login to your account" })).toBeVisible()
+    await expect(cards.nth(3)).toHaveAttribute("dir", "ltr")
+  })
+
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
     await page.goto("/examples/dashboard")
 

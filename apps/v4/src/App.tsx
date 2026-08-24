@@ -4260,7 +4260,9 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
   const family = untrack(() => props.family)
   const name = untrack(() => props.name)
 
-  return family === "calendar" ? (
+  return family === "card" ? (
+    <DocCardPreview name={props.name} />
+  ) : family === "calendar" ? (
     <DocCalendarPreview name={props.name} />
   ) : family === "button" || name === "button-group-demo" ? (
     <DocButtonPreview name={props.name} />
@@ -4364,6 +4366,44 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <h4>{formatDisplayLabel(family || "component preview")}</h4>
       <p>Registry preview surface for this documentation example.</p>
     </div>
+  )
+}
+
+function DocCardPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const isRtl = name === "card-rtl"
+  const content = name === "card-small" ? (
+    <article class="doc-card is-small" data-slot="card" data-size="sm">
+      <header class="doc-card-header" data-slot="card-header"><h4 data-slot="card-title">Small Card</h4><p data-slot="card-description">This card uses the small size variant.</p></header>
+      <div class="doc-card-content" data-slot="card-content"><p>The card component supports a size prop that can be set to &quot;sm&quot; for a more compact appearance.</p></div>
+      <footer class="doc-card-footer" data-slot="card-footer"><button type="button" class="doc-button is-outline is-sm" data-slot="button">Action</button></footer>
+    </article>
+  ) : name === "card-image" ? (
+    <article class="doc-card is-image" data-slot="card">
+      <div class="doc-card-image-shade" aria-hidden="true"></div><img src="https://avatar.vercel.sh/shadcn1" alt="Event cover" />
+      <header class="doc-card-header" data-slot="card-header"><div class="doc-card-action" data-slot="card-action"><span class="doc-badge is-secondary" data-slot="badge">Featured</span></div><h4 data-slot="card-title">Design systems meetup</h4><p data-slot="card-description">A practical talk on component APIs, accessibility, and shipping faster.</p></header>
+      <footer class="doc-card-footer" data-slot="card-footer"><button type="button" class="doc-button is-default" data-slot="button">View Event</button></footer>
+    </article>
+  ) : (
+    <DocLoginCard rtl={isRtl} />
+  )
+
+  return isRtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-card-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
+}
+
+function DocLoginCard(props: { rtl: boolean }) {
+  const rtl = untrack(() => props.rtl)
+  const text = (ar: string, he: string, en: string) => rtl ? <span data-doc-rtl-text data-text-ar={ar} data-text-he={he} data-text-en={en}>{ar}</span> : en
+  return (
+    <article class="doc-card" data-slot="card" dir={rtl ? "rtl" : "ltr"} data-doc-rtl-direction={rtl ? "true" : undefined}>
+      <header class="doc-card-header" data-slot="card-header">
+        <h4 data-slot="card-title">{text("تسجيل الدخول إلى حسابك", "התחבר לחשבון שלך", "Login to your account")}</h4>
+        <p data-slot="card-description">{text("أدخل بريدك الإلكتروني أدناه لتسجيل الدخول إلى حسابك", "הזן את האימייל שלך למטה כדי להתחבר לחשבון שלך", "Enter your email below to login to your account")}</p>
+        <div class="doc-card-action" data-slot="card-action"><button type="button" class="doc-button is-link" data-slot="button">{text("إنشاء حساب", "הירשם", "Sign Up")}</button></div>
+      </header>
+      <div class="doc-card-content" data-slot="card-content"><form><div class="doc-card-fields"><label>{text("البريد الإلكتروني", "אימייל", "Email")}<input type="email" placeholder="m@example.com" required /></label><label><span class="doc-card-password-label">{text("كلمة المرور", "סיסמה", "Password")}<a href="#">{text("نسيت كلمة المرور؟", "שכחת את הסיסמה?", "Forgot your password?")}</a></span><input type="password" required /></label></div></form></div>
+      <footer class="doc-card-footer" data-slot="card-footer"><button type="button" class="doc-button is-default" data-slot="button">{text("تسجيل الدخول", "התחבר", "Login")}</button><button type="button" class="doc-button is-outline" data-slot="button">{text("تسجيل الدخول باستخدام Google", "התחבר עם Google", "Login with Google")}</button></footer>
+    </article>
   )
 }
 
