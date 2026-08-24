@@ -1212,6 +1212,31 @@ test.describe("shadcn v4 site", () => {
     )
   })
 
+  test("home hear options fully clip unchecked controls", async ({ page }) => {
+    await page.goto("/")
+    await waitForClientReady(page)
+
+    const uncheckedOptions = page.locator('.root-hear-option[data-checked="false"]')
+    await expect(uncheckedOptions).toHaveCount(3)
+
+    const visibleWidths = await uncheckedOptions.evaluateAll((options) =>
+      options.map((option) => {
+        const check = option.querySelector<HTMLElement>(".root-hear-check")
+        if (!check) {
+          return Number.POSITIVE_INFINITY
+        }
+
+        const optionBox = option.getBoundingClientRect()
+        const checkBox = check.getBoundingClientRect()
+        return Math.max(
+          0,
+          Math.min(optionBox.right, checkBox.right) - Math.max(optionBox.left, checkBox.left),
+        )
+      }),
+    )
+    expect(visibleWidths.every((width) => width === 0)).toBe(true)
+  })
+
   test("home form controls use the React focus ring", async ({ page }) => {
     await page.goto("/")
     await waitForClientReady(page)

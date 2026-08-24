@@ -3910,7 +3910,7 @@ a.ui-item:hover {
 .root-hear-check {
   border-radius: 999px;
   margin-inline-start: -1.5rem;
-  transform: translateX(0.25rem);
+  transform: translateX(-0.3125rem);
   transition: margin-inline-start 100ms linear, transform 100ms linear;
 }
 
