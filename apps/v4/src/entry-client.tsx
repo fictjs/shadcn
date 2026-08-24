@@ -607,13 +607,27 @@ function wireDocAccordions(): void {
     const shell = select.closest<HTMLElement>(".doc-rtl-preview-shell")
     const preview = shell?.querySelector<HTMLElement>(".doc-rtl-preview")
     const accordion = shell?.querySelector<HTMLElement>("[data-doc-accordion]")
-    if (!preview || !accordion || !["ar", "he", "en"].includes(language)) {
+    if (!shell || !preview || !["ar", "he", "en"].includes(language)) {
       return
     }
 
     const direction = language === "en" ? "ltr" : "rtl"
     preview.dir = direction
     preview.dataset.lang = language
+    for (const directionalContent of shell.querySelectorAll<HTMLElement>("[data-doc-rtl-direction]")) {
+      directionalContent.dir = direction
+    }
+    for (const text of shell.querySelectorAll<HTMLElement>("[data-doc-rtl-text]")) {
+      const nextText = text.getAttribute(`data-text-${language}`)
+      if (nextText) {
+        text.textContent = nextText
+      }
+    }
+
+    if (!accordion) {
+      return
+    }
+
     accordion.dir = direction
 
     const items = [...accordion.querySelectorAll<HTMLElement>("[data-slot='accordion-item']")]

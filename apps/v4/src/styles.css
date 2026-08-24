@@ -2070,11 +2070,125 @@ h1 {
   min-height: 28rem;
 }
 
-.doc-component-card[data-doc-preview-name="accordion-rtl"] .doc-component-preview-stage {
+.doc-component-card[data-doc-preview-name="accordion-rtl"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="alert-rtl"] .doc-component-preview-stage {
   display: block;
   height: 22rem;
   min-height: 22rem;
   padding: 0;
+}
+
+.doc-component-card[data-doc-preview-name^="alert-"]:not([data-doc-preview-name="alert-rtl"]) .doc-component-preview-stage {
+  height: 18rem;
+  min-height: 18rem;
+  padding: 1.5rem;
+}
+
+.doc-alert-stack {
+  display: grid;
+  width: 100%;
+  max-width: 28rem;
+  align-items: start;
+  gap: 1rem;
+}
+
+.doc-alert {
+  position: relative;
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1rem minmax(0, 1fr);
+  column-gap: 0.5rem;
+  row-gap: 0.125rem;
+  border: 1px solid var(--border);
+  border-radius: 0.625rem;
+  background: var(--card);
+  color: var(--card-foreground);
+  padding: 0.5rem 0.625rem;
+}
+
+.doc-alert-icon {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.125rem;
+}
+
+.doc-body .doc-alert-title,
+.doc-body .doc-alert-description {
+  grid-column: 2;
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.doc-body .doc-alert-title {
+  font-weight: 500;
+}
+
+.doc-body .doc-alert-description {
+  color: var(--muted-foreground);
+}
+
+.doc-alert-destructive {
+  color: var(--destructive);
+}
+
+.doc-alert-destructive .doc-alert-description {
+  color: color-mix(in oklab, var(--destructive) 90%, var(--foreground));
+}
+
+.doc-alert-warning {
+  border-color: #fde68a;
+  background: #fffbeb;
+  color: #78350f;
+}
+
+.doc-alert-warning .doc-alert-description {
+  color: #78350f;
+}
+
+.dark .doc-alert-warning {
+  border-color: #78350f;
+  background: #451a03;
+  color: #fffbeb;
+}
+
+.dark .doc-alert-warning .doc-alert-description {
+  color: #fffbeb;
+}
+
+.doc-alert-no-icon {
+  grid-template-columns: minmax(0, 1fr);
+  padding-inline-end: 4.5rem;
+}
+
+.doc-alert-no-icon .doc-alert-title,
+.doc-alert-no-icon .doc-alert-description {
+  grid-column: 1;
+}
+
+.doc-alert-action {
+  position: absolute;
+  top: 0.5rem;
+  inset-inline-end: 0.5625rem;
+  display: inline-flex;
+  width: 3.5rem;
+  height: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 0.5rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  padding: 0 0.5rem;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.doc-alert-rtl-preview {
+  align-items: center;
+  padding: 1.5rem;
 }
 
 .doc-accordion {
@@ -2282,6 +2396,22 @@ h1 {
   .doc-component-card[data-doc-preview-name="accordion-card"] .doc-component-preview-stage {
     height: 32rem;
     min-height: 32rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .doc-component-card[data-doc-preview-name^="alert-"]:not([data-doc-preview-name="alert-rtl"]) .doc-component-preview-stage {
+    height: auto;
+    min-height: 0;
+  }
+
+  .doc-component-card[data-doc-preview-name="alert-rtl"] .doc-component-preview-stage {
+    height: auto;
+    min-height: 0;
+  }
+
+  .doc-alert-rtl-preview {
+    height: auto;
   }
 }
 

@@ -340,6 +340,46 @@ test.describe("shadcn v4 site", () => {
     await expect(previews.nth(5).locator(".doc-component-preview-stage")).toHaveCSS("height", "512px")
   })
 
+  test("alert docs match every React preview and RTL content", async ({ page }) => {
+    await page.goto("/docs/components/radix/alert")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(6)
+    for (let index = 0; index < 5; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(5).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+
+    const demoAlerts = page.locator('[data-doc-preview-name="alert-demo"] [data-slot="alert"]')
+    await expect(demoAlerts).toHaveCount(2)
+    for (let index = 0; index < 2; index += 1) {
+      await expect(demoAlerts.nth(index)).toHaveCSS("width", "448px")
+      await expect(demoAlerts.nth(index)).toHaveCSS("height", "80px")
+    }
+    await expect(demoAlerts.nth(0)).toContainText("Payment successful")
+    await expect(demoAlerts.nth(1)).toContainText("New feature available")
+
+    const actionAlert = page.locator('[data-doc-preview-name="alert-action"] [data-slot="alert"]')
+    await expect(actionAlert).toHaveCSS("width", "448px")
+    await expect(actionAlert).toHaveCSS("height", "60px")
+    await expect(actionAlert.getByRole("button", { name: "Enable" })).toHaveCSS("width", "56px")
+    await expect(actionAlert.getByRole("button", { name: "Enable" })).toHaveCSS("height", "24px")
+
+    const coloredAlert = page.locator('[data-doc-preview-name="alert-colors"] [data-slot="alert"]')
+    await expect(coloredAlert).toHaveCSS("background-color", "rgb(255, 251, 235)")
+    await expect(coloredAlert).toHaveCSS("border-color", "rgb(253, 230, 138)")
+
+    const rtl = page.locator('[data-doc-preview-name="alert-rtl"]')
+    await expect(rtl.locator('[data-slot="alert"]')).toHaveCount(2)
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.locator(".doc-alert-stack")).toHaveAttribute("dir", "rtl")
+    await expect(rtl.locator(".doc-alert-title").first()).toHaveText("התשלום בוצע בהצלחה")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtl.locator(".doc-alert-stack")).toHaveAttribute("dir", "ltr")
+    await expect(rtl.locator(".doc-alert-title").first()).toHaveText("Payment successful")
+  })
+
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
     await page.goto("/examples/dashboard")
 

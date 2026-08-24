@@ -4259,7 +4259,9 @@ function DocComponentBlock(props: { block: DocContentBlock }) {
 function DocComponentPreviewSurface(props: { family: string; name: string }) {
   const family = untrack(() => props.family)
 
-  return family === "accordion" ? (
+  return family === "alert" ? (
+    <DocAlertPreview name={props.name} />
+  ) : family === "accordion" ? (
     <DocAccordionPreview name={props.name} />
   ) : family === "avatar" ? (
     <div class="doc-preview-avatar-row">
@@ -4351,6 +4353,192 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <h4>{formatDisplayLabel(family || "component preview")}</h4>
       <p>Registry preview surface for this documentation example.</p>
     </div>
+  )
+}
+
+interface DocAlertEntry {
+  icon: "check" | "info" | "error" | "warning" | "none"
+  title: string
+  description: string
+}
+
+const docAlertTranslations = {
+  en: [
+    {
+      icon: "check",
+      title: "Payment successful",
+      description:
+        "Your payment of $29.99 has been processed. A receipt has been sent to your email address.",
+    },
+    {
+      icon: "info",
+      title: "New feature available",
+      description: "We've added dark mode support. You can enable it in your account settings.",
+    },
+  ],
+  ar: [
+    {
+      icon: "check",
+      title: "تم الدفع بنجاح",
+      description:
+        "تمت معالجة دفعتك البالغة 29.99 دولارًا. تم إرسال إيصال إلى عنوان بريدك الإلكتروني.",
+    },
+    {
+      icon: "info",
+      title: "ميزة جديدة متاحة",
+      description: "لقد أضفنا دعم الوضع الداكن. يمكنك تفعيله في إعدادات حسابك.",
+    },
+  ],
+  he: [
+    {
+      icon: "check",
+      title: "התשלום בוצע בהצלחה",
+      description: "התשלום שלך בסך 29.99 דולר עובד. קבלה נשלחה לכתובת האימייל שלך.",
+    },
+    {
+      icon: "info",
+      title: "תכונה חדשה זמינה",
+      description: "הוספנו תמיכה במצב כהה. אתה יכול להפעיל אותו בהגדרות החשבון שלך.",
+    },
+  ],
+} satisfies Record<"en" | "ar" | "he", DocAlertEntry[]>
+
+function DocAlertPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const isRtl = name === "alert-rtl"
+  const entries: DocAlertEntry[] =
+    name === "alert-demo" || isRtl
+      ? isRtl
+        ? docAlertTranslations.ar
+        : docAlertTranslations.en
+      : name === "alert-basic"
+        ? [
+            {
+              icon: "check",
+              title: "Account updated successfully",
+              description:
+                "Your profile information has been saved. Changes will be reflected immediately.",
+            },
+          ]
+        : name === "alert-destructive"
+          ? [
+              {
+                icon: "error",
+                title: "Payment failed",
+                description:
+                  "Your payment could not be processed. Please check your payment method and try again.",
+              },
+            ]
+          : name === "alert-action"
+            ? [
+                {
+                  icon: "none",
+                  title: "Dark mode is now available",
+                  description: "Enable it under your profile settings to get started.",
+                },
+              ]
+            : [
+                {
+                  icon: "warning",
+                  title: "Your subscription will expire in 3 days.",
+                  description:
+                    "Renew now to avoid service interruption or upgrade to a paid plan to continue using the service.",
+                },
+              ]
+
+  const alerts = (
+    <div class="doc-alert-stack" dir={isRtl ? "rtl" : "ltr"} data-doc-rtl-direction={isRtl ? "true" : undefined}>
+      {entries.map((entry, index) => {
+        const english = isRtl ? docAlertTranslations.en[index] : undefined
+        const hebrew = isRtl ? docAlertTranslations.he[index] : undefined
+        return (
+          <div
+            class={`doc-alert${name === "alert-destructive" ? " doc-alert-destructive" : ""}${name === "alert-colors" ? " doc-alert-warning" : ""}${entry.icon === "none" ? " doc-alert-no-icon" : ""}`}
+            data-slot="alert"
+            role="alert"
+            key={`${name}-${index}`}
+          >
+            {entry.icon !== "none" ? <DocAlertIcon kind={entry.icon} /> : null}
+            <h4
+              class="doc-alert-title"
+              data-doc-rtl-text={isRtl ? "true" : undefined}
+              data-text-ar={isRtl ? entry.title : undefined}
+              data-text-en={english?.title}
+              data-text-he={hebrew?.title}
+            >
+              {entry.title}
+            </h4>
+            <p
+              class="doc-alert-description"
+              data-doc-rtl-text={isRtl ? "true" : undefined}
+              data-text-ar={isRtl ? entry.description : undefined}
+              data-text-en={english?.description}
+              data-text-he={hebrew?.description}
+            >
+              {entry.description}
+            </p>
+            {name === "alert-action" ? <button type="button" class="doc-alert-action">Enable</button> : null}
+          </div>
+        )
+      })}
+    </div>
+  )
+
+  return isRtl ? (
+    <div class="doc-rtl-preview-shell">
+      <div class="doc-rtl-preview-toolbar" dir="ltr">
+        <select aria-label="Preview language" value="ar" data-doc-rtl-language>
+          <option value="ar">Arabic (العربية)</option>
+          <option value="he">Hebrew (עברית)</option>
+          <option value="en">English</option>
+        </select>
+        <button type="button" class="doc-rtl-info-button" aria-label="Toggle language information">
+          <InfoIcon />
+        </button>
+      </div>
+      <div class="doc-rtl-preview doc-alert-rtl-preview" dir="rtl">{alerts}</div>
+    </div>
+  ) : alerts
+}
+
+function DocAlertIcon(props: { kind: DocAlertEntry["icon"] }) {
+  const kind = untrack(() => props.kind)
+  return (
+    <svg
+      class="doc-alert-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      {kind === "check" ? (
+        <>
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="m9 12 2 2 4-4"></path>
+        </>
+      ) : kind === "info" ? (
+        <>
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 11v5"></path>
+          <path d="M12 8h.01"></path>
+        </>
+      ) : kind === "warning" ? (
+        <>
+          <path d="M12 3 2.8 19h18.4L12 3Z"></path>
+          <path d="M12 9v4"></path>
+          <path d="M12 16h.01"></path>
+        </>
+      ) : (
+        <>
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M12 8v4"></path>
+          <path d="M12 16h.01"></path>
+        </>
+      )}
+    </svg>
   )
 }
 
