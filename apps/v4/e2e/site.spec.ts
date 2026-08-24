@@ -354,6 +354,7 @@ test.describe("shadcn v4 site", () => {
     const menu = page.getByRole("menu", { name: "Customize columns" })
     const reviewerItem = menu.getByRole("menuitemcheckbox", { name: "reviewer" })
     await expect(menu).toBeVisible()
+    await expect(page.locator("[data-dashboard-column-toggle]")).toHaveCount(5)
     await expect(reviewerItem).toHaveAttribute("aria-checked", "true")
 
     await reviewerItem.click()
@@ -364,6 +365,14 @@ test.describe("shadcn v4 site", () => {
 
     await page.getByRole("button", { name: "Go to next page" }).click()
     await expect(page.locator('th[data-dashboard-column="reviewer"]')).toBeHidden()
+
+    await page.getByRole("tab", { name: "Past Performance" }).click()
+    await page.getByRole("tab", { name: "Outline", exact: true }).click()
+    await expect(page.locator('.dashboard-data-table')).toHaveCount(1)
+    await expect(page.locator("[data-dashboard-column-toggle]")).toHaveCount(5)
+    await expect(page.locator('th[data-dashboard-column="reviewer"]')).toBeHidden()
+    await expect(page.locator('td[data-dashboard-column="reviewer"]')).toHaveCount(10)
+    await expect(page.locator('td[data-dashboard-column="reviewer"]').first()).toBeHidden()
 
     await page.getByRole("button", { name: "Customize Columns" }).click()
     await expect(reviewerItem).toHaveAttribute("aria-checked", "false")

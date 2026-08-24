@@ -208,13 +208,13 @@ function resolveDashboardPageSize(value: string | undefined): DashboardPageSize 
     : null
 }
 
-function updateDashboardSelection(selectedRows: string, rowId: string, selected: boolean): string {
-  const token = `|${rowId}|`
-  if (selected) {
-    return selectedRows.includes(token) ? selectedRows : `${selectedRows}${rowId}|`
-  }
-
-  return selectedRows.replace(token, "|")
+function resolveDashboardColumnBit(value: string): number {
+  return value === "type" ? 1
+    : value === "status" ? 2
+    : value === "target" ? 4
+    : value === "limit" ? 8
+    : value === "reviewer" ? 16
+    : 0
 }
 
 function countDashboardSelection(selectedRows: string): number {
@@ -267,28 +267,9 @@ function syncDashboardTableSelectionScope(scope: HTMLElement): void {
   }
 }
 
-function syncDashboardTableColumns(scope: HTMLElement): void {
-  const hiddenColumns = scope.dataset.dashboardHiddenColumns || "|"
-  scope.querySelectorAll<HTMLElement>("[data-dashboard-column]").forEach((cell) => {
-    const column = cell.dataset.dashboardColumn
-    cell.hidden = Boolean(column && hiddenColumns.includes(`|${column}|`))
-  })
-
-  scope
-    .closest<HTMLElement>(".dashboard-table-block")
-    ?.querySelectorAll<HTMLElement>("[data-dashboard-column-toggle]")
-    .forEach((item) => {
-      const column = item.dataset.dashboardColumnToggle
-      const isVisible = Boolean(column && !hiddenColumns.includes(`|${column}|`))
-      item.setAttribute("aria-checked", String(isVisible))
-      item.dataset.selected = String(isVisible)
-    })
-}
-
 function syncDashboardTableSelections(): void {
   document.querySelectorAll<HTMLElement>(".dashboard-table-selection-scope").forEach((scope) => {
     syncDashboardTableSelectionScope(scope)
-    syncDashboardTableColumns(scope)
   })
 }
 
@@ -727,7 +708,7 @@ function DashboardExample() {
   let activeView = $state<DashboardView>("outline")
   let dashboardPageIndex = $state(0)
   let dashboardPageSize = $state<DashboardPageSize>(DASHBOARD_PAGE_SIZE)
-  let hiddenDashboardColumns = $state("|")
+  let hiddenDashboardColumns = $state(0)
   let dashboardRowOrder = $state(initialDashboardRowOrder)
 
   const activeViewLabel = activeView === "past-performance"
@@ -742,6 +723,7 @@ function DashboardExample() {
     <div
       class="live-example dashboard-example"
       data-dashboard-row-order={dashboardRowOrder}
+      data-dashboard-hidden-columns={hiddenDashboardColumns}
     >
       <input
         type="hidden"
@@ -1084,37 +1066,75 @@ function DashboardExample() {
                       return
                     }
 
-                    const isVisible = item.getAttribute("aria-checked") !== "false"
-                    const selectionScope = item
-                      .closest<HTMLElement>(".dashboard-table-block")
-                      ?.querySelector<HTMLElement>(".dashboard-table-selection-scope")
-                    const nextHiddenColumns = updateDashboardSelection(
-                      selectionScope?.dataset.dashboardHiddenColumns || "|",
-                      column,
-                      isVisible,
-                    )
-                    hiddenDashboardColumns = nextHiddenColumns
-                    item.setAttribute("aria-checked", isVisible ? "false" : "true")
-                    item.dataset.selected = isVisible ? "false" : "true"
-                    window.requestAnimationFrame(syncDashboardTableSelections)
+                    const columnBit = resolveDashboardColumnBit(column)
+                    hiddenDashboardColumns = untrack(() => hiddenDashboardColumns) ^ columnBit
                   }}
                 >
-                  {["type", "status", "target", "limit", "reviewer"].map((column) => (
-                    <button
-                      key={column}
-                      type="button"
-                      class="ui-menu-item dashboard-column-item"
-                      role="menuitemcheckbox"
-                      aria-checked="true"
-                      data-selected="true"
-                      data-menu-item
-                      data-menu-keep-open
-                      data-dashboard-column-toggle={column}
-                    >
-                      <span>{column}</span>
-                      <span class="dashboard-column-check" aria-hidden="true">✓</span>
-                    </button>
-                  ))}
+                  <button
+                    type="button"
+                    class="ui-menu-item dashboard-column-item"
+                    role="menuitemcheckbox"
+                    aria-checked={(hiddenDashboardColumns & 1) === 0}
+                    data-selected={(hiddenDashboardColumns & 1) === 0}
+                    data-menu-item
+                    data-menu-keep-open
+                    data-dashboard-column-toggle="type"
+                  >
+                    <span>type</span>
+                    <span class="dashboard-column-check" aria-hidden="true">✓</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="ui-menu-item dashboard-column-item"
+                    role="menuitemcheckbox"
+                    aria-checked={(hiddenDashboardColumns & 2) === 0}
+                    data-selected={(hiddenDashboardColumns & 2) === 0}
+                    data-menu-item
+                    data-menu-keep-open
+                    data-dashboard-column-toggle="status"
+                  >
+                    <span>status</span>
+                    <span class="dashboard-column-check" aria-hidden="true">✓</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="ui-menu-item dashboard-column-item"
+                    role="menuitemcheckbox"
+                    aria-checked={(hiddenDashboardColumns & 4) === 0}
+                    data-selected={(hiddenDashboardColumns & 4) === 0}
+                    data-menu-item
+                    data-menu-keep-open
+                    data-dashboard-column-toggle="target"
+                  >
+                    <span>target</span>
+                    <span class="dashboard-column-check" aria-hidden="true">✓</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="ui-menu-item dashboard-column-item"
+                    role="menuitemcheckbox"
+                    aria-checked={(hiddenDashboardColumns & 8) === 0}
+                    data-selected={(hiddenDashboardColumns & 8) === 0}
+                    data-menu-item
+                    data-menu-keep-open
+                    data-dashboard-column-toggle="limit"
+                  >
+                    <span>limit</span>
+                    <span class="dashboard-column-check" aria-hidden="true">✓</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="ui-menu-item dashboard-column-item"
+                    role="menuitemcheckbox"
+                    aria-checked={(hiddenDashboardColumns & 16) === 0}
+                    data-selected={(hiddenDashboardColumns & 16) === 0}
+                    data-menu-item
+                    data-menu-keep-open
+                    data-dashboard-column-toggle="reviewer"
+                  >
+                    <span>reviewer</span>
+                    <span class="dashboard-column-check" aria-hidden="true">✓</span>
+                  </button>
                 </div>
               </span>
               <button type="button" class="dashboard-outline-button" aria-label="Add Section">
@@ -1130,12 +1150,12 @@ function DashboardExample() {
                 <div
                   class="dashboard-table-selection-scope"
                   data-dashboard-selected-rows="|"
-                  data-dashboard-hidden-columns={hiddenDashboardColumns}
                 >
                   <DashboardTablePage
                     pageIndex={dashboardPageIndex}
                     pageSize={dashboardPageSize}
                     rowOrder={dashboardRowOrder}
+                    hiddenColumns={hiddenDashboardColumns}
                   />
                 </div>
               </div>
@@ -1246,10 +1266,12 @@ function DashboardTablePage(props: {
   pageIndex: number
   pageSize: DashboardPageSize
   rowOrder: string
+  hiddenColumns: number
 }) {
   const pageIndex = untrack(() => props.pageIndex)
   const pageSize = untrack(() => props.pageSize)
   const rowOrder = untrack(() => props.rowOrder)
+  const hiddenColumns = untrack(() => props.hiddenColumns)
   const rowsById = new Map(dashboardTableRows.map((row) => [String(row.id), row]))
   const orderedRows = rowOrder
     .split(",")
@@ -1273,11 +1295,11 @@ function DashboardTablePage(props: {
             />
           </th>
           <th>Header</th>
-          <th data-dashboard-column="type">Section Type</th>
-          <th data-dashboard-column="status">Status</th>
-          <th class="dashboard-cell-number" data-dashboard-column="target">Target</th>
-          <th class="dashboard-cell-number" data-dashboard-column="limit">Limit</th>
-          <th data-dashboard-column="reviewer">Reviewer</th>
+          <th data-dashboard-column="type" hidden={(hiddenColumns & 1) !== 0}>Section Type</th>
+          <th data-dashboard-column="status" hidden={(hiddenColumns & 2) !== 0}>Status</th>
+          <th class="dashboard-cell-number" data-dashboard-column="target" hidden={(hiddenColumns & 4) !== 0}>Target</th>
+          <th class="dashboard-cell-number" data-dashboard-column="limit" hidden={(hiddenColumns & 8) !== 0}>Limit</th>
+          <th data-dashboard-column="reviewer" hidden={(hiddenColumns & 16) !== 0}>Reviewer</th>
           <th class="dashboard-cell-actions"></th>
         </tr>
       </thead>
@@ -1321,26 +1343,26 @@ function DashboardTablePage(props: {
                 {row.header}
               </button>
             </td>
-            <td data-dashboard-column="type">
+            <td data-dashboard-column="type" hidden={(hiddenColumns & 1) !== 0}>
               <span class="dashboard-cell-badge">{row.type}</span>
             </td>
-            <td data-dashboard-column="status">
+            <td data-dashboard-column="status" hidden={(hiddenColumns & 2) !== 0}>
               <span class="dashboard-cell-badge">
                 <DashboardStatusIcon status={row.status} />
                 {row.status}
               </span>
             </td>
-            <td class="dashboard-cell-number" data-dashboard-column="target">
+            <td class="dashboard-cell-number" data-dashboard-column="target" hidden={(hiddenColumns & 4) !== 0}>
               <form class="dashboard-cell-value-form" data-dashboard-value-form data-dashboard-row-header={row.header}>
                 <input class="dashboard-cell-input" value={row.target} aria-label={`Target for ${row.header}`} />
               </form>
             </td>
-            <td class="dashboard-cell-number" data-dashboard-column="limit">
+            <td class="dashboard-cell-number" data-dashboard-column="limit" hidden={(hiddenColumns & 8) !== 0}>
               <form class="dashboard-cell-value-form" data-dashboard-value-form data-dashboard-row-header={row.header}>
                 <input class="dashboard-cell-input" value={row.limit} aria-label={`Limit for ${row.header}`} />
               </form>
             </td>
-            <td data-dashboard-column="reviewer">
+            <td data-dashboard-column="reviewer" hidden={(hiddenColumns & 16) !== 0}>
               <DashboardReviewerCell reviewer={row.reviewer} header={row.header} />
             </td>
             <td class="dashboard-cell-actions">
