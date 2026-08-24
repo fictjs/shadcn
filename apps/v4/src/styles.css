@@ -2143,6 +2143,100 @@ h1 {
   padding: 0;
 }
 
+.doc-component-card[data-doc-preview-name="calendar-demo"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="calendar-basic"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="calendar-range"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="calendar-caption"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="calendar-booked-dates"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="calendar-week-numbers"] .doc-component-preview-stage {
+  height: 24rem;
+  min-height: 24rem;
+}
+.doc-component-card[data-doc-preview-name="calendar-hijri"] .doc-component-preview-stage { height: 25rem; min-height: 25rem; }
+.doc-component-card[data-doc-preview-name="calendar-presets"] .doc-component-preview-stage { height: 40.625rem; min-height: 40.625rem; }
+.doc-component-card[data-doc-preview-name="calendar-time"] .doc-component-preview-stage { height: 37.5rem; min-height: 37.5rem; }
+.doc-component-card[data-doc-preview-name="calendar-custom-days"] .doc-component-preview-stage { height: 35rem; min-height: 35rem; }
+.doc-component-card[data-doc-preview-name="calendar-rtl"] .doc-component-preview-stage { display: block; height: 28rem; min-height: 28rem; padding: 0; }
+
+.doc-calendar {
+  --doc-calendar-cell: 28px;
+  display: flex;
+  width: 214px;
+  height: 297.1875px;
+  gap: 1rem;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--foreground);
+  background: var(--background);
+  font-size: 0.875rem;
+}
+.doc-calendar.is-hijri { --doc-calendar-cell: 32px; width: 250px; height: 333.1875px; padding: 0.75rem; font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-calendar.is-range { width: 424px; height: 258.28125px; padding: 0.5rem; border: 0; border-radius: var(--radius-xl); box-shadow: inset 0 0 0 1px var(--border); }
+.doc-calendar.is-presets { --doc-calendar-cell: 38px; width: 266px; height: 348.28125px; padding: 0; border: 0; }
+.doc-calendar.is-time { width: 196px; height: 278.28125px; padding: 0; border: 0; }
+.doc-calendar.is-booked { width: 212px; height: 222.28125px; padding: 0.5rem; border: 0; }
+.doc-calendar.is-custom { --doc-calendar-cell: 48px; width: 352px; height: 378.28125px; padding: 0.5rem; border: 0; }
+.doc-calendar.is-week { width: 240px; height: 222.28125px; padding: 0.5rem; border: 0; }
+.doc-calendar.is-rtl { --doc-calendar-cell: 36px; width: 270px; height: 353.1875px; font-family: inherit; }
+.doc-calendar-month { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 0.75rem; }
+.doc-calendar-caption { position: relative; display: flex; height: var(--doc-calendar-cell); flex: 0 0 auto; align-items: center; justify-content: space-between; }
+.doc-calendar-caption > button {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  width: var(--doc-calendar-cell);
+  height: var(--doc-calendar-cell);
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-md);
+  color: var(--foreground);
+  background: transparent;
+}
+.doc-calendar-caption > button:hover { background: var(--muted); }
+.doc-calendar-caption > button svg { width: 1rem; height: 1rem; }
+.doc-calendar-caption strong { position: absolute; inset-inline: var(--doc-calendar-cell); text-align: center; font-size: 0.875rem; font-weight: 500; }
+.doc-calendar-dropdowns { position: absolute; inset-inline: var(--doc-calendar-cell); display: flex; justify-content: center; gap: 0.375rem; }
+.doc-calendar-dropdowns select { height: 2rem; min-width: 3.25rem; border: 0; border-radius: var(--radius-md); padding: 0 0.25rem; color: var(--foreground); background: transparent; font: inherit; font-weight: 500; }
+.doc-calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: 20px; grid-auto-rows: var(--doc-calendar-cell); row-gap: 0.5rem; align-items: center; }
+.doc-calendar-grid.has-week-numbers { grid-template-columns: var(--doc-calendar-cell) repeat(7, 1fr); }
+.doc-calendar-weekday,
+.doc-calendar-week-heading { display: flex; height: 20px; align-items: center; justify-content: center; color: var(--muted-foreground); font-size: 0.8rem; font-weight: 400; }
+.doc-calendar-week-number { display: flex; height: var(--doc-calendar-cell); align-items: center; justify-content: center; color: var(--muted-foreground); font-size: 0.8rem; font-weight: 400; }
+.doc-calendar-day { display: flex; min-width: 0; height: var(--doc-calendar-cell); align-items: center; justify-content: center; flex-direction: column; gap: 0.25rem; border: 1px solid transparent; border-radius: var(--radius-md); padding: 0; color: var(--foreground); background: transparent; font: inherit; font-weight: 400; line-height: 1; }
+.doc-calendar-day:hover:not(:disabled) { background: var(--muted); }
+.doc-calendar-day.is-today:not([aria-selected="true"]) { background: var(--muted); }
+.doc-calendar-day.is-outside { color: var(--muted-foreground); opacity: 0.55; }
+.doc-calendar-day.is-booked { text-decoration: line-through; opacity: 0.5; }
+.doc-calendar-day[aria-selected="true"] { color: var(--primary-foreground); background: var(--primary); }
+.doc-calendar-day.is-range-middle { border-radius: 0; color: var(--accent-foreground); background: var(--accent); }
+.doc-calendar-day.is-range-start { border-start-end-radius: 0; border-end-end-radius: 0; }
+.doc-calendar-day.is-range-end { border-start-start-radius: 0; border-end-start-radius: 0; }
+.doc-calendar-day small { font-size: 0.75rem; opacity: 0.7; }
+.doc-calendar:not(.is-rtl) .doc-button-rtl-arrow { transform: none; }
+.doc-calendar.is-range .doc-calendar-month[data-calendar-month-index="0"] .doc-calendar-caption > button:last-child,
+.doc-calendar.is-range .doc-calendar-month[data-calendar-month-index="1"] .doc-calendar-caption > button:first-child { visibility: hidden; }
+.doc-calendar.is-range .doc-calendar-day.is-range-middle:nth-of-type(7n + 1) { border-start-start-radius: var(--radius-md); border-end-start-radius: var(--radius-md); }
+.doc-calendar.is-range .doc-calendar-day.is-range-middle:nth-of-type(7n) { border-start-end-radius: var(--radius-md); border-end-end-radius: var(--radius-md); }
+
+.doc-calendar-card { overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--card); }
+.doc-calendar-card.is-presets { width: 300px; height: 461.28125px; padding: 0.75rem; }
+.doc-calendar-card.is-time { width: 220px; height: 465.78125px; padding: 0.75rem; }
+.doc-calendar-card.is-compact { width: 212px; height: 222.28125px; border-radius: var(--radius); }
+.doc-calendar-card.is-custom { width: 352px; height: 378.28125px; border-radius: var(--radius); }
+.doc-calendar-card.is-week { width: 240px; height: 222.28125px; border-radius: var(--radius); }
+.doc-calendar-presets { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.75rem -0.75rem -0.75rem; padding: 0.75rem; border-top: 1px solid var(--border); }
+.doc-calendar-presets button { flex: 1 1 30%; height: 1.75rem; border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--foreground); background: var(--background); font: inherit; font-size: 0.8rem; }
+.doc-calendar-time-fields { display: grid; gap: 1rem; margin: 0.75rem -0.75rem -0.75rem; padding: 1rem 0.75rem; border-top: 1px solid var(--border); }
+.doc-calendar-time-fields label { display: grid; gap: 0.5rem; color: var(--foreground); font-size: 0.875rem; }
+.doc-calendar-time-fields label > div { position: relative; display: flex; align-items: center; }
+.doc-calendar-time-fields span { position: absolute; inset-inline-start: 0.625rem; z-index: 1; color: var(--muted-foreground); }
+.doc-calendar-time-fields input { width: 170px; height: 2rem; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0 0.625rem 0 2rem; color: var(--foreground); background: var(--background); font: inherit; }
+.doc-rtl-preview.doc-calendar-rtl-preview { height: 24rem; align-items: center; }
+.doc-calendar-rtl-preview[data-lang="ar"] { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-calendar-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+
 .doc-button-row,
 .doc-button-size-row,
 .doc-button-size-row > div,

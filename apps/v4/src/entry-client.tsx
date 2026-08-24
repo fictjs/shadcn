@@ -31,6 +31,7 @@ async function initResumableClient(): Promise<void> {
   wireDocAlertDialogs()
   wireDocAvatarMenus()
   wireDocButtonGroups()
+  wireDocCalendars()
   wireShowcaseSliders()
   wireShowcaseCounters()
   wireShowcaseMenus()
@@ -776,6 +777,155 @@ function wireDocButtonGroups(): void {
     input.disabled = enabled
     input.placeholder = enabled ? "Record and send audio..." : "Send a message..."
   })
+}
+
+function wireDocCalendars(): void {
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  const dateKey = (date: Date): string => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+  const persianDigits = (value: number): string => String(value).replace(/\d/g, (digit) => "۰۱۲۳۴۵۶۷۸۹"[Number(digit)])
+
+  const applyRange = (calendar: HTMLElement): void => {
+    const start = calendar.dataset.rangeStart
+    const end = calendar.dataset.rangeEnd
+    calendar.querySelectorAll<HTMLButtonElement>("[data-doc-calendar-day]").forEach((button) => {
+      const value = button.dataset.date ?? ""
+      const selected = start !== undefined && (end === undefined ? value === start : value >= start && value <= end)
+      button.setAttribute("aria-selected", selected ? "true" : "false")
+      button.classList.toggle("is-range-start", value === start)
+      button.classList.toggle("is-range-end", end !== undefined && value === end)
+      button.classList.toggle("is-range-middle", start !== undefined && end !== undefined && value > start && value < end)
+    })
+  }
+
+  const refreshCalendar = (calendar: HTMLElement): void => {
+    const baseYear = Number.parseInt(calendar.dataset.calendarYear ?? "", 10)
+    const baseMonth = Number.parseInt(calendar.dataset.calendarMonth ?? "", 10)
+    const variant = calendar.dataset.calendarVariant ?? "default"
+    if (!Number.isFinite(baseYear) || !Number.isFinite(baseMonth)) return
+
+    calendar.querySelectorAll<HTMLElement>(".doc-calendar-month").forEach((section, monthIndex) => {
+      const normalized = new Date(baseYear, baseMonth + monthIndex, 1)
+      const year = normalized.getFullYear()
+      const month = normalized.getMonth()
+      const firstDay = normalized.getDay()
+      const daysInMonth = new Date(year, month + 1, 0).getDate()
+      const previousDays = new Date(year, month, 0).getDate()
+      const cellCount = variant === "hijri" ? 42 : Math.ceil((firstDay + daysInMonth) / 7) * 7
+      const caption = section.querySelector<HTMLElement>("[data-doc-calendar-caption]")
+      if (caption && variant !== "hijri") caption.textContent = `${monthNames[month]} ${year}`
+      const monthSelect = section.querySelector<HTMLSelectElement>("[data-doc-calendar-month-select]")
+      const yearSelect = section.querySelector<HTMLSelectElement>("[data-doc-calendar-year-select]")
+      if (monthSelect) monthSelect.value = String(month)
+      if (yearSelect) yearSelect.value = String(year)
+
+      const grid = section.querySelector<HTMLElement>(".doc-calendar-grid")
+      if (!grid) return
+      grid.querySelectorAll("[data-doc-calendar-day], .doc-calendar-week-number").forEach((node) => node.remove())
+      const fragment = document.createDocumentFragment()
+      for (let index = 0; index < cellCount; index += 1) {
+        if (grid.classList.contains("has-week-numbers") && index % 7 === 0) {
+          const week = document.createElement("span")
+          week.className = "doc-calendar-week-number"
+          week.textContent = String(6 + index / 7).padStart(2, "0")
+          fragment.append(week)
+        }
+        const raw = index - firstDay + 1
+        const date = new Date(year, month, raw)
+        const outside = raw < 1 || raw > daysInMonth
+        const day = outside && raw < 1 ? previousDays + raw : outside ? raw - daysInMonth : raw
+        const booked = variant === "booked" && !outside && day >= 12 && day <= 26
+        const button = document.createElement("button")
+        button.type = "button"
+        button.className = `doc-calendar-day${outside ? " is-outside" : ""}${booked ? " is-booked" : ""}${!outside && date.toDateString() === new Date().toDateString() ? " is-today" : ""}`
+        button.setAttribute("role", "gridcell")
+        button.setAttribute("data-doc-calendar-day", "")
+        button.dataset.day = String(day)
+        button.dataset.date = dateKey(date)
+        if (outside) button.dataset.outside = "true"
+        button.setAttribute("aria-selected", calendar.dataset.selectedDate === button.dataset.date ? "true" : "false")
+        button.disabled = booked
+        button.append(variant === "hijri" ? persianDigits(day) : String(day))
+        if (variant === "custom" && !outside) {
+          const price = document.createElement("small")
+          price.textContent = date.getDay() % 6 === 0 ? "$120" : "$100"
+          button.append(price)
+        }
+        fragment.append(button)
+      }
+      grid.append(fragment)
+    })
+    if (calendar.dataset.calendarMode === "range") applyRange(calendar)
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const nav = target.closest<HTMLButtonElement>("[data-doc-calendar-nav]")
+    const calendar = nav?.closest<HTMLElement>("[data-doc-calendar]")
+    if (nav && calendar) {
+      const current = new Date(Number(calendar.dataset.calendarYear), Number(calendar.dataset.calendarMonth), 1)
+      current.setMonth(current.getMonth() + (nav.dataset.docCalendarNav === "next" ? 1 : -1))
+      calendar.dataset.calendarYear = String(current.getFullYear())
+      calendar.dataset.calendarMonth = String(current.getMonth())
+      refreshCalendar(calendar)
+      return
+    }
+
+    const day = target.closest<HTMLButtonElement>("[data-doc-calendar-day]")
+    const dayCalendar = day?.closest<HTMLElement>("[data-doc-calendar]")
+    if (day && dayCalendar && !day.disabled) {
+      const value = day.dataset.date ?? ""
+      const buttons = [...dayCalendar.querySelectorAll<HTMLButtonElement>("[data-doc-calendar-day]")]
+      if (dayCalendar.dataset.calendarMode === "range") {
+        const start = dayCalendar.dataset.rangeStart
+        const end = dayCalendar.dataset.rangeEnd
+        if (start === undefined || end !== undefined) {
+          dayCalendar.dataset.rangeStart = value
+          delete dayCalendar.dataset.rangeEnd
+        } else {
+          dayCalendar.dataset.rangeStart = value < start ? value : start
+          dayCalendar.dataset.rangeEnd = value < start ? start : value
+        }
+        applyRange(dayCalendar)
+      } else {
+        dayCalendar.dataset.selectedDate = value
+        buttons.forEach((button) => button.setAttribute("aria-selected", button === day ? "true" : "false"))
+      }
+      day.focus({ preventScroll: true })
+      return
+    }
+
+    const preset = target.closest<HTMLButtonElement>("[data-doc-calendar-preset]")
+    const presetCalendar = preset?.closest<HTMLElement>("[data-slot='card']")?.querySelector<HTMLElement>("[data-doc-calendar]")
+    if (preset && presetCalendar) {
+      const date = new Date()
+      date.setDate(date.getDate() + Number(preset.dataset.docCalendarPreset))
+      presetCalendar.dataset.calendarYear = String(date.getFullYear())
+      presetCalendar.dataset.calendarMonth = String(date.getMonth())
+      presetCalendar.dataset.selectedDate = dateKey(date)
+      refreshCalendar(presetCalendar)
+      presetCalendar.querySelectorAll<HTMLButtonElement>("[data-doc-calendar-day]").forEach((button) => button.setAttribute("aria-selected", button.dataset.date === dateKey(date) ? "true" : "false"))
+    }
+  })
+
+  document.addEventListener("input", (event) => {
+    const select = event.target
+    if (!(select instanceof HTMLSelectElement)) {
+      return
+    }
+    const calendar = select.closest<HTMLElement>("[data-doc-calendar]")
+    if (!calendar) {
+      return
+    }
+    if (select.dataset.docCalendarMonthSelect !== undefined) calendar.dataset.calendarMonth = select.value
+    if (select.dataset.docCalendarYearSelect !== undefined) calendar.dataset.calendarYear = select.value
+    refreshCalendar(calendar)
+  })
+
+  document.querySelectorAll<HTMLElement>("[data-doc-calendar]").forEach(refreshCalendar)
 }
 
 function wireDocAvatarMenus(): void {

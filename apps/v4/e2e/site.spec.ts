@@ -797,6 +797,73 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator('[data-slot="button-group"]').first()).toHaveAttribute("dir", "ltr")
   })
 
+  test("calendar docs match React geometry and date interactions", async ({ page }) => {
+    await page.goto("/docs/components/base/calendar")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    const calendars = page.locator('[data-slot="calendar"]')
+    await expect(previews).toHaveCount(11)
+    await expect(calendars).toHaveCount(11)
+
+    const expectedSizes = [
+      ["214px", "297.188px"],
+      ["250px", "333.188px"],
+      ["214px", "297.188px"],
+      ["424px", "258.281px"],
+      ["214px", "297.188px"],
+      ["266px", "348.281px"],
+      ["196px", "278.281px"],
+      ["212px", "222.281px"],
+      ["352px", "378.281px"],
+      ["240px", "222.281px"],
+      ["270px", "353.188px"],
+    ]
+    for (let index = 0; index < expectedSizes.length; index += 1) {
+      await expect(calendars.nth(index)).toHaveCSS("width", expectedSizes[index][0])
+      await expect(calendars.nth(index)).toHaveCSS("height", expectedSizes[index][1])
+    }
+
+    const demo = calendars.nth(0)
+    await expect(demo.getByLabel("Choose the Month")).toHaveValue("7")
+    await expect(demo.getByLabel("Choose the Year")).toHaveValue("2026")
+    await expect(demo.locator('[aria-selected="true"]')).toHaveAttribute("data-date", "2026-08-25")
+    await demo.getByRole("button", { name: "Go to the Next Month" }).click()
+    await expect(demo.getByLabel("Choose the Month")).toHaveValue("8")
+    await expect(demo.locator('[data-doc-calendar-day]').first()).toHaveAttribute("data-date", "2026-08-30")
+    await demo.locator('[data-date="2026-09-12"]').click()
+    await expect(demo.locator('[aria-selected="true"]')).toHaveAttribute("data-date", "2026-09-12")
+
+    const range = calendars.nth(3)
+    await expect(range.locator('[data-doc-calendar-day]')).toHaveCount(63)
+    await expect(range.locator(".is-range-start")).toHaveAttribute("data-date", "2026-01-12")
+    await expect(range.locator(".is-range-end")).toHaveAttribute("data-date", "2026-02-11")
+    await expect(range.locator('[data-doc-calendar-nav="previous"]').first()).toBeVisible()
+    await expect(range.locator('[data-doc-calendar-nav="next"]').last()).toBeVisible()
+    await range.locator('[data-date="2026-01-20"]').click()
+    await range.locator('[data-date="2026-02-05"]').click()
+    await expect(range.locator(".is-range-start")).toHaveAttribute("data-date", "2026-01-20")
+    await expect(range.locator(".is-range-end")).toHaveAttribute("data-date", "2026-02-05")
+
+    const presets = calendars.nth(5)
+    await page.locator('[data-doc-calendar-preset="7"]').click()
+    await expect(presets.locator('[aria-selected="true"]')).toHaveAttribute("data-date", "2026-09-01")
+    const time = page.locator('[data-doc-preview-name="calendar-time"]')
+    await expect(time.getByLabel("Start Time")).toHaveValue("10:30:00")
+    await expect(time.getByLabel("End Time")).toHaveValue("12:30:00")
+    await expect(calendars.nth(7).locator("button:disabled")).toHaveCount(15)
+    await expect(calendars.nth(8).locator("small").first()).toHaveText(/\$1(?:00|20)/)
+    await expect(calendars.nth(9).locator(".doc-calendar-week-number")).toHaveCount(4)
+
+    const rtl = page.locator('[data-doc-preview-name="calendar-rtl"]')
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.locator(".doc-calendar-rtl-preview")).toHaveAttribute("dir", "rtl")
+    await expect(rtl.locator(".doc-calendar-weekday").first()).toHaveText("א")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtl.locator(".doc-calendar-rtl-preview")).toHaveAttribute("dir", "ltr")
+    await expect(rtl.locator(".doc-calendar-weekday").first()).toHaveText("Su")
+  })
+
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
     await page.goto("/examples/dashboard")
 

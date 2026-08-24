@@ -4260,7 +4260,9 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
   const family = untrack(() => props.family)
   const name = untrack(() => props.name)
 
-  return family === "button" || name === "button-group-demo" ? (
+  return family === "calendar" ? (
+    <DocCalendarPreview name={props.name} />
+  ) : family === "button" || name === "button-group-demo" ? (
     <DocButtonPreview name={props.name} />
   ) : family === "button-group" ? (
     <DocButtonGroupPreview name={props.name} />
@@ -4362,6 +4364,102 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <h4>{formatDisplayLabel(family || "component preview")}</h4>
       <p>Registry preview surface for this documentation example.</p>
     </div>
+  )
+}
+
+function DocCalendarPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const year = new Date().getFullYear()
+  const month = new Date().getMonth()
+  const isRtl = name === "calendar-rtl"
+  const calendar = name === "calendar-hijri" ? (
+    <DocCalendar variant="hijri" year={2025} month={5} selectedDay={12} />
+  ) : name === "calendar-range" ? (
+    <DocCalendar variant="range" year={year} month={0} selectedDay={12} rangeEnd={11} months={2} />
+  ) : name === "calendar-presets" ? (
+    <div class="doc-calendar-card is-presets" data-slot="card"><DocCalendar variant="presets" year={year} month={month} /><div class="doc-calendar-presets">{["Today", "Tomorrow", "In 3 days", "In a week", "In 2 weeks"].map((label, index) => <button type="button" data-doc-calendar-preset={index === 0 ? "0" : index === 1 ? "1" : index === 2 ? "3" : index === 3 ? "7" : "14"}>{label}</button>)}</div></div>
+  ) : name === "calendar-time" ? (
+    <div class="doc-calendar-card is-time" data-slot="card"><DocCalendar variant="time" year={year} month={month} selectedDay={12} /><div class="doc-calendar-time-fields"><label>Start Time<div><span>◷</span><input type="time" step="1" value="10:30:00" /></div></label><label>End Time<div><span>◷</span><input type="time" step="1" value="12:30:00" /></div></label></div></div>
+  ) : name === "calendar-booked-dates" ? (
+    <div class="doc-calendar-card is-compact" data-slot="card"><DocCalendar variant="booked" year={year} month={1} selectedDay={3} /></div>
+  ) : name === "calendar-custom-days" ? (
+    <div class="doc-calendar-card is-custom" data-slot="card"><DocCalendar variant="custom" year={year} month={11} selectedDay={8} rangeEnd={18} dropdown /></div>
+  ) : name === "calendar-week-numbers" ? (
+    <div class="doc-calendar-card is-week" data-slot="card"><DocCalendar variant="week" year={year} month={1} selectedDay={3} showWeekNumbers /></div>
+  ) : (
+    <DocCalendar variant={isRtl ? "rtl" : "default"} year={year} month={month} selectedDay={name === "calendar-demo" || isRtl ? new Date().getDate() : undefined} dropdown={name === "calendar-demo" || name === "calendar-caption" || isRtl} />
+  )
+
+  return isRtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-calendar-rtl-preview" dir="rtl" data-lang="ar">{calendar}</div></div> : calendar
+}
+
+function DocCalendar(props: { variant: string; year: number; month: number; selectedDay?: number; rangeEnd?: number; months?: number; dropdown?: boolean; showWeekNumbers?: boolean }) {
+  const variant = untrack(() => props.variant)
+  const year = untrack(() => props.year)
+  const month = untrack(() => props.month)
+  const months = untrack(() => props.months || 1)
+  const selectedDay = untrack(() => props.selectedDay)
+  const rangeEnd = untrack(() => props.rangeEnd)
+  const dropdown = untrack(() => props.dropdown)
+  const showWeekNumbers = untrack(() => props.showWeekNumbers)
+  const toDateKey = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+  const rangeStart = selectedDay === undefined ? undefined : toDateKey(new Date(year, month, selectedDay))
+  const rangeEndDate = rangeEnd === undefined ? undefined : toDateKey(new Date(year, month + (variant === "range" ? 1 : 0), rangeEnd))
+  return (
+    <div class={`doc-calendar is-${variant}`} data-slot="calendar" data-doc-calendar data-calendar-variant={variant} data-calendar-year={year} data-calendar-month={month} data-calendar-mode={variant === "range" || variant === "custom" ? "range" : "single"} data-selected-date={variant === "range" || variant === "custom" ? undefined : rangeStart} data-range-start={rangeStart} data-range-end={rangeEndDate} dir={variant === "rtl" || variant === "hijri" ? "rtl" : "ltr"} data-doc-rtl-direction={variant === "rtl" ? "true" : undefined}>
+      {Array.from({ length: months }, (_, index) => <DocCalendarMonth variant={variant} year={year} month={month + index} selectedDay={selectedDay} rangeEnd={rangeEnd} dropdown={dropdown && index === 0} showWeekNumbers={showWeekNumbers} monthIndex={index} />)}
+    </div>
+  )
+}
+
+function DocCalendarMonth(props: { variant: string; year: number; month: number; selectedDay?: number; rangeEnd?: number; dropdown?: boolean; showWeekNumbers?: boolean; monthIndex: number }) {
+  const variant = untrack(() => props.variant)
+  const sourceYear = untrack(() => props.year)
+  const sourceMonth = untrack(() => props.month)
+  const selectedDay = untrack(() => props.selectedDay)
+  const rangeEndValue = untrack(() => props.rangeEnd)
+  const dropdown = untrack(() => props.dropdown)
+  const showWeekNumbers = untrack(() => props.showWeekNumbers)
+  const monthIndex = untrack(() => props.monthIndex)
+  const normalized = new Date(sourceYear, sourceMonth, 1)
+  const year = normalized.getFullYear()
+  const month = normalized.getMonth()
+  const firstDay = new Date(year, month, 1).getDay()
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  const previousDays = new Date(year, month, 0).getDate()
+  const cellCount = variant === "hijri" ? 42 : Math.ceil((firstDay + daysInMonth) / 7) * 7
+  const cells = Array.from({ length: cellCount }, (_, index) => {
+    const raw = index - firstDay + 1
+    const date = new Date(year, month, raw)
+    return raw < 1 ? { day: previousDays + raw, outside: true, date } : raw > daysInMonth ? { day: raw - daysInMonth, outside: true, date } : { day: raw, outside: false, date }
+  })
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+  const isArabic = variant === "rtl"
+  const isHijri = variant === "hijri"
+  const weekdays = isArabic ? ["ح", "ن", "ث", "ر", "خ", "ج", "س"] : isHijri ? ["ش", "۱ش", "۲ش", "۳ش", "۴ش", "۵ش", "ج"] : ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+  return (
+    <section class="doc-calendar-month" data-calendar-month-index={monthIndex}>
+      <header class="doc-calendar-caption">
+        <button type="button" aria-label="Go to the Previous Month" data-doc-calendar-nav="previous">{renderDocButtonIcon("arrow-left")}</button>
+        {dropdown ? <div class="doc-calendar-dropdowns"><select aria-label="Choose the Month" value={String(month)} data-doc-calendar-month-select>{monthNames.map((label, value) => <option value={String(value)} selected={value === month} data-doc-rtl-text={isArabic ? "true" : undefined} data-text-ar={isArabic ? ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"][value] : undefined} data-text-he={isArabic ? ["ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"][value] : undefined} data-text-en={isArabic ? label.slice(0, 3) : undefined}>{isArabic ? ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"][value] : label.slice(0, variant === "custom" ? undefined : 3)}</option>)}</select><select aria-label="Choose the Year" value={String(year)} data-doc-calendar-year-select>{Array.from({ length: 201 }, (_, index) => year - 100 + index).map((value) => <option value={String(value)} selected={value === year}>{value}</option>)}</select></div> : <strong data-doc-calendar-caption>{isHijri ? "خرداد ۱۴۰۴" : `${monthNames[month]} ${year}`}</strong>}
+        <button type="button" aria-label="Go to the Next Month" data-doc-calendar-nav="next">{renderDocButtonIcon("arrow-right")}</button>
+      </header>
+      <div class={`doc-calendar-grid${showWeekNumbers ? " has-week-numbers" : ""}`} role="grid">
+        {showWeekNumbers ? <span class="doc-calendar-week-heading">#</span> : null}{weekdays.map((label, index) => <span class="doc-calendar-weekday" role="columnheader" data-doc-rtl-text={isArabic ? "true" : undefined} data-text-ar={isArabic ? label : undefined} data-text-he={isArabic ? ["א", "ב", "ג", "ד", "ה", "ו", "ש"][index] : undefined} data-text-en={isArabic ? ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"][index] : undefined}>{label}</span>)}
+        {cells.map((cell, index) => {
+          const dateKey = `${cell.date.getFullYear()}-${String(cell.date.getMonth() + 1).padStart(2, "0")}-${String(cell.date.getDate()).padStart(2, "0")}`
+          const startDate = selectedDay === undefined ? undefined : new Date(sourceYear, sourceMonth, selectedDay)
+          const endDate = rangeEndValue === undefined ? undefined : new Date(sourceYear, sourceMonth + (variant === "range" ? 1 : 0), rangeEndValue)
+          const rangeStart = startDate !== undefined && cell.date.getTime() === startDate.getTime()
+          const rangeEnd = endDate !== undefined && cell.date.getTime() === endDate.getTime()
+          const rangeMiddle = startDate !== undefined && endDate !== undefined && cell.date > startDate && cell.date < endDate
+          const selected = endDate !== undefined ? rangeStart || rangeEnd || rangeMiddle : !cell.outside && cell.day === selectedDay
+          const booked = variant === "booked" && !cell.outside && cell.day >= 12 && cell.day <= 26
+          const today = !cell.outside && cell.date.toDateString() === new Date().toDateString()
+          return <>{showWeekNumbers && index % 7 === 0 ? <span class="doc-calendar-week-number">{String(6 + index / 7).padStart(2, "0")}</span> : null}<button type="button" class={`doc-calendar-day${cell.outside ? " is-outside" : ""}${booked ? " is-booked" : ""}${today ? " is-today" : ""}${rangeStart ? " is-range-start" : ""}${rangeEnd ? " is-range-end" : ""}${rangeMiddle ? " is-range-middle" : ""}`} role="gridcell" data-doc-calendar-day data-day={cell.day} data-date={dateKey} data-outside={cell.outside ? "true" : undefined} aria-selected={selected ? "true" : "false"} disabled={booked}>{isHijri ? String(cell.day).replace(/\d/g, (digit) => "۰۱۲۳۴۵۶۷۸۹"[Number(digit)]) : cell.day}{variant === "custom" && !cell.outside ? <small>{new Date(year, month, cell.day).getDay() % 6 === 0 ? "$120" : "$100"}</small> : null}</button></>
+        })}
+      </div>
+    </section>
   )
 }
 
