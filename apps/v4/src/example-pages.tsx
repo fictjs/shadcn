@@ -992,6 +992,7 @@ function DashboardExample() {
               class="dashboard-tabs-list"
               role="tablist"
               aria-label="Dashboard views"
+              aria-orientation="horizontal"
               onClick$={(event: MouseEvent) => {
                 const target = event.target
                 if (!(target instanceof Element)) {
@@ -1031,6 +1032,7 @@ function DashboardExample() {
                     data-view={value}
                     data-state={activeView === value ? "active" : "inactive"}
                     aria-selected={activeView === value}
+                    tabIndex={activeView === value ? 0 : -1}
                     class="dashboard-tabs-trigger"
                   >
                     {tab}

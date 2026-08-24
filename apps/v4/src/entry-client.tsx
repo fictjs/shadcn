@@ -1309,6 +1309,48 @@ function wireDashboardTables(): void {
     syncSelection(scope)
   })
 
+  document.addEventListener("keydown", (event) => {
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
+      return
+    }
+
+    const target = event.target
+    const currentTab = target instanceof Element
+      ? target.closest<HTMLButtonElement>(".dashboard-tabs-trigger")
+      : null
+    const tabList = currentTab?.closest<HTMLElement>(".dashboard-tabs-list")
+    if (!currentTab || !tabList) {
+      return
+    }
+
+    const tabs = Array.from(tabList.querySelectorAll<HTMLButtonElement>(".dashboard-tabs-trigger"))
+    const currentIndex = tabs.indexOf(currentTab)
+    if (currentIndex < 0 || tabs.length === 0) {
+      return
+    }
+
+    const isRtl = getComputedStyle(tabList).direction === "rtl"
+    let nextIndex = currentIndex
+    if (event.key === "Home") {
+      nextIndex = 0
+    } else if (event.key === "End") {
+      nextIndex = tabs.length - 1
+    } else if (event.key === (isRtl ? "ArrowLeft" : "ArrowRight")) {
+      nextIndex = (currentIndex + 1) % tabs.length
+    } else {
+      nextIndex = (currentIndex - 1 + tabs.length) % tabs.length
+    }
+
+    const nextTab = tabs[nextIndex]
+    if (!nextTab) {
+      return
+    }
+
+    event.preventDefault()
+    nextTab.focus()
+    nextTab.click()
+  })
+
   document.addEventListener("dragstart", (event) => {
     const target = event.target
     if (!(target instanceof Element)) {

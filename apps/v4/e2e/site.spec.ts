@@ -286,6 +286,19 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator('.dashboard-outline-placeholder[aria-label="past performance"]')).toBeVisible()
     await expect(page.locator(".dashboard-data-table")).toHaveCount(0)
 
+    await tabs.nth(1).focus()
+    await tabs.nth(1).press("ArrowRight")
+    await expect(tabs.nth(2)).toBeFocused()
+    await expect(tabs.nth(2)).toHaveAttribute("data-state", "active")
+    await expect(tabs.nth(2)).toHaveAttribute("tabindex", "0")
+    await tabs.nth(2).press("End")
+    await expect(tabs.nth(3)).toBeFocused()
+    await expect(tabs.nth(3)).toHaveAttribute("data-state", "active")
+    await tabs.nth(3).press("Home")
+    await expect(tabs.nth(0)).toBeFocused()
+    await expect(tabs.nth(0)).toHaveAttribute("data-state", "active")
+    await expect(page.locator(".dashboard-data-table")).toHaveCount(1)
+
     await page.locator('.dashboard-range-item[data-range="90d"]').click()
     await expect(ranges).toHaveCount(3)
     await expect(page.locator('.dashboard-range-item[data-range="90d"]')).toHaveAttribute(
