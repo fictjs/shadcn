@@ -6790,7 +6790,16 @@ a.ui-item:hover {
 .dashboard-data-table tbody tr[data-dragging="true"] {
   position: relative;
   z-index: 10;
+  background: var(--background);
   opacity: 0.8;
+  transform: translate3d(0, var(--dashboard-drag-offset-y, 0px), 0);
+  transition: none;
+  will-change: transform;
+}
+
+.dashboard-data-table tbody tr[data-drag-shifted="true"] {
+  transform: translate3d(0, var(--dashboard-drag-offset-y, 0px), 0);
+  transition: transform 180ms ease;
 }
 
 .dashboard-data-table tbody tr[data-drag-over="true"] {
@@ -6860,6 +6869,8 @@ a.ui-item:hover {
   width: 1.75rem;
   height: 1.75rem;
   cursor: grab;
+  touch-action: none;
+  user-select: none;
 }
 
 .dashboard-drag-handle:hover {
@@ -6868,6 +6879,10 @@ a.ui-item:hover {
 
 .dashboard-drag-handle[aria-grabbed="true"] {
   cursor: grabbing;
+}
+
+.dashboard-example[data-dashboard-pointer-dragging="true"] {
+  user-select: none;
 }
 
 .dashboard-grip-icon {

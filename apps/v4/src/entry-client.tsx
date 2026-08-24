@@ -1083,7 +1083,28 @@ function wireShowcaseToggles(): void {
 }
 
 function wireDashboardTables(): void {
+  interface DashboardPointerRow {
+    element: HTMLElement
+    id: string
+    centerY: number
+    height: number
+  }
+
+  interface DashboardPointerDrag {
+    pointerId: number
+    dashboard: HTMLElement
+    handle: HTMLElement
+    sourceRow: HTMLElement
+    sourceIndex: number
+    sourceId: string
+    rows: DashboardPointerRow[]
+    startClientY: number
+    overId: string
+    started: boolean
+  }
+
   let activeDrawerTrigger: HTMLButtonElement | null = null
+  let activePointerDrag: DashboardPointerDrag | null = null
   let pointerDragId: string | null = null
   let keyboardDragId: string | null = null
   let keyboardOriginalOrder = ""
@@ -1146,7 +1167,80 @@ function wireDashboardTables(): void {
     dashboard.querySelectorAll<HTMLElement>("[data-dashboard-order-row]").forEach((row) => {
       row.removeAttribute("data-dragging")
       row.removeAttribute("data-drag-over")
+      row.removeAttribute("data-drag-shifted")
+      row.style.removeProperty("--dashboard-drag-offset-y")
     })
+  }
+
+  const updatePointerDragPresentation = (drag: DashboardPointerDrag, deltaY: number): void => {
+    if (!drag.started) {
+      if (Math.abs(deltaY) < 4) {
+        return
+      }
+      drag.started = true
+      drag.sourceRow.dataset.dragging = "true"
+      drag.handle.setAttribute("aria-grabbed", "true")
+    }
+
+    drag.sourceRow.style.setProperty("--dashboard-drag-offset-y", `${deltaY}px`)
+    const sourceRow = drag.rows[drag.sourceIndex]
+    const draggedCenterY = sourceRow.centerY + deltaY
+    let overIndex = drag.sourceIndex
+    let closestDistance = Number.POSITIVE_INFINITY
+
+    drag.rows.forEach((row, index) => {
+      const distance = Math.abs(row.centerY - draggedCenterY)
+      if (distance < closestDistance) {
+        closestDistance = distance
+        overIndex = index
+      }
+    })
+
+    drag.overId = drag.rows[overIndex]?.id ?? drag.sourceId
+    drag.rows.forEach((row, index) => {
+      if (row.element === drag.sourceRow) {
+        return
+      }
+
+      const shiftsUp = overIndex > drag.sourceIndex
+        && index > drag.sourceIndex
+        && index <= overIndex
+      const shiftsDown = overIndex < drag.sourceIndex
+        && index >= overIndex
+        && index < drag.sourceIndex
+      const offsetY = shiftsUp
+        ? -sourceRow.height
+        : shiftsDown
+          ? sourceRow.height
+          : 0
+
+      row.element.toggleAttribute("data-drag-shifted", offsetY !== 0)
+      row.element.toggleAttribute("data-drag-over", index === overIndex)
+      if (offsetY === 0) {
+        row.element.style.removeProperty("--dashboard-drag-offset-y")
+      } else {
+        row.element.style.setProperty("--dashboard-drag-offset-y", `${offsetY}px`)
+      }
+    })
+  }
+
+  const finishPointerDrag = (commit: boolean): void => {
+    const drag = activePointerDrag
+    if (!drag) {
+      return
+    }
+
+    activePointerDrag = null
+    if (drag.handle.hasPointerCapture(drag.pointerId)) {
+      drag.handle.releasePointerCapture(drag.pointerId)
+    }
+    drag.dashboard.removeAttribute("data-dashboard-pointer-dragging")
+    drag.handle.setAttribute("aria-grabbed", "false")
+    clearDragPresentation(drag.dashboard)
+
+    if (commit && drag.started && drag.overId !== drag.sourceId) {
+      moveDashboardRow(drag.dashboard, drag.sourceId, drag.overId)
+    }
   }
 
   document.querySelectorAll<HTMLElement>("[data-dashboard-drag-handle]").forEach((handle) => {
@@ -1351,7 +1445,94 @@ function wireDashboardTables(): void {
     nextTab.click()
   })
 
+  document.addEventListener("pointerdown", (event) => {
+    if (!event.isPrimary || event.button !== 0 || activePointerDrag) {
+      return
+    }
+
+    const target = event.target
+    const handle = target instanceof Element
+      ? target.closest<HTMLElement>("[data-dashboard-drag-handle]")
+      : null
+    const sourceRow = handle?.closest<HTMLElement>("[data-dashboard-order-row]")
+    const dashboard = sourceRow?.closest<HTMLElement>(".dashboard-example")
+    const sourceId = sourceRow?.dataset.dashboardOrderRow
+    const body = sourceRow?.closest("tbody")
+    if (!handle || !sourceRow || !dashboard || !sourceId || !body) {
+      return
+    }
+
+    const rows: DashboardPointerRow[] = []
+    body.querySelectorAll<HTMLElement>("[data-dashboard-order-row]").forEach((row) => {
+      const id = row.dataset.dashboardOrderRow
+      if (!id) {
+        return
+      }
+      const rect = row.getBoundingClientRect()
+      rows.push({
+        element: row,
+        id,
+        centerY: rect.top + rect.height / 2,
+        height: rect.height,
+      })
+    })
+    const sourceIndex = rows.findIndex((row) => row.element === sourceRow)
+    if (sourceIndex < 0) {
+      return
+    }
+
+    activePointerDrag = {
+      pointerId: event.pointerId,
+      dashboard,
+      handle,
+      sourceRow,
+      sourceIndex,
+      sourceId,
+      rows,
+      startClientY: event.clientY,
+      overId: sourceId,
+      started: false,
+    }
+    dashboard.dataset.dashboardPointerDragging = "true"
+    handle.setPointerCapture(event.pointerId)
+    event.preventDefault()
+  })
+
+  document.addEventListener("pointermove", (event) => {
+    const drag = activePointerDrag
+    if (!drag || drag.pointerId !== event.pointerId) {
+      return
+    }
+
+    event.preventDefault()
+    updatePointerDragPresentation(drag, event.clientY - drag.startClientY)
+  })
+
+  document.addEventListener("pointerup", (event) => {
+    if (!activePointerDrag || activePointerDrag.pointerId !== event.pointerId) {
+      return
+    }
+
+    event.preventDefault()
+    finishPointerDrag(true)
+  })
+
+  document.addEventListener("pointercancel", (event) => {
+    if (activePointerDrag?.pointerId === event.pointerId) {
+      finishPointerDrag(false)
+    }
+  })
+
+  window.addEventListener("blur", () => {
+    finishPointerDrag(false)
+  })
+
   document.addEventListener("dragstart", (event) => {
+    if (activePointerDrag) {
+      event.preventDefault()
+      return
+    }
+
     const target = event.target
     if (!(target instanceof Element)) {
       return
@@ -1435,6 +1616,12 @@ function wireDashboardTables(): void {
   })
 
   document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && activePointerDrag) {
+      event.preventDefault()
+      finishPointerDrag(false)
+      return
+    }
+
     const target = event.target
     if (!(target instanceof Element)) {
       return

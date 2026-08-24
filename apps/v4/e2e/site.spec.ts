@@ -568,11 +568,41 @@ test.describe("shadcn v4 site", () => {
 
   test("dashboard rows support pointer and keyboard reordering", async ({ page }) => {
     await page.goto("/examples/dashboard")
+    await waitForClientReady(page)
 
     const rowHeaders = page.locator("tbody [data-dashboard-drawer-trigger]")
     const dragHandles = page.locator("[data-dashboard-drag-handle]")
+    const firstRow = page.locator("[data-dashboard-order-row]").first()
     await expect(rowHeaders.nth(0)).toHaveText("Cover page")
-    await dragHandles.nth(0).dragTo(dragHandles.nth(2))
+    await dragHandles.nth(0).scrollIntoViewIfNeeded()
+
+    const handleBox = await dragHandles.nth(0).boundingBox()
+    const rowBox = await firstRow.boundingBox()
+    expect(handleBox).not.toBeNull()
+    expect(rowBox).not.toBeNull()
+    await page.mouse.move(
+      handleBox!.x + handleBox!.width / 2,
+      handleBox!.y + handleBox!.height / 2,
+    )
+    await page.mouse.down()
+    await page.mouse.move(
+      handleBox!.x + handleBox!.width / 2,
+      handleBox!.y + handleBox!.height / 2 + 110,
+      { steps: 12 },
+    )
+
+    await expect(firstRow).toHaveAttribute("data-dragging", "true")
+    await expect(page.locator("[data-dashboard-order-row]").nth(1)).toHaveAttribute(
+      "data-drag-shifted",
+      "",
+    )
+    const draggedRowBox = await firstRow.boundingBox()
+    const draggedTransform = await firstRow.evaluate((row) => getComputedStyle(row).transform)
+    expect(draggedRowBox).not.toBeNull()
+    expect(draggedRowBox!.y - rowBox!.y).toBeGreaterThan(90)
+    expect(draggedTransform).not.toBe("none")
+
+    await page.mouse.up()
     await expect(rowHeaders.nth(0)).toHaveText("Table of contents")
     await expect(rowHeaders.nth(1)).toHaveText("Executive summary")
     await expect(rowHeaders.nth(2)).toHaveText("Cover page")
