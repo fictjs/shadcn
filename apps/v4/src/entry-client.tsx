@@ -29,6 +29,7 @@ async function initResumableClient(): Promise<void> {
   wireDocPreviewCode()
   wireDocAccordions()
   wireDocAlertDialogs()
+  wireDocAvatarMenus()
   wireShowcaseSliders()
   wireShowcaseCounters()
   wireShowcaseMenus()
@@ -752,6 +753,94 @@ function wireDocAlertDialogs(): void {
         : currentIndex + 1
     event.preventDefault()
     focusable[nextIndex]?.focus()
+  })
+}
+
+function wireDocAvatarMenus(): void {
+  let activeMenu: HTMLElement | null = null
+  let activeTrigger: HTMLButtonElement | null = null
+  let origin: { parent: Node; nextSibling: ChildNode | null } | null = null
+
+  const closeMenu = (restoreFocus = false): void => {
+    if (!activeMenu || !activeTrigger) {
+      return
+    }
+    activeMenu.hidden = true
+    activeMenu.style.removeProperty("position")
+    activeMenu.style.removeProperty("top")
+    activeMenu.style.removeProperty("left")
+    activeTrigger.setAttribute("aria-expanded", "false")
+    if (origin) {
+      origin.parent.insertBefore(activeMenu, origin.nextSibling)
+    }
+    const trigger = activeTrigger
+    activeMenu = null
+    activeTrigger = null
+    origin = null
+    if (restoreFocus) {
+      trigger.focus()
+    }
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const trigger = target.closest<HTMLButtonElement>("[data-doc-avatar-menu-trigger]")
+    if (trigger) {
+      if (activeTrigger === trigger) {
+        closeMenu(true)
+        return
+      }
+      closeMenu()
+      const menu = trigger.parentElement?.querySelector<HTMLElement>("[data-doc-avatar-menu]")
+      if (!menu) {
+        return
+      }
+      const rect = trigger.getBoundingClientRect()
+      origin = { parent: menu.parentNode as Node, nextSibling: menu.nextSibling }
+      document.body.append(menu)
+      menu.hidden = false
+      menu.style.position = "fixed"
+      menu.style.top = `${rect.bottom + 6}px`
+      menu.style.left = `${Math.max(8, rect.right - 128)}px`
+      trigger.setAttribute("aria-expanded", "true")
+      activeMenu = menu
+      activeTrigger = trigger
+      menu.querySelector<HTMLButtonElement>("[role='menuitem']")?.focus()
+      return
+    }
+
+    if (activeMenu?.contains(target)) {
+      if (target.closest("[role='menuitem']")) {
+        closeMenu(true)
+      }
+      return
+    }
+    closeMenu()
+  })
+
+  document.addEventListener("keydown", (event) => {
+    if (!activeMenu) {
+      return
+    }
+    if (event.key === "Escape") {
+      event.preventDefault()
+      closeMenu(true)
+      return
+    }
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") {
+      return
+    }
+    const items = [...activeMenu.querySelectorAll<HTMLButtonElement>("[role='menuitem']")]
+    const currentIndex = items.indexOf(document.activeElement as HTMLButtonElement)
+    const nextIndex = event.key === "ArrowDown"
+      ? (currentIndex + 1) % items.length
+      : (currentIndex - 1 + items.length) % items.length
+    event.preventDefault()
+    items[nextIndex]?.focus()
   })
 }
 

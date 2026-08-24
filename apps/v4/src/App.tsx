@@ -4259,7 +4259,9 @@ function DocComponentBlock(props: { block: DocContentBlock }) {
 function DocComponentPreviewSurface(props: { family: string; name: string }) {
   const family = untrack(() => props.family)
 
-  return family === "aspect-ratio" ? (
+  return family === "avatar" ? (
+    <DocAvatarPreview name={props.name} />
+  ) : family === "aspect-ratio" ? (
     <DocAspectRatioPreview name={props.name} />
   ) : family === "alert-dialog" ? (
     <DocAlertDialogPreview name={props.name} />
@@ -4267,12 +4269,6 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocAlertPreview name={props.name} />
   ) : family === "accordion" ? (
     <DocAccordionPreview name={props.name} />
-  ) : family === "avatar" ? (
-    <div class="doc-preview-avatar-row">
-      <span>CN</span>
-      <span>ER</span>
-      <span>LR</span>
-    </div>
   ) : family === "button" || family === "button-group" || family === "toggle" || family === "toggle-group" || family === "badge" ? (
     <div class="doc-preview-chip-row">
       <span class="is-primary">Primary</span>
@@ -4357,6 +4353,139 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <h4>{formatDisplayLabel(family || "component preview")}</h4>
       <p>Registry preview surface for this documentation example.</p>
     </div>
+  )
+}
+
+interface DocAvatarProps {
+  src: string
+  alt: string
+  fallback: string
+  size?: "sm" | "lg"
+  grayscale?: boolean
+  badge?: "online" | "plus"
+}
+
+function DocAvatarPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const isRtl = name === "avatar-rtl"
+  const basic = <DocAvatar src="https://github.com/shadcn.png" alt="@shadcn" fallback="CN" grayscale />
+  const badge = <DocAvatar src="https://github.com/shadcn.png" alt="@shadcn" fallback="CN" badge="online" />
+  const badgeIcon = <DocAvatar src="https://github.com/pranathip.png" alt="@pranathip" fallback="PP" grayscale badge="plus" />
+  const group = <DocAvatarGroup />
+  const groupCount = <DocAvatarGroup count="+3" />
+  const groupCountIcon = <DocAvatarGroup countIcon />
+  const layout = (
+    <div class="doc-avatar-demo-layout" dir={isRtl ? "rtl" : "ltr"} data-doc-rtl-direction={isRtl ? "true" : undefined}>
+      {basic}
+      <DocAvatar src="https://github.com/evilrabbit.png" alt="@evilrabbit" fallback="ER" badge="online" />
+      <DocAvatarGroup
+        count={isRtl ? "+٣" : "+3"}
+        rtlCount={isRtl}
+      />
+    </div>
+  )
+
+  const content =
+    name === "avatar-demo" || isRtl
+      ? layout
+      : name === "avatar-basic"
+        ? basic
+        : name === "avatar-badge"
+          ? badge
+          : name === "avatar-badge-icon"
+            ? badgeIcon
+            : name === "avatar-group"
+              ? group
+              : name === "avatar-group-count"
+                ? groupCount
+                : name === "avatar-group-count-icon"
+                  ? groupCountIcon
+                  : name === "avatar-size"
+                    ? (
+                        <div class="doc-avatar-size-row">
+                          <DocAvatar src="https://github.com/shadcn.png" alt="@shadcn small" fallback="CN" size="sm" grayscale />
+                          <DocAvatar src="https://github.com/shadcn.png" alt="@shadcn default" fallback="CN" grayscale />
+                          <DocAvatar src="https://github.com/shadcn.png" alt="@shadcn large" fallback="CN" size="lg" grayscale />
+                        </div>
+                      )
+                    : (
+                        <div class="doc-avatar-dropdown">
+                          <button
+                            type="button"
+                            class="doc-avatar-dropdown-trigger"
+                            aria-haspopup="menu"
+                            aria-expanded="false"
+                            aria-label="Open user menu"
+                            data-doc-avatar-menu-trigger
+                          >
+                            <DocAvatar src="https://github.com/shadcn.png" alt="shadcn" fallback="CN" />
+                          </button>
+                          <div class="doc-avatar-menu" role="menu" data-doc-avatar-menu hidden>
+                            <button type="button" role="menuitem">Profile</button>
+                            <button type="button" role="menuitem">Billing</button>
+                            <button type="button" role="menuitem">Settings</button>
+                            <span class="doc-avatar-menu-separator" role="separator"></span>
+                            <button type="button" role="menuitem" class="is-destructive">Log out</button>
+                          </div>
+                        </div>
+                      )
+
+  return isRtl ? (
+    <div class="doc-rtl-preview-shell">
+      <div class="doc-rtl-preview-toolbar" dir="ltr">
+        <select aria-label="Preview language" value="ar" data-doc-rtl-language>
+          <option value="ar">Arabic (العربية)</option>
+          <option value="he">Hebrew (עברית)</option>
+          <option value="en">English</option>
+        </select>
+        <button type="button" class="doc-rtl-info-button" aria-label="Toggle language information">
+          <InfoIcon />
+        </button>
+      </div>
+      <div class="doc-rtl-preview doc-avatar-rtl-preview" dir="rtl">{content}</div>
+    </div>
+  ) : content
+}
+
+function DocAvatar(props: DocAvatarProps) {
+  const sizeClass = props.size ? ` is-${props.size}` : ""
+  return (
+    <span class={`doc-avatar${sizeClass}${props.grayscale ? " is-grayscale" : ""}`} data-slot="avatar">
+      <span class="doc-avatar-fallback" data-slot="avatar-fallback">{props.fallback}</span>
+      <img class="doc-avatar-image" data-slot="avatar-image" src={props.src} alt={props.alt} />
+      {props.badge ? (
+        <span class={`doc-avatar-badge is-${props.badge}`} data-slot="avatar-badge" aria-hidden="true">
+          {props.badge === "plus" ? (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+              <path d="M12 5v14M5 12h14"></path>
+            </svg>
+          ) : null}
+        </span>
+      ) : null}
+    </span>
+  )
+}
+
+function DocAvatarGroup(props: { count?: string; countIcon?: boolean; rtlCount?: boolean }) {
+  return (
+    <span class="doc-avatar-group" data-slot="avatar-group">
+      <DocAvatar src="https://github.com/shadcn.png" alt="@shadcn" fallback="CN" />
+      <DocAvatar src="https://github.com/maxleiter.png" alt="@maxleiter" fallback="LR" />
+      <DocAvatar src="https://github.com/evilrabbit.png" alt="@evilrabbit" fallback="ER" />
+      {props.count || props.countIcon ? (
+        <span class="doc-avatar-group-count" data-slot="avatar-group-count">
+          {props.countIcon ? (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M12 5v14M5 12h14"></path>
+            </svg>
+          ) : props.rtlCount ? (
+            <span data-doc-rtl-text data-text-ar="+٣" data-text-he="+3" data-text-en="+3">{props.count}</span>
+          ) : (
+            props.count
+          )}
+        </span>
+      ) : null}
+    </span>
   )
 }
 

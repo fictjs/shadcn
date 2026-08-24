@@ -495,6 +495,57 @@ test.describe("shadcn v4 site", () => {
     )
   })
 
+  test("avatar docs match React geometry, grouping, menu, and RTL behavior", async ({ page }) => {
+    await page.goto("/docs/components/radix/avatar")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(10)
+    for (let index = 0; index < 9; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(9).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+
+    const demo = page.locator('[data-doc-preview-name="avatar-demo"]')
+    await expect(demo.locator('[data-slot="avatar"]')).toHaveCount(5)
+    await expect(demo.locator('[data-slot="avatar-badge"]')).toHaveCSS("width", "10px")
+    await expect(demo.locator('[data-slot="avatar-group-count"]')).toHaveCSS("width", "32px")
+
+    for (const previewName of ["avatar-group", "avatar-group-count", "avatar-group-count-icon"]) {
+      const avatarXs = await page
+        .locator(`[data-doc-preview-name="${previewName}"] [data-slot="avatar"]`)
+        .evaluateAll((avatars) => avatars.map((avatar) => avatar.getBoundingClientRect().x))
+      expect(avatarXs[1] - avatarXs[0]).toBe(24)
+      expect(avatarXs[2] - avatarXs[1]).toBe(24)
+    }
+
+    const sizes = await page
+      .locator('[data-doc-preview-name="avatar-size"] [data-slot="avatar"]')
+      .evaluateAll((avatars) => avatars.map((avatar) => avatar.getBoundingClientRect().width))
+    expect(sizes).toEqual([24, 32, 40])
+
+    const dropdown = page.locator('[data-doc-preview-name="avatar-dropdown"]')
+    const trigger = dropdown.getByRole("button", { name: "Open user menu" })
+    await trigger.click()
+    const menu = page.locator("body > [data-doc-avatar-menu]")
+    await expect(menu).toBeVisible()
+    await expect(menu).toHaveCSS("width", "128px")
+    await expect(menu.getByRole("menuitem", { name: "Profile" })).toBeFocused()
+    await page.keyboard.press("ArrowDown")
+    await expect(menu.getByRole("menuitem", { name: "Billing" })).toBeFocused()
+    await page.keyboard.press("Escape")
+    await expect(menu).toHaveCount(0)
+    await expect(trigger).toBeFocused()
+
+    const rtl = page.locator('[data-doc-preview-name="avatar-rtl"]')
+    await expect(rtl.locator('[data-slot="avatar-group-count"]')).toHaveText("+٣")
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.locator(".doc-avatar-demo-layout")).toHaveAttribute("dir", "rtl")
+    await expect(rtl.locator('[data-slot="avatar-group-count"]')).toHaveText("+3")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtl.locator(".doc-avatar-demo-layout")).toHaveAttribute("dir", "ltr")
+  })
+
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
     await page.goto("/examples/dashboard")
 
