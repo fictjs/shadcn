@@ -2941,7 +2941,7 @@ function RootPromptPreview(props: { rtl?: boolean }) {
                     data-mention-search
                   />
                 </div>
-                <div class="root-command-list" data-mention-list>
+                <div class="root-command-list" data-mention-list role="listbox">
                   <p class="root-command-empty" data-mention-empty hidden>
                     No pages found
                   </p>
@@ -2951,6 +2951,8 @@ function RootPromptPreview(props: { rtl?: boolean }) {
                       <button
                         class="root-command-item"
                         type="button"
+                        role="option"
+                        aria-selected="false"
                         key={item.title}
                         data-mention-item
                         data-mention-title={item.title}
@@ -2967,6 +2969,8 @@ function RootPromptPreview(props: { rtl?: boolean }) {
                       <button
                         class="root-command-item"
                         type="button"
+                        role="option"
+                        aria-selected="false"
                         key={item.title}
                         data-mention-item
                         data-mention-title={item.title}
@@ -3103,7 +3107,7 @@ function RootPromptPreview(props: { rtl?: boolean }) {
                         data-menu-autofocus
                       />
                     </div>
-                    <div class="root-command-list" data-mention-list>
+                    <div class="root-command-list" data-mention-list role="listbox">
                       <p class="root-command-empty" data-mention-empty hidden>
                         No knowledge found
                       </p>
@@ -3112,6 +3116,8 @@ function RootPromptPreview(props: { rtl?: boolean }) {
                           <button
                             class="root-command-item"
                             type="button"
+                            role="option"
+                            aria-selected="false"
                             key={user.title}
                             data-mention-item
                             data-mention-title={user.title}

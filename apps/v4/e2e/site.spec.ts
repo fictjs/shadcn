@@ -1284,6 +1284,32 @@ test.describe("shadcn v4 site", () => {
     await expect(submenu.getByRole("textbox", { name: "Find knowledge" })).toBeFocused()
   })
 
+  test("home source submenu selects its first command item", async ({ page }) => {
+    await page.goto("/")
+    await waitForClientReady(page)
+
+    await page.getByRole("button", { name: "All Sources" }).click()
+    await page.locator(
+      ".root-sources-menu .ui-menu-sub > [data-menu-trigger]",
+    ).hover()
+
+    const submenu = page.locator(".root-knowledge-menu")
+    const items = submenu.locator("[data-mention-item]")
+    await expect(submenu).toBeVisible()
+    await expect(items.nth(0)).toHaveAttribute("data-selected", "true")
+    await expect(items.nth(0)).toHaveAttribute("aria-selected", "true")
+    await expect(items.nth(1)).toHaveAttribute("data-selected", "false")
+
+    await items.nth(1).hover()
+    await expect(items.nth(0)).toHaveAttribute("data-selected", "false")
+    await expect(items.nth(1)).toHaveAttribute("data-selected", "true")
+
+    await submenu.getByRole("textbox", { name: "Find knowledge" }).fill("evil")
+    await expect(items.nth(0)).toBeHidden()
+    await expect(items.nth(1)).toBeHidden()
+    await expect(items.nth(2)).toHaveAttribute("data-selected", "true")
+  })
+
   test("colors route renders the wrapped palette grid", async ({ page }) => {
     await page.goto("/colors")
 

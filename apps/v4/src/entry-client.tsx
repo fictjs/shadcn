@@ -870,6 +870,7 @@ function wireShowcaseMenus(): void {
     panel.hidden = false
     trigger.setAttribute("aria-expanded", "true")
     positionShowcaseMenu(panel)
+    panel.dispatchEvent(new CustomEvent("showcase-menu-open", { bubbles: true }))
 
     window.requestAnimationFrame(() => {
       if (panel.hidden) {
@@ -2456,6 +2457,20 @@ function wireTasksTables(): void {
 }
 
 function wireShowcaseMentions(): void {
+  const commandItems = (root: HTMLElement): HTMLElement[] =>
+    Array.from(root.querySelectorAll<HTMLElement>("[data-mention-item]"))
+
+  const visibleCommandItems = (root: HTMLElement): HTMLElement[] =>
+    commandItems(root).filter((item) => !item.hidden)
+
+  const selectCommandItem = (root: HTMLElement, selectedItem?: HTMLElement): void => {
+    commandItems(root).forEach((item) => {
+      const selected = item === selectedItem
+      item.dataset.selected = selected ? "true" : "false"
+      item.setAttribute("aria-selected", selected ? "true" : "false")
+    })
+  }
+
   const syncMentionRoot = (root: HTMLElement): void => {
     const chips = root.querySelector<HTMLElement>("[data-mention-chips]")
     const trigger = root.querySelector<HTMLElement>("[data-menu-trigger]")
@@ -2495,7 +2510,79 @@ function wireShowcaseMentions(): void {
     if (empty) {
       empty.hidden = visible > 0
     }
+
+    selectCommandItem(root, visibleCommandItems(root)[0])
   }
+
+  document.addEventListener("showcase-menu-open", (event) => {
+    const panel = event.target
+    if (!(panel instanceof HTMLElement)) {
+      return
+    }
+
+    Array.from(panel.querySelectorAll<HTMLElement>("[data-command-scope]"))
+      .filter((scope) => scope.closest("[data-menu-panel]") === panel)
+      .forEach(filterCommandList)
+  })
+
+  document.addEventListener("pointermove", (event) => {
+    if (event.pointerType !== "mouse") {
+      return
+    }
+
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const item = target.closest<HTMLElement>("[data-mention-item]")
+    const root = item?.closest<HTMLElement>("[data-command-scope]")
+    if (item && root && !item.hidden) {
+      selectCommandItem(root, item)
+    }
+  })
+
+  document.addEventListener("keydown", (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLInputElement) || target.dataset.mentionSearch === undefined) {
+      return
+    }
+
+    const root = target.closest<HTMLElement>("[data-command-scope]")
+    if (!root) {
+      return
+    }
+
+    const items = visibleCommandItems(root)
+    if (items.length === 0) {
+      return
+    }
+
+    const selectedIndex = items.findIndex((item) => item.dataset.selected === "true")
+    let nextIndex: number | undefined
+    if (event.key === "ArrowDown") {
+      nextIndex = selectedIndex < 0 ? 0 : (selectedIndex + 1) % items.length
+    } else if (event.key === "ArrowUp") {
+      nextIndex = selectedIndex < 0 ? items.length - 1 : (selectedIndex - 1 + items.length) % items.length
+    } else if (event.key === "Home") {
+      nextIndex = 0
+    } else if (event.key === "End") {
+      nextIndex = items.length - 1
+    } else if (event.key === "Enter" && selectedIndex >= 0) {
+      event.preventDefault()
+      items[selectedIndex].click()
+      return
+    }
+
+    if (nextIndex === undefined) {
+      return
+    }
+
+    event.preventDefault()
+    const nextItem = items[nextIndex]
+    selectCommandItem(root, nextItem)
+    nextItem.scrollIntoView({ block: "nearest" })
+  })
 
   document.addEventListener("click", (event) => {
     const target = event.target

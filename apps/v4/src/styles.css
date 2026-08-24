@@ -3776,9 +3776,10 @@ a.ui-item:hover {
   display: none;
 }
 
-.root-command-item:hover {
-  background: var(--accent);
-  color: var(--accent-foreground);
+.root-command-item:hover,
+.root-command-item[data-selected="true"] {
+  background: var(--muted);
+  color: var(--foreground);
 }
 
 .root-command-emoji {
