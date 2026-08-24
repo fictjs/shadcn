@@ -975,6 +975,9 @@ function DashboardExample() {
                   const nextView = resolveDashboardView(target.value)
                   if (nextView) {
                     activeView = nextView
+                    if (nextView === "outline") {
+                      window.requestAnimationFrame(syncDashboardTableSelections)
+                    }
                   }
                 }}
               >
@@ -1003,6 +1006,9 @@ function DashboardExample() {
                 const nextView = resolveDashboardView(owner.dataset.view)
                 if (nextView) {
                   activeView = nextView
+                  if (nextView === "outline") {
+                    window.requestAnimationFrame(syncDashboardTableSelections)
+                  }
                 }
               }}
             >

@@ -330,6 +330,13 @@ test.describe("shadcn v4 site", () => {
     await rows.first().getByRole("checkbox").check()
     await expect(selection).toHaveText("1 of 68 row(s) selected.")
 
+    await page.getByRole("tab", { name: "Past Performance" }).click()
+    await page.getByRole("tab", { name: "Outline", exact: true }).click()
+    await expect(rows).toHaveCount(10)
+    await expect(rows.first().getByRole("checkbox")).toBeChecked()
+    await expect(rows.first()).toHaveAttribute("data-state", "selected")
+    await expect(selection).toHaveText("1 of 68 row(s) selected.")
+
     await page.getByRole("checkbox", { name: "Select all" }).check()
     await expect(selection).toHaveText("10 of 68 row(s) selected.")
     await expect(rows.first()).toHaveAttribute("data-state", "selected")
