@@ -1089,32 +1089,21 @@ function wireDashboardTables(): void {
   let keyboardOriginalOrder = ""
 
   const readRowOrder = (dashboard: HTMLElement): string[] => {
-    const storedOrder = document.documentElement.dataset.dashboardRowOrder
-      || dashboard.dataset.dashboardRowOrder
-      || ""
-    dashboard.dataset.dashboardRowOrder = storedOrder
-    return storedOrder
+    return (dashboard.dataset.dashboardRowOrder || "")
       .split(",")
       .filter(Boolean)
   }
 
-  const syncRowOrder = (dashboard: HTMLElement): void => {
-    const order = readRowOrder(dashboard)
-    const indexes = new Map(order.map((rowId, index) => [rowId, index]))
-    dashboard.querySelectorAll<HTMLElement>(".dashboard-table-selection-scope").forEach((scope) => {
-      const body = scope.querySelector<HTMLTableSectionElement>("tbody")
-      if (!body) {
-        return
-      }
+  const updateRowOrder = (dashboard: HTMLElement, order: string[]): void => {
+    const value = order.join(",")
+    dashboard.dataset.dashboardRowOrder = value
+    const control = dashboard.querySelector<HTMLInputElement>("[data-dashboard-row-order-control]")
+    if (!control) {
+      return
+    }
 
-      const rows = Array.from(body.querySelectorAll<HTMLTableRowElement>("[data-dashboard-order-row]"))
-      rows.sort((left, right) => {
-        const leftIndex = indexes.get(left.dataset.dashboardOrderRow ?? "") ?? Number.MAX_SAFE_INTEGER
-        const rightIndex = indexes.get(right.dataset.dashboardOrderRow ?? "") ?? Number.MAX_SAFE_INTEGER
-        return leftIndex - rightIndex
-      })
-      body.append(...rows)
-    })
+    control.value = value
+    control.dispatchEvent(new Event("input", { bubbles: true }))
   }
 
   const announceRowMove = (dashboard: HTMLElement, rowId: string, message?: string): void => {
@@ -1148,9 +1137,7 @@ function wireDashboardTables(): void {
 
     order.splice(oldIndex, 1)
     order.splice(newIndex, 0, activeId)
-    dashboard.dataset.dashboardRowOrder = order.join(",")
-    document.documentElement.dataset.dashboardRowOrder = order.join(",")
-    syncRowOrder(dashboard)
+    updateRowOrder(dashboard, order)
     announceRowMove(dashboard, activeId)
     return true
   }
@@ -1165,10 +1152,6 @@ function wireDashboardTables(): void {
   document.querySelectorAll<HTMLElement>("[data-dashboard-drag-handle]").forEach((handle) => {
     handle.setAttribute("draggable", "true")
   })
-  const initialDashboard = document.querySelector<HTMLElement>(".dashboard-example")
-  if (initialDashboard && !document.documentElement.dataset.dashboardRowOrder) {
-    document.documentElement.dataset.dashboardRowOrder = initialDashboard.dataset.dashboardRowOrder ?? ""
-  }
 
   const closeDrawer = (overlay: HTMLElement): void => {
     overlay.hidden = true
@@ -1447,9 +1430,7 @@ function wireDashboardTables(): void {
 
     if (event.key === "Escape") {
       event.preventDefault()
-      dashboard.dataset.dashboardRowOrder = keyboardOriginalOrder
-      document.documentElement.dataset.dashboardRowOrder = keyboardOriginalOrder
-      syncRowOrder(dashboard)
+      updateRowOrder(dashboard, keyboardOriginalOrder.split(",").filter(Boolean))
       keyboardDragId = null
       keyboardOriginalOrder = ""
       handle.setAttribute("aria-grabbed", "false")

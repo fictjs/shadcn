@@ -285,39 +285,8 @@ function syncDashboardTableColumns(scope: HTMLElement): void {
     })
 }
 
-function syncDashboardTableRowOrder(scope: HTMLElement): void {
-  const dashboard = scope.closest<HTMLElement>(".dashboard-example")
-  const storedOrder = document.documentElement.dataset.dashboardRowOrder
-    || dashboard?.dataset.dashboardRowOrder
-    || ""
-  if (dashboard) {
-    dashboard.dataset.dashboardRowOrder = storedOrder
-  }
-  const order = storedOrder
-    .split(",")
-    .filter(Boolean)
-  if (order.length === 0) {
-    return
-  }
-
-  const indexes = new Map(order.map((rowId, index) => [rowId, index]))
-  const body = scope.querySelector<HTMLTableSectionElement>("tbody")
-  if (!body) {
-    return
-  }
-
-  const rows = Array.from(body.querySelectorAll<HTMLTableRowElement>("[data-dashboard-order-row]"))
-  rows.sort((left, right) => {
-    const leftIndex = indexes.get(left.dataset.dashboardOrderRow ?? "") ?? Number.MAX_SAFE_INTEGER
-    const rightIndex = indexes.get(right.dataset.dashboardOrderRow ?? "") ?? Number.MAX_SAFE_INTEGER
-    return leftIndex - rightIndex
-  })
-  body.append(...rows)
-}
-
 function syncDashboardTableSelections(): void {
   document.querySelectorAll<HTMLElement>(".dashboard-table-selection-scope").forEach((scope) => {
-    syncDashboardTableRowOrder(scope)
     syncDashboardTableSelectionScope(scope)
     syncDashboardTableColumns(scope)
   })
@@ -753,11 +722,13 @@ function DashboardNavIcon(props: { name: string }) {
 }
 
 function DashboardExample() {
+  const initialDashboardRowOrder = dashboardTableRows.map((row) => row.id).join(",")
   let timeRange = $state<DashboardRange>("7d")
   let activeView = $state<DashboardView>("outline")
   let dashboardPageIndex = $state(0)
   let dashboardPageSize = $state<DashboardPageSize>(DASHBOARD_PAGE_SIZE)
   let hiddenDashboardColumns = $state("|")
+  let dashboardRowOrder = $state(initialDashboardRowOrder)
 
   const activeViewLabel = activeView === "past-performance"
     ? "past performance"
@@ -770,8 +741,19 @@ function DashboardExample() {
   return (
     <div
       class="live-example dashboard-example"
-      data-dashboard-row-order={dashboardTableRows.map((row) => row.id).join(",")}
+      data-dashboard-row-order={dashboardRowOrder}
     >
+      <input
+        type="hidden"
+        value={dashboardRowOrder}
+        data-dashboard-row-order-control
+        onInput$={(event: Event) => {
+          const target = event.currentTarget
+          if (target instanceof HTMLInputElement) {
+            dashboardRowOrder = target.value
+          }
+        }}
+      />
       <aside class="dashboard-sidebar">
         <div class="dashboard-sidebar-header">
           <a class="dashboard-menu-button dashboard-brand-button" href="#acme-inc">
@@ -1153,6 +1135,7 @@ function DashboardExample() {
                   <DashboardTablePage
                     pageIndex={dashboardPageIndex}
                     pageSize={dashboardPageSize}
+                    rowOrder={dashboardRowOrder}
                   />
                 </div>
               </div>
@@ -1262,11 +1245,18 @@ function DashboardExample() {
 function DashboardTablePage(props: {
   pageIndex: number
   pageSize: DashboardPageSize
+  rowOrder: string
 }) {
   const pageIndex = untrack(() => props.pageIndex)
   const pageSize = untrack(() => props.pageSize)
+  const rowOrder = untrack(() => props.rowOrder)
+  const rowsById = new Map(dashboardTableRows.map((row) => [String(row.id), row]))
+  const orderedRows = rowOrder
+    .split(",")
+    .map((rowId) => rowsById.get(rowId))
+    .filter((row): row is (typeof dashboardTableRows)[number] => Boolean(row))
   const start = pageIndex * pageSize
-  const rows = dashboardTableRows.slice(start, start + pageSize)
+  const rows = orderedRows.slice(start, start + pageSize)
 
   return (
     <table class="dashboard-data-table">
@@ -1300,6 +1290,7 @@ function DashboardTablePage(props: {
                 class="dashboard-icon-button dashboard-drag-handle"
                 aria-label="Drag to reorder"
                 aria-grabbed="false"
+                draggable="true"
                 data-dashboard-drag-handle
               >
                 <TablerGripVerticalIcon class="dashboard-grip-icon" />

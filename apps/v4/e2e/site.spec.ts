@@ -473,6 +473,14 @@ test.describe("shadcn v4 site", () => {
     await expect(rowHeaders.nth(0)).toHaveText("Table of contents")
     await expect(rowHeaders.nth(2)).toHaveText("Cover page")
 
+    await page.getByRole("tab", { name: "Past Performance" }).click()
+    await page.getByRole("tab", { name: "Outline", exact: true }).click()
+    await expect(rowHeaders).toHaveCount(10)
+    await expect(rowHeaders.nth(0)).toHaveText("Table of contents")
+    await expect(rowHeaders.nth(2)).toHaveText("Cover page")
+    await expect(page.locator("[data-dashboard-order-row]")).toHaveCount(10)
+    await expect(page.locator("[data-dashboard-drag-handle]").first()).toHaveAttribute("draggable", "true")
+
     const keyboardHandle = page.locator('[data-dashboard-order-row="2"] [data-dashboard-drag-handle]')
     await keyboardHandle.focus()
     await keyboardHandle.press("Space")
