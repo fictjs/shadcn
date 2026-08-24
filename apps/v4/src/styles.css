@@ -4056,7 +4056,8 @@ a.ui-item:hover {
 }
 
 .ui-menu-item:hover,
-.ui-menu-item:focus-visible {
+.ui-menu-item:focus-visible,
+.ui-menu-item[data-menu-trigger][aria-expanded="true"] {
   background: var(--accent);
   color: var(--accent-foreground);
   outline: none;

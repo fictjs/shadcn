@@ -839,6 +839,82 @@ function positionShowcaseMenu(panel: HTMLElement): void {
 }
 
 function wireShowcaseMenus(): void {
+  const submenuOpenTimers = new WeakMap<HTMLElement, number>()
+  const submenuCloseTimers = new WeakMap<HTMLElement, number>()
+
+  const clearSubmenuTimer = (
+    timers: WeakMap<HTMLElement, number>,
+    menu: HTMLElement,
+  ): void => {
+    const timer = timers.get(menu)
+    if (timer !== undefined) {
+      window.clearTimeout(timer)
+      timers.delete(menu)
+    }
+  }
+
+  const setMenuOpen = (menu: HTMLElement, open: boolean): void => {
+    const panel = menu.querySelector<HTMLElement>(":scope > [data-menu-panel]")
+    const trigger = menu.querySelector<HTMLElement>(":scope > [data-menu-trigger]")
+    if (!panel || !trigger) {
+      return
+    }
+
+    if (!open) {
+      panel.hidden = true
+      trigger.setAttribute("aria-expanded", "false")
+      return
+    }
+
+    closeShowcaseMenus(menu)
+    panel.hidden = false
+    trigger.setAttribute("aria-expanded", "true")
+    positionShowcaseMenu(panel)
+
+    window.requestAnimationFrame(() => {
+      if (panel.hidden) {
+        return
+      }
+
+      const autofocus = Array.from(
+        panel.querySelectorAll<HTMLElement>("[data-menu-autofocus]"),
+      ).find((candidate) => candidate.closest("[data-menu-panel]") === panel)
+      autofocus?.focus({ preventScroll: true })
+    })
+  }
+
+  document.querySelectorAll<HTMLElement>(".ui-menu-sub[data-menu]").forEach((submenu) => {
+    submenu.addEventListener("pointerenter", (event) => {
+      if (event.pointerType !== "mouse") {
+        return
+      }
+
+      clearSubmenuTimer(submenuCloseTimers, submenu)
+      clearSubmenuTimer(submenuOpenTimers, submenu)
+      submenuOpenTimers.set(submenu, window.setTimeout(() => {
+        submenuOpenTimers.delete(submenu)
+        if (submenu.matches(":hover") && submenu.getClientRects().length > 0) {
+          setMenuOpen(submenu, true)
+        }
+      }, 100))
+    })
+
+    submenu.addEventListener("pointerleave", (event) => {
+      if (event.pointerType !== "mouse") {
+        return
+      }
+
+      clearSubmenuTimer(submenuOpenTimers, submenu)
+      clearSubmenuTimer(submenuCloseTimers, submenu)
+      submenuCloseTimers.set(submenu, window.setTimeout(() => {
+        submenuCloseTimers.delete(submenu)
+        if (!submenu.matches(":hover")) {
+          setMenuOpen(submenu, false)
+        }
+      }, 100))
+    })
+  })
+
   document.addEventListener("click", (event) => {
     const target = event.target
     if (!(target instanceof Element)) {
@@ -855,13 +931,9 @@ function wireShowcaseMenus(): void {
       }
 
       event.preventDefault()
-      const nextHidden = !panel.hidden
-      closeShowcaseMenus(menu)
-      panel.hidden = nextHidden
-      trigger.setAttribute("aria-expanded", nextHidden ? "false" : "true")
-      if (!nextHidden) {
-        positionShowcaseMenu(panel)
-      }
+      clearSubmenuTimer(submenuOpenTimers, menu)
+      clearSubmenuTimer(submenuCloseTimers, menu)
+      setMenuOpen(menu, menu.matches(".ui-menu-sub") || panel.hidden)
       return
     }
 

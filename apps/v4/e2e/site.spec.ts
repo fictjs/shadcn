@@ -1268,6 +1268,22 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator("[data-mention-chip]")).toHaveCount(0)
   })
 
+  test("home source submenu opens on pointer hover", async ({ page }) => {
+    await page.goto("/")
+    await waitForClientReady(page)
+
+    await page.getByRole("button", { name: "All Sources" }).click()
+    const submenuTrigger = page.locator(
+      ".root-sources-menu .ui-menu-sub > [data-menu-trigger]",
+    )
+    const submenu = page.locator(".root-knowledge-menu")
+
+    await submenuTrigger.hover()
+    await expect(submenu).toBeVisible()
+    await expect(submenuTrigger).toHaveAttribute("aria-expanded", "true")
+    await expect(submenu.getByRole("textbox", { name: "Find knowledge" })).toBeFocused()
+  })
+
   test("colors route renders the wrapped palette grid", async ({ page }) => {
     await page.goto("/colors")
 
