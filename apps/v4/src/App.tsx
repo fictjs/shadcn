@@ -4259,7 +4259,9 @@ function DocComponentBlock(props: { block: DocContentBlock }) {
 function DocComponentPreviewSurface(props: { family: string; name: string }) {
   const family = untrack(() => props.family)
 
-  return family === "badge" ? (
+  return family === "breadcrumb" ? (
+    <DocBreadcrumbPreview name={props.name} />
+  ) : family === "badge" ? (
     <DocBadgePreview name={props.name} />
   ) : family === "avatar" ? (
     <DocAvatarPreview name={props.name} />
@@ -4355,6 +4357,123 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <h4>{formatDisplayLabel(family || "component preview")}</h4>
       <p>Registry preview surface for this documentation example.</p>
     </div>
+  )
+}
+
+function DocBreadcrumbPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const isRtl = name === "breadcrumb-rtl"
+  const mode = name === "breadcrumb-demo"
+    ? "demo"
+    : name === "breadcrumb-separator"
+      ? "separator"
+      : name === "breadcrumb-dropdown" || isRtl
+        ? "dropdown"
+        : name === "breadcrumb-ellipsis"
+          ? "ellipsis"
+          : "basic"
+
+  const content = <DocBreadcrumbTrail mode={mode} rtl={isRtl} />
+  return isRtl ? (
+    <div class="doc-rtl-preview-shell">
+      <div class="doc-rtl-preview-toolbar" dir="ltr">
+        <select aria-label="Preview language" value="ar" data-doc-rtl-language>
+          <option value="ar">Arabic (العربية)</option>
+          <option value="he">Hebrew (עברית)</option>
+          <option value="en">English</option>
+        </select>
+        <button type="button" class="doc-rtl-info-button" aria-label="Toggle language information">
+          <InfoIcon />
+        </button>
+      </div>
+      <div class="doc-rtl-preview doc-breadcrumb-rtl-preview" dir="rtl" data-lang="ar">{content}</div>
+    </div>
+  ) : content
+}
+
+function DocBreadcrumbTrail(props: { mode: string; rtl: boolean }) {
+  const mode = untrack(() => props.mode)
+  const rtl = untrack(() => props.rtl)
+  const dotSeparators = mode === "separator" || mode === "dropdown"
+  const menu = mode === "demo" || mode === "dropdown"
+  const ellipsis = mode === "ellipsis"
+  const translated = (arabic: string, hebrew: string, english: string) => rtl ? (
+    <span data-doc-rtl-text data-text-ar={arabic} data-text-he={hebrew} data-text-en={english}>{arabic}</span>
+  ) : english
+  const separator = () => (
+    <li class="doc-breadcrumb-separator" data-slot="breadcrumb-separator" role="presentation" aria-hidden="true">
+      {dotSeparators ? (
+        <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="2.5"></circle></svg>
+      ) : (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18l6-6l-6-6"></path></svg>
+      )}
+    </li>
+  )
+
+  return (
+    <nav class="doc-breadcrumb" aria-label="breadcrumb" data-slot="breadcrumb" dir={rtl ? "rtl" : "ltr"} data-doc-rtl-direction={rtl ? "true" : undefined}>
+      <ol class="doc-breadcrumb-list" data-slot="breadcrumb-list">
+        <li class="doc-breadcrumb-item" data-slot="breadcrumb-item">
+          <a class="doc-breadcrumb-link" data-slot="breadcrumb-link" href="#">{translated("الرئيسية", "בית", "Home")}</a>
+        </li>
+        {separator()}
+        {menu ? (
+          <li class="doc-breadcrumb-item" data-slot="breadcrumb-item">
+            <span class="ui-menu doc-breadcrumb-menu" data-menu data-doc-breadcrumb-menu>
+              <button
+                type="button"
+                class={mode === "demo" ? "doc-breadcrumb-ellipsis-trigger" : "doc-breadcrumb-dropdown-trigger"}
+                data-menu-trigger
+                aria-haspopup="menu"
+                aria-expanded="false"
+              >
+                {mode === "demo" ? (
+                  <>
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="19" cy="12" r="1.5"></circle></svg>
+                    <span class="sr-only">Toggle menu</span>
+                  </>
+                ) : (
+                  <>
+                    {translated("المكونات", "רכיבים", "Components")}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9l6 6l6-6"></path></svg>
+                  </>
+                )}
+              </button>
+              <div class="ui-menu-panel doc-breadcrumb-menu-panel" data-menu-panel data-menu-side="bottom" data-menu-align="start" role="menu" hidden>
+                <button type="button" class="ui-menu-item" data-menu-item role="menuitem">{translated("التوثيق", "תיעוד", "Documentation")}</button>
+                <button type="button" class="ui-menu-item" data-menu-item role="menuitem">{translated("السمات", "ערכות נושא", "Themes")}</button>
+                <button type="button" class="ui-menu-item" data-menu-item role="menuitem">{translated("جيت هاب", "גיטהאב", "GitHub")}</button>
+              </div>
+            </span>
+          </li>
+        ) : ellipsis ? (
+          <li class="doc-breadcrumb-item" data-slot="breadcrumb-item">
+            <span class="doc-breadcrumb-ellipsis" data-slot="breadcrumb-ellipsis" role="presentation" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="19" cy="12" r="1.5"></circle></svg>
+              <span class="sr-only">More</span>
+            </span>
+          </li>
+        ) : (
+          <li class="doc-breadcrumb-item" data-slot="breadcrumb-item">
+            <a class="doc-breadcrumb-link" data-slot="breadcrumb-link" href="#">Components</a>
+          </li>
+        )}
+        {separator()}
+        {mode === "demo" || ellipsis ? (
+          <>
+            <li class="doc-breadcrumb-item" data-slot="breadcrumb-item">
+              <a class="doc-breadcrumb-link" data-slot="breadcrumb-link" href="#">Components</a>
+            </li>
+            {separator()}
+          </>
+        ) : null}
+        <li class="doc-breadcrumb-item" data-slot="breadcrumb-item">
+          <span class="doc-breadcrumb-page" data-slot="breadcrumb-page" role="link" aria-disabled="true" aria-current="page">
+            {translated("مسار التنقل", "פירורי לחם", "Breadcrumb")}
+          </span>
+        </li>
+      </ol>
+    </nav>
   )
 }
 

@@ -602,6 +602,67 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator(".doc-badge-row")).toHaveAttribute("dir", "ltr")
   })
 
+  test("breadcrumb docs match React trails, menus, separators, links, and RTL behavior", async ({ page }) => {
+    await page.goto("/docs/components/radix/breadcrumb")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(7)
+    for (let index = 0; index < 6; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(6).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+
+    const basic = page.locator('[data-doc-preview-name="breadcrumb-basic"]')
+    await expect(basic.locator('[data-slot="breadcrumb-item"]')).toHaveCount(3)
+    await expect(basic.locator('[data-slot="breadcrumb-separator"]')).toHaveCount(2)
+    await expect(basic.locator('[data-slot="breadcrumb-list"]')).toHaveCSS("height", "20px")
+    await expect(basic.getByText("Home", { exact: true })).toHaveCSS("font-weight", "400")
+    await expect(basic.getByText("Home", { exact: true })).toHaveCSS("text-decoration-line", "none")
+    await expect(basic.locator('[data-slot="breadcrumb-page"]')).toHaveAttribute("aria-current", "page")
+
+    const demo = page.locator('[data-doc-preview-name="breadcrumb-demo"]')
+    const demoTrigger = demo.getByRole("button", { name: "Toggle menu" })
+    await expect(demoTrigger).toHaveCSS("width", "28px")
+    await expect(demoTrigger).toHaveCSS("height", "28px")
+    await demoTrigger.click()
+    const demoMenu = demo.getByRole("menu")
+    await expect(demoMenu).toBeVisible()
+    await expect(demoMenu.getByRole("menuitem", { name: "Documentation" })).toBeFocused()
+    await page.keyboard.press("ArrowDown")
+    await expect(demoMenu.getByRole("menuitem", { name: "Themes" })).toBeFocused()
+    await page.keyboard.press("Escape")
+    await expect(demoMenu).toBeHidden()
+    await expect(demoTrigger).toBeFocused()
+
+    const customSeparator = page.locator('[data-doc-preview-name="breadcrumb-separator"]')
+    await expect(customSeparator.locator('[data-slot="breadcrumb-separator"] svg').first()).toHaveCSS("width", "14px")
+    await expect(customSeparator.locator('[data-slot="breadcrumb-separator"] circle')).toHaveCount(2)
+
+    const dropdown = page.locator('[data-doc-preview-name="breadcrumb-dropdown"]')
+    const dropdownTrigger = dropdown.getByRole("button", { name: "Components" })
+    await expect(dropdownTrigger.locator("svg")).toHaveCSS("width", "14px")
+    await dropdownTrigger.click()
+    await expect(dropdown.getByRole("menuitem", { name: "Documentation" })).toBeFocused()
+    await page.keyboard.press("Escape")
+
+    const ellipsis = page.locator('[data-doc-preview-name="breadcrumb-ellipsis"]')
+    await expect(ellipsis.locator('[data-slot="breadcrumb-ellipsis"]')).toHaveCSS("width", "20px")
+
+    const rtl = page.locator('[data-doc-preview-name="breadcrumb-rtl"]')
+    await expect(rtl.locator('[data-slot="breadcrumb-link"]')).toHaveText("الرئيسية")
+    await expect(rtl.locator(".doc-breadcrumb-rtl-preview")).toHaveCSS(
+      "font-family",
+      '"Noto Sans Arabic Variable", sans-serif',
+    )
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.locator('[data-slot="breadcrumb-link"]')).toHaveText("בית")
+    await expect(rtl.locator('[data-slot="breadcrumb-page"]')).toHaveText("פירורי לחם")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtl.locator('[data-slot="breadcrumb"]')).toHaveAttribute("dir", "ltr")
+    await expect(rtl.getByRole("button", { name: "Components" })).toBeVisible()
+  })
+
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
     await page.goto("/examples/dashboard")
 

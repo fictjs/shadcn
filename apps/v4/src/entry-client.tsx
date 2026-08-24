@@ -1215,6 +1215,9 @@ function wireShowcaseMenus(): void {
     trigger.setAttribute("aria-expanded", "true")
     positionShowcaseMenu(panel)
     panel.dispatchEvent(new CustomEvent("showcase-menu-open", { bubbles: true }))
+    if (menu.dataset.docBreadcrumbMenu !== undefined) {
+      queueMicrotask(() => panel.querySelector<HTMLElement>("[data-menu-item]")?.focus({ preventScroll: true }))
+    }
   }
 
   document.querySelectorAll<HTMLElement>(".ui-menu-sub[data-menu]").forEach((submenu) => {
@@ -1364,8 +1367,27 @@ function wireShowcaseMenus(): void {
   })
 
   document.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      const activeItem = document.activeElement instanceof HTMLElement
+        ? document.activeElement.closest<HTMLElement>("[data-doc-breadcrumb-menu] [data-menu-item]")
+        : null
+      const panel = activeItem?.closest<HTMLElement>("[data-menu-panel]")
+      if (activeItem && panel) {
+        const items = [...panel.querySelectorAll<HTMLElement>("[data-menu-item]")]
+        const currentIndex = items.indexOf(activeItem)
+        const delta = event.key === "ArrowDown" ? 1 : -1
+        items[(currentIndex + delta + items.length) % items.length]?.focus({ preventScroll: true })
+        event.preventDefault()
+        return
+      }
+    }
+
     if (event.key === "Escape") {
+      const openBreadcrumbMenu = [...document.querySelectorAll<HTMLElement>("[data-doc-breadcrumb-menu]")]
+        .find((menu) => !menu.querySelector<HTMLElement>(":scope > [data-menu-panel]")?.hidden)
+      const trigger = openBreadcrumbMenu?.querySelector<HTMLElement>(":scope > [data-menu-trigger]")
       closeShowcaseMenus()
+      trigger?.focus({ preventScroll: true })
     }
   })
 }
