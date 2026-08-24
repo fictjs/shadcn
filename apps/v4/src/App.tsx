@@ -4259,7 +4259,9 @@ function DocComponentBlock(props: { block: DocContentBlock }) {
 function DocComponentPreviewSurface(props: { family: string; name: string }) {
   const family = untrack(() => props.family)
 
-  return family === "avatar" ? (
+  return family === "badge" ? (
+    <DocBadgePreview name={props.name} />
+  ) : family === "avatar" ? (
     <DocAvatarPreview name={props.name} />
   ) : family === "aspect-ratio" ? (
     <DocAspectRatioPreview name={props.name} />
@@ -4269,7 +4271,7 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocAlertPreview name={props.name} />
   ) : family === "accordion" ? (
     <DocAccordionPreview name={props.name} />
-  ) : family === "button" || family === "button-group" || family === "toggle" || family === "toggle-group" || family === "badge" ? (
+  ) : family === "button" || family === "button-group" || family === "toggle" || family === "toggle-group" ? (
     <div class="doc-preview-chip-row">
       <span class="is-primary">Primary</span>
       <span>Outline</span>
@@ -4353,6 +4355,124 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <h4>{formatDisplayLabel(family || "component preview")}</h4>
       <p>Registry preview surface for this documentation example.</p>
     </div>
+  )
+}
+
+type DocBadgeVariant = "default" | "secondary" | "destructive" | "outline" | "ghost"
+
+function DocBadgePreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const isRtl = name === "badge-rtl"
+
+  const content = name === "badge-demo" ? (
+    <div class="doc-badge-row is-centered">
+      <DocBadge label="Badge" />
+      <DocBadge label="Secondary" variant="secondary" />
+      <DocBadge label="Destructive" variant="destructive" />
+      <DocBadge label="Outline" variant="outline" />
+    </div>
+  ) : name === "badge-variants" ? (
+    <div class="doc-badge-row">
+      <DocBadge label="Default" />
+      <DocBadge label="Secondary" variant="secondary" />
+      <DocBadge label="Destructive" variant="destructive" />
+      <DocBadge label="Outline" variant="outline" />
+      <DocBadge label="Ghost" variant="ghost" />
+    </div>
+  ) : name === "badge-icon" ? (
+    <div class="doc-badge-row">
+      <DocBadge label="Verified" variant="secondary" startIcon="check" />
+      <DocBadge label="Bookmark" variant="outline" endIcon="bookmark" />
+    </div>
+  ) : name === "badge-spinner" ? (
+    <div class="doc-badge-row">
+      <DocBadge label="Deleting" variant="destructive" startIcon="spinner" />
+      <DocBadge label="Generating" variant="secondary" endIcon="spinner" />
+    </div>
+  ) : name === "badge-link" ? (
+    <a class="doc-badge is-default has-icon-end" data-slot="badge" data-variant="default" href="#link">
+      Open Link{renderDocBadgeIcon("external", "inline-end")}
+    </a>
+  ) : name === "badge-colors" ? (
+    <div class="doc-badge-row">
+      <DocBadge label="Blue" color="blue" />
+      <DocBadge label="Green" color="green" />
+      <DocBadge label="Sky" color="sky" />
+      <DocBadge label="Purple" color="purple" />
+      <DocBadge label="Red" color="red" />
+    </div>
+  ) : (
+    <div class="doc-badge-row is-centered" dir="rtl" data-doc-rtl-direction>
+      <DocBadge label="شارة" labelHe="תג" labelEn="Badge" />
+      <DocBadge label="ثانوي" labelHe="משני" labelEn="Secondary" variant="secondary" />
+      <DocBadge label="مدمر" labelHe="הרסני" labelEn="Destructive" variant="destructive" />
+      <DocBadge label="مخطط" labelHe="קווי מתאר" labelEn="Outline" variant="outline" />
+      <DocBadge label="متحقق" labelHe="מאומת" labelEn="Verified" variant="secondary" startIcon="check" />
+      <DocBadge label="إشارة مرجعية" labelHe="סימנייה" labelEn="Bookmark" variant="outline" endIcon="bookmark" />
+    </div>
+  )
+
+  return isRtl ? (
+    <div class="doc-rtl-preview-shell">
+      <div class="doc-rtl-preview-toolbar" dir="ltr">
+        <select aria-label="Preview language" value="ar" data-doc-rtl-language>
+          <option value="ar">Arabic (العربية)</option>
+          <option value="he">Hebrew (עברית)</option>
+          <option value="en">English</option>
+        </select>
+        <button type="button" class="doc-rtl-info-button" aria-label="Toggle language information">
+          <InfoIcon />
+        </button>
+      </div>
+      <div class="doc-rtl-preview doc-badge-rtl-preview" dir="rtl" data-lang="ar">{content}</div>
+    </div>
+  ) : content
+}
+
+function DocBadge(props: {
+  label: string
+  labelHe?: string
+  labelEn?: string
+  variant?: DocBadgeVariant
+  color?: "blue" | "green" | "sky" | "purple" | "red"
+  startIcon?: "check" | "spinner"
+  endIcon?: "bookmark" | "spinner"
+}) {
+  const variant = props.variant || "default"
+  const colorClass = props.color ? ` is-${props.color}` : ""
+  const iconClass = props.startIcon ? " has-icon-start" : props.endIcon ? " has-icon-end" : ""
+  const startIcon = untrack(() => props.startIcon)
+  const endIcon = untrack(() => props.endIcon)
+  return (
+    <span class={`doc-badge is-${variant}${colorClass}${iconClass}`} data-slot="badge" data-variant={variant}>
+      {startIcon ? renderDocBadgeIcon(startIcon, "inline-start") : null}
+      {props.labelHe && props.labelEn ? (
+        <span data-doc-rtl-text data-text-ar={props.label} data-text-he={props.labelHe} data-text-en={props.labelEn}>{props.label}</span>
+      ) : props.label}
+      {endIcon ? renderDocBadgeIcon(endIcon, "inline-end") : null}
+    </span>
+  )
+}
+
+function renderDocBadgeIcon(kind: "check" | "bookmark" | "external" | "spinner", position: "inline-start" | "inline-end") {
+  return kind === "spinner" ? (
+    <svg class="doc-badge-spinner" viewBox="0 0 24 24" fill="none" data-icon={position} aria-hidden="true">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".25" stroke-width="3"></circle>
+      <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+    </svg>
+  ) : kind === "check" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-icon={position} aria-hidden="true">
+      <path d="M12 3l2.1 2.1l3-.4l.4 3L19.7 10L18 12.5l.7 2.9l-2.9.7L14 18.5L12 17l-2 1.5l-1.8-2.4l-2.9-.7l.7-2.9L4.3 10l2.2-2.3l.4-3l3 .4z"></path>
+      <path d="m9 12l2 2l4-4"></path>
+    </svg>
+  ) : kind === "bookmark" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-icon={position} aria-hidden="true">
+      <path d="M6 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18l-6-4l-6 4z"></path>
+    </svg>
+  ) : (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-icon={position} aria-hidden="true">
+      <path d="M7 17L17 7M7 7h10v10"></path>
+    </svg>
   )
 }
 

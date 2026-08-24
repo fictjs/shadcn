@@ -546,6 +546,62 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator(".doc-avatar-demo-layout")).toHaveAttribute("dir", "ltr")
   })
 
+  test("badge docs match React variants, icons, colors, link, and RTL behavior", async ({ page }) => {
+    await page.goto("/docs/components/radix/badge")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(7)
+    for (let index = 0; index < 6; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(6).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+
+    const expectedBadgeCounts = [4, 5, 2, 2, 1, 5, 6]
+    for (let index = 0; index < expectedBadgeCounts.length; index += 1) {
+      const badges = previews.nth(index).locator('[data-slot="badge"]')
+      await expect(badges).toHaveCount(expectedBadgeCounts[index])
+      for (let badgeIndex = 0; badgeIndex < expectedBadgeCounts[index]; badgeIndex += 1) {
+        await expect(badges.nth(badgeIndex)).toHaveCSS("height", "20px")
+        await expect(badges.nth(badgeIndex)).toHaveCSS("border-radius", "26px")
+      }
+    }
+
+    const iconPreview = page.locator('[data-doc-preview-name="badge-icon"]')
+    await expect(iconPreview.locator("svg")).toHaveCount(2)
+    await expect(iconPreview.locator("svg").first()).toHaveCSS("width", "12px")
+    await expect(iconPreview.locator('[data-variant="secondary"]')).toHaveCSS("padding-left", "6px")
+    await expect(iconPreview.locator('[data-variant="outline"]')).toHaveCSS("padding-right", "6px")
+
+    const spinnerPreview = page.locator('[data-doc-preview-name="badge-spinner"]')
+    await expect(spinnerPreview.locator(".doc-badge-spinner")).toHaveCount(2)
+
+    const link = page.locator('[data-doc-preview-name="badge-link"] [data-slot="badge"]')
+    await expect(link).toHaveJSProperty("tagName", "A")
+    await expect(link).toHaveAttribute("href", "#link")
+    await link.focus()
+    await expect(link).toHaveCSS("border-color", "oklch(0.708 0 0)")
+    await expect(link).toHaveCSS("box-shadow", /.+/)
+
+    const colors = page.locator('[data-doc-preview-name="badge-colors"] [data-slot="badge"]')
+    await expect(colors).toHaveCount(5)
+    await expect(colors.nth(0)).toHaveCSS("background-color", "rgb(239, 246, 255)")
+    await expect(colors.nth(4)).toHaveCSS("color", "rgb(185, 28, 28)")
+
+    const rtl = page.locator('[data-doc-preview-name="badge-rtl"]')
+    await expect(rtl.locator('[data-slot="badge"]').first()).toHaveText("شارة")
+    await expect(rtl.locator(".doc-badge-rtl-preview")).toHaveCSS(
+      "font-family",
+      '"Noto Sans Arabic Variable", sans-serif',
+    )
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.locator('[data-slot="badge"]').first()).toHaveText("תג")
+    await expect(rtl.locator(".doc-badge-row")).toHaveAttribute("dir", "rtl")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtl.locator('[data-slot="badge"]').first()).toHaveText("Badge")
+    await expect(rtl.locator(".doc-badge-row")).toHaveAttribute("dir", "ltr")
+  })
+
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
     await page.goto("/examples/dashboard")
 

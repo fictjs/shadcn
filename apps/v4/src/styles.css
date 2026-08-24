@@ -2115,6 +2115,173 @@ h1 {
   padding: 0;
 }
 
+.doc-component-card[data-doc-preview-name="badge-rtl"] .doc-component-preview-stage {
+  display: block;
+  height: 22rem;
+  min-height: 22rem;
+  padding: 0;
+}
+
+.doc-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.doc-badge-row.is-centered {
+  width: 100%;
+  justify-content: center;
+}
+
+.doc-badge {
+  display: inline-flex;
+  width: fit-content;
+  height: 1.25rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 1.625rem;
+  padding: 0.125rem 0.5rem;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 150ms, box-shadow 150ms, background-color 150ms, border-color 150ms;
+}
+
+.doc-badge.is-secondary {
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+}
+
+.doc-badge.is-destructive {
+  color: var(--destructive);
+  background: color-mix(in oklab, var(--destructive) 10%, transparent);
+}
+
+.dark .doc-badge.is-destructive {
+  background: color-mix(in oklab, var(--destructive) 20%, transparent);
+}
+
+.doc-badge.is-outline {
+  border-color: var(--border);
+  color: var(--foreground);
+  background: transparent;
+}
+
+.doc-badge.is-ghost {
+  color: var(--foreground);
+  background: transparent;
+}
+
+.doc-badge.has-icon-start {
+  padding-inline-start: 0.375rem;
+}
+
+.doc-badge.has-icon-end {
+  padding-inline-end: 0.375rem;
+}
+
+.doc-badge > svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex: 0 0 auto;
+  pointer-events: none;
+}
+
+.doc-badge-spinner {
+  animation: doc-badge-spin 1s linear infinite;
+}
+
+@keyframes doc-badge-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.doc-badge.is-blue {
+  color: #1447e6;
+  background: #eff6ff;
+}
+
+.doc-badge.is-green {
+  color: #15803d;
+  background: #f0fdf4;
+}
+
+.doc-badge.is-sky {
+  color: #0369a1;
+  background: #f0f9ff;
+}
+
+.doc-badge.is-purple {
+  color: #7e22ce;
+  background: #faf5ff;
+}
+
+.doc-badge.is-red {
+  color: #b91c1c;
+  background: #fef2f2;
+}
+
+.dark .doc-badge.is-blue {
+  color: #8ec5ff;
+  background: #172554;
+}
+
+.dark .doc-badge.is-green {
+  color: #7bf1a8;
+  background: #052e16;
+}
+
+.dark .doc-badge.is-sky {
+  color: #74d4ff;
+  background: #052f4a;
+}
+
+.dark .doc-badge.is-purple {
+  color: #dab2ff;
+  background: #3c0366;
+}
+
+.dark .doc-badge.is-red {
+  color: #ffa2a2;
+  background: #460809;
+}
+
+a.doc-badge:hover {
+  background: color-mix(in oklab, var(--primary) 80%, transparent);
+}
+
+a.doc-badge.is-default {
+  color: var(--primary-foreground);
+}
+
+a.doc-badge:focus-visible {
+  border-color: var(--ring);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
+}
+
+.doc-rtl-preview.doc-badge-rtl-preview {
+  height: 18rem;
+  align-items: center;
+}
+
+.doc-badge-rtl-preview[data-lang="ar"] {
+  font-family: "Noto Sans Arabic Variable", sans-serif;
+}
+
+.doc-badge-rtl-preview[data-lang="he"] {
+  font-family: "Noto Sans Hebrew Variable", sans-serif;
+}
+
 .doc-avatar-demo-layout {
   display: flex;
   flex-flow: row wrap;
