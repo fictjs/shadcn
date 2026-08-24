@@ -2579,7 +2579,7 @@ h1 {
   font-size: 0.875rem;
   line-height: 1.25rem;
   outline: none;
-  transition: border-color 120ms ease, box-shadow 120ms ease;
+  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
 }
 
 .ui-input,
@@ -2786,6 +2786,8 @@ h1 {
   color: var(--primary-foreground);
   padding: 0;
   cursor: pointer;
+  outline: none;
+  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
 }
 
 .ui-checkbox[data-checked="true"] {
@@ -2997,6 +2999,8 @@ h1 {
   border: 1px solid var(--input);
   border-radius: var(--radius-lg);
   background: transparent;
+  outline: none;
+  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
 }
 
 .ui-input-group-round {
@@ -3043,6 +3047,12 @@ h1 {
 
 .ui-input-group-textarea::placeholder {
   color: var(--muted-foreground);
+}
+
+.ui-input-group:has(.ui-input-group-input:focus-visible),
+.ui-input-group:has(.ui-input-group-textarea:focus-visible) {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
 }
 
 .ui-input-group-addon {
@@ -3247,13 +3257,14 @@ h1 {
   top: 50%;
   width: 1rem;
   height: 1rem;
-  border: 1px solid var(--primary);
+  border: 1px solid var(--ring);
   border-radius: 999px;
   background: var(--background);
   transform: translate(-50%, -50%);
-  box-shadow: 0 1px 2px 0 color-mix(in oklab, var(--foreground) 10%, transparent);
+  box-shadow: none;
   cursor: grab;
   outline: none;
+  transition: color 150ms ease, box-shadow 150ms ease;
 }
 
 .ui-slider-thumb:active {
@@ -3261,7 +3272,7 @@ h1 {
 }
 
 .ui-slider-thumb:focus-visible {
-  box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 50%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
 }
 
 .root-badge-row {
@@ -3441,6 +3452,8 @@ a.ui-item:hover {
   border: 1px solid var(--input);
   border-radius: 999px;
   background: var(--background);
+  outline: none;
+  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
 }
 
 .ui-radio[data-checked="true"] {
@@ -3472,7 +3485,8 @@ a.ui-item:hover {
   background: var(--input);
   padding: 0;
   cursor: pointer;
-  transition: background-color 120ms ease;
+  outline: none;
+  transition: all 150ms ease;
 }
 
 .ui-switch[data-checked="true"] {
@@ -3504,6 +3518,21 @@ a.ui-item:hover {
   font-family: var(--font-mono);
   font-size: 0.875rem;
   text-align: center;
+  outline: none;
+  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
+}
+
+.ui-checkbox:focus-visible,
+.ui-radio:focus-visible,
+.ui-switch:focus-visible,
+.ui-counter-input:focus-visible {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
+}
+
+.ui-button-group > :focus-visible {
+  position: relative;
+  z-index: 1;
 }
 
 .ui-icon-button-sm {

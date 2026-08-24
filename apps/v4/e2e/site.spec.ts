@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test"
+import { expect, test, type Locator, type Page } from "@playwright/test"
 
 async function waitForClientReady(page: Page) {
   await expect(page.locator("html")).toHaveAttribute("data-client-ready", "true")
@@ -16,6 +16,32 @@ async function expectDashboardChromeStable(page: Page) {
   await expect(tabs.nth(3).locator(".dashboard-tab-badge")).toHaveCount(0)
   await expect(page.locator("[data-dashboard-view-panel]")).toHaveCount(1)
   await expect(page.locator("svg.dashboard-chart")).toHaveCount(1)
+}
+
+async function expectFocusRing(control: Locator, ringTarget: Locator = control) {
+  await control.scrollIntoViewIfNeeded()
+  await control.focus()
+  await control.page().keyboard.press("Shift+Tab")
+  await control.page().keyboard.press("Tab")
+  await expect(control).toBeFocused()
+  await expect.poll(async () => ringTarget.evaluate((element) => {
+    const probe = document.createElement("span")
+    probe.style.color = "var(--ring)"
+    document.body.append(probe)
+    const ringColor = getComputedStyle(probe).color
+    probe.remove()
+
+    const style = getComputedStyle(element)
+    return {
+      borderUsesRingColor: style.borderColor === ringColor,
+      hasThreePixelRing: style.boxShadow.includes("0px 0px 0px 3px"),
+      outlineStyle: style.outlineStyle,
+    }
+  })).toEqual({
+    borderUsesRingColor: true,
+    hasThreePixelRing: true,
+    outlineStyle: "none",
+  })
 }
 
 test.describe("shadcn v4 site", () => {
@@ -1184,6 +1210,25 @@ test.describe("shadcn v4 site", () => {
       "placeholder",
       "Record and send audio...",
     )
+  })
+
+  test("home form controls use the React focus ring", async ({ page }) => {
+    await page.goto("/")
+    await waitForClientReady(page)
+
+    const groupedInput = page.getByPlaceholder("Search...")
+    const groupedTextarea = page.getByPlaceholder("Ask, Search or Chat...")
+
+    await expectFocusRing(page.getByPlaceholder("John Doe"))
+    await expectFocusRing(page.getByPlaceholder("Add any additional comments"))
+    await expectFocusRing(page.getByRole("combobox", { name: "MM" }))
+    await expectFocusRing(groupedInput, groupedInput.locator(".."))
+    await expectFocusRing(groupedTextarea, groupedTextarea.locator(".."))
+    await expectFocusRing(page.locator("[data-counter-input]"))
+    await expectFocusRing(page.locator("#checkout-same-as-shipping"))
+    await expectFocusRing(page.getByRole("radio", { name: "Kubernetes" }))
+    await expectFocusRing(page.getByRole("switch").first())
+    await expectFocusRing(page.getByRole("slider", { name: "Minimum price" }))
   })
 
   test("home showcase menus and popovers open on demand", async ({ page }) => {
