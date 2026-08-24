@@ -1020,6 +1020,8 @@ function DashboardExample() {
                     type="button"
                     key={tab}
                     role="tab"
+                    id={`dashboard-tab-${value}`}
+                    aria-controls={`dashboard-panel-${value}`}
                     data-view={value}
                     data-state={activeView === value ? "active" : "inactive"}
                     aria-selected={activeView === value}
@@ -1145,7 +1147,15 @@ function DashboardExample() {
           </div>
 
           {activeView === "outline" ? (
-            <div class="dashboard-table-panel">
+            <div
+              key="dashboard-outline-panel"
+              class="dashboard-table-panel"
+              id="dashboard-panel-outline"
+              role="tabpanel"
+              aria-labelledby="dashboard-tab-outline"
+              data-dashboard-view-panel="outline"
+              tabIndex={0}
+            >
               <div class="dashboard-table-frame">
                 <div
                   class="dashboard-table-selection-scope"
@@ -1249,7 +1259,15 @@ function DashboardExample() {
               </div>
             </div>
           ) : (
-            <div class="dashboard-table-panel">
+            <div
+              key={`dashboard-${activeView}-panel`}
+              class="dashboard-table-panel"
+              id={`dashboard-panel-${activeView}`}
+              role="tabpanel"
+              aria-labelledby={`dashboard-tab-${activeView}`}
+              data-dashboard-view-panel={activeView}
+              tabIndex={0}
+            >
               <div class="dashboard-outline-placeholder" aria-label={activeViewLabel}></div>
             </div>
           )}

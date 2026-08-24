@@ -265,16 +265,26 @@ test.describe("shadcn v4 site", () => {
 
     const tabs = page.locator(".dashboard-tabs-trigger")
     const ranges = page.locator(".dashboard-range-item")
+    const panels = page.locator("[data-dashboard-view-panel]")
+    const viewValues = ["outline", "past-performance", "key-personnel", "focus-documents"]
     await expect(tabs).toHaveCount(4)
     await expect(ranges).toHaveCount(3)
+    await expect(panels).toHaveCount(1)
+    await expect(panels).toHaveAttribute("data-dashboard-view-panel", "outline")
 
-    await tabs.nth(1).click()
-    // Resuming the scope must reconcile the server-rendered list, not append a
-    // second copy of it.
-    await expect(tabs).toHaveCount(4)
-    await expect(tabs.nth(1)).toHaveAttribute("data-state", "active")
-    await expect(tabs.nth(0)).toHaveAttribute("data-state", "inactive")
-    await expect(page.locator(".dashboard-outline-placeholder")).toBeVisible()
+    for (const index of [1, 2, 3, 1, 0, 1]) {
+      await tabs.nth(index).click()
+      await expect(tabs).toHaveCount(4)
+      await expect(panels).toHaveCount(1)
+      await expect(page.locator('.dashboard-tabs-trigger[data-state="active"]')).toHaveCount(1)
+      await expect(tabs.nth(index)).toHaveAttribute("data-state", "active")
+      await expect(panels).toHaveAttribute("data-dashboard-view-panel", viewValues[index])
+      await expect(panels).toBeVisible()
+      await expect(page.locator(".dashboard-data-table")).toHaveCount(index === 0 ? 1 : 0)
+      await expect(page.locator(".dashboard-outline-placeholder")).toHaveCount(index === 0 ? 0 : 1)
+    }
+    await expect(page.locator('.dashboard-outline-placeholder[aria-label="past performance"]')).toBeVisible()
+    await expect(page.locator(".dashboard-data-table")).toHaveCount(0)
 
     await page.locator('.dashboard-range-item[data-range="90d"]').click()
     await expect(ranges).toHaveCount(3)
