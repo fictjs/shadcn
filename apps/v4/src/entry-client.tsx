@@ -871,17 +871,6 @@ function wireShowcaseMenus(): void {
     trigger.setAttribute("aria-expanded", "true")
     positionShowcaseMenu(panel)
     panel.dispatchEvent(new CustomEvent("showcase-menu-open", { bubbles: true }))
-
-    window.requestAnimationFrame(() => {
-      if (panel.hidden) {
-        return
-      }
-
-      const autofocus = Array.from(
-        panel.querySelectorAll<HTMLElement>("[data-menu-autofocus]"),
-      ).find((candidate) => candidate.closest("[data-menu-panel]") === panel)
-      autofocus?.focus({ preventScroll: true })
-    })
   }
 
   document.querySelectorAll<HTMLElement>(".ui-menu-sub[data-menu]").forEach((submenu) => {
@@ -895,6 +884,9 @@ function wireShowcaseMenus(): void {
       submenuOpenTimers.set(submenu, window.setTimeout(() => {
         submenuOpenTimers.delete(submenu)
         if (submenu.matches(":hover") && submenu.getClientRects().length > 0) {
+          submenu
+            .querySelector<HTMLElement>(":scope > [data-menu-trigger]")
+            ?.focus({ preventScroll: true })
           setMenuOpen(submenu, true)
         }
       }, 100))

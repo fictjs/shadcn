@@ -1281,7 +1281,8 @@ test.describe("shadcn v4 site", () => {
     await submenuTrigger.hover()
     await expect(submenu).toBeVisible()
     await expect(submenuTrigger).toHaveAttribute("aria-expanded", "true")
-    await expect(submenu.getByRole("textbox", { name: "Find knowledge" })).toBeFocused()
+    await expect(submenuTrigger).toBeFocused()
+    await expect(submenu.getByRole("textbox", { name: "Find knowledge" })).not.toBeFocused()
   })
 
   test("home source submenu selects its first command item", async ({ page }) => {

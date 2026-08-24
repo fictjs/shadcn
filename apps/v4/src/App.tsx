@@ -3104,7 +3104,6 @@ function RootPromptPreview(props: { rtl?: boolean }) {
                         placeholder="Find or use knowledge in..."
                         aria-label="Find knowledge"
                         data-mention-search
-                        data-menu-autofocus
                       />
                     </div>
                     <div class="root-command-list" data-mention-list role="listbox">
