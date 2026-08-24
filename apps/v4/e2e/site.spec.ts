@@ -600,6 +600,9 @@ test.describe("shadcn v4 site", () => {
         animation instanceof CSSTransition && animation.transitionProperty === "transform"
       ))
     ))).toBe(true)
+    await expect(secondRow).not.toHaveAttribute("data-drag-over")
+    await expect.poll(async () => secondRow.evaluate((row) => getComputedStyle(row).boxShadow))
+      .toBe("none")
 
     await page.mouse.move(
       handleBox!.x + handleBox!.width / 2,

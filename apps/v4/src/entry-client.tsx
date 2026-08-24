@@ -1166,7 +1166,6 @@ function wireDashboardTables(): void {
   const clearDragPresentation = (dashboard: HTMLElement): void => {
     dashboard.querySelectorAll<HTMLElement>("[data-dashboard-order-row]").forEach((row) => {
       row.removeAttribute("data-dragging")
-      row.removeAttribute("data-drag-over")
       row.removeAttribute("data-drag-shifted")
       row.style.removeProperty("--dashboard-drag-offset-y")
     })
@@ -1220,11 +1219,6 @@ function wireDashboardTables(): void {
       } else {
         row.element.dataset.dragShifted = "true"
         row.element.style.setProperty("--dashboard-drag-offset-y", `${offsetY}px`)
-      }
-      if (index === overIndex) {
-        row.element.dataset.dragOver = "true"
-      } else {
-        row.element.removeAttribute("data-drag-over")
       }
     })
   }
@@ -1576,9 +1570,6 @@ function wireDashboardTables(): void {
     }
 
     event.preventDefault()
-    dashboard.querySelectorAll<HTMLElement>("[data-dashboard-order-row]").forEach((candidate) => {
-      candidate.toggleAttribute("data-drag-over", candidate === row)
-    })
     if (event.dataTransfer) {
       event.dataTransfer.dropEffect = "move"
     }
