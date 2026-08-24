@@ -299,12 +299,17 @@ test.describe("shadcn v4 site", () => {
     await expect(tabs.nth(0)).toHaveAttribute("data-state", "active")
     await expect(page.locator(".dashboard-data-table")).toHaveCount(1)
 
-    await page.locator('.dashboard-range-item[data-range="90d"]').click()
-    await expect(ranges).toHaveCount(3)
-    await expect(page.locator('.dashboard-range-item[data-range="90d"]')).toHaveAttribute(
-      "data-state",
-      "on",
-    )
+    for (const range of ["90d", "30d", "7d", "90d"]) {
+      await page.locator(`.dashboard-range-item[data-range="${range}"]`).click()
+      await expect(ranges).toHaveCount(3)
+      await expect(page.locator(`.dashboard-range-item[data-range="${range}"]`)).toHaveAttribute(
+        "data-state",
+        "on",
+      )
+      await expect(page.locator("svg.dashboard-chart")).toHaveCount(1)
+      await expect(page.locator(".dashboard-chart-grid")).toHaveCount(1)
+      await expect(page.locator(".dashboard-chart-ticks")).toHaveCount(1)
+    }
     await expect(page.locator(".dashboard-chart-ticks text").first()).toBeVisible()
   })
 

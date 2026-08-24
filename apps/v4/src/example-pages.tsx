@@ -468,7 +468,7 @@ function buildVisitorChart(days: number): VisitorChartModel {
   }
 }
 
-function VisitorsAreaChart(props: { range: DashboardRange }) {
+function VisitorsAreaChart(props: { key?: string; range: DashboardRange }) {
   const range = props.range
   const chart = buildVisitorChart(range === "90d" ? 90 : range === "30d" ? 30 : 7)
 
@@ -954,7 +954,13 @@ function DashboardExample() {
             </div>
           </div>
           <div class="dashboard-chart-body">
-            <VisitorsAreaChart range={timeRange} />
+            {timeRange === "90d" ? (
+              <VisitorsAreaChart key="dashboard-chart-90d" range="90d" />
+            ) : timeRange === "30d" ? (
+              <VisitorsAreaChart key="dashboard-chart-30d" range="30d" />
+            ) : (
+              <VisitorsAreaChart key="dashboard-chart-7d" range="7d" />
+            )}
           </div>
         </article>
 
