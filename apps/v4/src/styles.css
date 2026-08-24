@@ -2163,6 +2163,61 @@ h1 {
 .doc-component-card[data-doc-preview-name="card-image"] .doc-component-preview-stage { height: 32rem; min-height: 32rem; }
 .doc-component-card[data-doc-preview-name="card-rtl"] .doc-component-preview-stage { display: block; height: 30rem; min-height: 30rem; padding: 0; }
 
+.doc-component-card[data-doc-preview-name="carousel-demo"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="carousel-orientation"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="carousel-api"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="carousel-plugin"] .doc-component-preview-stage { height: 32rem; min-height: 32rem; }
+.doc-component-card[data-doc-preview-name="carousel-size"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="carousel-spacing"] .doc-component-preview-stage { height: 18rem; min-height: 18rem; }
+.doc-component-card[data-doc-preview-name="carousel-rtl"] .doc-component-preview-stage { display: block; height: 32rem; min-height: 32rem; padding: 0; }
+
+.doc-carousel { position: relative; width: 320px; height: 352px; color: var(--foreground); outline: none; }
+.doc-carousel-content { width: 100%; height: 100%; overflow: hidden; }
+.doc-carousel-track { display: flex; height: 100%; margin-inline-start: -16px; transition: transform 300ms ease; will-change: transform; }
+.doc-carousel-item { box-sizing: border-box; height: 100%; flex: 0 0 336px; padding-inline-start: 16px; }
+.doc-carousel-item-pad { box-sizing: border-box; width: 100%; height: 100%; padding: 4px; }
+.doc-carousel-card { box-sizing: border-box; display: flex; width: 100%; height: 100%; flex-direction: column; border: 1px solid var(--border); border-radius: var(--radius-xl); padding-top: 1rem; background: var(--card); box-shadow: 0 1px 2px color-mix(in oklab, var(--foreground) 5%, transparent); }
+.doc-carousel-card-content { display: flex; width: 100%; min-height: 0; flex: 1; align-items: center; justify-content: center; }
+.doc-carousel-card-content strong { font-size: 2.25rem; font-weight: 600; line-height: 1; }
+.doc-carousel-previous,
+.doc-carousel-next { position: absolute; top: 50%; display: inline-grid; width: 2rem; height: 2rem; place-items: center; border: 1px solid var(--border); border-radius: 999px; padding: 0; color: var(--foreground); background: var(--background); transform: translateY(-50%); }
+.doc-carousel-previous { left: -3rem; }
+.doc-carousel-next { right: -3rem; }
+.doc-carousel-previous:hover:not(:disabled),
+.doc-carousel-next:hover:not(:disabled) { background: var(--accent); }
+.doc-carousel-previous:disabled,
+.doc-carousel-next:disabled { opacity: 0.5; }
+.doc-carousel-previous svg,
+.doc-carousel-next svg { width: 1rem; height: 1rem; }
+.doc-carousel:not(.is-rtl) .doc-button-rtl-arrow { transform: none; }
+.doc-carousel.is-size,
+.doc-carousel.is-spacing { width: 384px; }
+.doc-carousel.is-size { height: 149.328125px; }
+.doc-carousel.is-spacing { height: 157.328125px; }
+.doc-carousel.is-size .doc-carousel-track { margin-inline-start: -16px; }
+.doc-carousel.is-size .doc-carousel-item { flex-basis: 133.328125px; }
+.doc-carousel.is-size .doc-carousel-card-content strong { font-size: 1.875rem; }
+.doc-carousel.is-spacing .doc-carousel-track { margin-inline-start: -4px; }
+.doc-carousel.is-spacing .doc-carousel-item { flex-basis: 129.328125px; padding-inline-start: 4px; }
+.doc-carousel.is-spacing .doc-carousel-card-content strong { font-size: 1.5rem; }
+.doc-carousel.is-orientation { height: 266px; }
+.doc-carousel.is-orientation .doc-carousel-content { height: 266px; }
+.doc-carousel.is-orientation .doc-carousel-track { flex-direction: column; margin: -4px 0 0; }
+.doc-carousel.is-orientation .doc-carousel-item { width: 320px; height: 135px; flex: 0 0 135px; padding: 4px 0 0; }
+.doc-carousel.is-orientation .doc-carousel-card { height: 116px; }
+.doc-carousel.is-orientation .doc-carousel-previous,
+.doc-carousel.is-orientation .doc-carousel-next { top: auto; left: 50%; right: auto; transform: translateX(-50%); }
+.doc-carousel.is-orientation .doc-carousel-previous { top: -3rem; }
+.doc-carousel.is-orientation .doc-carousel-next { bottom: -3rem; }
+.doc-carousel.is-orientation .doc-carousel-next svg { transform: rotate(180deg); }
+.doc-carousel.is-api .doc-carousel-item-pad { padding: 1px; }
+.doc-carousel.is-api .doc-carousel-card { height: 350px; }
+.doc-carousel-api-wrap { width: 320px; }
+.doc-carousel-api-wrap > p { margin: 0; padding: 0.5rem 0; color: var(--muted-foreground); text-align: center; font-size: 0.875rem; }
+.doc-carousel-rtl-preview { height: 28rem; align-items: center; }
+.doc-carousel-rtl-preview[data-lang="ar"] { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-carousel-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+
 .doc-card {
   position: relative;
   display: flex;

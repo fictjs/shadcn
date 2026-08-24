@@ -32,6 +32,7 @@ async function initResumableClient(): Promise<void> {
   wireDocAvatarMenus()
   wireDocButtonGroups()
   wireDocCalendars()
+  wireDocCarousels()
   wireShowcaseSliders()
   wireShowcaseCounters()
   wireShowcaseMenus()
@@ -926,6 +927,69 @@ function wireDocCalendars(): void {
   })
 
   document.querySelectorAll<HTMLElement>("[data-doc-calendar]").forEach(refreshCalendar)
+}
+
+function wireDocCarousels(): void {
+  const update = (carousel: HTMLElement, nextIndex: number): void => {
+    const count = Number(carousel.dataset.carouselCount ?? "5")
+    const variant = carousel.dataset.carouselVariant ?? "demo"
+    const index = Math.max(0, Math.min(count - 1, nextIndex))
+    const step = variant === "size" ? 133.328125 : variant === "spacing" ? 129.328125 : variant === "orientation" ? 135 : 336
+    const track = carousel.querySelector<HTMLElement>(".doc-carousel-track")
+    if (!track) return
+    carousel.dataset.carouselIndex = String(index)
+    const rtl = carousel.dir === "rtl" && variant !== "orientation"
+    track.style.transform = variant === "orientation" ? `translate3d(0, ${-index * step}px, 0)` : `translate3d(${(rtl ? 1 : -1) * index * step}px, 0, 0)`
+    carousel.querySelector<HTMLButtonElement>("[data-doc-carousel-previous]")!.disabled = index === 0
+    carousel.querySelector<HTMLButtonElement>("[data-doc-carousel-next]")!.disabled = index === count - 1
+    carousel.querySelectorAll<HTMLElement>("[data-slot='carousel-item']").forEach((item, itemIndex) => item.setAttribute("aria-hidden", itemIndex === index ? "false" : "true"))
+    const status = carousel.parentElement?.querySelector<HTMLElement>("[data-doc-carousel-status]")
+    if (status) status.textContent = `Slide ${index + 1} of ${count}`
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-doc-carousel]").forEach((carousel) => {
+    update(carousel, Number(carousel.dataset.carouselIndex ?? "0"))
+    if (carousel.dataset.carouselVariant !== "plugin") return
+    let timer: number | undefined
+    const start = (): void => {
+      window.clearInterval(timer)
+      timer = window.setInterval(() => {
+        const count = Number(carousel.dataset.carouselCount ?? "5")
+        const index = Number(carousel.dataset.carouselIndex ?? "0")
+        update(carousel, (index + 1) % count)
+      }, 2000)
+    }
+    carousel.addEventListener("mouseenter", () => window.clearInterval(timer))
+    carousel.addEventListener("mouseleave", start)
+    start()
+  })
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const previous = target.closest<HTMLButtonElement>("[data-doc-carousel-previous]")
+    const next = target.closest<HTMLButtonElement>("[data-doc-carousel-next]")
+    const carousel = (previous ?? next)?.closest<HTMLElement>("[data-doc-carousel]")
+    if (!carousel) return
+    const index = Number(carousel.dataset.carouselIndex ?? "0")
+    update(carousel, index + (next ? 1 : -1))
+  })
+
+  document.addEventListener("keydown", (event) => {
+    const carousel = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-doc-carousel]") : null
+    if (!carousel || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return
+    const vertical = carousel.dataset.carouselVariant === "orientation"
+    if ((vertical && !["ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) || (!vertical && !["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key))) return
+    event.preventDefault()
+    const index = Number(carousel.dataset.carouselIndex ?? "0")
+    const count = Number(carousel.dataset.carouselCount ?? "5")
+    if (event.key === "Home") update(carousel, 0)
+    else if (event.key === "End") update(carousel, count - 1)
+    else {
+      const forward = vertical ? event.key === "ArrowDown" : event.key === "ArrowRight" ? carousel.dir !== "rtl" : carousel.dir === "rtl"
+      update(carousel, index + (forward ? 1 : -1))
+    }
+  })
 }
 
 function wireDocAvatarMenus(): void {

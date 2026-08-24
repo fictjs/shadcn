@@ -913,6 +913,65 @@ test.describe("shadcn v4 site", () => {
     await expect(cards.nth(3)).toHaveAttribute("dir", "ltr")
   })
 
+  test("carousel docs match React geometry, controls, API, autoplay, and RTL", async ({ page }) => {
+    await page.goto("/docs/components/base/carousel")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    const carousels = page.locator('[data-slot="carousel"]')
+    await expect(previews).toHaveCount(7)
+    await expect(carousels).toHaveCount(7)
+    const sizes = [
+      ["320px", "352px"],
+      ["384px", "149.328px"],
+      ["384px", "157.328px"],
+      ["320px", "266px"],
+      ["320px", "352px"],
+      ["320px", "352px"],
+      ["320px", "352px"],
+    ]
+    for (let index = 0; index < sizes.length; index += 1) {
+      await expect(carousels.nth(index)).toHaveCSS("width", sizes[index][0])
+      await expect(carousels.nth(index)).toHaveCSS("height", sizes[index][1])
+      await expect(carousels.nth(index).locator('[data-slot="carousel-item"]')).toHaveCount(5)
+    }
+
+    const demo = carousels.nth(0)
+    const previous = demo.getByRole("button", { name: "Previous slide" })
+    const next = demo.getByRole("button", { name: "Next slide" })
+    await expect(previous).toBeDisabled()
+    await next.click()
+    await expect(demo).toHaveAttribute("data-carousel-index", "1")
+    await expect(previous).toBeEnabled()
+    await demo.focus()
+    await page.keyboard.press("End")
+    await expect(demo).toHaveAttribute("data-carousel-index", "4")
+    await expect(next).toBeDisabled()
+    await page.keyboard.press("Home")
+    await page.keyboard.press("ArrowRight")
+    await expect(demo).toHaveAttribute("data-carousel-index", "1")
+
+    const orientation = carousels.nth(3)
+    await orientation.focus()
+    await page.keyboard.press("ArrowDown")
+    await expect(orientation).toHaveAttribute("data-carousel-index", "1")
+    await expect(orientation.locator(".doc-carousel-track")).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -135)")
+
+    const api = carousels.nth(4)
+    await api.getByRole("button", { name: "Next slide" }).click()
+    await expect(page.locator('[data-doc-preview-name="carousel-api"] [data-doc-carousel-status]')).toHaveText("Slide 2 of 5")
+
+    const plugin = carousels.nth(5)
+    await expect.poll(async () => Number(await plugin.getAttribute("data-carousel-index")), { timeout: 3000 }).toBeGreaterThan(0)
+
+    const rtl = page.locator('[data-doc-preview-name="carousel-rtl"]')
+    await expect(carousels.nth(6)).toHaveAttribute("dir", "rtl")
+    await expect(carousels.nth(6).locator(".doc-carousel-card-content strong").first()).toHaveText("١")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(carousels.nth(6)).toHaveAttribute("dir", "ltr")
+    await expect(carousels.nth(6).locator(".doc-carousel-card-content strong").first()).toHaveText("1")
+  })
+
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
     await page.goto("/examples/dashboard")
 

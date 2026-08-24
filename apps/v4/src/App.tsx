@@ -4260,7 +4260,9 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
   const family = untrack(() => props.family)
   const name = untrack(() => props.name)
 
-  return family === "card" ? (
+  return family === "carousel" ? (
+    <DocCarouselPreview name={props.name} />
+  ) : family === "card" ? (
     <DocCardPreview name={props.name} />
   ) : family === "calendar" ? (
     <DocCalendarPreview name={props.name} />
@@ -4367,6 +4369,23 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <p>Registry preview surface for this documentation example.</p>
     </div>
   )
+}
+
+function DocCarouselPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const isRtl = name === "carousel-rtl"
+  const variant = name.replace("carousel-", "")
+  const carousel = (
+    <div class={`doc-carousel is-${variant}`} data-slot="carousel" data-doc-carousel data-carousel-index="0" data-carousel-count="5" data-carousel-variant={variant} data-doc-rtl-direction={isRtl ? "true" : undefined} dir={isRtl ? "rtl" : "ltr"} role="region" aria-roledescription="carousel" tabIndex={0}>
+      <div class="doc-carousel-content" data-slot="carousel-content"><div class="doc-carousel-track">
+        {Array.from({ length: 5 }, (_, index) => <div class="doc-carousel-item" data-slot="carousel-item" role="group" aria-roledescription="slide" aria-label={`${index + 1} of 5`}><div class="doc-carousel-item-pad"><div class="doc-carousel-card" data-slot="card"><div class="doc-carousel-card-content" data-slot="card-content"><strong data-doc-rtl-text={isRtl ? "true" : undefined} data-text-ar={isRtl ? "٠١٢٣٤٥"[index + 1] : undefined} data-text-he={isRtl ? String(index + 1) : undefined} data-text-en={isRtl ? String(index + 1) : undefined}>{isRtl ? "٠١٢٣٤٥"[index + 1] : index + 1}</strong></div></div></div></div>)}
+      </div></div>
+      <button type="button" class="doc-carousel-previous" data-doc-carousel-previous aria-label="Previous slide" disabled>{renderDocButtonIcon(variant === "orientation" ? "arrow-up" : "arrow-left")}</button>
+      <button type="button" class="doc-carousel-next" data-doc-carousel-next aria-label="Next slide">{renderDocButtonIcon(variant === "orientation" ? "arrow-down" : "arrow-right")}</button>
+    </div>
+  )
+  const content = name === "carousel-api" ? <div class="doc-carousel-api-wrap">{carousel}<p data-doc-carousel-status>Slide 1 of 5</p></div> : carousel
+  return isRtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-carousel-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
 function DocCardPreview(props: { name: string }) {
