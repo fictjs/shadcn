@@ -972,6 +972,57 @@ test.describe("shadcn v4 site", () => {
     await expect(carousels.nth(6).locator(".doc-carousel-card-content strong").first()).toHaveText("1")
   })
 
+  test("chart docs match React stages, progressive examples, tooltips, series, and RTL", async ({ page }) => {
+    await page.goto("/docs/components/base/chart")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    const charts = page.locator("[data-doc-chart]")
+    await expect(previews).toHaveCount(8)
+    await expect(charts).toHaveCount(7)
+    await expect(previews.nth(0).locator(".doc-component-preview-stage")).toHaveCSS("height", "437px")
+    for (let index = 1; index <= 5; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "320px")
+    }
+    await expect(previews.nth(6).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    await expect(previews.nth(7).locator(".doc-component-preview-stage")).toHaveCSS("height", "432px")
+
+    const demo = page.locator('[data-doc-preview-name="chart-demo"]')
+    await expect(demo.locator('[data-slot="card"]')).toHaveCSS("width", "638px")
+    await expect(demo.locator('[data-slot="card"]')).toHaveCSS("height", "437px")
+    await expect(charts.nth(0)).toHaveCSS("width", "590px")
+    await expect(charts.nth(0)).toHaveCSS("height", "250px")
+    await expect(charts.nth(0).locator("[data-doc-chart-bar]")).toHaveCount(30)
+    const firstBar = charts.nth(0).locator("[data-doc-chart-bar]").first()
+    await firstBar.hover()
+    await expect(charts.nth(0).getByRole("tooltip")).toContainText("Apr 1")
+    await expect(charts.nth(0).getByRole("tooltip")).toContainText("222")
+    const initialHeight = await firstBar.locator("rect").getAttribute("height")
+    await demo.getByRole("button", { name: /Mobile/ }).click()
+    await expect(demo.getByRole("button", { name: /Mobile/ })).toHaveAttribute("aria-pressed", "true")
+    expect(await firstBar.locator("rect").getAttribute("height")).not.toBe(initialHeight)
+
+    for (let index = 1; index <= 5; index += 1) {
+      await expect(charts.nth(index)).toHaveCSS("width", "509px")
+      await expect(charts.nth(index)).toHaveCSS("height", "286.312px")
+      await expect(charts.nth(index).locator("[data-doc-chart-bar]")).toHaveCount(6)
+    }
+    await expect(charts.nth(1).locator(".doc-chart-grid line")).toHaveCount(0)
+    await expect(charts.nth(2).locator(".doc-chart-grid line")).toHaveCount(4)
+    await expect(charts.nth(2).locator(".doc-chart-axis text")).toHaveCount(0)
+    await expect(charts.nth(3).locator(".doc-chart-axis text")).toHaveCount(6)
+    await expect(charts.nth(5).locator(".doc-chart-legend span")).toHaveCount(2)
+    await expect(page.locator('[data-doc-preview-name="chart-tooltip"] .doc-chart-tooltip-guide > div')).toHaveCount(4)
+
+    const rtl = page.locator('[data-doc-preview-name="chart-rtl"]')
+    await expect(charts.nth(6)).toHaveCSS("width", "558px")
+    await expect(charts.nth(6)).toHaveAttribute("dir", "rtl")
+    await expect(charts.nth(6).locator(".doc-chart-axis text").first()).toHaveText("يون")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(charts.nth(6)).toHaveAttribute("dir", "ltr")
+    await expect(charts.nth(6).locator(".doc-chart-axis text").first()).toHaveText("Jun")
+  })
+
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
     await page.goto("/examples/dashboard")
 

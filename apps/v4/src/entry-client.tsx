@@ -33,6 +33,7 @@ async function initResumableClient(): Promise<void> {
   wireDocButtonGroups()
   wireDocCalendars()
   wireDocCarousels()
+  wireDocCharts()
   wireShowcaseSliders()
   wireShowcaseCounters()
   wireShowcaseMenus()
@@ -989,6 +990,63 @@ function wireDocCarousels(): void {
       const forward = vertical ? event.key === "ArrowDown" : event.key === "ArrowRight" ? carousel.dir !== "rtl" : carousel.dir === "rtl"
       update(carousel, index + (forward ? 1 : -1))
     }
+  })
+}
+
+function wireDocCharts(): void {
+  const hide = (chart: HTMLElement): void => {
+    const tooltip = chart.querySelector<HTMLElement>(".doc-chart-hover")
+    if (tooltip) tooltip.hidden = true
+  }
+
+  document.addEventListener("pointerover", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const bar = target.closest<SVGGElement>("[data-doc-chart-bar]")
+    const chart = bar?.closest<HTMLElement>("[data-doc-chart]")
+    const tooltip = chart?.querySelector<HTMLElement>(".doc-chart-hover")
+    if (!bar || !chart || !tooltip) return
+    const desktop = bar.dataset.desktop ?? "0"
+    const mobile = bar.dataset.mobile ?? "0"
+    tooltip.replaceChildren()
+    const title = document.createElement("strong")
+    title.textContent = bar.dataset.label ?? "Visitors"
+    tooltip.append(title)
+    const desktopRow = document.createElement("span")
+    desktopRow.innerHTML = `<em>Desktop</em><b>${desktop}</b>`
+    tooltip.append(desktopRow)
+    if (mobile !== "0") {
+      const mobileRow = document.createElement("span")
+      mobileRow.innerHTML = `<em>Mobile</em><b>${mobile}</b>`
+      tooltip.append(mobileRow)
+    }
+    const rect = bar.getBoundingClientRect()
+    tooltip.style.left = `${Math.round(rect.left + rect.width / 2 + 10)}px`
+    tooltip.style.top = `${Math.round(rect.top + 10)}px`
+    tooltip.hidden = false
+  })
+
+  document.addEventListener("pointerout", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const chart = target.closest<HTMLElement>("[data-doc-chart]")
+    const related = event.relatedTarget
+    if (chart && (!(related instanceof Node) || !chart.contains(related))) hide(chart)
+  })
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const series = target.closest<HTMLButtonElement>("[data-doc-chart-series]")
+    const card = series?.closest<HTMLElement>(".doc-chart-demo-card")
+    if (!series || !card) return
+    const key = series.dataset.docChartSeries === "mobile" ? "Mobile" : "Desktop"
+    card.querySelectorAll<HTMLButtonElement>("[data-doc-chart-series]").forEach((button) => button.setAttribute("aria-pressed", button === series ? "true" : "false"))
+    card.querySelectorAll<SVGRectElement>("[data-doc-chart-value-desktop]").forEach((bar) => {
+      const height = Number(bar.dataset[`docChartValue${key}`])
+      bar.setAttribute("height", String(height))
+      bar.setAttribute("y", String(219 - height))
+    })
   })
 }
 
