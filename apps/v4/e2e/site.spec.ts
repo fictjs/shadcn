@@ -720,6 +720,83 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.getByRole("button", { name: "Submit" }).locator(".doc-button-rtl-arrow")).toHaveCSS("transform", "none")
   })
 
+  test("button group docs match React geometry and composite interactions", async ({ page }) => {
+    await page.goto("/docs/components/radix/button-group")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(12)
+    for (let index = 0; index < 11; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(11).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+
+    const demo = page.locator('[data-doc-preview-name="button-group-demo"]')
+    await expect(demo.locator('[data-slot="button-group"]').first()).toHaveCSS("width", "287.219px")
+    await demo.getByRole("button", { name: "More Options" }).click()
+    await expect(demo.getByRole("menuitem", { name: "Mark as Read" })).toBeFocused()
+    await page.keyboard.press("ArrowDown")
+    await expect(demo.getByRole("menuitem", { name: "Archive" })).toBeFocused()
+    await page.keyboard.press("Escape")
+
+    const orientation = page.locator('[data-doc-preview-name="button-group-orientation"] [data-slot="button-group"]')
+    await expect(orientation).toHaveCSS("width", "32px")
+    await expect(orientation).toHaveCSS("height", "64px")
+    await expect(orientation).toHaveAttribute("data-orientation", "vertical")
+
+    const sizeGroups = page.locator('[data-doc-preview-name="button-group-size"] [data-slot="button-group"]')
+    await expect(sizeGroups).toHaveCount(3)
+    await expect(sizeGroups.nth(0)).toHaveCSS("width", "202.078px")
+    await expect(sizeGroups.nth(1)).toHaveCSS("width", "227.453px")
+    await expect(sizeGroups.nth(2)).toHaveCSS("width", "220.891px")
+
+    const nested = page.locator('[data-doc-preview-name="button-group-nested"]')
+    await expect(nested.locator('[data-slot="button-group"]').first()).toHaveCSS("width", "232px")
+    await expect(nested.getByPlaceholder("Send a message...")).toHaveCSS("width", "190px")
+
+    const separator = page.locator('[data-doc-preview-name="button-group-separator"]')
+    await expect(separator.locator('[data-slot="button-group-separator"]')).toHaveCSS("width", "1px")
+    await expect(separator.locator('[data-slot="button-group"]')).toHaveCSS("width", "109.156px")
+    await expect(page.locator('[data-doc-preview-name="button-group-split"] [data-slot="button-group"]')).toHaveCSS("width", "98.7188px")
+
+    const input = page.locator('[data-doc-preview-name="button-group-input"]')
+    await expect(input.getByPlaceholder("Search...")).toHaveCSS("width", "192px")
+    await expect(input.getByRole("button", { name: "Search" })).toHaveCSS("width", "37px")
+
+    const voice = page.locator('[data-doc-preview-name="button-group-input-group"]')
+    const voiceInput = voice.getByRole("textbox", { name: "Message" })
+    const voiceToggle = voice.getByRole("button", { name: "Voice Mode" })
+    await expect(voice.locator('[data-slot="button-group"]').first()).toHaveCSS("width", "255.203px")
+    await voiceToggle.click()
+    await expect(voiceToggle).toHaveAttribute("aria-pressed", "true")
+    await expect(voiceInput).toBeDisabled()
+    await expect(voiceInput).toHaveAttribute("placeholder", "Record and send audio...")
+
+    const dropdown = page.locator('[data-doc-preview-name="button-group-dropdown"]')
+    await expect(dropdown.locator('[data-slot="button-group"]')).toHaveCSS("width", "100.234px")
+    await dropdown.getByRole("button", { name: "More follow options" }).click()
+    await expect(dropdown.getByRole("menuitem", { name: "Mute Conversation" })).toBeFocused()
+    await page.keyboard.press("Escape")
+
+    const currency = page.locator('[data-doc-preview-name="button-group-select"]')
+    await expect(currency.locator('[data-slot="button-group"]').first()).toHaveCSS("width", "281.406px")
+    await currency.getByLabel("Currency").selectOption("€")
+    await expect(currency.getByLabel("Currency")).toHaveValue("€")
+
+    const popover = page.locator('[data-doc-preview-name="button-group-popover"]')
+    await popover.getByRole("button", { name: "Open Popover" }).click()
+    await expect(popover.getByRole("dialog", { name: "Start a new task with Copilot" })).toBeVisible()
+    await expect(popover.getByPlaceholder("I need to...")).toBeVisible()
+    await page.keyboard.press("Escape")
+
+    const rtl = page.locator('[data-doc-preview-name="button-group-rtl"]')
+    await expect(rtl.locator('[data-slot="button-group"]').first()).toHaveCSS("width", "239.078px")
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.getByRole("button", { name: "ארכיון" })).toBeVisible()
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtl.locator('[data-slot="button-group"]').first()).toHaveAttribute("dir", "ltr")
+  })
+
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
     await page.goto("/examples/dashboard")
 

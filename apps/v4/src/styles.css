@@ -2136,6 +2136,13 @@ h1 {
   padding: 0;
 }
 
+.doc-component-card[data-doc-preview-name="button-group-rtl"] .doc-component-preview-stage {
+  display: block;
+  height: 22rem;
+  min-height: 22rem;
+  padding: 0;
+}
+
 .doc-button-row,
 .doc-button-size-row,
 .doc-button-size-row > div,
@@ -2222,8 +2229,27 @@ h1 {
 
 .doc-button-groups { gap: 0.5rem; }
 .doc-button-group { gap: 0; }
+.doc-button-group-size-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2rem;
+}
+.doc-button-group.is-vertical {
+  flex-direction: column;
+  height: fit-content;
+}
+.doc-button-group.is-vertical > [data-fict-host]:first-child .doc-button {
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.doc-button-group.is-vertical > [data-fict-host]:last-child .doc-button {
+  margin-top: 0;
+  margin-inline-start: 0;
+  border-block-start-width: 0;
+  border-radius: 0 0 var(--radius) var(--radius);
+}
 .doc-button-group > .doc-button + .doc-button,
-.doc-button-group > .doc-button-menu > .doc-button { margin-inline-start: -1px; }
+.doc-button-group > .doc-button-menu > .doc-button { margin-inline-start: 0; }
 .doc-button-group > .doc-button:not(:only-child):first-child { border-start-end-radius: 0; border-end-end-radius: 0; }
 .doc-button-group > .doc-button:not(:only-child):last-child,
 .doc-button-group > .doc-button-menu > .doc-button { border-start-start-radius: 0; border-end-start-radius: 0; }
@@ -2236,11 +2262,158 @@ h1 {
   border-end-start-radius: 0;
 }
 .doc-button-group > [data-fict-host] + [data-fict-host] .doc-button {
-  margin-inline-start: -1px;
+  margin-inline-start: 0;
+  border-inline-start-width: 0;
+}
+.doc-button-group > [data-fict-host] + .doc-button-menu > .doc-button,
+.doc-button-group > .doc-button-menu:not(:first-child) > .doc-button {
+  border-inline-start-width: 0;
 }
 .doc-button-menu { display: inline-flex; }
 .doc-button-menu-panel { width: 10rem; }
 .doc-button-menu-panel .ui-menu-item { width: 100%; }
+
+.doc-button-group-separator {
+  position: relative;
+  z-index: 1;
+  width: 1px;
+  height: 1rem;
+  margin-inline: 0;
+  background: var(--border);
+}
+.doc-button-group.is-separator-group > [data-fict-host]:first-child .doc-button {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+.doc-button-group.is-separator-group > [data-fict-host]:last-child .doc-button {
+  border-inline-start-width: 0;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+.doc-button-input-group,
+.doc-button-input-combo,
+.doc-button-currency-group {
+  display: flex;
+  height: 2rem;
+}
+.doc-button-input-group {
+  width: 12rem;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--background);
+}
+.doc-button-input-group input,
+.doc-button-input-combo input,
+.doc-button-currency-group input {
+  min-width: 0;
+  height: 2rem;
+  border: 1px solid var(--border);
+  padding: 0 0.625rem;
+  color: var(--foreground);
+  background: var(--background);
+  font: inherit;
+  font-size: 0.875rem;
+  outline: none;
+}
+.doc-button-input-group input {
+  flex: 1;
+  height: 1.875rem;
+  border: 0;
+  background: transparent;
+}
+.doc-button-input-group > button {
+  display: inline-flex;
+  width: 1.75rem;
+  height: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-md);
+  color: var(--muted-foreground);
+  background: transparent;
+}
+.doc-button-input-group > button svg { width: 1rem; height: 1rem; }
+.doc-button-input-group > button[aria-pressed="true"] { color: #c2410c; background: #ffedd5; }
+.doc-button-input-group input:disabled { opacity: 0.6; }
+.doc-button-groups.is-pill .doc-button,
+.doc-button-groups.is-pill .doc-button-input-group { border-radius: 9999px; }
+.doc-button-groups.is-pill .doc-button-input-group { width: 13.4502rem; }
+.doc-button-groups.is-pill .doc-button-input-group input {
+  width: 186px;
+  height: 2rem;
+  flex: none;
+}
+.doc-button-groups:not(.is-pill) .doc-button-input-group { position: relative; }
+.doc-button-groups:not(.is-pill) .doc-button-input-group input {
+  width: 100%;
+  height: 2rem;
+  flex: none;
+  padding-inline-end: 2.25rem;
+}
+.doc-button-groups:not(.is-pill) .doc-button-input-group > button {
+  position: absolute;
+  inset-inline-end: 1px;
+}
+
+.doc-button-input-combo input {
+  width: 12rem;
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+.doc-button-input-combo > [data-fict-host] .doc-button {
+  margin-inline-start: 0;
+  border-inline-start-width: 0;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+.doc-button-dropdown-trigger {
+  width: 2.1875rem;
+  padding: 0 0.5rem;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+.doc-button-dropdown-panel { width: 11rem; }
+
+.doc-button-currency-group select {
+  width: 50.40625px;
+  height: 2rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius) 0 0 var(--radius);
+  padding: 0 0.625rem;
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-mono);
+}
+.doc-button-currency-group input {
+  width: 191px;
+  margin-inline-start: 0;
+  border-inline-start-width: 0;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.doc-button-popover-panel {
+  display: grid;
+  width: 20rem;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: var(--radius-xl);
+  font-size: 0.875rem;
+}
+.doc-button-popover-panel[hidden] { display: none; }
+.doc-button-popover-panel strong { color: var(--foreground); }
+.doc-button-popover-panel p,
+.doc-button-popover-panel small { margin: 0; color: var(--muted-foreground); }
+.doc-button-popover-panel textarea {
+  min-height: 5rem;
+  resize: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.75rem;
+  color: var(--foreground);
+  background: var(--background);
+  font: inherit;
+}
 
 .doc-component-preview-stage a.doc-button.is-default {
   color: var(--primary-foreground);
@@ -2250,6 +2423,9 @@ h1 {
 .doc-rtl-preview.doc-button-rtl-preview { height: 18rem; align-items: center; }
 .doc-button-rtl-preview[data-lang="ar"] { font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-button-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+.doc-rtl-preview.doc-button-group-rtl-preview { height: 18rem; align-items: center; }
+.doc-button-group-rtl-preview[data-lang="ar"] { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-button-group-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 
 .doc-breadcrumb {
   color: var(--muted-foreground);

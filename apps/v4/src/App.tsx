@@ -4262,6 +4262,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
 
   return family === "button" || name === "button-group-demo" ? (
     <DocButtonPreview name={props.name} />
+  ) : family === "button-group" ? (
+    <DocButtonGroupPreview name={props.name} />
   ) : family === "breadcrumb" ? (
     <DocBreadcrumbPreview name={props.name} />
   ) : family === "badge" ? (
@@ -4448,6 +4450,62 @@ function DocButtonPreview(props: { name: string }) {
   ) : content
 }
 
+function DocButtonGroupPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const isRtl = name === "button-group-rtl"
+  const content = name === "button-group-orientation" ? (
+    <div class="doc-button-group is-vertical" data-slot="button-group" data-orientation="vertical" role="group" aria-label="Media controls">
+      <DocButton label="" variant="outline" size="icon" icon="plus" ariaLabel="Increase" />
+      <DocButton label="" variant="outline" size="icon" icon="minus" ariaLabel="Decrease" />
+    </div>
+  ) : name === "button-group-size" ? (
+    <div class="doc-button-group-size-stack">
+      <div class="doc-button-group" data-slot="button-group" role="group"><DocButton label="Small" variant="outline" size="sm" /><DocButton label="Button" variant="outline" size="sm" /><DocButton label="Group" variant="outline" size="sm" /><DocButton label="" variant="outline" size="icon-sm" icon="plus" /></div>
+      <div class="doc-button-group" data-slot="button-group" role="group"><DocButton label="Default" variant="outline" /><DocButton label="Button" variant="outline" /><DocButton label="Group" variant="outline" /><DocButton label="" variant="outline" size="icon" icon="plus" /></div>
+      <div class="doc-button-group" data-slot="button-group" role="group"><DocButton label="Large" variant="outline" size="lg" /><DocButton label="Button" variant="outline" size="lg" /><DocButton label="Group" variant="outline" size="lg" /><DocButton label="" variant="outline" size="icon-lg" icon="plus" /></div>
+    </div>
+  ) : name === "button-group-nested" ? (
+    <div class="doc-button-groups" data-slot="button-group" role="group">
+      <div class="doc-button-group" data-slot="button-group"><DocButton label="" variant="outline" size="icon" icon="plus" /></div>
+      <div class="doc-button-group" data-slot="button-group"><div class="doc-button-input-group"><input aria-label="Message" placeholder="Send a message..." /><button type="button" aria-label="Voice Mode">{renderDocButtonIcon("audio")}</button></div></div>
+    </div>
+  ) : name === "button-group-separator" ? (
+    <div class="doc-button-group is-separator-group" data-slot="button-group" role="group"><DocButton label="Copy" variant="secondary" size="sm" /><span class="doc-button-group-separator" data-slot="button-group-separator"></span><DocButton label="Paste" variant="secondary" size="sm" /></div>
+  ) : name === "button-group-split" ? (
+    <div class="doc-button-group is-separator-group" data-slot="button-group" role="group"><DocButton label="Button" variant="secondary" /><span class="doc-button-group-separator" data-slot="button-group-separator"></span><DocButton label="" variant="secondary" size="icon" icon="plus" /></div>
+  ) : name === "button-group-input" ? (
+    <div class="doc-button-group doc-button-input-combo" data-slot="button-group" role="group"><input aria-label="Search" placeholder="Search..." /><DocButton label="" variant="outline" icon="search" ariaLabel="Search" /></div>
+  ) : name === "button-group-input-group" ? (
+    <div class="doc-button-groups is-pill" data-slot="button-group" role="group">
+      <div class="doc-button-group" data-slot="button-group"><DocButton label="" variant="outline" size="icon" icon="plus" /></div>
+      <div class="doc-button-group" data-slot="button-group"><div class="doc-button-input-group" data-doc-voice-group><input aria-label="Message" placeholder="Send a message..." /><button type="button" aria-label="Voice Mode" aria-pressed="false" data-doc-voice-toggle>{renderDocButtonIcon("audio")}</button></div></div>
+    </div>
+  ) : name === "button-group-dropdown" ? (
+    <div class="doc-button-group" data-slot="button-group" role="group">
+      <DocButton label="Follow" variant="outline" />
+      <span class="ui-menu doc-button-menu" data-menu><button type="button" class="doc-button is-outline doc-button-dropdown-trigger" data-slot="button" data-variant="outline" data-size="default" data-menu-trigger aria-label="More follow options" aria-haspopup="menu" aria-expanded="false">{renderDocButtonIcon("chevron-down")}</button><div class="ui-menu-panel doc-button-dropdown-panel" data-menu-panel data-menu-side="bottom" data-menu-align="end" role="menu" hidden>{["Mute Conversation", "Mark as Read", "Report Conversation", "Block User", "Share Conversation", "Copy Conversation", "Delete Conversation"].map((label) => <button type="button" class="ui-menu-item" data-menu-item role="menuitem">{label}</button>)}</div></span>
+    </div>
+  ) : name === "button-group-select" ? (
+    <div class="doc-button-groups" data-slot="button-group" role="group">
+      <div class="doc-button-group doc-button-currency-group" data-slot="button-group"><select aria-label="Currency"><option value="$">$</option><option value="€">€</option><option value="£">£</option></select><input aria-label="Amount" placeholder="10.00" inputMode="numeric" /></div>
+      <div class="doc-button-group" data-slot="button-group"><DocButton label="" variant="outline" size="icon" icon="arrow-right" ariaLabel="Send" /></div>
+    </div>
+  ) : name === "button-group-popover" ? (
+    <div class="doc-button-group" data-slot="button-group" role="group">
+      <DocButton label="Copilot" variant="outline" icon="bot" />
+      <span class="ui-menu doc-button-menu" data-menu><button type="button" class="doc-button is-outline is-icon" data-slot="button" data-variant="outline" data-size="icon" data-menu-trigger aria-label="Open Popover" aria-haspopup="dialog" aria-expanded="false">{renderDocButtonIcon("chevron-down")}</button><div class="ui-menu-panel doc-button-popover-panel" data-menu-panel data-menu-side="bottom" data-menu-align="end" role="dialog" aria-label="Start a new task with Copilot" hidden><strong>Start a new task with Copilot</strong><p>Describe your task in natural language.</p><textarea aria-label="Task Description" placeholder="I need to..."></textarea><small>Copilot will open a pull request for review.</small></div></span>
+    </div>
+  ) : (
+    <div class="doc-button-groups" dir="rtl" data-doc-rtl-direction data-slot="button-group" role="group">
+      <div class="doc-button-group" data-slot="button-group"><DocButton label="" variant="outline" size="icon" icon="arrow-left" ariaLabel="Go Back" /></div>
+      <div class="doc-button-group" data-slot="button-group"><DocButton label="أرشفة" labelHe="ארכיון" labelEn="Archive" variant="outline" /><DocButton label="تقرير" labelHe="דוח" labelEn="Report" variant="outline" /></div>
+      <div class="doc-button-group" data-slot="button-group"><DocButton label="تأجيل" labelHe="דחה" labelEn="Snooze" variant="outline" /><span class="ui-menu doc-button-menu" data-menu><button type="button" class="doc-button is-outline is-icon" data-slot="button" data-variant="outline" data-size="icon" data-menu-trigger aria-label="More Options" aria-haspopup="menu" aria-expanded="false">{renderDocButtonIcon("more")}</button><div class="ui-menu-panel doc-button-menu-panel" data-menu-panel data-menu-side="bottom" data-menu-align="end" role="menu" hidden><button type="button" class="ui-menu-item" data-menu-item role="menuitem"><span data-doc-rtl-text data-text-ar="وضع علامة كمقروء" data-text-he="סמן כנקרא" data-text-en="Mark as Read">وضع علامة كمقروء</span></button><button type="button" class="ui-menu-item" data-menu-item role="menuitem"><span data-doc-rtl-text data-text-ar="أرشفة" data-text-he="ארכיון" data-text-en="Archive">أرشفة</span></button><button type="button" class="ui-menu-item is-destructive" data-menu-item role="menuitem"><span data-doc-rtl-text data-text-ar="سلة المهملات" data-text-he="פח" data-text-en="Trash">سلة المهملات</span></button></div></span></div>
+    </div>
+  )
+
+  return isRtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-button-group-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
+}
+
 function DocButton(props: {
   label: string; labelHe?: string; labelEn?: string; variant: DocButtonVariant; size?: DocButtonSize
   icon?: string; endIcon?: string; ariaLabel?: string; disabled?: boolean; rounded?: boolean; asLink?: boolean; href?: string
@@ -4474,6 +4532,16 @@ function renderDocButtonIcon(kind: string) {
     <svg class="doc-button-spinner" viewBox="0 0 24 24" fill="none" data-icon="inline-start" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".25" stroke-width="3"></circle><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path></svg>
   ) : kind === "plus" ? (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+  ) : kind === "minus" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"></path></svg>
+  ) : kind === "search" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20l-4-4"></path></svg>
+  ) : kind === "audio" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4"></path></svg>
+  ) : kind === "bot" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M12 3v4M8 12h.01M16 12h.01M9 16h6"></path></svg>
+  ) : kind === "chevron-down" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9l6 6l6-6"></path></svg>
   ) : kind === "more" ? (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="19" cy="12" r="1.5"></circle></svg>
   ) : kind === "branch" ? (

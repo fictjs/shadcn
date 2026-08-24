@@ -30,6 +30,7 @@ async function initResumableClient(): Promise<void> {
   wireDocAccordions()
   wireDocAlertDialogs()
   wireDocAvatarMenus()
+  wireDocButtonGroups()
   wireShowcaseSliders()
   wireShowcaseCounters()
   wireShowcaseMenus()
@@ -756,6 +757,27 @@ function wireDocAlertDialogs(): void {
   })
 }
 
+function wireDocButtonGroups(): void {
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const toggle = target.closest<HTMLButtonElement>("[data-doc-voice-toggle]")
+    const group = toggle?.closest<HTMLElement>("[data-doc-voice-group]")
+    const input = group?.querySelector<HTMLInputElement>("input")
+    if (!toggle || !input) {
+      return
+    }
+
+    const enabled = toggle.getAttribute("aria-pressed") !== "true"
+    toggle.setAttribute("aria-pressed", enabled ? "true" : "false")
+    input.disabled = enabled
+    input.placeholder = enabled ? "Record and send audio..." : "Send a message..."
+  })
+}
+
 function wireDocAvatarMenus(): void {
   let activeMenu: HTMLElement | null = null
   let activeTrigger: HTMLButtonElement | null = null
@@ -1215,7 +1237,7 @@ function wireShowcaseMenus(): void {
     trigger.setAttribute("aria-expanded", "true")
     positionShowcaseMenu(panel)
     panel.dispatchEvent(new CustomEvent("showcase-menu-open", { bubbles: true }))
-    if (menu.dataset.docBreadcrumbMenu !== undefined) {
+    if (menu.dataset.docBreadcrumbMenu !== undefined || menu.matches(".doc-button-menu")) {
       queueMicrotask(() => panel.querySelector<HTMLElement>("[data-menu-item]")?.focus({ preventScroll: true }))
     }
   }
@@ -1369,7 +1391,7 @@ function wireShowcaseMenus(): void {
   document.addEventListener("keydown", (event) => {
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       const activeItem = document.activeElement instanceof HTMLElement
-        ? document.activeElement.closest<HTMLElement>("[data-doc-breadcrumb-menu] [data-menu-item]")
+        ? document.activeElement.closest<HTMLElement>("[data-doc-breadcrumb-menu] [data-menu-item], .doc-button-menu [data-menu-item]")
         : null
       const panel = activeItem?.closest<HTMLElement>("[data-menu-panel]")
       if (activeItem && panel) {
@@ -1383,7 +1405,7 @@ function wireShowcaseMenus(): void {
     }
 
     if (event.key === "Escape") {
-      const openBreadcrumbMenu = [...document.querySelectorAll<HTMLElement>("[data-doc-breadcrumb-menu]")]
+      const openBreadcrumbMenu = [...document.querySelectorAll<HTMLElement>("[data-doc-breadcrumb-menu], .doc-button-menu")]
         .find((menu) => !menu.querySelector<HTMLElement>(":scope > [data-menu-panel]")?.hidden)
       const trigger = openBreadcrumbMenu?.querySelector<HTMLElement>(":scope > [data-menu-trigger]")
       closeShowcaseMenus()
