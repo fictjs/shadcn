@@ -4259,7 +4259,9 @@ function DocComponentBlock(props: { block: DocContentBlock }) {
 function DocComponentPreviewSurface(props: { family: string; name: string }) {
   const family = untrack(() => props.family)
 
-  return family === "alert-dialog" ? (
+  return family === "aspect-ratio" ? (
+    <DocAspectRatioPreview name={props.name} />
+  ) : family === "alert-dialog" ? (
     <DocAlertDialogPreview name={props.name} />
   ) : family === "alert" ? (
     <DocAlertPreview name={props.name} />
@@ -4356,6 +4358,50 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <p>Registry preview surface for this documentation example.</p>
     </div>
   )
+}
+
+function DocAspectRatioPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const isRtl = name === "aspect-ratio-rtl"
+  const ratioClass =
+    name === "aspect-ratio-square"
+      ? "is-square"
+      : name === "aspect-ratio-portrait"
+        ? "is-portrait"
+        : "is-landscape"
+  const media = (
+    <figure class={`doc-aspect-ratio-figure ${ratioClass}`} dir={isRtl ? "rtl" : "ltr"} data-doc-rtl-direction={isRtl ? "true" : undefined}>
+      <div class="doc-aspect-ratio" data-slot="aspect-ratio">
+        <img src="https://avatar.vercel.sh/shadcn1" alt="Photo" />
+      </div>
+      {isRtl ? (
+        <figcaption
+          data-doc-rtl-text
+          data-text-ar="منظر طبيعي جميل"
+          data-text-he="נוף יפה"
+          data-text-en="Beautiful landscape"
+        >
+          منظر طبيعي جميل
+        </figcaption>
+      ) : null}
+    </figure>
+  )
+
+  return isRtl ? (
+    <div class="doc-rtl-preview-shell">
+      <div class="doc-rtl-preview-toolbar" dir="ltr">
+        <select aria-label="Preview language" value="ar" data-doc-rtl-language>
+          <option value="ar">Arabic (العربية)</option>
+          <option value="he">Hebrew (עברית)</option>
+          <option value="en">English</option>
+        </select>
+        <button type="button" class="doc-rtl-info-button" aria-label="Toggle language information">
+          <InfoIcon />
+        </button>
+      </div>
+      <div class="doc-rtl-preview doc-aspect-ratio-rtl-preview" dir="rtl">{media}</div>
+    </div>
+  ) : media
 }
 
 interface DocAlertDialogEntry {

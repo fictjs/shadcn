@@ -448,6 +448,53 @@ test.describe("shadcn v4 site", () => {
     await dialog.getByRole("button", { name: "ביטול" }).click()
   })
 
+  test("aspect ratio docs match React image geometry and RTL caption", async ({ page }) => {
+    await page.goto("/docs/components/radix/aspect-ratio")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(4)
+    const expectedStageHeights = [288, 288, 384, 448]
+    for (let index = 0; index < expectedStageHeights.length; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS(
+        "height",
+        `${expectedStageHeights[index]}px`,
+      )
+    }
+
+    const expectedImages = [
+      { width: 384, height: 216 },
+      { width: 192, height: 192 },
+      { width: 160, height: 284.4375 },
+      { width: 384, height: 216 },
+    ]
+    for (let index = 0; index < expectedImages.length; index += 1) {
+      const image = previews.nth(index).getByRole("img", { name: "Photo" })
+      const rect = await image.evaluate((element) => {
+        const bounds = element.getBoundingClientRect()
+        return { width: bounds.width, height: bounds.height }
+      })
+      expect(rect.width).toBe(expectedImages[index].width)
+      expect(rect.height).toBe(expectedImages[index].height)
+      await expect(image).toHaveCSS("object-fit", "cover")
+      await expect(image).toHaveCSS("filter", "grayscale(1)")
+    }
+
+    const rtl = page.locator('[data-doc-preview-name="aspect-ratio-rtl"]')
+    await expect(rtl.locator(".doc-aspect-ratio-rtl-preview")).toHaveCSS("height", "384px")
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.locator("figcaption")).toHaveText("נוף יפה")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtl.locator(".doc-aspect-ratio-figure")).toHaveAttribute("dir", "ltr")
+    await expect(rtl.locator("figcaption")).toHaveText("Beautiful landscape")
+
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(previews.first().getByRole("img", { name: "Photo" })).toHaveCSS(
+      "filter",
+      "grayscale(1) brightness(0.2)",
+    )
+  })
+
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
     await page.goto("/examples/dashboard")
 
