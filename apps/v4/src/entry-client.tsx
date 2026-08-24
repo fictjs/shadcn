@@ -1214,12 +1214,17 @@ function wireDashboardTables(): void {
           ? sourceRow.height
           : 0
 
-      row.element.toggleAttribute("data-drag-shifted", offsetY !== 0)
-      row.element.toggleAttribute("data-drag-over", index === overIndex)
       if (offsetY === 0) {
+        row.element.removeAttribute("data-drag-shifted")
         row.element.style.removeProperty("--dashboard-drag-offset-y")
       } else {
+        row.element.dataset.dragShifted = "true"
         row.element.style.setProperty("--dashboard-drag-offset-y", `${offsetY}px`)
+      }
+      if (index === overIndex) {
+        row.element.dataset.dragOver = "true"
+      } else {
+        row.element.removeAttribute("data-drag-over")
       }
     })
   }

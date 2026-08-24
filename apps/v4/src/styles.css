@@ -6799,7 +6799,11 @@ a.ui-item:hover {
 
 .dashboard-data-table tbody tr[data-drag-shifted="true"] {
   transform: translate3d(0, var(--dashboard-drag-offset-y, 0px), 0);
-  transition: transform 180ms ease;
+}
+
+.dashboard-example[data-dashboard-pointer-dragging="true"]
+  .dashboard-data-table tbody tr:not([data-dragging="true"]) {
+  transition: transform 200ms ease;
 }
 
 .dashboard-data-table tbody tr[data-drag-over="true"] {

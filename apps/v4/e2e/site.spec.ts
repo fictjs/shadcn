@@ -573,6 +573,7 @@ test.describe("shadcn v4 site", () => {
     const rowHeaders = page.locator("tbody [data-dashboard-drawer-trigger]")
     const dragHandles = page.locator("[data-dashboard-drag-handle]")
     const firstRow = page.locator("[data-dashboard-order-row]").first()
+    const secondRow = page.locator("[data-dashboard-order-row]").nth(1)
     await expect(rowHeaders.nth(0)).toHaveText("Cover page")
     await dragHandles.nth(0).scrollIntoViewIfNeeded()
 
@@ -587,6 +588,21 @@ test.describe("shadcn v4 site", () => {
     await page.mouse.down()
     await page.mouse.move(
       handleBox!.x + handleBox!.width / 2,
+      handleBox!.y + handleBox!.height / 2 + 35,
+      { steps: 4 },
+    )
+
+    await expect(secondRow).toHaveAttribute("data-drag-shifted", "true")
+    await expect.poll(async () => secondRow.evaluate((row) => getComputedStyle(row).transform))
+      .not.toBe("none")
+    await expect.poll(async () => secondRow.evaluate((row) => (
+      row.getAnimations().some((animation) => (
+        animation instanceof CSSTransition && animation.transitionProperty === "transform"
+      ))
+    ))).toBe(true)
+
+    await page.mouse.move(
+      handleBox!.x + handleBox!.width / 2,
       handleBox!.y + handleBox!.height / 2 + 110,
       { steps: 12 },
     )
@@ -594,7 +610,7 @@ test.describe("shadcn v4 site", () => {
     await expect(firstRow).toHaveAttribute("data-dragging", "true")
     await expect(page.locator("[data-dashboard-order-row]").nth(1)).toHaveAttribute(
       "data-drag-shifted",
-      "",
+      "true",
     )
     const draggedRowBox = await firstRow.boundingBox()
     const draggedTransform = await firstRow.evaluate((row) => getComputedStyle(row).transform)
