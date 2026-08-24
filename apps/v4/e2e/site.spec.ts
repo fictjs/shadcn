@@ -4,6 +4,20 @@ async function waitForClientReady(page: Page) {
   await expect(page.locator("html")).toHaveAttribute("data-client-ready", "true")
 }
 
+async function expectDashboardChromeStable(page: Page) {
+  const toolbar = page.locator(".dashboard-table-toolbar")
+  const tabs = page.locator(".dashboard-tabs-trigger")
+
+  await expect(toolbar.locator("svg")).toHaveCount(4)
+  await expect(tabs).toHaveCount(4)
+  await expect(tabs.nth(0).locator(".dashboard-tab-badge")).toHaveCount(0)
+  await expect(tabs.nth(1).locator(".dashboard-tab-badge")).toHaveText("3")
+  await expect(tabs.nth(2).locator(".dashboard-tab-badge")).toHaveText("2")
+  await expect(tabs.nth(3).locator(".dashboard-tab-badge")).toHaveCount(0)
+  await expect(page.locator("[data-dashboard-view-panel]")).toHaveCount(1)
+  await expect(page.locator("svg.dashboard-chart")).toHaveCount(1)
+}
+
 test.describe("shadcn v4 site", () => {
   test("routes use shadcn/ui page titles", async ({ page }) => {
     await page.goto("/")
@@ -311,6 +325,57 @@ test.describe("shadcn v4 site", () => {
       await expect(page.locator(".dashboard-chart-ticks")).toHaveCount(1)
     }
     await expect(page.locator(".dashboard-chart-ticks text").first()).toBeVisible()
+  })
+
+  test("dashboard resumes each stateful control without duplicating chrome", async ({ page }) => {
+    const cases = [
+      {
+        run: async () => {
+          await page.locator('.dashboard-range-item[data-range="90d"]').click()
+          await expect(page.locator('.dashboard-range-item[data-range="90d"]')).toHaveAttribute(
+            "data-state",
+            "on",
+          )
+          await expect(page.locator('[data-dashboard-view-panel="outline"]')).toBeVisible()
+          await expect(page.locator(".dashboard-data-table")).toHaveCount(1)
+        },
+      },
+      {
+        run: async () => {
+          await page.getByRole("tab", { name: "Past Performance" }).click()
+          await expect(page.locator('[data-dashboard-view-panel="past-performance"]')).toBeVisible()
+        },
+      },
+      {
+        run: async () => {
+          await page.getByRole("button", { name: "Customize Columns" }).click()
+          await page.getByRole("menuitemcheckbox", { name: "reviewer" }).click()
+          await expect(page.locator('th[data-dashboard-column="reviewer"]')).toBeHidden()
+        },
+      },
+      {
+        run: async () => {
+          await page.getByRole("button", { name: "Go to next page" }).click()
+          await expect(page.locator(".dashboard-table-pagination")).toContainText("Page 2 of 7")
+          await expect(page.locator(".dashboard-data-table tbody tr")).toHaveCount(10)
+        },
+      },
+      {
+        run: async () => {
+          await page.getByLabel("Rows per page").selectOption("20")
+          await expect(page.locator(".dashboard-table-pagination")).toContainText("Page 1 of 4")
+          await expect(page.locator(".dashboard-data-table tbody tr")).toHaveCount(20)
+        },
+      },
+    ]
+
+    for (const testCase of cases) {
+      await page.goto("/examples/dashboard")
+      await waitForClientReady(page)
+      await expectDashboardChromeStable(page)
+      await testCase.run()
+      await expectDashboardChromeStable(page)
+    }
   })
 
   test("dashboard compact layout uses the React responsive controls", async ({ page }) => {

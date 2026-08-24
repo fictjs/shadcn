@@ -4,13 +4,18 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@fictjs/runtime@0.33.0':
+    hash: e7zo6jlcjhdxmagt7lhbuwm2zu
+    path: patches/@fictjs__runtime@0.33.0.patch
+
 importers:
 
   .:
     dependencies:
       '@fictjs/runtime':
         specifier: 0.33.0
-        version: 0.33.0
+        version: 0.33.0(patch_hash=e7zo6jlcjhdxmagt7lhbuwm2zu)
       '@fictjs/ssr':
         specifier: 0.33.0
         version: 0.33.0
@@ -32,7 +37,7 @@ importers:
         version: 0.33.0
       '@fictjs/hooks':
         specifier: 0.30.0
-        version: 0.30.0(@fictjs/runtime@0.33.0)
+        version: 0.30.0(@fictjs/runtime@0.33.0(patch_hash=e7zo6jlcjhdxmagt7lhbuwm2zu))
       '@fictjs/vite-plugin':
         specifier: 0.33.0
         version: 0.33.0(vite@7.3.1(@types/node@24.11.0)(jiti@2.6.1)(lightningcss@1.31.1))
@@ -1088,15 +1093,15 @@ snapshots:
       '@fictjs/compiler-win32-arm64-msvc': 0.33.0
       '@fictjs/compiler-win32-x64-msvc': 0.33.0
 
-  '@fictjs/hooks@0.30.0(@fictjs/runtime@0.33.0)':
+  '@fictjs/hooks@0.30.0(@fictjs/runtime@0.33.0(patch_hash=e7zo6jlcjhdxmagt7lhbuwm2zu))':
     dependencies:
-      '@fictjs/runtime': 0.33.0
+      '@fictjs/runtime': 0.33.0(patch_hash=e7zo6jlcjhdxmagt7lhbuwm2zu)
 
-  '@fictjs/runtime@0.33.0': {}
+  '@fictjs/runtime@0.33.0(patch_hash=e7zo6jlcjhdxmagt7lhbuwm2zu)': {}
 
   '@fictjs/ssr@0.33.0':
     dependencies:
-      '@fictjs/runtime': 0.33.0
+      '@fictjs/runtime': 0.33.0(patch_hash=e7zo6jlcjhdxmagt7lhbuwm2zu)
       linkedom: 0.18.12
     transitivePeerDependencies:
       - canvas
@@ -1429,7 +1434,7 @@ snapshots:
 
   fict@0.33.0:
     dependencies:
-      '@fictjs/runtime': 0.33.0
+      '@fictjs/runtime': 0.33.0(patch_hash=e7zo6jlcjhdxmagt7lhbuwm2zu)
 
   finalhandler@2.1.1:
     dependencies:

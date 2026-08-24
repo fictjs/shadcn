@@ -32,5 +32,10 @@
     "@types/node": "^24.3.0",
     "typescript": "^5.9.3",
     "vite": "^7.3.1"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@fictjs/runtime@0.33.0": "patches/@fictjs__runtime@0.33.0.patch"
+    }
   }
 }
