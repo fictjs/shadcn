@@ -4258,8 +4258,11 @@ function DocComponentBlock(props: { block: DocContentBlock }) {
 
 function DocComponentPreviewSurface(props: { family: string; name: string }) {
   const family = untrack(() => props.family)
+  const name = untrack(() => props.name)
 
-  return family === "breadcrumb" ? (
+  return family === "button" || name === "button-group-demo" ? (
+    <DocButtonPreview name={props.name} />
+  ) : family === "breadcrumb" ? (
     <DocBreadcrumbPreview name={props.name} />
   ) : family === "badge" ? (
     <DocBadgePreview name={props.name} />
@@ -4273,7 +4276,7 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocAlertPreview name={props.name} />
   ) : family === "accordion" ? (
     <DocAccordionPreview name={props.name} />
-  ) : family === "button" || family === "button-group" || family === "toggle" || family === "toggle-group" ? (
+  ) : family === "button-group" || family === "toggle" || family === "toggle-group" ? (
     <div class="doc-preview-chip-row">
       <span class="is-primary">Primary</span>
       <span>Outline</span>
@@ -4357,6 +4360,128 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <h4>{formatDisplayLabel(family || "component preview")}</h4>
       <p>Registry preview surface for this documentation example.</p>
     </div>
+  )
+}
+
+type DocButtonVariant = "default" | "outline" | "secondary" | "ghost" | "destructive" | "link"
+type DocButtonSize = "default" | "xs" | "sm" | "lg" | "icon" | "icon-xs" | "icon-sm" | "icon-lg"
+
+function DocButtonPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const isRtl = name === "button-rtl"
+  const simple: Record<string, { label: string; variant: DocButtonVariant }> = {
+    "button-default": { label: "Button", variant: "default" },
+    "button-outline": { label: "Outline", variant: "outline" },
+    "button-secondary": { label: "Secondary", variant: "secondary" },
+    "button-ghost": { label: "Ghost", variant: "ghost" },
+    "button-destructive": { label: "Destructive", variant: "destructive" },
+    "button-link": { label: "Link", variant: "link" },
+  }
+  const entry = simple[name]
+  const content = name === "button-demo" ? (
+    <div class="doc-button-row">
+      <DocButton label="Button" variant="outline" />
+      <DocButton label="" variant="outline" size="icon" icon="arrow-up" ariaLabel="Submit" />
+    </div>
+  ) : name === "button-size" ? (
+    <div class="doc-button-size-row">
+      <div><DocButton label="Extra Small" variant="outline" size="xs" /><DocButton label="" variant="outline" size="icon-xs" icon="arrow-up-right" ariaLabel="Submit" /></div>
+      <div><DocButton label="Small" variant="outline" size="sm" /><DocButton label="" variant="outline" size="icon-sm" icon="arrow-up-right" ariaLabel="Submit" /></div>
+      <div><DocButton label="Default" variant="outline" /><DocButton label="" variant="outline" size="icon" icon="arrow-up-right" ariaLabel="Submit" /></div>
+      <div><DocButton label="Large" variant="outline" size="lg" /><DocButton label="" variant="outline" size="icon-lg" icon="arrow-up-right" ariaLabel="Submit" /></div>
+    </div>
+  ) : entry ? (
+    <DocButton label={entry.label} variant={entry.variant} />
+  ) : name === "button-icon" ? (
+    <DocButton label="" variant="outline" size="icon" icon="circle-arrow" ariaLabel="Submit" />
+  ) : name === "button-with-icon" ? (
+    <DocButton label="New Branch" variant="outline" size="sm" icon="branch" />
+  ) : name === "button-rounded" ? (
+    <DocButton label="" variant="outline" size="icon" icon="arrow-up" rounded ariaLabel="Submit" />
+  ) : name === "button-spinner" ? (
+    <div class="doc-button-row">
+      <DocButton label="Generating" variant="outline" icon="spinner" disabled />
+      <DocButton label="Downloading" variant="secondary" endIcon="spinner" disabled />
+    </div>
+  ) : name === "button-group-demo" ? (
+    <div class="doc-button-groups" data-slot="button-group">
+      <div class="doc-button-group"><DocButton label="" variant="outline" size="icon" icon="arrow-left" ariaLabel="Go Back" /></div>
+      <div class="doc-button-group"><DocButton label="Archive" variant="outline" /><DocButton label="Report" variant="outline" /></div>
+      <div class="doc-button-group">
+        <DocButton label="Snooze" variant="outline" />
+        <span class="ui-menu doc-button-menu" data-menu>
+          <button type="button" class="doc-button is-outline is-icon" data-slot="button" data-variant="outline" data-size="icon" data-menu-trigger aria-label="More Options" aria-haspopup="menu" aria-expanded="false">{renderDocButtonIcon("more")}</button>
+          <div class="ui-menu-panel doc-button-menu-panel" data-menu-panel data-menu-side="bottom" data-menu-align="end" role="menu" hidden>
+            <button type="button" class="ui-menu-item" data-menu-item role="menuitem">Mark as Read</button>
+            <button type="button" class="ui-menu-item" data-menu-item role="menuitem">Archive</button>
+            <span class="doc-avatar-menu-separator" role="separator"></span>
+            <button type="button" class="ui-menu-item" data-menu-item role="menuitem">Snooze</button>
+            <button type="button" class="ui-menu-item" data-menu-item role="menuitem">Add to Calendar</button>
+            <button type="button" class="ui-menu-item" data-menu-item role="menuitem">Add to List</button>
+            <button type="button" class="ui-menu-item" data-menu-item role="menuitem">Label As...</button>
+            <span class="doc-avatar-menu-separator" role="separator"></span>
+            <button type="button" class="ui-menu-item is-destructive" data-menu-item role="menuitem">Trash</button>
+          </div>
+        </span>
+      </div>
+    </div>
+  ) : name === "button-aschild" ? (
+    <DocButton label="Login" variant="default" asLink href="/login" />
+  ) : (
+    <div class="doc-button-row" dir="rtl" data-doc-rtl-direction>
+      <DocButton label="زر" labelHe="כפתור" labelEn="Button" variant="outline" />
+      <DocButton label="حذف" labelHe="מחק" labelEn="Delete" variant="destructive" />
+      <DocButton label="إرسال" labelHe="שלח" labelEn="Submit" variant="outline" endIcon="arrow-right" />
+      <DocButton label="" variant="outline" size="icon" icon="plus" ariaLabel="Add" />
+      <DocButton label="جاري التحميل" labelHe="טוען" labelEn="Loading" variant="secondary" icon="spinner" disabled />
+    </div>
+  )
+
+  return isRtl ? (
+    <div class="doc-rtl-preview-shell">
+      <div class="doc-rtl-preview-toolbar" dir="ltr">
+        <select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select>
+        <button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button>
+      </div>
+      <div class="doc-rtl-preview doc-button-rtl-preview" dir="rtl" data-lang="ar">{content}</div>
+    </div>
+  ) : content
+}
+
+function DocButton(props: {
+  label: string; labelHe?: string; labelEn?: string; variant: DocButtonVariant; size?: DocButtonSize
+  icon?: string; endIcon?: string; ariaLabel?: string; disabled?: boolean; rounded?: boolean; asLink?: boolean; href?: string
+}) {
+  const size = props.size || "default"
+  const icon = untrack(() => props.icon)
+  const endIcon = untrack(() => props.endIcon)
+  const compactStartIcon = icon === "spinner"
+  const className = `doc-button is-${props.variant} is-${size}${props.rounded ? " is-rounded" : ""}${compactStartIcon ? " has-icon-start" : ""}${endIcon ? " has-icon-end" : ""}`
+  const label = props.labelHe && props.labelEn
+    ? <span data-doc-rtl-text data-text-ar={props.label} data-text-he={props.labelHe} data-text-en={props.labelEn}>{props.label}</span>
+    : props.label
+  return props.asLink ? (
+    <a class={className} data-slot="button" data-variant={props.variant} data-size={size} href={props.href}>{label}</a>
+  ) : (
+    <button type="button" class={className} data-slot="button" data-variant={props.variant} data-size={size} aria-label={props.ariaLabel} disabled={props.disabled}>
+      {icon ? renderDocButtonIcon(icon) : null}{label}{endIcon ? renderDocButtonIcon(endIcon) : null}
+    </button>
+  )
+}
+
+function renderDocButtonIcon(kind: string) {
+  return kind === "spinner" ? (
+    <svg class="doc-button-spinner" viewBox="0 0 24 24" fill="none" data-icon="inline-start" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".25" stroke-width="3"></circle><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path></svg>
+  ) : kind === "plus" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+  ) : kind === "more" ? (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="19" cy="12" r="1.5"></circle></svg>
+  ) : kind === "branch" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="6" r="2"></circle><circle cx="6" cy="18" r="2"></circle><circle cx="18" cy="6" r="2"></circle><path d="M6 8v8M8 6h8a2 2 0 0 1 2 2v2c0 4-3 6-7 6H8"></path></svg>
+  ) : kind === "circle-arrow" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="m8 12l4-4l4 4M12 8v8"></path></svg>
+  ) : (
+    <svg class={kind === "arrow-right" ? "doc-button-rtl-arrow" : ""} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={kind === "arrow-left" ? "M19 12H5m6-6l-6 6l6 6" : kind === "arrow-up-right" ? "M7 17L17 7M7 7h10v10" : kind === "arrow-right" ? "M5 12h14m-6-6l6 6l-6 6" : "M12 19V5m-6 6l6-6l6 6"}></path></svg>
   )
 }
 

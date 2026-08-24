@@ -663,6 +663,63 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.getByRole("button", { name: "Components" })).toBeVisible()
   })
 
+  test("button docs match React variants, sizes, icons, groups, links, and RTL behavior", async ({ page }) => {
+    await page.goto("/docs/components/radix/button")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(15)
+    for (let index = 0; index < 14; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(14).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+
+    const demo = page.locator('[data-doc-preview-name="button-demo"]')
+    await expect(demo.getByRole("button", { name: "Button" })).toHaveCSS("width", "65.7188px")
+    await expect(demo.getByRole("button", { name: "Submit" })).toHaveCSS("width", "32px")
+    await expect(demo.getByRole("button", { name: "Submit" })).toHaveCSS("padding", "0px")
+
+    const sizes = page.locator('[data-doc-preview-name="button-size"] [data-slot="button"]')
+    await expect(sizes).toHaveCount(8)
+    const expectedSizes = [[82.2188, 24], [24, 24], [55.7656, 28], [28, 28], [69.9844, 32], [32, 32], [59.4219, 36], [36, 36]]
+    for (let index = 0; index < expectedSizes.length; index += 1) {
+      const rect = await sizes.nth(index).evaluate((element) => element.getBoundingClientRect())
+      expect(rect.width).toBeCloseTo(expectedSizes[index][0], 3)
+      expect(rect.height).toBe(expectedSizes[index][1])
+    }
+
+    await expect(page.locator('[data-doc-preview-name="button-rounded"] [data-slot="button"]')).toHaveCSS("border-radius", "9999px")
+    const spinnerButtons = page.locator('[data-doc-preview-name="button-spinner"] [data-slot="button"]')
+    await expect(spinnerButtons).toHaveCount(2)
+    await expect(spinnerButtons.first()).toBeDisabled()
+    await expect(spinnerButtons.first().locator(".doc-button-spinner")).toHaveCSS("width", "16px")
+
+    const group = page.locator('[data-doc-preview-name="button-group-demo"]')
+    await expect(group.locator('[data-slot="button"]')).toHaveCount(5)
+    await expect(group.getByRole("button", { name: "Archive" })).toHaveCSS("border-top-right-radius", "0px")
+    await expect(group.getByRole("button", { name: "Report" })).toHaveCSS("border-top-left-radius", "0px")
+    const more = group.getByRole("button", { name: "More Options" })
+    await more.click()
+    await expect(group.getByRole("menu")).toBeVisible()
+    await expect(group.getByRole("menuitem", { name: "Mark as Read" })).toBeVisible()
+    await page.keyboard.press("Escape")
+    await expect(group.getByRole("menu")).toBeHidden()
+
+    const asChild = page.locator('[data-doc-preview-name="button-aschild"] [data-slot="button"]')
+    await expect(asChild).toHaveJSProperty("tagName", "A")
+    await expect(asChild).toHaveAttribute("href", "/login")
+    await expect(asChild).toHaveCSS("color", "oklch(0.985 0 0)")
+
+    const rtl = page.locator('[data-doc-preview-name="button-rtl"]')
+    await expect(rtl.locator('[data-slot="button"]')).toHaveCount(5)
+    await expect(rtl.getByRole("button", { name: "زر" })).toHaveCSS("width", "32.625px")
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.getByRole("button", { name: "כפתור" })).toBeVisible()
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtl.locator(".doc-button-row")).toHaveAttribute("dir", "ltr")
+    await expect(rtl.getByRole("button", { name: "Submit" }).locator(".doc-button-rtl-arrow")).toHaveCSS("transform", "none")
+  })
+
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
     await page.goto("/examples/dashboard")
 
