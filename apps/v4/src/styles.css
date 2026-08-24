@@ -2078,10 +2078,244 @@ h1 {
   padding: 0;
 }
 
-.doc-component-card[data-doc-preview-name^="alert-"]:not([data-doc-preview-name="alert-rtl"]) .doc-component-preview-stage {
+.doc-component-card[data-doc-preview-name^="alert-"]:not([data-doc-preview-name^="alert-dialog-"]):not([data-doc-preview-name="alert-rtl"]) .doc-component-preview-stage {
   height: 18rem;
   min-height: 18rem;
   padding: 1.5rem;
+}
+
+.doc-component-card[data-doc-preview-name^="alert-dialog-"]:not([data-doc-preview-name="alert-dialog-rtl"]) .doc-component-preview-stage {
+  height: 14rem;
+  min-height: 14rem;
+}
+
+.doc-component-card[data-doc-preview-name="alert-dialog-rtl"] .doc-component-preview-stage {
+  display: block;
+  height: 18rem;
+  min-height: 18rem;
+  padding: 0;
+}
+
+.doc-alert-dialog-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.doc-alert-dialog-trigger,
+.doc-alert-dialog-cancel,
+.doc-alert-dialog-action {
+  display: inline-flex;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 0.625rem;
+  background: var(--background);
+  color: var(--foreground);
+  padding: 0 0.625rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  white-space: nowrap;
+  cursor: pointer;
+  outline: none;
+}
+
+.doc-alert-dialog-trigger:hover,
+.doc-alert-dialog-cancel:hover {
+  background: var(--muted);
+}
+
+.doc-alert-dialog-trigger:focus-visible,
+.doc-alert-dialog-cancel:focus-visible,
+.doc-alert-dialog-action:focus-visible {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
+}
+
+.doc-alert-dialog-trigger.is-destructive {
+  border-color: transparent;
+  background: color-mix(in oklab, var(--destructive) 10%, transparent);
+  color: var(--destructive);
+}
+
+.doc-alert-dialog-trigger.is-destructive:hover {
+  background: color-mix(in oklab, var(--destructive) 20%, transparent);
+}
+
+.doc-alert-dialog-overlay {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  background: rgb(0 0 0 / 10%);
+  backdrop-filter: blur(2px);
+}
+
+.doc-alert-dialog-content {
+  position: fixed;
+  z-index: 101;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: calc(100% - 2rem);
+  max-width: 20rem;
+  gap: 1rem;
+  border-radius: 0.875rem;
+  background: var(--background);
+  color: var(--foreground);
+  padding: 1rem;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent);
+  transform: translate(-50%, -50%);
+  outline: none;
+  animation: doc-alert-dialog-in 100ms ease-out;
+}
+
+.doc-alert-dialog-header {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  place-items: center;
+  gap: 0.375rem;
+  text-align: center;
+}
+
+.doc-alert-dialog-header[data-has-media="true"] {
+  grid-template-rows: auto auto 1fr;
+}
+
+.doc-alert-dialog-media {
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  border-radius: 0.5rem;
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.doc-alert-dialog-media.is-destructive {
+  background: color-mix(in oklab, var(--destructive) 10%, transparent);
+  color: var(--destructive);
+}
+
+.doc-alert-dialog-media svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.doc-alert-dialog-title,
+.doc-alert-dialog-description {
+  margin: 0;
+}
+
+.doc-alert-dialog-title {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5rem;
+}
+
+.doc-alert-dialog-description {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-wrap: balance;
+}
+
+.doc-alert-dialog-description a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.doc-alert-dialog-footer {
+  display: flex;
+  width: calc(100% + 2rem);
+  flex-direction: column-reverse;
+  gap: 0.5rem;
+  margin: 0 -1rem -1rem;
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 0.875rem 0.875rem;
+  background: color-mix(in oklab, var(--muted) 50%, transparent);
+  padding: 1rem;
+}
+
+.doc-alert-dialog-content[data-size="sm"] .doc-alert-dialog-footer {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.doc-alert-dialog-content[data-size="sm"] .doc-alert-dialog-cancel,
+.doc-alert-dialog-content[data-size="sm"] .doc-alert-dialog-action {
+  width: 100%;
+}
+
+.doc-alert-dialog-action {
+  border-color: transparent;
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.doc-alert-dialog-action:hover {
+  background: color-mix(in oklab, var(--primary) 90%, transparent);
+}
+
+.doc-alert-dialog-action.is-destructive {
+  background: color-mix(in oklab, var(--destructive) 10%, transparent);
+  color: var(--destructive);
+}
+
+.doc-alert-dialog-action.is-destructive:hover {
+  background: color-mix(in oklab, var(--destructive) 20%, transparent);
+}
+
+.doc-alert-dialog-rtl-preview {
+  height: 14rem;
+}
+
+@keyframes doc-alert-dialog-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@media (min-width: 640px) {
+  .doc-alert-dialog-content[data-size="default"] {
+    max-width: 24rem;
+  }
+
+  .doc-alert-dialog-content[data-size="default"] .doc-alert-dialog-header {
+    place-items: start;
+    text-align: start;
+  }
+
+  .doc-alert-dialog-content[data-size="default"] .doc-alert-dialog-header[data-has-media="true"] {
+    grid-template-columns: 2.5rem 1fr;
+    grid-template-rows: auto 1fr;
+    column-gap: 1rem;
+  }
+
+  .doc-alert-dialog-content[data-size="default"] .doc-alert-dialog-media {
+    grid-row: span 2;
+  }
+
+  .doc-alert-dialog-content[data-size="default"] .doc-alert-dialog-title,
+  .doc-alert-dialog-content[data-size="default"] .doc-alert-dialog-description {
+    grid-column: 2;
+  }
+
+  .doc-alert-dialog-content[data-size="default"] .doc-alert-dialog-footer {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
 }
 
 .doc-alert-stack {
@@ -2400,7 +2634,7 @@ h1 {
 }
 
 @media (max-width: 639px) {
-  .doc-component-card[data-doc-preview-name^="alert-"]:not([data-doc-preview-name="alert-rtl"]) .doc-component-preview-stage {
+  .doc-component-card[data-doc-preview-name^="alert-"]:not([data-doc-preview-name^="alert-dialog-"]):not([data-doc-preview-name="alert-rtl"]) .doc-component-preview-stage {
     height: auto;
     min-height: 0;
   }

@@ -380,6 +380,74 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator(".doc-alert-title").first()).toHaveText("Payment successful")
   })
 
+  test("alert dialog docs match React modal sizes and focus behavior", async ({ page }) => {
+    await page.goto("/docs/components/radix/alert-dialog")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(7)
+    for (let index = 0; index < 6; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "224px")
+    }
+    await expect(previews.nth(6).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+
+    const demoTrigger = page.locator('[data-doc-preview-name="alert-dialog-demo"] [data-slot="alert-dialog-trigger"]')
+    expect(Math.round(await demoTrigger.evaluate((element) => element.getBoundingClientRect().width))).toBe(104)
+    await expect(demoTrigger).toHaveCSS("height", "32px")
+    await demoTrigger.click()
+
+    let dialog = page.locator('[data-slot="alert-dialog-content"][data-state="open"]')
+    await expect(dialog).toBeVisible()
+    await expect(dialog).toHaveCSS("width", "384px")
+    await expect(dialog).toHaveCSS("height", "167px")
+    await expect(dialog).toContainText("Are you absolutely sure?")
+    await expect(page.locator('[data-slot="alert-dialog-overlay"][data-state="open"]')).toBeVisible()
+    await expect(page.locator("body")).toHaveCSS("overflow", "hidden")
+    await expect(dialog.getByRole("button", { name: "Cancel" })).toBeFocused()
+
+    await page.keyboard.press("Tab")
+    await expect(dialog.getByRole("button", { name: "Continue" })).toBeFocused()
+    await page.keyboard.press("Tab")
+    await expect(dialog.getByRole("button", { name: "Cancel" })).toBeFocused()
+    await page.keyboard.press("Escape")
+    await expect(dialog).toHaveCount(0)
+    await expect(demoTrigger).toBeFocused()
+
+    const small = page.locator('[data-doc-preview-name="alert-dialog-small"]')
+    await small.getByRole("button", { name: "Show Dialog" }).click()
+    dialog = page.locator('[data-slot="alert-dialog-content"][data-state="open"]')
+    await expect(dialog).toHaveCSS("width", "320px")
+    await expect(dialog).toHaveCSS("height", "167px")
+    await expect(dialog.locator('[data-slot="alert-dialog-footer"] button').first()).toHaveCSS("width", "140px")
+    await dialog.getByRole("button", { name: "Don't allow" }).click()
+
+    const smallMedia = page.locator('[data-doc-preview-name="alert-dialog-small-media"]')
+    await smallMedia.getByRole("button", { name: "Show Dialog" }).click()
+    dialog = page.locator('[data-slot="alert-dialog-content"][data-state="open"]')
+    await expect(dialog).toHaveCSS("width", "320px")
+    await expect(dialog).toHaveCSS("height", "221px")
+    await expect(dialog.locator('[data-slot="alert-dialog-media"]')).toHaveCSS("width", "40px")
+    await dialog.getByRole("button", { name: "Allow", exact: true }).click()
+
+    const destructive = page.locator('[data-doc-preview-name="alert-dialog-destructive"]')
+    await destructive.getByRole("button", { name: "Delete Chat" }).click()
+    dialog = page.locator('[data-slot="alert-dialog-content"][data-state="open"]')
+    await expect(dialog).toHaveCSS("height", "241px")
+    await expect(dialog.getByRole("link", { name: "Settings" })).toBeVisible()
+    await expect(dialog.getByRole("button", { name: "Delete" })).toHaveClass(/is-destructive/)
+    await page.locator('[data-slot="alert-dialog-overlay"][data-state="open"]').click({ position: { x: 10, y: 10 } })
+    await expect(dialog).toBeVisible()
+    await dialog.getByRole("button", { name: "Cancel" }).click()
+
+    const rtl = page.locator('[data-doc-preview-name="alert-dialog-rtl"]')
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await rtl.getByRole("button", { name: "הצג דיאלוג", exact: true }).click()
+    dialog = page.locator('[data-slot="alert-dialog-content"][data-state="open"]')
+    await expect(dialog).toHaveAttribute("dir", "rtl")
+    await expect(dialog).toContainText("האם אתה בטוח לחלוטין?")
+    await dialog.getByRole("button", { name: "ביטול" }).click()
+  })
+
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
     await page.goto("/examples/dashboard")
 

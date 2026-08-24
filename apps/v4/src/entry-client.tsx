@@ -28,6 +28,7 @@ async function initResumableClient(): Promise<void> {
   wireDocTabsFallback()
   wireDocPreviewCode()
   wireDocAccordions()
+  wireDocAlertDialogs()
   wireShowcaseSliders()
   wireShowcaseCounters()
   wireShowcaseMenus()
@@ -644,6 +645,113 @@ function wireDocAccordions(): void {
       }
       setItemState(item, index === 0)
     })
+  })
+}
+
+function wireDocAlertDialogs(): void {
+  const origins = new WeakMap<HTMLElement, { parent: Node; nextSibling: ChildNode | null }>()
+  let activePortal: HTMLElement | null = null
+  let activeTrigger: HTMLButtonElement | null = null
+
+  const closeDialog = (): void => {
+    if (!activePortal) {
+      return
+    }
+
+    const overlay = activePortal.querySelector<HTMLElement>("[data-slot='alert-dialog-overlay']")
+    const content = activePortal.querySelector<HTMLElement>("[data-slot='alert-dialog-content']")
+    if (overlay) {
+      overlay.dataset.state = "closed"
+    }
+    if (content) {
+      content.dataset.state = "closed"
+    }
+    activePortal.hidden = true
+
+    const origin = origins.get(activePortal)
+    if (origin) {
+      origin.parent.insertBefore(activePortal, origin.nextSibling)
+    }
+
+    document.body.style.removeProperty("overflow")
+    const trigger = activeTrigger
+    activePortal = null
+    activeTrigger = null
+    trigger?.focus()
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const trigger = target.closest<HTMLButtonElement>("[data-doc-alert-dialog-trigger]")
+    if (trigger) {
+      const dialogId = trigger.dataset.docAlertDialogTrigger
+      const portal = dialogId
+        ? document.querySelector<HTMLElement>(`[data-doc-alert-dialog="${CSS.escape(dialogId)}"]`)
+        : null
+      if (!portal) {
+        return
+      }
+
+      if (activePortal) {
+        closeDialog()
+      }
+      origins.set(portal, { parent: portal.parentNode as Node, nextSibling: portal.nextSibling })
+      document.body.append(portal)
+      portal.hidden = false
+      activePortal = portal
+      activeTrigger = trigger
+      document.body.style.overflow = "hidden"
+
+      const overlay = portal.querySelector<HTMLElement>("[data-slot='alert-dialog-overlay']")
+      const content = portal.querySelector<HTMLElement>("[data-slot='alert-dialog-content']")
+      if (overlay) {
+        overlay.dataset.state = "open"
+      }
+      if (content) {
+        content.dataset.state = "open"
+      }
+      window.requestAnimationFrame(() => {
+        portal.querySelector<HTMLButtonElement>("[data-slot='alert-dialog-cancel']")?.focus()
+      })
+      return
+    }
+
+    if (target.closest("[data-doc-alert-dialog-close]")) {
+      closeDialog()
+    }
+  })
+
+  document.addEventListener("keydown", (event) => {
+    if (!activePortal) {
+      return
+    }
+    if (event.key === "Escape") {
+      event.preventDefault()
+      closeDialog()
+      return
+    }
+    if (event.key !== "Tab") {
+      return
+    }
+
+    const focusable = [...activePortal.querySelectorAll<HTMLElement>("button:not([disabled])")]
+    if (focusable.length === 0) {
+      return
+    }
+    const currentIndex = focusable.indexOf(document.activeElement as HTMLElement)
+    const nextIndex = event.shiftKey
+      ? currentIndex <= 0
+        ? focusable.length - 1
+        : currentIndex - 1
+      : currentIndex === focusable.length - 1
+        ? 0
+        : currentIndex + 1
+    event.preventDefault()
+    focusable[nextIndex]?.focus()
   })
 }
 

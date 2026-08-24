@@ -4259,7 +4259,9 @@ function DocComponentBlock(props: { block: DocContentBlock }) {
 function DocComponentPreviewSurface(props: { family: string; name: string }) {
   const family = untrack(() => props.family)
 
-  return family === "alert" ? (
+  return family === "alert-dialog" ? (
+    <DocAlertDialogPreview name={props.name} />
+  ) : family === "alert" ? (
     <DocAlertPreview name={props.name} />
   ) : family === "accordion" ? (
     <DocAccordionPreview name={props.name} />
@@ -4352,6 +4354,282 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <div class="doc-preview-card-shell">
       <h4>{formatDisplayLabel(family || "component preview")}</h4>
       <p>Registry preview surface for this documentation example.</p>
+    </div>
+  )
+}
+
+interface DocAlertDialogEntry {
+  trigger: string
+  title: string
+  description: string
+  cancel: string
+  action: string
+  size?: "sm"
+  media?: "share" | "bluetooth" | "trash"
+  destructive?: boolean
+}
+
+const docAlertDialogTranslations: Record<"en" | "ar" | "he", DocAlertDialogEntry[]> = {
+  en: [
+    {
+      trigger: "Show Dialog",
+      title: "Are you absolutely sure?",
+      description:
+        "This action cannot be undone. This will permanently delete your account from our servers.",
+      cancel: "Cancel",
+      action: "Continue",
+    },
+    {
+      trigger: "Show Dialog (sm)",
+      title: "Allow accessory to connect?",
+      description: "Do you want to allow the USB accessory to connect to this device?",
+      cancel: "Don't allow",
+      action: "Allow",
+      size: "sm",
+      media: "bluetooth",
+    },
+  ],
+  ar: [
+    {
+      trigger: "إظهار الحوار",
+      title: "هل أنت متأكد تمامًا؟",
+      description: "لا يمكن التراجع عن هذا الإجراء. سيؤدي هذا إلى حذف حسابك نهائيًا من خوادمنا.",
+      cancel: "إلغاء",
+      action: "متابعة",
+    },
+    {
+      trigger: "إظهار الحوار (صغير)",
+      title: "السماح للملحق بالاتصال؟",
+      description: "هل تريد السماح لملحق USB بالاتصال بهذا الجهاز؟",
+      cancel: "عدم السماح",
+      action: "السماح",
+      size: "sm",
+      media: "bluetooth",
+    },
+  ],
+  he: [
+    {
+      trigger: "הצג דיאלוג",
+      title: "האם אתה בטוח לחלוטין?",
+      description: "פעולה זו לא ניתנת לביטול. זה ימחק לצמיתות את החשבון שלך מהשרתים שלנו.",
+      cancel: "ביטול",
+      action: "המשך",
+    },
+    {
+      trigger: "הצג דיאלוג (קטן)",
+      title: "לאפשר להתקן להתחבר?",
+      description: "האם אתה רוצה לאפשר להתקן USB להתחבר למכשיר זה?",
+      cancel: "אל תאפשר",
+      action: "אפשר",
+      size: "sm",
+      media: "bluetooth",
+    },
+  ],
+}
+
+function DocAlertDialogPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const isRtl = name === "alert-dialog-rtl"
+  const entries: DocAlertDialogEntry[] = isRtl
+    ? docAlertDialogTranslations.ar
+    : name === "alert-dialog-small"
+      ? [
+          {
+            trigger: "Show Dialog",
+            title: "Allow accessory to connect?",
+            description: "Do you want to allow the USB accessory to connect to this device?",
+            cancel: "Don't allow",
+            action: "Allow",
+            size: "sm",
+          },
+        ]
+      : name === "alert-dialog-media"
+        ? [
+            {
+              trigger: "Share Project",
+              title: "Share this project?",
+              description: "Anyone with the link will be able to view and edit this project.",
+              cancel: "Cancel",
+              action: "Share",
+              media: "share",
+            },
+          ]
+        : name === "alert-dialog-small-media"
+          ? [
+              {
+                trigger: "Show Dialog",
+                title: "Allow accessory to connect?",
+                description: "Do you want to allow the USB accessory to connect to this device?",
+                cancel: "Don't allow",
+                action: "Allow",
+                size: "sm",
+                media: "bluetooth",
+              },
+            ]
+          : name === "alert-dialog-destructive"
+            ? [
+                {
+                  trigger: "Delete Chat",
+                  title: "Delete chat?",
+                  description:
+                    "This will permanently delete this chat conversation. View Settings delete any memories saved during this chat.",
+                  cancel: "Cancel",
+                  action: "Delete",
+                  size: "sm",
+                  media: "trash",
+                  destructive: true,
+                },
+              ]
+            : [docAlertDialogTranslations.en[0]]
+
+  const dialogs = (
+    <div class="doc-alert-dialog-preview" dir={isRtl ? "rtl" : "ltr"} data-doc-rtl-direction={isRtl ? "true" : undefined}>
+      {entries.map((entry, index) => {
+        const english = isRtl ? docAlertDialogTranslations.en[index] : undefined
+        const hebrew = isRtl ? docAlertDialogTranslations.he[index] : undefined
+        const dialogId = `doc-${name}-${index}`
+        const titleId = `${dialogId}-title`
+        const descriptionId = `${dialogId}-description`
+        return (
+          <div class="doc-alert-dialog-root" data-slot="alert-dialog" key={dialogId}>
+            <button
+              type="button"
+              class={`doc-alert-dialog-trigger${entry.destructive ? " is-destructive" : ""}`}
+              data-slot="alert-dialog-trigger"
+              data-doc-alert-dialog-trigger={dialogId}
+              data-doc-rtl-text={isRtl ? "true" : undefined}
+              data-text-ar={isRtl ? entry.trigger : undefined}
+              data-text-en={english?.trigger}
+              data-text-he={hebrew?.trigger}
+            >
+              {entry.trigger}
+            </button>
+            <div class="doc-alert-dialog-portal" data-doc-alert-dialog={dialogId} hidden>
+              <div class="doc-alert-dialog-overlay" data-slot="alert-dialog-overlay" data-state="closed"></div>
+              <div
+                class="doc-alert-dialog-content"
+                data-slot="alert-dialog-content"
+                data-size={entry.size || "default"}
+                data-state="closed"
+                data-doc-rtl-direction={isRtl ? "true" : undefined}
+                role="alertdialog"
+                aria-modal="true"
+                aria-labelledby={titleId}
+                aria-describedby={descriptionId}
+                dir={isRtl ? "rtl" : "ltr"}
+              >
+                <div class="doc-alert-dialog-header" data-slot="alert-dialog-header" data-has-media={entry.media ? "true" : "false"}>
+                  {entry.media ? <DocAlertDialogMedia kind={entry.media} destructive={entry.destructive} /> : null}
+                  <h2
+                    id={titleId}
+                    class="doc-alert-dialog-title"
+                    data-slot="alert-dialog-title"
+                    data-doc-rtl-text={isRtl ? "true" : undefined}
+                    data-text-ar={isRtl ? entry.title : undefined}
+                    data-text-en={english?.title}
+                    data-text-he={hebrew?.title}
+                  >
+                    {entry.title}
+                  </h2>
+                  <p
+                    id={descriptionId}
+                    class="doc-alert-dialog-description"
+                    data-slot="alert-dialog-description"
+                    data-doc-rtl-text={isRtl ? "true" : undefined}
+                    data-text-ar={isRtl ? entry.description : undefined}
+                    data-text-en={english?.description}
+                    data-text-he={hebrew?.description}
+                  >
+                    {entry.destructive ? (
+                      <>
+                        This will permanently delete this chat conversation. View <a href="#">Settings</a> delete any
+                        memories saved during this chat.
+                      </>
+                    ) : (
+                      entry.description
+                    )}
+                  </p>
+                </div>
+                <div class="doc-alert-dialog-footer" data-slot="alert-dialog-footer">
+                  <button
+                    type="button"
+                    class="doc-alert-dialog-cancel"
+                    data-slot="alert-dialog-cancel"
+                    data-doc-alert-dialog-close
+                    data-doc-rtl-text={isRtl ? "true" : undefined}
+                    data-text-ar={isRtl ? entry.cancel : undefined}
+                    data-text-en={english?.cancel}
+                    data-text-he={hebrew?.cancel}
+                  >
+                    {entry.cancel}
+                  </button>
+                  <button
+                    type="button"
+                    class={`doc-alert-dialog-action${entry.destructive ? " is-destructive" : ""}`}
+                    data-slot="alert-dialog-action"
+                    data-doc-alert-dialog-close
+                    data-doc-rtl-text={isRtl ? "true" : undefined}
+                    data-text-ar={isRtl ? entry.action : undefined}
+                    data-text-en={english?.action}
+                    data-text-he={hebrew?.action}
+                  >
+                    {entry.action}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+
+  return isRtl ? (
+    <div class="doc-rtl-preview-shell">
+      <div class="doc-rtl-preview-toolbar" dir="ltr">
+        <select aria-label="Preview language" value="ar" data-doc-rtl-language>
+          <option value="ar">Arabic (العربية)</option>
+          <option value="he">Hebrew (עברית)</option>
+          <option value="en">English</option>
+        </select>
+        <button type="button" class="doc-rtl-info-button" aria-label="Toggle language information">
+          <InfoIcon />
+        </button>
+      </div>
+      <div class="doc-rtl-preview doc-alert-dialog-rtl-preview" dir="rtl">{dialogs}</div>
+    </div>
+  ) : dialogs
+}
+
+function DocAlertDialogMedia(props: { kind: NonNullable<DocAlertDialogEntry["media"]>; destructive?: boolean }) {
+  const kind = untrack(() => props.kind)
+  return (
+    <div
+      class={`doc-alert-dialog-media${props.destructive ? " is-destructive" : ""}`}
+      data-slot="alert-dialog-media"
+      aria-hidden="true"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        {kind === "trash" ? (
+          <>
+            <path d="M4 7h16"></path>
+            <path d="M10 11v6"></path>
+            <path d="M14 11v6"></path>
+            <path d="M5 7l1 14h12l1-14"></path>
+            <path d="M9 7V4h6v3"></path>
+          </>
+        ) : kind === "bluetooth" ? (
+          <>
+            <path d="m7 7 10 10-5 4V3l5 4L7 17"></path>
+          </>
+        ) : (
+          <>
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M12 8v8"></path>
+            <path d="M8 12h8"></path>
+          </>
+        )}
+      </svg>
     </div>
   )
 }
