@@ -26,6 +26,7 @@ async function initResumableClient(): Promise<void> {
   wireLayoutManager()
   wireSiteChrome()
   wireDocTabsFallback()
+  wireDocPreviewCode()
   wireShowcaseSliders()
   wireShowcaseCounters()
   wireShowcaseMenus()
@@ -496,6 +497,55 @@ function wireDocTabsFallback(): void {
 
     tabsRoot.querySelectorAll<HTMLElement>(".doc-tab-panel-section").forEach((panelSection) => {
       panelSection.hidden = panelSection.dataset.panelValue !== nextPanelValue
+    })
+  })
+}
+
+function wireDocPreviewCode(): void {
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const toggle = target.closest<HTMLButtonElement>("[data-doc-preview-code-toggle]")
+    if (toggle) {
+      const code = toggle.closest<HTMLElement>(".doc-component-code")
+      const snippet = code?.querySelector<HTMLElement>(".doc-component-snippet")
+      const fullCode = code?.querySelector<HTMLElement>("[data-doc-preview-full-code]")
+      const copy = code?.querySelector<HTMLButtonElement>("[data-doc-preview-code-copy]")
+      if (!code || !snippet || !fullCode || !copy) {
+        return
+      }
+
+      code.dataset.docPreviewCodeExpanded = "true"
+      toggle.setAttribute("aria-expanded", "true")
+      toggle.hidden = true
+      snippet.hidden = true
+      fullCode.hidden = false
+      copy.hidden = false
+      return
+    }
+
+    const copy = target.closest<HTMLButtonElement>("[data-doc-preview-code-copy]")
+    if (!copy) {
+      return
+    }
+
+    const code = copy.closest<HTMLElement>(".doc-component-code")
+      ?.querySelector<HTMLElement>("[data-doc-preview-full-code] code")
+      ?.textContent
+    if (!code || !navigator.clipboard) {
+      return
+    }
+
+    void navigator.clipboard.writeText(code).then(() => {
+      copy.textContent = "Copied"
+      window.setTimeout(() => {
+        if (copy.isConnected) {
+          copy.textContent = "Copy"
+        }
+      }, 1200)
     })
   })
 }

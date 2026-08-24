@@ -1799,7 +1799,7 @@ h1 {
 }
 
 .doc-tabs,
-.doc-component-card {
+.doc-component-card-source {
   border: 1px solid var(--border);
   border-radius: 1rem;
   background: color-mix(in oklab, var(--card) 88%, var(--muted) 12%);
@@ -1906,9 +1906,18 @@ h1 {
   gap: 0.8rem;
 }
 
-.doc-component-card {
+.doc-component-card-source {
   display: grid;
   gap: 0.85rem;
+}
+
+.doc-component-card:not(.doc-component-card-source) {
+  display: block;
+  overflow: hidden;
+  margin: 1rem 0 3rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--card);
 }
 
 .doc-component-head {
@@ -1931,18 +1940,108 @@ h1 {
 .doc-component-preview-stage {
   display: grid;
   place-items: center;
-  min-height: 12rem;
-  border: 1px solid color-mix(in oklab, var(--border) 82%, transparent);
-  border-radius: 0.9rem;
-  background:
-    linear-gradient(180deg, color-mix(in oklab, var(--card) 90%, var(--muted) 10%), var(--card)),
-    radial-gradient(circle at top, color-mix(in oklab, var(--primary) 10%, transparent), transparent 48%);
-  padding: 1rem;
+  height: 18rem;
+  min-height: 18rem;
+  background: var(--background);
+  padding: 2.5rem;
+}
+
+.doc-component-code {
+  position: relative;
+  box-sizing: border-box;
+  min-height: 6.5rem;
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  background: color-mix(in oklab, var(--muted) 35%, var(--card));
+}
+
+.doc-component-code[data-doc-preview-code-expanded="false"]::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--muted) 35%, var(--card)),
+    color-mix(in oklab, var(--muted) 22%, transparent),
+    transparent
+  );
+  content: "";
+  pointer-events: none;
+}
+
+.doc-component-code[data-doc-preview-code-expanded="false"] {
+  height: 6.5rem;
+}
+
+.doc-component-code[data-doc-preview-code-expanded="true"] {
+  min-height: 18rem;
 }
 
 .doc-component-snippet,
+.doc-component-full-code,
 .doc-component-source-code {
   margin: 0;
+}
+
+.doc-component-snippet,
+.doc-component-full-code {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 1rem 1.25rem;
+}
+
+.doc-component-snippet {
+  max-height: 6.5rem;
+  overflow: hidden;
+  padding-right: 7rem;
+}
+
+.doc-component-full-code {
+  max-height: 18rem;
+  overflow: auto;
+  padding-top: 2.5rem;
+}
+
+.doc-body .doc-component-code code {
+  background: transparent;
+  padding: 0;
+  white-space: pre;
+  word-break: normal;
+}
+
+.doc-preview-code-toggle,
+.doc-preview-code-copy {
+  position: absolute;
+  z-index: 1;
+  height: 1.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--background);
+  color: var(--foreground);
+  padding: 0 0.75rem;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.doc-preview-code-toggle {
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  height: 2rem;
+  border-radius: 0.625rem;
+  transform: translate(-50%, calc(-50% - 0.5rem));
+}
+
+.doc-preview-code-copy {
+  top: 0.75rem;
+  right: 1rem;
+}
+
+.doc-preview-code-toggle:hover,
+.doc-preview-code-copy:hover {
+  background: var(--accent);
 }
 
 .doc-preview-avatar-row,

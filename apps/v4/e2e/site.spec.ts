@@ -254,6 +254,38 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".doc-component-card-source .doc-component-source-code").first()).toContainText("Avatar")
   })
 
+  test("component previews match the compact React code card interaction", async ({ page }) => {
+    await page.goto("/docs/components/radix/button")
+
+    const card = page.locator(".doc-component-card:not(.doc-component-card-source)").first()
+    const stage = card.locator(".doc-component-preview-stage")
+    const code = card.locator(".doc-component-code")
+    const snippet = card.locator(".doc-component-snippet")
+    const fullCode = card.locator("[data-doc-preview-full-code]")
+    const copy = card.locator("[data-doc-preview-code-copy]")
+    const toggle = card.getByRole("button", { name: "View Code" })
+
+    await expect(card.locator(".doc-component-head")).toHaveCount(0)
+    await expect(stage).toHaveCSS("height", "288px")
+    await expect(code).toHaveCSS("height", "104px")
+    await expect(snippet).toContainText("import")
+    await expect(fullCode).toBeHidden()
+    await expect(copy).toBeHidden()
+    await expect(code).toHaveAttribute("data-doc-preview-code-expanded", "false")
+
+    const collapsedHeight = await card.evaluate((element) => element.getBoundingClientRect().height)
+    expect(collapsedHeight).toBe(394)
+    await toggle.click()
+
+    await expect(code).toHaveAttribute("data-doc-preview-code-expanded", "true")
+    await expect(toggle).toBeHidden()
+    await expect(snippet).toBeHidden()
+    await expect(fullCode).toBeVisible()
+    await expect(fullCode).toContainText("Button")
+    await expect(copy).toBeVisible()
+    expect(await card.evaluate((element) => element.getBoundingClientRect().height)).toBeGreaterThan(collapsedHeight)
+  })
+
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
     await page.goto("/examples/dashboard")
 

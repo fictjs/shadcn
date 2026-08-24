@@ -2037,7 +2037,7 @@ function CreatePreviewStage(props: { kind: CreateCatalogKind; itemId: string }) 
 
   return props.kind === "component" ? (
     <div class="create-preview-stage create-preview-stage-component">
-      <DocComponentPreviewSurface family={props.itemId} />
+      <DocComponentPreviewSurface family={props.itemId} name={props.itemId} />
     </div>
   ) : props.kind === "example" ? (
     <div class="create-preview-stage create-preview-stage-example">
@@ -4196,44 +4196,67 @@ function DocComponentBlock(props: { block: DocContentBlock }) {
       filePath: block.filePath || "",
       code: block.code || "",
       headingText: block.title || block.filePath || block.text,
+      name: block.name || block.text,
       family: getDocPreviewFamily(block.name || block.text),
-      previewCode: block.code ? truncateDocCode(block.code, 12) : "",
+      previewCode: block.code ? truncateDocCode(block.code, 2) : "",
     }
   })
 
   return (
-    <section class={data.kind === "component-preview" ? "doc-component-card" : "doc-component-card doc-component-card-source"}>
-      <div class="doc-component-head">
-        <div class="doc-component-copy">
-          <p class="eyebrow">{data.kind === "component-preview" ? "Preview" : "Source"}</p>
-          <h3>{data.headingText}</h3>
-        </div>
-        {data.filePath ? <p class="slug">{data.filePath}</p> : null}
-      </div>
-
+    <section
+      class={data.kind === "component-preview" ? "doc-component-card" : "doc-component-card doc-component-card-source"}
+      data-doc-preview-name={data.kind === "component-preview" ? data.name : undefined}
+    >
       {data.kind === "component-preview" ? (
         <>
           <div class="doc-component-preview-stage" dir={data.direction}>
-            <DocComponentPreviewSurface family={data.family} />
+            <DocComponentPreviewSurface family={data.family} name={data.name} />
           </div>
           {data.previewCode ? (
-            <pre class="doc-code doc-component-snippet">
-              <code>{data.previewCode}</code>
-            </pre>
+            <div class="doc-component-code" data-doc-preview-code-expanded="false">
+              <pre class="doc-component-snippet">
+                <code>{data.previewCode}</code>
+              </pre>
+              <button
+                type="button"
+                class="doc-preview-code-toggle"
+                data-doc-preview-code-toggle
+                aria-expanded="false"
+              >
+                View Code
+              </button>
+              <button type="button" class="doc-preview-code-copy" data-doc-preview-code-copy hidden>
+                Copy
+              </button>
+              <pre class="doc-component-full-code" data-doc-preview-full-code hidden>
+                <code>{data.code}</code>
+              </pre>
+            </div>
           ) : null}
         </>
-      ) : data.code ? (
-        <pre class="doc-code doc-component-source-code">
-          <code>{data.code}</code>
-        </pre>
       ) : (
-        <p>Source is not available for this registry entry yet.</p>
+        <>
+          <div class="doc-component-head">
+            <div class="doc-component-copy">
+              <p class="eyebrow">Source</p>
+              <h3>{data.headingText}</h3>
+            </div>
+            {data.filePath ? <p class="slug">{data.filePath}</p> : null}
+          </div>
+          {data.code ? (
+            <pre class="doc-code doc-component-source-code">
+              <code>{data.code}</code>
+            </pre>
+          ) : (
+            <p>Source is not available for this registry entry yet.</p>
+          )}
+        </>
       )}
     </section>
   )
 }
 
-function DocComponentPreviewSurface(props: { family: string }) {
+function DocComponentPreviewSurface(props: { family: string; name: string }) {
   const family = untrack(() => props.family)
 
   return family === "avatar" ? (
