@@ -4262,6 +4262,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
 
   return family === "checkbox" ? (
     <DocCheckboxPreview name={props.name} />
+  ) : family === "direction" && name === "card-rtl" ? (
+    <DocCardPreview name={props.name} />
   ) : family === "dialog" || name.startsWith("dialog-") ? (
     <DocDialogPreview name={props.name} />
   ) : family === "date-picker" || name.startsWith("date-picker-") ? (

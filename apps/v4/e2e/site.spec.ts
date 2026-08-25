@@ -1514,6 +1514,26 @@ test.describe("shadcn v4 site", () => {
     await expect(rtlTrigger).toContainText("Open Dialog")
   })
 
+  test("direction docs reuse the complete RTL card preview instead of a placeholder", async ({ page }) => {
+    await page.goto("/docs/components/base/direction")
+    await waitForClientReady(page)
+
+    const preview = page.locator('.doc-component-card[data-doc-preview-name="card-rtl"]')
+    const card = preview.locator('[data-slot="card"]')
+    await expect(preview).toHaveCount(1)
+    await expect(preview.locator(".doc-component-preview-stage")).toHaveCSS("height", "480px")
+    await expect(card).toHaveCSS("width", "384px")
+    await expect(card).toHaveCSS("height", "357px")
+    await expect(card).toHaveAttribute("dir", "rtl")
+    await expect(preview.getByRole("button", { name: "تسجيل الدخول", exact: true })).toBeVisible()
+    await preview.getByLabel("Preview language").selectOption("he")
+    await expect(preview.getByRole("heading", { name: "התחבר לחשבון שלך" })).toBeVisible()
+    await preview.getByLabel("Preview language").selectOption("en")
+    await expect(card).toHaveAttribute("dir", "ltr")
+    await expect(preview.getByRole("heading", { name: "Login to your account" })).toBeVisible()
+    await expect(preview).not.toContainText("Registry preview surface")
+  })
+
   test("collapsible docs match React geometry, state, keyboard, settings, file tabs, and RTL", async ({ page }) => {
     await page.goto("/docs/components/base/collapsible")
     await waitForClientReady(page)
