@@ -32,6 +32,7 @@ async function initResumableClient(): Promise<void> {
   wireDocComboboxes()
   wireDocCommands()
   wireDocContextMenus()
+  wireDocDataTables()
   wireDocAlertDialogs()
   wireDocAvatarMenus()
   wireDocButtonGroups()
@@ -1329,6 +1330,93 @@ function wireDocContextMenus(): void {
     } else if ((event.key === "Enter" || event.key === " ") && current >= 0) {
       event.preventDefault()
       items[current]?.click()
+    }
+  })
+}
+
+function wireDocDataTables(): void {
+  const setCheckbox = (checkbox: HTMLButtonElement, checked: boolean): void => {
+    checkbox.setAttribute("aria-checked", String(checked))
+    checkbox.dataset.state = checked ? "checked" : "unchecked"
+    const row = checkbox.closest<HTMLTableRowElement>("tr")
+    if (row && checkbox.dataset.docDataSelectRow !== undefined) {
+      if (checked) row.dataset.state = "selected"
+      else delete row.dataset.state
+    }
+  }
+
+  const update = (root: HTMLElement): void => {
+    const filter = root.querySelector<HTMLInputElement>("[data-doc-data-filter]")?.value.trim().toLocaleLowerCase() ?? ""
+    const rows = [...root.querySelectorAll<HTMLTableRowElement>("[data-doc-data-row]")]
+    rows.forEach((row) => {
+      row.hidden = !!filter && !(row.dataset.email ?? "").includes(filter)
+    })
+    const visibleRows = rows.filter((row) => !row.hidden)
+    const empty = root.querySelector<HTMLTableRowElement>("[data-doc-data-empty]")
+    if (empty) empty.hidden = visibleRows.length !== 0
+    const selected = visibleRows.filter((row) => row.querySelector<HTMLButtonElement>("[data-doc-data-select-row]")?.getAttribute("aria-checked") === "true")
+    const summaryValues = root.querySelectorAll<HTMLElement>("[data-doc-data-summary] > strong")
+    if (summaryValues[0]) summaryValues[0].textContent = String(selected.length)
+    if (summaryValues[1]) summaryValues[1].textContent = String(visibleRows.length)
+    const selectAll = root.querySelector<HTMLButtonElement>("[data-doc-data-select-all]")
+    if (selectAll) setCheckbox(selectAll, visibleRows.length > 0 && selected.length === visibleRows.length)
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const root = target.closest<HTMLElement>("[data-doc-data-table]")
+    if (!root) return
+    const selectAll = target.closest<HTMLButtonElement>("[data-doc-data-select-all]")
+    if (selectAll) {
+      const checked = selectAll.getAttribute("aria-checked") !== "true"
+      root.querySelectorAll<HTMLTableRowElement>("[data-doc-data-row]:not([hidden])").forEach((row) => {
+        const checkbox = row.querySelector<HTMLButtonElement>("[data-doc-data-select-row]")
+        if (checkbox) setCheckbox(checkbox, checked)
+      })
+      update(root)
+      return
+    }
+    const rowCheckbox = target.closest<HTMLButtonElement>("[data-doc-data-select-row]")
+    if (rowCheckbox) {
+      setCheckbox(rowCheckbox, rowCheckbox.getAttribute("aria-checked") !== "true")
+      update(root)
+      return
+    }
+    const sort = target.closest<HTMLButtonElement>("[data-doc-data-sort]")
+    if (sort) {
+      const next = root.dataset.sort === "asc" ? "desc" : "asc"
+      root.dataset.sort = next
+      const body = root.querySelector<HTMLTableSectionElement>("tbody")
+      const rows = [...root.querySelectorAll<HTMLTableRowElement>("[data-doc-data-row]")]
+      rows.sort((left, right) => (left.dataset.email ?? "").localeCompare(right.dataset.email ?? "") * (next === "asc" ? 1 : -1))
+      rows.forEach((row) => body?.append(row))
+      const empty = root.querySelector<HTMLTableRowElement>("[data-doc-data-empty]")
+      if (empty) body?.append(empty)
+      return
+    }
+    const column = target.closest<HTMLButtonElement>("[data-doc-data-column]")
+    if (column) {
+      const name = column.dataset.docDataColumn
+      const visible = column.dataset.selected !== "false"
+      column.dataset.selected = String(!visible)
+      column.setAttribute("aria-checked", String(!visible))
+      if (name) root.querySelectorAll<HTMLElement>(`[data-doc-data-col="${CSS.escape(name)}"]`).forEach((cell) => { cell.hidden = visible })
+    }
+  })
+
+  document.addEventListener("input", (event) => {
+    const target = event.target
+    if (target instanceof HTMLInputElement && target.matches("[data-doc-data-filter]")) {
+      const root = target.closest<HTMLElement>("[data-doc-data-table]")
+      if (root) update(root)
+      return
+    }
+    if (target instanceof HTMLSelectElement && target.matches("[data-doc-rtl-language]")) {
+      const root = target.closest<HTMLElement>(".doc-rtl-preview-shell")?.querySelector<HTMLElement>("[data-doc-data-table]")
+      const input = root?.querySelector<HTMLInputElement>("[data-doc-data-filter]")
+      const placeholder = input?.getAttribute(`data-placeholder-${target.value}`)
+      if (input && placeholder) input.placeholder = placeholder
     }
   })
 }
