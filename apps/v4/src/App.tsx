@@ -4268,6 +4268,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocFieldPreview name={props.name} />
   ) : family === "hover-card" || name.startsWith("hover-card-") ? (
     <DocHoverCardPreview name={props.name} />
+  ) : family === "input" ? (
+    <DocInputPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
     <DocEmptyPreview name={props.name} />
   ) : family === "dropdown-menu" || name.startsWith("dropdown-menu-") ? (
@@ -4548,6 +4550,35 @@ function DocHoverCardPreview(props: { name: string }) {
     return <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-hover-rtl-preview" dir="rtl" data-lang="ar"><div class="doc-hover-rtl-grid"><div class="doc-hover-row">{physical.map((item) => <DocHoverCardItem trigger={item[0]} triggerHe={item[1]} triggerEn={item[2]} side={item[3]} delay={10} rtl />)}</div><div class="doc-hover-row">{logical.map((item) => <DocHoverCardItem trigger={item[0]} triggerHe={item[1]} triggerEn={item[2]} side={item[3]} delay={10} rtl />)}</div></div></div></div>
   }
   return <DocHoverCardItem trigger="Hover Here" delay={10} demo />
+}
+
+function DocInputField(props: { id: string; label: string; placeholder: string; description?: string; type?: string; disabled?: boolean; invalid?: boolean; required?: boolean; file?: boolean }) {
+  return (
+    <div class={`doc-field doc-input-width${props.disabled ? " is-disabled" : ""}${props.invalid ? " is-invalid" : ""}`} data-invalid={props.invalid ? "true" : undefined}>
+      <label class="doc-field-label" for={props.id}>{props.label}{props.required ? <span class="doc-input-required">*</span> : null}</label>
+      <input class={`ui-input${props.file ? " doc-input-file" : ""}`} id={props.id} type={props.file ? "file" : props.type || "text"} placeholder={props.file ? undefined : props.placeholder} disabled={props.disabled} aria-invalid={props.invalid ? "true" : undefined} required={props.required} />
+      {props.description ? <p class="doc-field-description">{props.description}</p> : null}
+    </div>
+  )
+}
+
+function DocInputPreview(props: { name: string }) {
+  const variant = untrack(() => props.name.replace("input-", ""))
+  if (variant === "basic") return <input class="ui-input doc-input-width" aria-label="Text" placeholder="Enter text" />
+  if (variant === "field") return <DocInputField id="doc-input-username" label="Username" placeholder="Enter your username" description="Choose a unique username for your account." />
+  if (variant === "fieldgroup") return <div class="doc-field-group doc-input-width"><div class="doc-field"><label class="doc-field-label" for="doc-input-name">Name</label><input class="ui-input" id="doc-input-name" placeholder="Jordan Lee" /></div><div class="doc-field"><label class="doc-field-label" for="doc-input-email">Email</label><input class="ui-input" id="doc-input-email" type="email" placeholder="name@example.com" /><p class="doc-field-description">We'll send updates to this address.</p></div><div class="doc-field is-horizontal doc-field-actions"><button type="reset" class="doc-button is-outline">Reset</button><button type="submit" class="doc-button is-default">Submit</button></div></div>
+  if (variant === "disabled") return <DocInputField id="doc-input-disabled" label="Email" type="email" placeholder="Email" description="This field is currently disabled." disabled />
+  if (variant === "invalid") return <DocInputField id="doc-input-invalid" label="Invalid Input" placeholder="Error" description="This field contains validation errors." invalid />
+  if (variant === "file") return <DocInputField id="doc-input-file" label="Picture" placeholder="" description="Select a picture to upload." file />
+  if (variant === "inline") return <div class="doc-field is-horizontal doc-input-width doc-input-inline"><input class="ui-input" type="search" aria-label="Search" placeholder="Search..." /><button type="button" class="doc-button is-default">Search</button></div>
+  if (variant === "grid") return <div class="doc-field-group doc-input-grid"><div class="doc-field"><label class="doc-field-label" for="doc-first-name">First Name</label><input class="ui-input" id="doc-first-name" placeholder="Jordan" /></div><div class="doc-field"><label class="doc-field-label" for="doc-last-name">Last Name</label><input class="ui-input" id="doc-last-name" placeholder="Lee" /></div></div>
+  if (variant === "required") return <DocInputField id="doc-input-required" label="Required Field" placeholder="This field is required" description="This field must be filled out." required />
+  if (variant === "badge") return <div class="doc-field doc-input-width"><label class="doc-field-label doc-input-badge-label" for="doc-input-webhook">Webhook URL <span class="doc-input-badge">Beta</span></label><input class="ui-input" id="doc-input-webhook" type="url" placeholder="https://api.example.com/webhook" /></div>
+  if (variant === "input-group") return <div class="doc-field doc-input-width"><label class="doc-field-label" for="doc-input-website">Website URL</label><div class="ui-input-group doc-input-group"><input class="ui-input-group-input" id="doc-input-website" placeholder="example.com" /><span class="ui-input-group-addon">https://</span><span class="ui-input-group-addon ui-input-group-addon-end"><InfoIcon /></span></div></div>
+  if (variant === "button-group") return <div class="doc-field doc-input-width"><label class="doc-field-label" for="doc-input-search-group">Search</label><div class="doc-input-button-group" role="group"><input class="ui-input" id="doc-input-search-group" placeholder="Type to search..." /><button type="button" class="doc-button is-outline">Search</button></div></div>
+  if (variant === "form") return <form class="doc-field-form doc-input-form" data-doc-field-form><div class="doc-field-group"><div class="doc-field"><label class="doc-field-label" for="doc-form-name">Name</label><input class="ui-input" id="doc-form-name" placeholder="Evil Rabbit" required /></div><div class="doc-field"><label class="doc-field-label" for="doc-form-email">Email</label><input class="ui-input" id="doc-form-email" type="email" placeholder="john@example.com" /><p class="doc-field-description">We'll never share your email with anyone.</p></div><div class="doc-field-grid is-two"><div class="doc-field"><label class="doc-field-label" for="doc-form-phone">Phone</label><input class="ui-input" id="doc-form-phone" type="tel" placeholder="+1 (555) 123-4567" /></div><div class="doc-field"><label class="doc-field-label" for="doc-form-country">Country</label><UiSelectControl triggerId="doc-form-country" ariaLabel="Country" value="us" shellClass="ui-select-shell-full" options={[{ value: "us", label: "United States" }, { value: "uk", label: "United Kingdom" }, { value: "ca", label: "Canada" }]} /></div></div><div class="doc-field"><label class="doc-field-label" for="doc-form-address">Address</label><input class="ui-input" id="doc-form-address" placeholder="123 Main St" /></div><div class="doc-field is-horizontal doc-field-actions"><button type="button" class="doc-button is-outline">Cancel</button><button type="submit" class="doc-button is-default">Submit</button></div></div></form>
+  if (variant === "rtl") return <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-input-rtl-preview" dir="rtl" data-lang="ar"><div class="doc-field doc-input-width" data-doc-rtl-direction dir="rtl"><label class="doc-field-label" for="doc-input-rtl"><DocFieldText ar="مفتاح API" he="מפתח API" en="API Key" /></label><input class="ui-input" id="doc-input-rtl" type="password" placeholder="sk-..." data-placeholder-ar="sk-..." data-placeholder-he="sk-..." data-placeholder-en="sk-..." dir="rtl" data-doc-rtl-direction /><p class="doc-field-description"><DocFieldText ar="مفتاح API الخاص بك مشفر ومخزن بأمان." he="מפתח ה-API שלך מוצפן ונשמר בצורה מאובטחת." en="Your API key is encrypted and stored securely." /></p></div></div></div>
+  return <DocInputField id="doc-input-api-key" label="API Key" type="password" placeholder="sk-..." description="Your API key is encrypted and stored securely." />
 }
 
 function DocEmptyPreview(props: { name: string }) {

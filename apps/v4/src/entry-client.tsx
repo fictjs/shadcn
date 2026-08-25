@@ -2168,6 +2168,11 @@ function wireDocFields(): void {
   document.addEventListener("click", (event) => {
     const target = event.target
     if (!(target instanceof Element)) return
+    const inputAddon = target.closest<HTMLElement>(".doc-input-group .ui-input-group-addon")
+    if (inputAddon && !target.closest("button")) {
+      inputAddon.closest<HTMLElement>(".doc-input-group")?.querySelector<HTMLInputElement>("input")?.focus()
+      return
+    }
     const row = target.closest<HTMLElement>("[data-doc-field-toggle]")
     if (!row || target.closest(".ui-checkbox, .ui-switch")) return
     const control = row.querySelector<HTMLButtonElement>(".ui-checkbox, .ui-switch")
