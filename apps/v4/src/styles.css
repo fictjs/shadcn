@@ -3746,13 +3746,18 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-checkbox-group .doc-checkbox-field { gap: 0.625rem; }
 .doc-checkbox-group .doc-checkbox-copy strong { font-weight: 400; }
 .doc-checkbox-table { width: 574px; overflow: hidden; }
-.doc-checkbox-table table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.doc-checkbox-table table { width: 100%; border-collapse: collapse; font-size: 0.875rem; line-height: 20px; }
 .doc-checkbox-table th,
-.doc-checkbox-table td { height: 2.0625rem; border-bottom: 1px solid var(--border); padding: 0 0.5rem; text-align: left; white-space: nowrap; }
+.doc-checkbox-table td { border-bottom: 1px solid var(--border); padding: 0 0.5rem; text-align: left; white-space: nowrap; }
+.doc-checkbox-table td { height: 37px; padding: 8px 0 8px 8px; vertical-align: middle; }
+/* Keep the checkbox off the text baseline so rows stay 37px. */
+.doc-checkbox-table th .doc-checkbox-control,
+.doc-checkbox-table td .doc-checkbox-control { vertical-align: middle; }
+.doc-checkbox-table tbody tr:last-child td { border-bottom: 0; }
 .doc-checkbox-table th:first-child,
 .doc-checkbox-table td:first-child { width: 2rem; padding-inline: 0.5rem 0; }
-.doc-checkbox-table th { color: var(--muted-foreground); font-weight: 500; }
-.doc-checkbox-table th { height: 2rem; }
+.doc-checkbox-table th { color: var(--foreground); font-weight: 500; }
+.doc-checkbox-table th { height: 40px; }
 .doc-checkbox-table td strong { font-weight: 500; }
 .doc-checkbox-table tr[data-state="selected"] { background: var(--muted); }
 .doc-rtl-preview.doc-checkbox-rtl-preview { height: 320px; align-items: center; }
