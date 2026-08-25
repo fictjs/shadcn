@@ -61,6 +61,7 @@ async function initResumableClient(): Promise<void> {
   wireDocSonner()
   wireDocSwitches()
   wireDocPreviewTabs()
+  wireDocToggleGroups()
   wireShowcaseMenus()
   wireRtlLocalization()
   wireShowcaseToggles()
@@ -229,6 +230,53 @@ function wireDocPreviewTabs(): void {
     else return
     event.preventDefault()
     select(tabs[next], true)
+  })
+}
+
+function wireDocToggleGroups(): void {
+  const select = (item: HTMLButtonElement, focus = false): void => {
+    const group = item.closest<HTMLElement>("[data-doc-toggle-group]")
+    if (!group || item.disabled) return
+    const multiple = group.dataset.type === "multiple"
+    if (multiple) {
+      item.setAttribute("aria-pressed", item.getAttribute("aria-pressed") === "true" ? "false" : "true")
+      for (const candidate of group.querySelectorAll<HTMLButtonElement>("[data-doc-toggle-group-item]")) {
+        candidate.tabIndex = candidate === item ? 0 : -1
+      }
+    } else {
+      for (const candidate of group.querySelectorAll<HTMLButtonElement>("[data-doc-toggle-group-item]")) {
+        candidate.setAttribute("aria-pressed", candidate === item ? "true" : "false")
+        candidate.tabIndex = candidate === item ? 0 : -1
+      }
+      group.closest<HTMLElement>(".doc-toggle-font-field")?.querySelector<HTMLElement>("[data-doc-toggle-font-output]")?.replaceChildren(`font-${item.dataset.value}`)
+    }
+    if (focus) item.focus()
+  }
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const item = target.closest<HTMLButtonElement>("[data-doc-toggle-group-item]")
+    if (item) select(item)
+  })
+  document.addEventListener("keydown", (event) => {
+    const item = event.target
+    if (!(item instanceof HTMLButtonElement) || !item.matches("[data-doc-toggle-group-item]")) return
+    const group = item.closest<HTMLElement>("[data-doc-toggle-group]")
+    if (!group) return
+    const items = Array.from(group.querySelectorAll<HTMLButtonElement>("[data-doc-toggle-group-item]:not(:disabled)"))
+    const current = items.indexOf(item)
+    const vertical = group.dataset.orientation === "vertical"
+    const rtl = group.dir === "rtl"
+    let next = current
+    if (event.key === "Home") next = 0
+    else if (event.key === "End") next = items.length - 1
+    else if (vertical && event.key === "ArrowDown") next = (current + 1) % items.length
+    else if (vertical && event.key === "ArrowUp") next = (current - 1 + items.length) % items.length
+    else if (!vertical && event.key === "ArrowRight") next = (current + (rtl ? -1 : 1) + items.length) % items.length
+    else if (!vertical && event.key === "ArrowLeft") next = (current + (rtl ? 1 : -1) + items.length) % items.length
+    else return
+    event.preventDefault()
+    items[next].focus()
   })
 }
 

@@ -4325,6 +4325,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocTextareaPreview name={props.name} />
   ) : family === "toggle" ? (
     <DocTogglePreview name={props.name} />
+  ) : family === "toggle-group" ? (
+    <DocToggleGroupPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -5235,8 +5237,8 @@ function DocTextareaPreview(props: { name: string }) {
   return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-textarea-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
-function DocToggleIcon(props: { kind: "bookmark" | "italic" | "bold" }) {
-  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{props.kind === "bookmark" ? <path d="M6 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18l-6-4-6 4z"></path> : props.kind === "italic" ? <><path d="M19 4h-9"></path><path d="M14 20H5"></path><path d="M15 4 9 20"></path></> : <><path d="M6 4h8a4 4 0 0 1 0 8H6z"></path><path d="M6 12h9a4 4 0 0 1 0 8H6z"></path></>}</svg>
+function DocToggleIcon(props: { kind: "bookmark" | "italic" | "bold" | "underline" }) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{props.kind === "bookmark" ? <path d="M6 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18l-6-4-6 4z"></path> : props.kind === "italic" ? <><path d="M19 4h-9"></path><path d="M14 20H5"></path><path d="M15 4 9 20"></path></> : props.kind === "underline" ? <><path d="M6 4v6a6 6 0 0 0 12 0V4"></path><path d="M4 20h16"></path></> : <><path d="M6 4h8a4 4 0 0 1 0 8H6z"></path><path d="M6 12h9a4 4 0 0 1 0 8H6z"></path></>}</svg>
 }
 
 function DocTogglePreview(props: { name: string }) {
@@ -5251,6 +5253,26 @@ function DocTogglePreview(props: { name: string }) {
   else if (rtl) content = toggle(<span data-doc-rtl-text data-text-ar="إشارة مرجعية" data-text-he="סימנייה" data-text-en="Bookmark">إشارة مرجعية</span>, { ariaLabel: "Toggle bookmark", outline: true, size: "sm", icon: "bookmark" })
   else content = toggle("Bookmark", { ariaLabel: "Toggle bookmark", outline: true, size: "sm", icon: "bookmark" })
   return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-toggle-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
+}
+
+type DocToggleGroupItem = { value: string; label?: string; ariaLabel?: string; icon?: "bold" | "italic" | "underline"; pressed?: boolean; disabled?: boolean; labelAr?: string; labelHe?: string }
+
+function DocToggleGroupPreview(props: { name: string }) {
+  const variant = untrack(() => props.name.replace("toggle-group-", ""))
+  const rtl = variant === "rtl"
+  const group = (items: DocToggleGroupItem[], options: { multiple?: boolean; outline?: boolean; size?: "sm" | "default" | "lg"; spacing?: number; vertical?: boolean; disabled?: boolean; font?: boolean } = {}) => <div class={`doc-toggle-group${options.outline ? " is-outline" : ""}${options.vertical ? " is-vertical" : ""}${options.font ? " is-font" : ""} is-${options.size ?? "default"}`} role="group" data-doc-toggle-group data-type={options.multiple ? "multiple" : "single"} data-orientation={options.vertical ? "vertical" : "horizontal"} data-spacing={options.spacing ?? 0} dir={rtl ? "rtl" : "ltr"} data-doc-rtl-direction={rtl ? "true" : undefined}>{items.map((item, index) => <button type="button" class="doc-toggle-group-item" data-doc-toggle-group-item data-value={item.value} aria-label={rtl ? item.labelAr : item.ariaLabel ?? item.label ?? item.value} data-doc-rtl-label={rtl ? "true" : undefined} data-label-ar={item.labelAr} data-label-he={item.labelHe} data-label-en={item.label} aria-pressed={item.pressed ? "true" : "false"} tabIndex={item.pressed || (!items.some((candidate) => candidate.pressed) && index === 0) ? 0 : -1} disabled={options.disabled || item.disabled}>{item.icon ? <DocToggleIcon kind={item.icon} /> : options.font ? <><strong class={`is-${item.value}`}>Aa</strong><small>{item.label}</small></> : rtl ? <span data-doc-rtl-text data-text-ar={item.labelAr} data-text-he={item.labelHe} data-text-en={item.label}>{item.labelAr}</span> : item.label}</button>)}</div>
+  const formatItems: DocToggleGroupItem[] = [{ value: "bold", ariaLabel: "Toggle bold", icon: "bold" }, { value: "italic", ariaLabel: "Toggle italic", icon: "italic" }, { value: "underline", ariaLabel: "Toggle underline", icon: "underline" }]
+  const directionItems: DocToggleGroupItem[] = ["Top", "Bottom", "Left", "Right"].map((label, index) => ({ value: label.toLowerCase(), label, ariaLabel: `Toggle ${label.toLowerCase()}`, pressed: index === 0 }))
+  let content
+  if (variant === "demo") content = group(formatItems, { multiple: true, outline: true })
+  else if (variant === "outline") content = group([{ value: "all", label: "All", pressed: true }, { value: "missed", label: "Missed" }], { outline: true })
+  else if (variant === "sizes") content = <div class="doc-toggle-group-stack">{group(directionItems, { outline: true, size: "sm" })}{group(directionItems, { outline: true })}</div>
+  else if (variant === "spacing") content = group(directionItems, { outline: true, size: "sm", spacing: 2 })
+  else if (variant === "vertical") content = group([{ ...formatItems[0], pressed: true }, { ...formatItems[1], pressed: true }, formatItems[2]], { multiple: true, vertical: true, spacing: 1 })
+  else if (variant === "disabled") content = group(formatItems, { multiple: true, disabled: true })
+  else if (variant === "font-weight-selector") content = <div class="doc-toggle-font-field"><label>Font Weight</label>{group(["light", "normal", "medium", "bold"].map((value) => ({ value, label: value[0].toUpperCase() + value.slice(1), pressed: value === "normal" })), { outline: true, size: "lg", spacing: 2, font: true })}<p>Use <code data-doc-toggle-font-output>font-normal</code> to set the font weight.</p></div>
+  else content = group([{ value: "list", label: "List", labelAr: "قائمة", labelHe: "רשימה", pressed: true }, { value: "grid", label: "Grid", labelAr: "شبكة", labelHe: "רשת" }, { value: "cards", label: "Cards", labelAr: "بطاقات", labelHe: "כרטיסים" }], { outline: true })
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-toggle-group-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
 function DocEmptyPreview(props: { name: string }) {

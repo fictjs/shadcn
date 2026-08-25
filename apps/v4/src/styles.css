@@ -3211,6 +3211,40 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-toggle-letter.is-bold { font-weight: 700; }
 .doc-rtl-preview.doc-toggle-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-toggle-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+
+.doc-component-card[data-doc-preview-name^="toggle-group-"]:not([data-doc-preview-name="toggle-group-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name^="toggle-group-"][data-doc-preview-name="toggle-group-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.doc-toggle-group { display: flex; width: fit-content; gap: 0; }
+.doc-toggle-group[data-spacing="0"] { gap: 0; }
+.doc-toggle-group[data-spacing="1"] { gap: 4px; }
+.doc-toggle-group[data-spacing="2"] { gap: 8px; }
+.doc-toggle-group.is-vertical { flex-direction: column; }
+.doc-toggle-group-item { display: inline-flex; min-width: 32px; height: 32px; align-items: center; justify-content: center; gap: 4px; border: 1px solid transparent; border-radius: 10px; padding: 0 10px; color: var(--foreground); background: transparent; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; outline: none; }
+.doc-toggle-group-item:hover, .doc-toggle-group-item[aria-pressed="true"] { background: var(--accent); }
+.doc-toggle-group.is-outline .doc-toggle-group-item { border-color: var(--border); background: var(--background); }
+.doc-toggle-group[data-spacing="0"] .doc-toggle-group-item + .doc-toggle-group-item { margin-inline-start: -1px; }
+.doc-toggle-group[data-spacing="0"]:not(.is-vertical) .doc-toggle-group-item:not(:first-child) { border-start-start-radius: 0; border-end-start-radius: 0; }
+.doc-toggle-group[data-spacing="0"]:not(.is-vertical) .doc-toggle-group-item:not(:last-child) { border-start-end-radius: 0; border-end-end-radius: 0; }
+.doc-toggle-group.is-sm .doc-toggle-group-item { min-width: 28px; height: 28px; border-radius: 8px; padding-inline: 8px; }
+.doc-toggle-group.is-lg .doc-toggle-group-item { height: 36px; padding-inline: 12px; }
+.doc-toggle-group-item:focus-visible,
+.doc-toggle-group.is-outline .doc-toggle-group-item:focus-visible { position: relative; z-index: 1; border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.doc-toggle-group-item:disabled { cursor: not-allowed; opacity: .5; }
+.doc-toggle-group-item svg { width: 16px; height: 16px; }
+.doc-toggle-group-stack { display: flex; flex-direction: column; gap: 16px; }
+.doc-toggle-font-field { display: grid; gap: 12px; }
+.doc-toggle-font-field > label { font-size: 14px; font-weight: 500; }
+.doc-toggle-group.is-font .doc-toggle-group-item { width: 64px; height: 64px; flex-direction: column; border-radius: 12px; padding: 0; }
+.doc-toggle-group.is-font strong { font-size: 24px; line-height: 24px; }
+.doc-toggle-group.is-font strong.is-light { font-weight: 300; }
+.doc-toggle-group.is-font strong.is-normal { font-weight: 400; }
+.doc-toggle-group.is-font strong.is-medium { font-weight: 500; }
+.doc-toggle-group.is-font strong.is-bold { font-weight: 700; }
+.doc-toggle-group.is-font small { color: var(--muted-foreground); font-size: 12px; line-height: 16px; }
+.doc-toggle-font-field p { margin: 0; color: var(--muted-foreground); font-size: 14px; }
+.doc-toggle-font-field code { border-radius: 6px; padding: 2px 4px; color: var(--foreground); background: var(--muted); }
+.doc-rtl-preview.doc-toggle-group-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-toggle-group-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 .doc-sheet-sides { display: flex; flex-wrap: wrap; gap: 8px; }
 .doc-sheet-sides .doc-button { text-transform: capitalize; }
 .doc-sheet-content { position: fixed; z-index: 151; display: flex; box-sizing: border-box; flex-direction: column; gap: 24px; overflow: hidden; color: var(--foreground); background: var(--background); box-shadow: 0 16px 50px rgb(0 0 0 / 28%); outline: none; }
