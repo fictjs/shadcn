@@ -2467,7 +2467,7 @@ h1 {
 .doc-input-group-custom .ui-input-group-textarea { min-height: 64px; padding: 10px 12px; }
 .doc-input-group-textarea-demo .doc-input-group-shell { height: 292px; }
 .doc-input-group-textarea-demo .ui-input-group-textarea { flex: 1; }
-.doc-input-group-rtl-preview { box-sizing: border-box; height: 480px; padding: 72px 40px; font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-rtl-preview.doc-input-group-rtl-preview { box-sizing: border-box; height: 480px; padding: 72px 40px; font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-input-group-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 .doc-input-group-rtl-preview .doc-input-group-stack { height: 336.25px; }
 .doc-input-group-rtl-preview .doc-field { gap: 8px; }
@@ -3161,7 +3161,7 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-table-action:hover, .doc-table-action:focus-visible { background: var(--accent); outline: none; }
 .doc-table-action:focus-visible { box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
 .doc-table-menu-panel { min-width: 128px; text-align: start; }
-.doc-rtl-preview.doc-table-rtl-preview { box-sizing: border-box; height: 387.5px; align-items: center; padding: 40px; font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-rtl-preview.doc-table-rtl-preview { box-sizing: border-box; height: auto; align-items: center; padding: 40px; font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-table-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 
 .doc-component-card[data-doc-preview-name="tabs-demo"] .doc-component-preview-stage { height: 384px; min-height: 384px; }
@@ -3551,7 +3551,7 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-command-dialog.is-shortcuts .doc-command-surface { height: 176px; }
 .doc-command-dialog.is-scrollable .doc-command-surface { height: 332px; }
 .doc-command-dialog.is-scrollable .doc-command-list { height: 288px; flex: 0 0 288px; }
-.doc-command-rtl-preview { box-sizing: border-box; height: 392px; align-items: center; }
+.doc-rtl-preview.doc-command-rtl-preview { box-sizing: border-box; height: 392px; align-items: center; }
 .doc-command-surface.is-rtl { font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-command-rtl-preview[data-lang="he"] .doc-command-surface { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 .doc-command-surface.is-rtl .doc-command-input > span { order: 2; }
@@ -3718,7 +3718,7 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-checkbox-table th { height: 2rem; }
 .doc-checkbox-table td strong { font-weight: 500; }
 .doc-checkbox-table tr[data-state="selected"] { background: var(--muted); }
-.doc-checkbox-rtl-preview { height: 320px; align-items: center; }
+.doc-rtl-preview.doc-checkbox-rtl-preview { height: 320px; align-items: center; }
 .doc-checkbox-rtl-preview[data-lang="ar"] { font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-checkbox-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 
@@ -3758,7 +3758,7 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-chart-tooltip-guide > div:nth-child(2) { right: 142px; top: 54px; }
 .doc-chart-tooltip-guide > div:nth-child(3) { left: 135px; bottom: 52px; }
 .doc-chart-tooltip-guide > div:nth-child(4) { right: 175px; bottom: 101px; }
-.doc-chart-rtl-preview { height: 368px; align-items: center; }
+.doc-rtl-preview.doc-chart-rtl-preview { height: 368px; align-items: center; }
 .doc-chart-rtl-preview .doc-chart { width: 558px; height: 313.875px; }
 .doc-chart-rtl-preview[data-lang="ar"] { font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-chart-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
@@ -3806,7 +3806,7 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-carousel.is-api .doc-carousel-card { height: 350px; }
 .doc-carousel-api-wrap { width: 320px; }
 .doc-carousel-api-wrap > p { margin: 0; padding: 0.5rem 0; color: var(--muted-foreground); text-align: center; font-size: 0.875rem; }
-.doc-carousel-rtl-preview { height: 28rem; align-items: center; }
+.doc-rtl-preview.doc-carousel-rtl-preview { height: 32rem; align-items: center; }
 .doc-carousel-rtl-preview[data-lang="ar"] { font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-carousel-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 
@@ -3858,7 +3858,7 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-card.is-image .doc-card-header { height: 66px; flex-basis: 66px; }
 .doc-card.is-image .doc-card-footer { height: 65px; flex: 0 0 65px; padding: 1rem 1rem 0.75rem; }
 .doc-card .doc-badge { display: inline-flex; height: 1.375rem; align-items: center; border-radius: var(--radius-md); padding: 0 0.5rem; background: var(--secondary); color: var(--secondary-foreground); font-size: 0.75rem; font-weight: 500; }
-.doc-card-rtl-preview { height: 26rem; align-items: flex-start; }
+.doc-rtl-preview.doc-card-rtl-preview { height: 30rem; align-items: flex-start; }
 .doc-card-rtl-preview[data-lang="ar"] { font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-card-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 
