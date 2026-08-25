@@ -1714,6 +1714,69 @@ test.describe("shadcn v4 site", () => {
     await page.keyboard.press("Escape")
   })
 
+  test("empty docs match React layouts, media, actions, search, backgrounds, and RTL content", async ({ page }) => {
+    await page.goto("/docs/components/base/empty")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(7)
+    for (let index = 0; index < 6; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "384px")
+    }
+    await expect(previews.nth(6).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+    expect((await previews.allInnerTexts()).join(" ")).not.toContain("Registry preview surface")
+
+    const demo = page.locator('[data-doc-preview-name="empty-demo"]')
+    let empty = demo.locator('[data-slot="empty"]')
+    await expect(empty).toHaveCSS("width", "638px")
+    await expect(empty).toHaveCSS("height", "261.5px")
+    await expect(demo.getByRole("heading", { name: "No Projects Yet" })).toBeVisible()
+    await expect(demo.getByRole("button", { name: "Create Project" })).toHaveCSS("height", "32px")
+    await expect(demo.getByRole("link", { name: /Learn More/ })).toBeVisible()
+
+    const outline = page.locator('[data-doc-preview-name="empty-outline"]')
+    empty = outline.locator('[data-slot="empty"]')
+    await expect(empty).toHaveCSS("width", "558px")
+    await expect(empty).toHaveCSS("height", "215.5px")
+    await expect(empty).toHaveCSS("border-top-style", "dashed")
+    await expect(outline.getByRole("button", { name: "Upload Files" })).toHaveCSS("height", "28px")
+
+    const background = page.locator('[data-doc-preview-name="empty-background"] [data-slot="empty"]')
+    await expect(background).toHaveCSS("width", "638px")
+    await expect(background).toHaveCSS("height", "384px")
+    expect(await background.evaluate((element) => getComputedStyle(element).backgroundColor)).not.toBe("rgba(0, 0, 0, 0)")
+
+    const avatar = page.locator('[data-doc-preview-name="empty-avatar"]')
+    await expect(avatar.locator(".doc-empty-avatar")).toHaveCSS("width", "48px")
+    await expect(avatar.locator('[data-slot="empty"]')).toHaveCSS("height", "229.5px")
+    await expect(avatar.getByRole("button", { name: "Leave Message" })).toHaveCSS("height", "28px")
+
+    const avatarGroup = page.locator('[data-doc-preview-name="empty-avatar-group"]')
+    await expect(avatarGroup.locator(".doc-empty-avatar-group img")).toHaveCount(3)
+    await expect(avatarGroup.locator(".doc-empty-avatar-group img").first()).toHaveCSS("width", "48px")
+    await expect(avatarGroup.locator('[data-slot="empty"]')).toHaveCSS("height", "206.75px")
+
+    const inputPreview = page.locator('[data-doc-preview-name="empty-input-group"]')
+    const inputGroup = inputPreview.locator(".doc-empty-input-group")
+    const input = inputPreview.getByRole("searchbox", { name: "Search pages" })
+    await expect(inputGroup).toHaveCSS("width", "288px")
+    await input.fill("installation")
+    await expect(input).toHaveValue("installation")
+    await expect(inputPreview.getByRole("link", { name: "Contact support" })).toBeVisible()
+
+    const rtl = page.locator('[data-doc-preview-name="empty-rtl"]')
+    empty = rtl.locator('[data-slot="empty"]')
+    await expect(empty).toHaveCSS("width", "558px")
+    await expect(empty).toHaveCSS("height", "238.75px")
+    await expect(empty).toHaveAttribute("dir", "rtl")
+    await expect(rtl.getByRole("heading", { name: "لا توجد مشاريع بعد" })).toBeVisible()
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.getByRole("heading", { name: "אין פרויקטים עדיין" })).toBeVisible()
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(empty).toHaveAttribute("dir", "ltr")
+    await expect(rtl.getByRole("button", { name: "Create Project" })).toBeVisible()
+  })
+
   test("direction docs reuse the complete RTL card preview instead of a placeholder", async ({ page }) => {
     await page.goto("/docs/components/base/direction")
     await waitForClientReady(page)

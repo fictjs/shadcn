@@ -4264,6 +4264,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocCheckboxPreview name={props.name} />
   ) : family === "direction" && name === "card-rtl" ? (
     <DocCardPreview name={props.name} />
+  ) : family === "empty" || name.startsWith("empty-") ? (
+    <DocEmptyPreview name={props.name} />
   ) : family === "dropdown-menu" || name.startsWith("dropdown-menu-") ? (
     <DocDropdownMenuPreview name={props.name} />
   ) : family === "drawer" || name.startsWith("drawer-") ? (
@@ -4395,6 +4397,32 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
   )
 }
 
+function DocEmptyPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const variant = name.replace("empty-", "")
+  const rtl = variant === "rtl"
+  const title = rtl ? "لا توجد مشاريع بعد" : variant === "outline" ? "Cloud Storage Empty" : variant === "background" ? "No Notifications" : variant === "avatar" ? "User Offline" : variant === "avatar-group" ? "No Team Members" : variant === "input-group" ? "404 - Not Found" : "No Projects Yet"
+  const description = rtl ? "لم تقم بإنشاء أي مشاريع بعد. ابدأ بإنشاء مشروعك الأول." : variant === "outline" ? "Upload files to your cloud storage to access them anywhere." : variant === "background" ? "You're all caught up. New notifications will appear here." : variant === "avatar" ? "This user is currently offline. You can leave a message to notify them or try again later." : variant === "avatar-group" ? "Invite your team to collaborate on this project." : variant === "input-group" ? "The page you're looking for doesn't exist. Try searching for what you need below." : "You haven't created any projects yet. Get started by creating your first project."
+  const icon = variant === "avatar" ? <div class="doc-empty-avatar"><img src="/avatars/shadcn.jpg" alt="shadcn" /></div> : variant === "avatar-group" ? <div class="doc-empty-avatar-group"><img src="/avatars/shadcn.jpg" alt="shadcn" /><img src="/avatars/02.png" alt="maxleiter" /><img src="/avatars/03.png" alt="evilrabbit" /></div> : variant === "input-group" ? null : <div class="doc-empty-media" data-variant="icon">{renderDocDropdownIcon(variant === "background" ? "bell" : variant === "outline" ? "cloud" : "folder")}</div>
+  const empty = (
+    <div class={`doc-empty is-${variant}`} data-slot="empty" data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}>
+      <div class="doc-empty-header">
+        {icon}
+        <h3 data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "لا توجد مشاريع بعد" : undefined} data-text-he={rtl ? "אין פרויקטים עדיין" : undefined} data-text-en={rtl ? "No Projects Yet" : undefined}>{title}</h3>
+        <p data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "لم تقم بإنشاء أي مشاريع بعد. ابدأ بإنشاء مشروعك الأول." : undefined} data-text-he={rtl ? "עדיין לא יצרת פרויקטים. התחל על ידי יצירת הפרויקט הראשון שלך." : undefined} data-text-en={rtl ? "You haven't created any projects yet. Get started by creating your first project." : undefined}>{description}</p>
+      </div>
+      {variant === "input-group" ? (
+        <div class="doc-empty-content"><label class="doc-empty-input-group">{renderDocButtonIcon("search")}<input type="search" aria-label="Search pages" placeholder="Try searching for pages..." /><kbd>/</kbd></label><p>Need help? <a href="#">Contact support</a></p></div>
+      ) : variant === "demo" || rtl ? (
+        <><div class="doc-empty-content is-row"><button type="button" class="doc-button is-default"><span data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "إنشاء مشروع" : undefined} data-text-he={rtl ? "צור פרויקט" : undefined} data-text-en={rtl ? "Create Project" : undefined}>{rtl ? "إنشاء مشروع" : "Create Project"}</span></button><button type="button" class="doc-button is-outline"><span data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "استيراد مشروع" : undefined} data-text-he={rtl ? "ייבא פרויקט" : undefined} data-text-en={rtl ? "Import Project" : undefined}>{rtl ? "استيراد مشروع" : "Import Project"}</span></button></div><a class="doc-empty-learn" href="#"><span data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "تعرف على المزيد" : undefined} data-text-he={rtl ? "למד עוד" : undefined} data-text-en={rtl ? "Learn More" : undefined}>{rtl ? "تعرف على المزيد" : "Learn More"}</span>{renderDocButtonIcon("arrow-up-right")}</a></>
+      ) : (
+        <div class="doc-empty-content"><button type="button" class={`doc-button ${variant === "outline" || variant === "background" ? "is-outline" : "is-default"}${variant === "outline" || variant === "avatar" || variant === "avatar-group" ? " doc-empty-small-button" : ""}`}>{variant === "outline" ? "Upload Files" : variant === "background" ? <>{renderDocDropdownIcon("refresh")}Refresh</> : variant === "avatar" ? "Leave Message" : <>{renderDocButtonIcon("plus")}Invite Members</>}</button></div>
+      )}
+    </div>
+  )
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-empty-rtl-preview" dir="rtl" data-lang="ar">{empty}</div></div> : empty
+}
+
 type DocDropdownEntry = {
   type?: "item" | "label" | "separator" | "checkbox" | "radio" | "submenu"
   label?: string
@@ -4410,7 +4438,11 @@ type DocDropdownEntry = {
 }
 
 function renderDocDropdownIcon(kind: string) {
-  return kind === "card" ? (
+  return kind === "cloud" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H6a4 4 0 0 1-.5-8A6.5 6.5 0 0 1 18 9.5a4.8 4.8 0 0 1-.5 9.5Z"></path></svg>
+  ) : kind === "refresh" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6v5h-5M4 18v-5h5M6.1 9a7 7 0 0 1 11.5-2.4L20 9M4 15l2.4 2.4A7 7 0 0 0 18 15"></path></svg>
+  ) : kind === "card" ? (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 10h18"></path></svg>
   ) : kind === "settings" ? (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1A8 8 0 0 0 15 6l-.3-2.5h-4L10.4 6a8 8 0 0 0-1.5 1.1l-2.4-1-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1a8 8 0 0 0 1.5 1.1l.3 2.5h4L15 18a8 8 0 0 0 1.5-1.1l2.4 1 2-3.4-2-1.5a7 7 0 0 0 .1-1Z"></path></svg>
