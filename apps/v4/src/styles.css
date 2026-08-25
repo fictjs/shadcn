@@ -3175,13 +3175,14 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-component-card[data-doc-preview-name="table-rtl"] .doc-component-preview-stage { display: block; height: 451.5px; min-height: 451.5px; padding: 0; }
 .doc-table-scroll { width: 100%; overflow: visible; }
 .doc-table { width: 100%; border-collapse: collapse; color: var(--foreground); font-size: 14px; line-height: 20px; }
-.doc-table caption { caption-side: bottom; height: 20px; padding-top: 16px; color: var(--muted-foreground); text-align: start; }
-.doc-table th { height: 40px; padding: 0 8px; color: var(--muted-foreground); font-weight: 500; text-align: start; vertical-align: middle; }
+.doc-table caption { caption-side: bottom; height: 20px; margin-top: 16px; color: var(--muted-foreground); text-align: center; }
+.doc-table th.is-invoice { width: 100px; }
+.doc-table th { height: 40px; padding: 0 8px; color: var(--foreground); font-weight: 500; text-align: start; vertical-align: middle; }
 .doc-table td { height: 37px; padding: 0 8px; border-top: 1px solid var(--border); text-align: start; vertical-align: middle; }
 .doc-table td strong { font-weight: 500; }
 .doc-table .is-numeric { text-align: end; }
 .doc-table tfoot { background: var(--muted); font-weight: 500; }
-.doc-table tfoot td { height: 40px; }
+.doc-table tfoot td { height: auto; padding: 8px; }
 .doc-table tbody tr:hover { background: color-mix(in oklab, var(--muted) 50%, transparent); }
 .doc-table-actions .doc-table-menu { display: inline-flex; position: relative; }
 .doc-table-action { display: inline-flex; width: 32px; height: 32px; align-items: center; justify-content: center; border: 0; border-radius: 8px; color: inherit; background: transparent; font: inherit; letter-spacing: 1px; cursor: pointer; }
