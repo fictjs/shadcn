@@ -2946,6 +2946,75 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator(".doc-progress-indicator")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
+  test("radio group docs match React selection, cards, states, keyboard, and RTL", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/base/radio-group")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(7)
+    for (let index = 0; index < 6; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(6).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+
+    const demo = page.locator('[data-doc-preview-name="radio-group-demo"]')
+    const demoRadios = demo.getByRole("radio")
+    await expect(demoRadios).toHaveCount(3)
+    await expect(demo.locator("label")).toHaveText(["Default", "Comfortable", "Compact"])
+    await expect(demo.getByRole("radio", { name: "Comfortable" })).toBeChecked()
+    await expect(demo.getByRole("radio", { name: "Default" })).not.toBeChecked()
+    await demo.getByRole("radio", { name: "Comfortable" }).focus()
+    await page.keyboard.press("ArrowDown")
+    await expect(demo.getByRole("radio", { name: "Compact" })).toBeChecked()
+    await expect(demo.getByRole("radio", { name: "Compact" })).toBeFocused()
+    await expectFocusRing(demo.getByRole("radio", { name: "Compact" }))
+
+    const description = page.locator('[data-doc-preview-name="radio-group-description"]')
+    await expect(description.locator("small")).toHaveText(["Standard spacing for most use cases.", "More space between elements.", "Minimal spacing for dense layouts."])
+    await description.locator("label").filter({ hasText: "Default" }).click()
+    await expect(description.getByRole("radio", { name: /^Default/ })).toBeChecked()
+
+    const cards = page.locator('[data-doc-preview-name="radio-group-choice-card"]')
+    await expect(cards.locator(".doc-radio-card")).toHaveCount(3)
+    await expect(cards.locator(".doc-radio-card").first()).toHaveCSS("width", "384px")
+    await expect(cards.getByRole("radio", { name: /Plus/ })).toBeChecked()
+    await cards.locator(".doc-radio-card").filter({ hasText: "Pro" }).click()
+    await expect(cards.getByRole("radio", { name: /Pro/ })).toBeChecked()
+
+    const fieldset = page.locator('[data-doc-preview-name="radio-group-fieldset"]')
+    await expect(fieldset.getByRole("group").first()).toContainText("Subscription Plan")
+    await expect(fieldset.getByRole("radio", { name: /Monthly/ })).toBeChecked()
+    await fieldset.getByRole("radio", { name: /Yearly/ }).check()
+    await expect(fieldset.getByRole("radio", { name: /Yearly/ })).toBeChecked()
+
+    const disabled = page.locator('[data-doc-preview-name="radio-group-disabled"]')
+    await expect(disabled.getByRole("radio", { name: "Disabled" })).toBeDisabled()
+    await expect(disabled.getByRole("radio", { name: "Option 2" })).toBeChecked()
+
+    const invalid = page.locator('[data-doc-preview-name="radio-group-invalid"]')
+    await expect(invalid.getByRole("radio")).toHaveCount(3)
+    for (let index = 0; index < 3; index += 1) {
+      await expect(invalid.getByRole("radio").nth(index)).toHaveAttribute("aria-invalid", "true")
+      await expect(invalid.getByRole("radio").nth(index)).not.toHaveCSS("border-color", "rgba(0, 0, 0, 0)")
+    }
+
+    const rtl = page.locator('[data-doc-preview-name="radio-group-rtl"]')
+    const rtlGroup = rtl.getByRole("radiogroup")
+    await expect(rtlGroup).toHaveAttribute("dir", "rtl")
+    await expect(rtl.locator("label > span")).toHaveText(["افتراضي", "مريح", "مضغوط"])
+    await expect(rtl.locator("label > small")).toHaveText(["تباعد قياسي لمعظم حالات الاستخدام.", "مساحة أكبر بين العناصر.", "تباعد أدنى للتخطيطات الكثيفة."])
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.locator("label > span")).toHaveText(["ברירת מחדל", "נוח", "קומפקטי"])
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtlGroup).toHaveAttribute("dir", "ltr")
+    await expect(rtl.locator("label > span")).toHaveText(["Default", "Comfortable", "Compact"])
+
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(page.locator("html")).toHaveClass(/dark/)
+    await expect(rtl.getByRole("radio", { name: /^Comfortable/ })).toBeChecked()
+  })
+
   test("kbd docs match React keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/base/kbd")

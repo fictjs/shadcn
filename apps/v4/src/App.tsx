@@ -4290,6 +4290,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocPopoverPreview name={props.name} />
   ) : family === "progress" ? (
     <DocProgressPreview name={props.name} />
+  ) : family === "radio-group" ? (
+    <DocRadioGroupPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -4932,6 +4934,30 @@ function DocProgressPreview(props: { name: string }) {
   else if (name === "progress-controlled") content = <div class="doc-progress-field" data-slider-scope="doc-progress-control">{progress}<div class="ui-slider doc-progress-slider" data-slider="doc-progress-control" data-slider-min="0" data-slider-max="100" data-slider-step="1" role="group" aria-label="Progress"><span class="ui-slider-track"><span class="ui-slider-range" data-slider-range style="left:0%;right:50%"></span></span><span class="ui-slider-thumb" data-slider-thumb="0" data-slider-value="50" role="slider" tabIndex={0} aria-label="Progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={50} style="left:50%"></span></div></div>
   else content = <div class="doc-progress-field" data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}><label for="progress-upload"><span>{text("تقدم الرفع", "התקדמות העלאה", "Upload progress")}</span><span class="doc-progress-value" data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "٦٦%" : undefined} data-text-he={rtl ? "66%" : undefined} data-text-en={rtl ? "66%" : undefined}>{rtl ? "٦٦%" : "66%"}</span></label>{progress}</div>
   return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-progress-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
+}
+
+function DocRadioGroupPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const variant = name.replace("radio-group-", "")
+  const rtl = variant === "rtl"
+  const text = (ar: string, he: string, en: string) => rtl ? <span data-doc-rtl-text data-text-ar={ar} data-text-he={he} data-text-en={en}>{ar}</span> : en
+  const descriptions = rtl || variant === "description"
+  const items = rtl ? [
+    ["default", "افتراضي", "ברירת מחדל", "Default", "تباعد قياسي لمعظم حالات الاستخدام.", "ריווח סטנדרטי לרוב מקרי השימוש.", "Standard spacing for most use cases."],
+    ["comfortable", "مريح", "נוח", "Comfortable", "مساحة أكبر بين العناصر.", "יותר מקום בין האלמנטים.", "More space between elements."],
+    ["compact", "مضغوط", "קומפקטי", "Compact", "تباعد أدنى للتخطيطات الكثيفة.", "ריווח מינימלי לפריסות צפופות.", "Minimal spacing for dense layouts."],
+  ] : variant === "choice-card" ? [["plus", "Plus", "", "", "For individuals and small teams."], ["pro", "Pro", "", "", "For growing businesses."], ["enterprise", "Enterprise", "", "", "For large teams and enterprises."]] : variant === "fieldset" ? [["monthly", "Monthly ($9.99/month)"], ["yearly", "Yearly ($99.99/year)"], ["lifetime", "Lifetime ($299.99)"]] : variant === "disabled" ? [["option1", "Disabled"], ["option2", "Option 2"], ["option3", "Option 3"]] : variant === "invalid" ? [["email", "Email only"], ["sms", "SMS only"], ["both", "Both Email & SMS"]] : [["default", "Default", "", "", "Standard spacing for most use cases."], ["comfortable", "Comfortable", "", "", "More space between elements."], ["compact", "Compact", "", "", "Minimal spacing for dense layouts."]]
+  const selected = variant === "choice-card" ? "plus" : variant === "fieldset" ? "monthly" : variant === "disabled" ? "option2" : variant === "invalid" ? "email" : "comfortable"
+  const group = <div class={`doc-radio-group is-${variant}`} role="radiogroup" data-doc-radio-group data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}>{items.map((item, index) => {
+    const id = `radio-${variant}-${item[0]}`
+    const disabled = variant === "disabled" && index === 0
+    const label = rtl ? text(item[1] ?? "", item[2] ?? "", item[3] ?? "") : item[1]
+    const description = rtl ? text(item[4] ?? "", item[5] ?? "", item[6] ?? "") : item[4]
+    const input = <input type="radio" name={`radio-${variant}`} id={id} value={item[0]} checked={item[0] === selected} disabled={disabled} aria-invalid={variant === "invalid" ? "true" : undefined} />
+    return variant === "choice-card" ? <label class="doc-radio-card" for={id}><span class="doc-radio-copy"><strong>{label}</strong><small>{description}</small></span>{input}</label> : <div class={`doc-radio-field${disabled ? " is-disabled" : ""}${variant === "invalid" ? " is-invalid" : ""}`}>{input}<label for={id}><span>{label}</span>{descriptions ? <small>{description}</small> : null}</label></div>
+  })}</div>
+  const content = variant === "fieldset" || variant === "invalid" ? <fieldset class="doc-radio-fieldset"><legend>{variant === "invalid" ? "Notification Preferences" : "Subscription Plan"}</legend><p>{variant === "invalid" ? "Choose how you want to receive notifications." : "Yearly and lifetime plans offer significant savings."}</p>{group}</fieldset> : group
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-radio-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
 function DocEmptyPreview(props: { name: string }) {

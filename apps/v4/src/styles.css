@@ -2810,6 +2810,38 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-progress-rtl-preview[data-lang="he"] .doc-progress-field { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 .doc-progress-field[dir="rtl"] .doc-progress { transform: rotate(180deg); }
 
+.doc-component-card[data-doc-preview-name^="radio-group-"]:not([data-doc-preview-name="radio-group-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="radio-group-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.doc-radio-group { display: grid; width: fit-content; gap: 12px; color: var(--foreground); }
+.doc-radio-field { display: flex; align-items: flex-start; gap: 12px; }
+.doc-radio-field > input,
+.doc-radio-card > input { box-sizing: border-box; width: 16px; height: 16px; flex: 0 0 16px; appearance: none; border: 1px solid var(--input); border-radius: 999px; margin: 2px 0 0; background: transparent; outline: none; }
+.doc-radio-field > input:checked,
+.doc-radio-card > input:checked { border: 5px solid var(--primary); }
+.doc-radio-field > input:hover:not(:disabled),
+.doc-radio-card > input:hover:not(:disabled) { border-color: var(--ring); }
+.doc-radio-field > input:focus-visible,
+.doc-radio-card > input:focus-visible { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.doc-radio-field > input:disabled { cursor: not-allowed; opacity: 0.5; }
+.doc-radio-field > label { display: grid; gap: 2px; font-size: 14px; font-weight: 500; line-height: 20px; }
+.doc-radio-field label small,
+.doc-radio-copy small { color: var(--muted-foreground); font-size: 14px; font-weight: 400; line-height: 20px; }
+.doc-radio-field.is-disabled label { color: var(--muted-foreground); opacity: 0.5; }
+.doc-radio-field.is-invalid label { color: var(--destructive); }
+.doc-radio-field.is-invalid input { border-color: var(--destructive); }
+.doc-radio-group.is-description,
+.doc-radio-group.is-rtl { gap: 16px; }
+.doc-radio-card { display: flex; box-sizing: border-box; width: 384px; align-items: center; justify-content: space-between; gap: 16px; border: 1px solid var(--border); border-radius: 10px; padding: 16px; cursor: pointer; }
+.doc-radio-card:has(input:checked) { border-color: var(--primary); }
+.doc-radio-copy { display: grid; gap: 2px; }
+.doc-radio-copy strong { font-size: 14px; font-weight: 500; line-height: 20px; }
+.doc-radio-fieldset { width: 320px; border: 0; margin: 0; padding: 0; color: var(--foreground); }
+.doc-radio-fieldset legend { margin: 0 0 4px; padding: 0; font-size: 14px; font-weight: 500; line-height: 20px; }
+.doc-radio-fieldset > p { margin: 0 0 16px; color: var(--muted-foreground); font-size: 14px; line-height: 20px; }
+.doc-rtl-preview.doc-radio-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; }
+.doc-radio-rtl-preview .doc-radio-group { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-radio-rtl-preview[data-lang="he"] .doc-radio-group { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+
 .doc-component-card[data-doc-preview-name^="empty-"]:not([data-doc-preview-name="empty-rtl"]) .doc-component-preview-stage { height: 384px; min-height: 384px; }
 .doc-component-card[data-doc-preview-name="empty-demo"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="empty-background"] .doc-component-preview-stage,
