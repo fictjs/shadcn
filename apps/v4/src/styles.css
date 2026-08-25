@@ -2794,6 +2794,22 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-popover-rtl-preview[data-lang="he"] .doc-popover-rtl-group { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 .doc-popover-panel.is-rtl { width: 320px; direction: inherit; text-align: start; }
 
+.doc-component-card[data-doc-preview-name^="progress-"]:not([data-doc-preview-name="progress-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="progress-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.doc-progress { position: relative; width: 100%; height: 8px; overflow: hidden; border-radius: 999px; background: color-mix(in oklab, var(--primary) 20%, transparent); }
+.doc-progress-indicator { display: block; width: 100%; height: 100%; border-radius: inherit; background: var(--primary); transition: transform 300ms ease; }
+.doc-progress-demo { width: 60%; }
+.doc-progress-field { display: flex; width: 100%; max-width: 384px; flex-direction: column; gap: 12px; }
+.doc-progress-field > label { display: flex; align-items: center; font-size: 14px; font-weight: 500; line-height: 20px; }
+.doc-progress-value { margin-inline-start: auto; }
+.doc-progress-slider { height: 16px; margin-top: 4px; }
+.doc-progress-slider .ui-slider-track { height: 4px; }
+.doc-progress-slider .ui-slider-thumb { width: 16px; height: 16px; }
+.doc-rtl-preview.doc-progress-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; }
+.doc-progress-rtl-preview .doc-progress-field { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-progress-rtl-preview[data-lang="he"] .doc-progress-field { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+.doc-progress-field[dir="rtl"] .doc-progress { transform: rotate(180deg); }
+
 .doc-component-card[data-doc-preview-name^="empty-"]:not([data-doc-preview-name="empty-rtl"]) .doc-component-preview-stage { height: 384px; min-height: 384px; }
 .doc-component-card[data-doc-preview-name="empty-demo"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="empty-background"] .doc-component-preview-stage,

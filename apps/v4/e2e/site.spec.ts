@@ -2892,6 +2892,60 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.getByRole("dialog")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
+  test("progress docs match React values, labels, controlled slider, animation, and RTL", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/base/progress")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(4)
+    for (let index = 0; index < 3; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(3).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+
+    const demo = page.locator('[data-doc-preview-name="progress-demo"]')
+    const demoProgress = demo.getByRole("progressbar")
+    await expect(demo.locator(".doc-progress-demo")).toHaveCSS("width", "334.797px")
+    await expect(demoProgress).toHaveCSS("height", "8px")
+    await expect(demoProgress).toHaveAttribute("aria-valuemin", "0")
+    await expect(demoProgress).toHaveAttribute("aria-valuemax", "100")
+    await expect(demoProgress).toHaveAttribute("aria-valuenow", "66", { timeout: 1500 })
+    await expect(demo.locator(".doc-progress-indicator")).toHaveAttribute("style", /translateX\(-34%\)/)
+
+    const label = page.locator('[data-doc-preview-name="progress-label"]')
+    await expect(label.locator(".doc-progress-field")).toHaveCSS("width", "384px")
+    await expect(label.locator("label")).toHaveText("Upload progress66%")
+    await expect(label.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "66")
+
+    const controlled = page.locator('[data-doc-preview-name="progress-controlled"]')
+    const slider = controlled.getByRole("slider", { name: "Progress" })
+    const controlledProgress = controlled.getByRole("progressbar")
+    await expect(controlled.locator(".doc-progress-field")).toHaveCSS("gap", "12px")
+    await expect(slider).toHaveAttribute("aria-valuenow", "50")
+    await expect(controlledProgress).toHaveAttribute("aria-valuenow", "50")
+    await slider.focus()
+    await page.keyboard.press("ArrowRight")
+    await expect(slider).toHaveAttribute("aria-valuenow", "51")
+    await expect(controlledProgress).toHaveAttribute("aria-valuenow", "51")
+    await expect(controlled.locator(".doc-progress-indicator")).toHaveAttribute("style", /translateX\(-49%\)/)
+
+    const rtl = page.locator('[data-doc-preview-name="progress-rtl"]')
+    const rtlField = rtl.locator(".doc-progress-field")
+    await expect(rtlField).toHaveAttribute("dir", "rtl")
+    await expect(rtl.locator("label")).toHaveText("تقدم الرفع٦٦%")
+    await expect(rtl.getByRole("progressbar")).toHaveCSS("transform", /matrix\(-1/)
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.locator("label")).toHaveText("התקדמות העלאה66%")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtlField).toHaveAttribute("dir", "ltr")
+    await expect(rtl.locator("label")).toHaveText("Upload progress66%")
+
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(page.locator("html")).toHaveClass(/dark/)
+    await expect(rtl.locator(".doc-progress-indicator")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+  })
+
   test("kbd docs match React keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/base/kbd")

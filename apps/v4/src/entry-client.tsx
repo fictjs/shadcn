@@ -54,6 +54,7 @@ async function initResumableClient(): Promise<void> {
   wireDocNavigationMenus()
   wireDocPaginationSelects()
   wireDocPopovers()
+  wireDocProgress()
   wireShowcaseMenus()
   wireRtlLocalization()
   wireShowcaseToggles()
@@ -2579,6 +2580,12 @@ function wireShowcaseSliders(): void {
             : String(values[index])
         }
       })
+      const controlledProgress = scope.querySelector<HTMLElement>("[data-doc-progress-controlled]")
+      const controlledIndicator = controlledProgress?.querySelector<HTMLElement>(".doc-progress-indicator")
+      if (controlledProgress && controlledIndicator && values[0] !== undefined) {
+        controlledProgress.setAttribute("aria-valuenow", String(values[0]))
+        controlledIndicator.style.transform = `translateX(-${100 - values[0]}%)`
+      }
     }
   }
 
@@ -3029,6 +3036,16 @@ function wireDocPopovers(): void {
   document.addEventListener("click", (event) => {
     if (event.target instanceof Element && event.target.closest("[data-doc-popover]")) return
     closeAll()
+  })
+}
+
+function wireDocProgress(): void {
+  document.querySelectorAll<HTMLElement>("[data-doc-progress-demo]").forEach((progress) => {
+    window.setTimeout(() => {
+      progress.setAttribute("aria-valuenow", "66")
+      const indicator = progress.querySelector<HTMLElement>(".doc-progress-indicator")
+      if (indicator) indicator.style.transform = "translateX(-34%)"
+    }, 500)
   })
 }
 

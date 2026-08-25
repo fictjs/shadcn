@@ -4288,6 +4288,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocPaginationPreview name={props.name} />
   ) : family === "popover" ? (
     <DocPopoverPreview name={props.name} />
+  ) : family === "progress" ? (
+    <DocProgressPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -4917,6 +4919,19 @@ function DocPopoverPreview(props: { name: string }) {
     content = <div class="doc-popover-rtl-group" data-doc-rtl-direction dir="rtl">{shell(text("يسار", "שמאל", "Left"), header(), "left", "center", "is-rtl")}{shell(text("أعلى", "למעלה", "Top"), header(), "top", "center", "is-rtl")}{shell(text("أسفل", "למטה", "Bottom"), header(), "bottom", "center", "is-rtl")}{shell(text("يمين", "ימין", "Right"), header(), "right", "center", "is-rtl")}</div>
   }
   return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-popover-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
+}
+
+function DocProgressPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const rtl = name === "progress-rtl"
+  const value = name === "progress-controlled" ? 50 : name === "progress-demo" ? 13 : 66
+  const text = (ar: string, he: string, en: string) => rtl ? <span data-doc-rtl-text data-text-ar={ar} data-text-he={he} data-text-en={en}>{ar}</span> : en
+  const progress = <div class="doc-progress" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={value} data-doc-progress-demo={name === "progress-demo" ? "true" : undefined} data-doc-progress-controlled={name === "progress-controlled" ? "true" : undefined}><span class="doc-progress-indicator" style={`transform:translateX(-${100 - value}%)`}></span></div>
+  let content
+  if (name === "progress-demo") content = <div class="doc-progress-demo" data-doc-progress-demo>{progress}</div>
+  else if (name === "progress-controlled") content = <div class="doc-progress-field" data-slider-scope="doc-progress-control">{progress}<div class="ui-slider doc-progress-slider" data-slider="doc-progress-control" data-slider-min="0" data-slider-max="100" data-slider-step="1" role="group" aria-label="Progress"><span class="ui-slider-track"><span class="ui-slider-range" data-slider-range style="left:0%;right:50%"></span></span><span class="ui-slider-thumb" data-slider-thumb="0" data-slider-value="50" role="slider" tabIndex={0} aria-label="Progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={50} style="left:50%"></span></div></div>
+  else content = <div class="doc-progress-field" data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}><label for="progress-upload"><span>{text("تقدم الرفع", "התקדמות העלאה", "Upload progress")}</span><span class="doc-progress-value" data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "٦٦%" : undefined} data-text-he={rtl ? "66%" : undefined} data-text-en={rtl ? "66%" : undefined}>{rtl ? "٦٦%" : "66%"}</span></label>{progress}</div>
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-progress-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
 function DocEmptyPreview(props: { name: string }) {
