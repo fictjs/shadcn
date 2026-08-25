@@ -44,6 +44,7 @@ async function initResumableClient(): Promise<void> {
   wireDocCharts()
   wireDocCheckboxes()
   wireDocFields()
+  wireDocInputGroups()
   wireDocHoverCards()
   wireShowcaseSliders()
   wireShowcaseCounters()
@@ -640,6 +641,10 @@ function wireDocAccordions(): void {
       if (nextText) {
         text.textContent = nextText
       }
+    }
+    for (const control of shell.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("[data-doc-rtl-placeholder]")) {
+      const placeholder = control.getAttribute(`data-placeholder-${language}`)
+      if (placeholder) control.placeholder = placeholder
     }
 
     if (!accordion) {
@@ -2180,6 +2185,60 @@ function wireDocFields(): void {
     const checked = control.dataset.checked !== "true"
     control.dataset.checked = checked ? "true" : "false"
     control.setAttribute("aria-checked", checked ? "true" : "false")
+  })
+}
+
+function wireDocInputGroups(): void {
+  const closePopovers = (except?: HTMLElement): void => {
+    document.querySelectorAll<HTMLElement>(".doc-input-group-popover:not([hidden])").forEach((panel) => {
+      if (panel === except) return
+      panel.hidden = true
+      panel.closest<HTMLElement>(".doc-input-group-shell")?.querySelector<HTMLElement>("[data-doc-input-group-popover-trigger]")?.setAttribute("aria-expanded", "false")
+    })
+  }
+  document.addEventListener("click", async (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const popoverTrigger = target.closest<HTMLElement>("[data-doc-input-group-popover-trigger]")
+    if (popoverTrigger) {
+      const panel = popoverTrigger.closest<HTMLElement>(".doc-input-group-shell")?.querySelector<HTMLElement>(".doc-input-group-popover")
+      if (panel) {
+        const open = panel.hidden
+        closePopovers(panel)
+        panel.hidden = !open
+        popoverTrigger.setAttribute("aria-expanded", String(open))
+      }
+      return
+    }
+    if (!target.closest(".doc-input-group-popover")) closePopovers()
+    const addon = target.closest<HTMLElement>(".doc-input-group-shell .ui-input-group-addon")
+    if (addon && !target.closest("button, [data-menu-panel]")) {
+      addon.closest<HTMLElement>(".doc-input-group-shell")?.querySelector<HTMLInputElement | HTMLTextAreaElement>("[data-slot='input-group-control']")?.focus()
+    }
+    const toggle = target.closest<HTMLButtonElement>("[data-doc-input-group-toggle]")
+    if (!toggle) return
+    if (toggle.dataset.docInputGroupToggle === "favorite") {
+      toggle.dataset.active = toggle.dataset.active === "true" ? "false" : "true"
+      return
+    }
+    if (toggle.dataset.docInputGroupToggle === "copy") {
+      try {
+        await navigator.clipboard?.writeText("https://x.com/shadcn")
+      } catch {
+        // The visible copied state still mirrors the reference when clipboard permission is unavailable.
+      }
+      toggle.dataset.copied = "true"
+      toggle.setAttribute("aria-label", "Copied")
+    }
+  })
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closePopovers()
+  })
+  document.addEventListener("input", (event) => {
+    const textarea = event.target
+    if (!(textarea instanceof HTMLTextAreaElement) || !textarea.closest(".doc-input-group-custom")) return
+    textarea.style.height = "auto"
+    textarea.style.height = `${textarea.scrollHeight}px`
   })
 }
 

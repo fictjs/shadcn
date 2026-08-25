@@ -2073,6 +2073,107 @@ test.describe("shadcn v4 site", () => {
     await expect(invalidInput).toHaveAttribute("aria-invalid", "true")
   })
 
+  test("input group docs match React alignment, content, controls, focus, and RTL", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/base/input-group")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(14)
+    const stageHeights = [416, 192, 192, 384, 416, 320, 320, 288, 160, 224, 320, 384, 224, 544]
+    for (let index = 0; index < stageHeights.length; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", `${stageHeights[index]}px`)
+    }
+    expect((await previews.allInnerTexts()).join(" ")).not.toContain("Registry preview surface")
+
+    const demo = page.locator('[data-doc-preview-name="input-group-demo"]')
+    await expect(demo.locator('[data-slot="input-group"]')).toHaveCSS("width", "320px")
+    await expect(demo.locator('[data-slot="input-group"]')).toHaveCSS("height", "32px")
+    await expect(demo.getByText("12 results", { exact: true })).toBeVisible()
+
+    for (const name of ["inline-start", "inline-end"]) {
+      const preview = page.locator(`[data-doc-preview-name="input-group-${name}"]`)
+      await expect(preview.locator(".doc-input-group-field")).toHaveCSS("width", "384px")
+      await expect(preview.locator(".doc-input-group-field")).toHaveCSS("height", "88.25px")
+      const control = preview.getByLabel("Input")
+      await preview.locator('[data-slot="input-group-addon"]').click()
+      await expect(control).toBeFocused()
+      await expectFocusRing(control, preview.locator('[data-slot="input-group"]'))
+    }
+
+    const blockStart = page.locator('[data-doc-preview-name="input-group-block-start"]')
+    await expect(blockStart.locator(".doc-input-group-align-stack")).toHaveCSS("height", "306.5px")
+    await expect(blockStart.locator('[data-slot="input-group"]').nth(0)).toHaveCSS("height", "70px")
+    await expect(blockStart.locator('[data-slot="input-group"]').nth(1)).toHaveCSS("height", "104px")
+    await expect(blockStart.getByPlaceholder("console.log('Hello, world!');")).toHaveCSS("font-family", /monospace/)
+
+    const blockEnd = page.locator('[data-doc-preview-name="input-group-block-end"]')
+    await expect(blockEnd.locator(".doc-input-group-align-stack")).toHaveCSS("height", "314.5px")
+    await expect(blockEnd.locator('[data-slot="input-group"]').nth(0)).toHaveCSS("height", "70px")
+    await expect(blockEnd.locator('[data-slot="input-group"]').nth(1)).toHaveCSS("height", "112px")
+
+    const icon = page.locator('[data-doc-preview-name="input-group-icon"]')
+    await expect(icon.locator('[data-slot="input-group"]')).toHaveCount(4)
+    await expect(icon.locator(".doc-input-group-stack")).toHaveCSS("height", "200px")
+    const text = page.locator('[data-doc-preview-name="input-group-text"]')
+    await expect(text.locator(".doc-input-group-stack")).toHaveCSS("height", "264px")
+    await expect(text.locator('[data-slot="input-group"]').last()).toHaveCSS("height", "96px")
+
+    const buttons = page.locator('[data-doc-preview-name="input-group-button"]')
+    await expect(buttons.locator(".doc-input-group-stack")).toHaveCSS("height", "144px")
+    await buttons.getByRole("button", { name: "Copy" }).click()
+    await expect(buttons.getByRole("button", { name: "Copied" })).toHaveAttribute("data-copied", "true")
+    const favorite = buttons.getByRole("button", { name: "Favorite" })
+    await favorite.click()
+    await expect(favorite).toHaveAttribute("data-active", "true")
+    const info = buttons.getByRole("button", { name: "Info" })
+    await info.click()
+    await expect(buttons.getByRole("dialog")).toBeVisible()
+    await expect(buttons.getByRole("dialog")).toContainText("Your connection is not secure.")
+    await page.keyboard.press("Escape")
+    await expect(buttons.getByRole("dialog")).toBeHidden()
+
+    const kbd = page.locator('[data-doc-preview-name="input-group-kbd"]')
+    await expect(kbd.locator('[data-slot="input-group"]')).toHaveCSS("width", "384px")
+    await expect(kbd.locator("kbd")).toHaveText("⌘K")
+    const dropdown = page.locator('[data-doc-preview-name="input-group-dropdown"]')
+    await expect(dropdown.locator(".doc-input-group-stack")).toHaveCSS("height", "80px")
+    await expect(dropdown.getByRole("button", { name: "More" })).toBeHidden()
+    await expect(dropdown.getByRole("button", { name: "Search In..." })).toBeHidden()
+
+    const spinner = page.locator('[data-doc-preview-name="input-group-spinner"]')
+    await expect(spinner.locator('[data-slot="input-group"]')).toHaveCount(4)
+    await expect(spinner.locator("input:disabled")).toHaveCount(4)
+    await expect(spinner.locator(".ui-spinner").first()).toHaveCSS("animation-name", "ui-spin")
+
+    const code = page.locator('[data-doc-preview-name="input-group-textarea"]')
+    await expect(code.locator('[data-slot="input-group"]')).toHaveCSS("width", "448px")
+    await expect(code.locator('[data-slot="input-group"]')).toHaveCSS("height", "292px")
+    await expect(code.getByRole("button", { name: "Run" })).toHaveCSS("height", "32px")
+    const custom = page.locator('[data-doc-preview-name="input-group-custom"]')
+    const autoTextarea = custom.getByPlaceholder("Autoresize textarea...")
+    await expect(custom.locator('[data-slot="input-group"]')).toHaveCSS("height", "112px")
+    await autoTextarea.fill("Line one\nLine two\nLine three\nLine four")
+    expect((await custom.locator('[data-slot="input-group"]').boundingBox())?.height).toBeGreaterThan(112)
+
+    const rtl = page.locator('[data-doc-preview-name="input-group-rtl"]')
+    await expect(rtl.locator(".doc-input-group-stack")).toHaveCSS("width", "384px")
+    await expect(rtl.locator(".doc-input-group-stack")).toHaveCSS("height", "336.25px")
+    await expect(rtl.locator('[data-slot="input-group"]').last()).toHaveCSS("height", "112px")
+    const rtlSearch = rtl.getByPlaceholder("بحث...", { exact: true })
+    await expect(rtlSearch).toHaveAttribute("dir", "rtl")
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.getByPlaceholder("חפש...", { exact: true })).toBeVisible()
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtl.getByPlaceholder("Search...", { exact: true })).toHaveAttribute("dir", "ltr")
+    await expect(rtl.getByText("Footer positioned below the textarea.", { exact: true })).toBeVisible()
+
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(page.locator("html")).toHaveClass(/dark/)
+    await expect(demo.locator('[data-slot="input-group"]')).toHaveCSS("height", "32px")
+    await expect(spinner.locator("input:disabled")).toHaveCount(4)
+  })
+
   test("direction docs reuse the complete RTL card preview instead of a placeholder", async ({ page }) => {
     await page.goto("/docs/components/base/direction")
     await waitForClientReady(page)
