@@ -34,6 +34,7 @@ async function initResumableClient(): Promise<void> {
   wireDocContextMenus()
   wireDocDataTables()
   wireDocAlertDialogs()
+  wireDocDialogs()
   wireDocAvatarMenus()
   wireDocButtonGroups()
   wireDocCalendars()
@@ -1418,6 +1419,57 @@ function wireDocDataTables(): void {
       const input = root?.querySelector<HTMLInputElement>("[data-doc-data-filter]")
       const placeholder = input?.getAttribute(`data-placeholder-${target.value}`)
       if (input && placeholder) input.placeholder = placeholder
+    }
+  })
+}
+
+function wireDocDialogs(): void {
+  let activePortal: HTMLElement | null = null
+  let activeTrigger: HTMLButtonElement | null = null
+  let origin: { parent: Node; nextSibling: ChildNode | null } | null = null
+
+  const close = (restoreFocus = false): void => {
+    if (!activePortal) return
+    activePortal.hidden = true
+    if (origin) origin.parent.insertBefore(activePortal, origin.nextSibling)
+    const trigger = activeTrigger
+    trigger?.setAttribute("aria-expanded", "false")
+    document.body.style.removeProperty("overflow")
+    activePortal = null
+    activeTrigger = null
+    origin = null
+    if (restoreFocus) trigger?.focus({ preventScroll: true })
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const trigger = target.closest<HTMLButtonElement>("[data-doc-dialog-trigger]")
+    if (trigger) {
+      const root = trigger.closest<HTMLElement>("[data-doc-dialog-root]")
+      const portal = root?.querySelector<HTMLElement>("[data-doc-dialog-portal]")
+      const content = portal?.querySelector<HTMLElement>("[role='dialog']")
+      if (!portal || !content) return
+      close()
+      activePortal = portal
+      activeTrigger = trigger
+      origin = { parent: portal.parentNode as Node, nextSibling: portal.nextSibling }
+      portal.hidden = false
+      document.body.append(portal)
+      trigger.setAttribute("aria-expanded", "true")
+      document.body.style.overflow = "hidden"
+      queueMicrotask(() => (content.querySelector<HTMLInputElement>("input:not([readonly])") ?? content.querySelector<HTMLButtonElement>("button"))?.focus({ preventScroll: true }))
+      return
+    }
+    if (activePortal && (target.closest("[data-doc-dialog-close]") || target.closest("[data-doc-dialog-overlay]"))) {
+      close(true)
+    }
+  })
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && activePortal) {
+      event.preventDefault()
+      close(true)
     }
   })
 }
