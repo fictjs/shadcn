@@ -60,6 +60,7 @@ async function initResumableClient(): Promise<void> {
   wireDocSidebars()
   wireDocSonner()
   wireDocSwitches()
+  wireDocPreviewTabs()
   wireShowcaseMenus()
   wireRtlLocalization()
   wireShowcaseToggles()
@@ -186,6 +187,48 @@ function wireDocSwitches(): void {
     const checked = control.dataset.checked !== "true"
     control.dataset.checked = checked ? "true" : "false"
     control.setAttribute("aria-checked", checked ? "true" : "false")
+  })
+}
+
+function wireDocPreviewTabs(): void {
+  const select = (tab: HTMLButtonElement, focus = false): void => {
+    const root = tab.closest<HTMLElement>("[data-doc-preview-tabs]")
+    if (!root || tab.disabled) return
+    for (const candidate of root.querySelectorAll<HTMLButtonElement>("[data-doc-preview-tab]")) {
+      const active = candidate === tab
+      candidate.setAttribute("aria-selected", active ? "true" : "false")
+      candidate.tabIndex = active ? 0 : -1
+    }
+    for (const panel of root.querySelectorAll<HTMLElement>("[data-doc-preview-tab-panel]")) {
+      panel.hidden = panel.dataset.value !== tab.dataset.value
+    }
+    if (focus) tab.focus()
+  }
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const tab = target.closest<HTMLButtonElement>("[data-doc-preview-tab]")
+    if (tab) select(tab)
+  })
+  document.addEventListener("keydown", (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLButtonElement) || !target.matches("[data-doc-preview-tab]")) return
+    const root = target.closest<HTMLElement>("[data-doc-preview-tabs]")
+    if (!root) return
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-doc-preview-tab]:not(:disabled)"))
+    const current = tabs.indexOf(target)
+    const rtl = root.dir === "rtl"
+    const vertical = root.dataset.orientation === "vertical"
+    let next = current
+    if (event.key === "Home") next = 0
+    else if (event.key === "End") next = tabs.length - 1
+    else if (vertical && event.key === "ArrowDown") next = (current + 1) % tabs.length
+    else if (vertical && event.key === "ArrowUp") next = (current - 1 + tabs.length) % tabs.length
+    else if (!vertical && event.key === "ArrowRight") next = (current + (rtl ? -1 : 1) + tabs.length) % tabs.length
+    else if (!vertical && event.key === "ArrowLeft") next = (current + (rtl ? 1 : -1) + tabs.length) % tabs.length
+    else return
+    event.preventDefault()
+    select(tabs[next], true)
   })
 }
 
