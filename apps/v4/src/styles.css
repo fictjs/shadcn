@@ -2176,6 +2176,45 @@ h1 {
 .doc-component-card[data-doc-preview-name="chart-tooltip"] .doc-component-preview-stage { height: 288px; min-height: 288px; padding: 0; }
 .doc-component-card[data-doc-preview-name="chart-rtl"] .doc-component-preview-stage { display: block; height: 432px; min-height: 432px; padding: 0; }
 
+.doc-component-card[data-doc-preview-name="checkbox-demo"] .doc-component-preview-stage { height: 320px; min-height: 320px; }
+.doc-component-card[data-doc-preview-name^="checkbox-"]:not([data-doc-preview-name="checkbox-demo"]):not([data-doc-preview-name="checkbox-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="checkbox-table"] .doc-component-preview-stage { padding: 2rem; }
+.doc-component-card[data-doc-preview-name="checkbox-rtl"] .doc-component-preview-stage { display: block; height: 384px; min-height: 384px; padding: 0; }
+
+.doc-checkbox-fields { display: grid; width: 384px; gap: 1.5rem; }
+.doc-checkbox-fields.is-narrow { width: 224px; }
+.doc-checkbox-fields.is-description { width: 288px; }
+.doc-checkbox-field { display: flex; align-items: flex-start; gap: 0.5rem; color: var(--foreground); cursor: pointer; }
+.doc-checkbox-control { display: inline-grid; width: 1rem; height: 1rem; flex: 0 0 1rem; place-items: center; margin-top: 1px; border: 1px solid var(--input); border-radius: 4px; padding: 0; color: var(--primary-foreground); background: transparent; }
+.doc-checkbox-control span { visibility: hidden; font-size: 0.7rem; font-weight: 700; line-height: 1; }
+.doc-checkbox-control[aria-checked="true"] { border-color: var(--primary); background: var(--primary); }
+.doc-checkbox-control[aria-checked="true"] span { visibility: visible; }
+.doc-checkbox-control:focus-visible { outline: 0; box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.doc-checkbox-field.is-invalid .doc-checkbox-control { border-color: var(--destructive); }
+.doc-checkbox-field.is-disabled { opacity: 0.5; cursor: not-allowed; }
+.doc-checkbox-copy { display: grid; gap: 0.25rem; min-width: 0; }
+.doc-checkbox-copy strong { font-size: 0.875rem; font-weight: 500; line-height: 1rem; }
+.doc-checkbox-copy small { color: var(--muted-foreground); font-size: 0.875rem; line-height: 1.25rem; }
+.doc-checkbox-field.is-wrapped { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.625rem; }
+.doc-checkbox-group { display: grid; width: 323.28125px; gap: 1rem; margin: 0; border: 0; padding: 0; }
+.doc-checkbox-group legend { color: var(--foreground); font-size: 0.875rem; font-weight: 500; }
+.doc-checkbox-group > p { margin: -0.5rem 0 0.25rem; color: var(--muted-foreground); font-size: 0.875rem; }
+.doc-checkbox-group .doc-checkbox-field { gap: 0.625rem; }
+.doc-checkbox-group .doc-checkbox-copy strong { font-weight: 400; }
+.doc-checkbox-table { width: 574px; overflow: hidden; }
+.doc-checkbox-table table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.doc-checkbox-table th,
+.doc-checkbox-table td { height: 2.0625rem; border-bottom: 1px solid var(--border); padding: 0 0.5rem; text-align: left; white-space: nowrap; }
+.doc-checkbox-table th:first-child,
+.doc-checkbox-table td:first-child { width: 2rem; padding-inline: 0.5rem 0; }
+.doc-checkbox-table th { color: var(--muted-foreground); font-weight: 500; }
+.doc-checkbox-table th { height: 2rem; }
+.doc-checkbox-table td strong { font-weight: 500; }
+.doc-checkbox-table tr[data-state="selected"] { background: var(--muted); }
+.doc-checkbox-rtl-preview { height: 320px; align-items: center; }
+.doc-checkbox-rtl-preview[data-lang="ar"] { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-checkbox-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+
 .doc-chart { position: relative; width: 509px; height: 286.3125px; color: var(--muted-foreground); }
 .doc-chart > svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .doc-chart-grid line { stroke: var(--border); stroke-width: 1; }

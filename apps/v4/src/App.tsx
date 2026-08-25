@@ -4260,7 +4260,9 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
   const family = untrack(() => props.family)
   const name = untrack(() => props.name)
 
-  return family === "chart" ? (
+  return family === "checkbox" ? (
+    <DocCheckboxPreview name={props.name} />
+  ) : family === "chart" ? (
     <DocChartPreview name={props.name} />
   ) : family === "carousel" ? (
     <DocCarouselPreview name={props.name} />
@@ -4371,6 +4373,41 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <p>Registry preview surface for this documentation example.</p>
     </div>
   )
+}
+
+function DocCheckboxPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const isRtl = name === "checkbox-rtl"
+  const fields = <div class="doc-checkbox-fields" data-doc-rtl-direction={isRtl ? "true" : undefined} dir={isRtl ? "rtl" : "ltr"}>
+    <DocCheckboxField id={`${name}-terms`} label={isRtl ? "قبول الشروط والأحكام" : "Accept terms and conditions"} labelHe={isRtl ? "קבל תנאים והגבלות" : undefined} labelEn={isRtl ? "Accept terms and conditions" : undefined} />
+    <DocCheckboxField id={`${name}-terms-description`} checked label={isRtl ? "قبول الشروط والأحكام" : "Accept terms and conditions"} labelHe={isRtl ? "קבל תנאים והגבלות" : undefined} labelEn={isRtl ? "Accept terms and conditions" : undefined} description={isRtl ? "بالنقر على هذا المربع، فإنك توافق على الشروط." : "By clicking this checkbox, you agree to the terms."} descriptionHe={isRtl ? "על ידי לחיצה על תיבת הסימון הזו, אתה מסכים לתנאים." : undefined} descriptionEn={isRtl ? "By clicking this checkbox, you agree to the terms." : undefined} />
+    <DocCheckboxField id={`${name}-disabled`} disabled label={isRtl ? "تفعيل الإشعارات" : "Enable notifications"} labelHe={isRtl ? "הפעל התראות" : undefined} labelEn={isRtl ? "Enable notifications" : undefined} />
+    <DocCheckboxField id={`${name}-notifications`} label={isRtl ? "تفعيل الإشعارات" : "Enable notifications"} labelHe={isRtl ? "הפעל התראות" : undefined} labelEn={isRtl ? "Enable notifications" : undefined} description={isRtl ? "يمكنك تفعيل أو إلغاء تفعيل الإشعارات في أي وقت." : "You can enable or disable notifications at any time."} descriptionHe={isRtl ? "אתה יכול להפעיל או להשבית התראות בכל עת." : undefined} descriptionEn={isRtl ? "You can enable or disable notifications at any time." : undefined} wrapped />
+  </div>
+  const content = name === "checkbox-demo" || isRtl ? fields : name === "checkbox-invalid" ? <div class="doc-checkbox-fields is-narrow"><DocCheckboxField id="checkbox-invalid-control" label="Accept terms and conditions" invalid /></div> : name === "checkbox-basic" ? <div class="doc-checkbox-fields is-narrow"><DocCheckboxField id="checkbox-basic-control" label="Accept terms and conditions" /></div> : name === "checkbox-description" ? <div class="doc-checkbox-fields is-description"><DocCheckboxField id="checkbox-description-control" checked label="Accept terms and conditions" description="By clicking this checkbox, you agree to the terms and conditions." /></div> : name === "checkbox-disabled" ? <div class="doc-checkbox-fields is-narrow"><DocCheckboxField id="checkbox-disabled-control" disabled label="Enable notifications" /></div> : name === "checkbox-group" ? <fieldset class="doc-checkbox-group"><legend>Show these items on the desktop:</legend><p>Select the items you want to show on the desktop.</p>{[["hard-disks", "Hard disks", true], ["external-disks", "External disks", true], ["cds", "CDs, DVDs, and iPods", false], ["servers", "Connected servers", false]].map(([id, label, checked]) => <DocCheckboxField id={`checkbox-${id}`} label={label as string} checked={checked as boolean} />)}</fieldset> : <DocCheckboxTable />
+  return isRtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-checkbox-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
+}
+
+function DocCheckboxField(props: { id: string; label: string; labelHe?: string; labelEn?: string; checked?: boolean; disabled?: boolean; invalid?: boolean; description?: string; descriptionHe?: string; descriptionEn?: string; wrapped?: boolean }) {
+  const id = untrack(() => props.id)
+  const label = untrack(() => props.label)
+  const labelHe = untrack(() => props.labelHe)
+  const labelEn = untrack(() => props.labelEn)
+  const checked = untrack(() => !!props.checked)
+  const disabled = untrack(() => !!props.disabled)
+  const invalid = untrack(() => !!props.invalid)
+  const description = untrack(() => props.description)
+  const descriptionHe = untrack(() => props.descriptionHe)
+  const descriptionEn = untrack(() => props.descriptionEn)
+  const wrapped = untrack(() => !!props.wrapped)
+  const labelNode = labelHe && labelEn ? <span data-doc-rtl-text data-text-ar={label} data-text-he={labelHe} data-text-en={labelEn}>{label}</span> : label
+  const descriptionNode = description && descriptionHe && descriptionEn ? <span data-doc-rtl-text data-text-ar={description} data-text-he={descriptionHe} data-text-en={descriptionEn}>{description}</span> : description
+  return <label class={`doc-checkbox-field${disabled ? " is-disabled" : ""}${invalid ? " is-invalid" : ""}${wrapped ? " is-wrapped" : ""}`} for={id}><button id={id} type="button" role="checkbox" class="doc-checkbox-control" aria-checked={checked ? "true" : "false"} data-state={checked ? "checked" : "unchecked"} aria-invalid={invalid ? "true" : undefined} disabled={disabled} data-doc-checkbox><span aria-hidden="true">✓</span></button><span class="doc-checkbox-copy"><strong>{labelNode}</strong>{descriptionNode ? <small>{descriptionNode}</small> : null}</span></label>
+}
+
+function DocCheckboxTable() {
+  const rows = [["Sarah Chen", "sarah.chen@example.com", "Admin"], ["Marcus Rodriguez", "marcus.rodriguez@example.com", "User"], ["Priya Patel", "priya.patel@example.com", "User"], ["David Kim", "david.kim@example.com", "Editor"]]
+  return <div class="doc-checkbox-table" data-doc-checkbox-table><table><thead><tr><th><button type="button" role="checkbox" class="doc-checkbox-control" aria-label="Select all rows" aria-checked="false" data-state="unchecked" data-doc-checkbox data-doc-checkbox-select-all><span aria-hidden="true">✓</span></button></th><th>Name</th><th>Email</th><th>Role</th></tr></thead><tbody>{rows.map((row, index) => <tr data-state={index === 0 ? "selected" : undefined}><td><button type="button" role="checkbox" class="doc-checkbox-control" aria-label={`Select ${row[0]}`} aria-checked={index === 0 ? "true" : "false"} data-state={index === 0 ? "checked" : "unchecked"} data-doc-checkbox data-doc-checkbox-row><span aria-hidden="true">✓</span></button></td><td><strong>{row[0]}</strong></td><td>{row[1]}</td><td>{row[2]}</td></tr>)}</tbody></table></div>
 }
 
 function DocChartPreview(props: { name: string }) {

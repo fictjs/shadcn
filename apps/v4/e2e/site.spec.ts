@@ -1023,6 +1023,65 @@ test.describe("shadcn v4 site", () => {
     await expect(charts.nth(6).locator(".doc-chart-axis text").first()).toHaveText("Jun")
   })
 
+  test("checkbox docs match React states, groups, table selection, keyboard, and RTL", async ({ page }) => {
+    await page.goto("/docs/components/base/checkbox")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    const checkboxes = page.getByRole("checkbox")
+    await expect(previews).toHaveCount(8)
+    await expect(checkboxes).toHaveCount(21)
+    await expect(previews.nth(0).locator(".doc-component-preview-stage")).toHaveCSS("height", "320px")
+    for (let index = 1; index <= 6; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(7).locator(".doc-component-preview-stage")).toHaveCSS("height", "384px")
+    for (const checkbox of await checkboxes.all()) {
+      await expect(checkbox).toHaveCSS("width", "16px")
+      await expect(checkbox).toHaveCSS("height", "16px")
+    }
+
+    const demo = page.locator('[data-doc-preview-name="checkbox-demo"]')
+    const demoChecks = demo.getByRole("checkbox")
+    await expect(demoChecks).toHaveCount(4)
+    await expect(demoChecks.nth(0)).toHaveAttribute("aria-checked", "false")
+    await demo.getByText("Accept terms and conditions", { exact: true }).first().click()
+    await expect(demoChecks.nth(0)).toHaveAttribute("aria-checked", "true")
+    await demoChecks.nth(0).focus()
+    await page.keyboard.press("Space")
+    await expect(demoChecks.nth(0)).toHaveAttribute("aria-checked", "false")
+    await expect(demoChecks.nth(1)).toHaveAttribute("aria-checked", "true")
+    await expect(demoChecks.nth(2)).toBeDisabled()
+
+    const invalid = page.locator('[data-doc-preview-name="checkbox-invalid"]')
+    await expect(invalid.getByRole("checkbox")).toHaveAttribute("aria-invalid", "true")
+    await expect(page.locator('[data-doc-preview-name="checkbox-description"] [role="checkbox"]')).toHaveAttribute("aria-checked", "true")
+    await expect(page.locator('[data-doc-preview-name="checkbox-disabled"] [role="checkbox"]')).toBeDisabled()
+
+    const group = page.locator('[data-doc-preview-name="checkbox-group"]')
+    await expect(group.getByRole("checkbox")).toHaveCount(4)
+    await expect(group.getByRole("checkbox").nth(0)).toHaveAttribute("aria-checked", "true")
+    await expect(group.getByRole("checkbox").nth(2)).toHaveAttribute("aria-checked", "false")
+
+    const table = page.locator("[data-doc-checkbox-table]")
+    const selectAll = table.getByRole("checkbox", { name: "Select all rows" })
+    await expect(table.getByRole("checkbox")).toHaveCount(5)
+    await selectAll.click()
+    for (const checkbox of await table.getByRole("checkbox").all()) {
+      await expect(checkbox).toHaveAttribute("aria-checked", "true")
+    }
+    await table.getByRole("checkbox", { name: "Select Priya Patel" }).click()
+    await expect(selectAll).toHaveAttribute("aria-checked", "false")
+    await expect(table.locator("tbody tr").nth(2)).not.toHaveAttribute("data-state", "selected")
+
+    const rtl = page.locator('[data-doc-preview-name="checkbox-rtl"]')
+    await expect(rtl.getByText("قبول الشروط والأحكام", { exact: true }).first()).toBeVisible()
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.getByText("קבל תנאים והגבלות", { exact: true }).first()).toBeVisible()
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtl.locator(".doc-checkbox-fields")).toHaveAttribute("dir", "ltr")
+  })
+
   test("dashboard example renders as a live desktop stage", async ({ page }) => {
     await page.goto("/examples/dashboard")
 

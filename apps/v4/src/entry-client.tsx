@@ -34,6 +34,7 @@ async function initResumableClient(): Promise<void> {
   wireDocCalendars()
   wireDocCarousels()
   wireDocCharts()
+  wireDocCheckboxes()
   wireShowcaseSliders()
   wireShowcaseCounters()
   wireShowcaseMenus()
@@ -1047,6 +1048,39 @@ function wireDocCharts(): void {
       bar.setAttribute("height", String(height))
       bar.setAttribute("y", String(219 - height))
     })
+  })
+}
+
+function wireDocCheckboxes(): void {
+  const setChecked = (checkbox: HTMLButtonElement, checked: boolean): void => {
+    checkbox.setAttribute("aria-checked", checked ? "true" : "false")
+    checkbox.dataset.state = checked ? "checked" : "unchecked"
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const checkbox = target.closest<HTMLButtonElement>("[data-doc-checkbox]")
+    if (!checkbox || checkbox.disabled) return
+    const table = checkbox.closest<HTMLElement>("[data-doc-checkbox-table]")
+    if (checkbox.dataset.docCheckboxSelectAll !== undefined && table) {
+      const checked = checkbox.getAttribute("aria-checked") !== "true"
+      setChecked(checkbox, checked)
+      table.querySelectorAll<HTMLButtonElement>("[data-doc-checkbox-row]").forEach((rowCheckbox) => {
+        setChecked(rowCheckbox, checked)
+        rowCheckbox.closest("tr")?.setAttribute("data-state", checked ? "selected" : "")
+      })
+      return
+    }
+    const checked = checkbox.getAttribute("aria-checked") !== "true"
+    setChecked(checkbox, checked)
+    const row = checkbox.closest("tr")
+    if (row) row.setAttribute("data-state", checked ? "selected" : "")
+    if (table) {
+      const rows = [...table.querySelectorAll<HTMLButtonElement>("[data-doc-checkbox-row]")]
+      const selectAll = table.querySelector<HTMLButtonElement>("[data-doc-checkbox-select-all]")
+      if (selectAll) setChecked(selectAll, rows.every((item) => item.getAttribute("aria-checked") === "true"))
+    }
   })
 }
 
