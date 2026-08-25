@@ -43,6 +43,7 @@ async function initResumableClient(): Promise<void> {
   wireDocCarousels()
   wireDocCharts()
   wireDocCheckboxes()
+  wireDocFields()
   wireShowcaseSliders()
   wireShowcaseCounters()
   wireDocDropdownMenus()
@@ -2152,6 +2153,27 @@ function wireDocCheckboxes(): void {
       const selectAll = table.querySelector<HTMLButtonElement>("[data-doc-checkbox-select-all]")
       if (selectAll) setChecked(selectAll, rows.every((item) => item.getAttribute("aria-checked") === "true"))
     }
+  })
+}
+
+function wireDocFields(): void {
+  document.addEventListener("submit", (event) => {
+    const target = event.target
+    if (target instanceof HTMLFormElement && target.matches("[data-doc-field-form]")) {
+      event.preventDefault()
+    }
+  })
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const row = target.closest<HTMLElement>("[data-doc-field-toggle]")
+    if (!row || target.closest(".ui-checkbox, .ui-switch")) return
+    const control = row.querySelector<HTMLButtonElement>(".ui-checkbox, .ui-switch")
+    if (!control || control.disabled) return
+    const checked = control.dataset.checked !== "true"
+    control.dataset.checked = checked ? "true" : "false"
+    control.setAttribute("aria-checked", checked ? "true" : "false")
   })
 }
 

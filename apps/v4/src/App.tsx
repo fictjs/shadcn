@@ -4264,6 +4264,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocCheckboxPreview name={props.name} />
   ) : family === "direction" && name === "card-rtl" ? (
     <DocCardPreview name={props.name} />
+  ) : family === "field" || name.startsWith("field-") ? (
+    <DocFieldPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
     <DocEmptyPreview name={props.name} />
   ) : family === "dropdown-menu" || name.startsWith("dropdown-menu-") ? (
@@ -4395,6 +4397,129 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <p>Registry preview surface for this documentation example.</p>
     </div>
   )
+}
+
+const docFieldMonths = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+const docFieldYears = ["2024", "2025", "2026", "2027", "2028", "2029"]
+
+function DocFieldText(props: { ar: string; he: string; en: string }) {
+  return <span data-doc-rtl-text data-text-ar={props.ar} data-text-he={props.he} data-text-en={props.en}>{props.ar}</span>
+}
+
+function DocFieldCheckboxControl(props: { id: string; label: string; checked?: boolean; disabled?: boolean }) {
+  return (
+    <button
+      id={props.id}
+      type="button"
+      class="ui-checkbox doc-field-checkbox"
+      role="checkbox"
+      aria-label={props.label}
+      aria-checked={props.checked ? "true" : "false"}
+      data-checked={props.checked ? "true" : "false"}
+      disabled={props.disabled}
+      onClick$={(event: MouseEvent) => {
+        const target = event.currentTarget
+        if (!(target instanceof HTMLButtonElement) || target.disabled) return
+        const next = target.dataset.checked !== "true"
+        target.dataset.checked = next ? "true" : "false"
+        target.setAttribute("aria-checked", next ? "true" : "false")
+      }}
+    >
+      <CheckIcon />
+    </button>
+  )
+}
+
+function DocFieldRadioControl(props: { id: string; label: string; checked?: boolean }) {
+  return (
+    <span id={props.id} class="ui-radio" data-checked={props.checked ? "true" : "false"} role="radio" aria-label={props.label} aria-checked={props.checked ? "true" : "false"} tabIndex={props.checked ? 0 : -1}>
+      <span></span>
+    </span>
+  )
+}
+
+function DocFieldPaymentForm(props: { rtl?: boolean }) {
+  const rtl = untrack(() => !!props.rtl)
+  const text = (ar: string, he: string, en: string) => rtl ? <DocFieldText ar={ar} he={he} en={en} /> : en
+  const monthOptions = docFieldMonths.map((value) => ({ value, label: rtl ? new Intl.NumberFormat("ar-SA", { useGrouping: false }).format(Number(value)) : value }))
+  return (
+    <div class={`doc-field-payment${rtl ? " is-rtl" : ""}`} dir={rtl ? "rtl" : "ltr"} data-doc-rtl-direction={rtl ? "true" : undefined}>
+      <form class="doc-field-form" data-doc-field-form>
+        <div class="doc-field-group">
+          <fieldset class="doc-field-set">
+            <legend class="doc-field-legend">{text("طريقة الدفع", "אמצעי תשלום", "Payment Method")}</legend>
+            <p class="doc-field-description">{text("جميع المعاملات آمنة ومشفرة", "כל העסקאות מאובטחות ומוצפנות", "All transactions are secure and encrypted")}</p>
+            <div class="doc-field-group">
+              <div class="doc-field">
+                <label class="doc-field-label" for={`doc-field-card-name${rtl ? "-rtl" : ""}`}>{text("الاسم على البطاقة", "שם על הכרטיס", "Name on Card")}</label>
+                <input class="ui-input" id={`doc-field-card-name${rtl ? "-rtl" : ""}`} placeholder="Evil Rabbit" required />
+              </div>
+              <div class="doc-field">
+                <label class="doc-field-label" for={`doc-field-card-number${rtl ? "-rtl" : ""}`}>{text("رقم البطاقة", "מספר כרטיס", "Card Number")}</label>
+                <input class="ui-input" id={`doc-field-card-number${rtl ? "-rtl" : ""}`} placeholder="1234 5678 9012 3456" required />
+                <p class="doc-field-description">{text("أدخل رقم البطاقة المكون من 16 رقمًا", "הזן את מספר הכרטיס בן 16 הספרות שלך", "Enter your 16-digit card number")}</p>
+              </div>
+              <div class="doc-field-grid is-three">
+                <div class="doc-field">
+                  <label class="doc-field-label" for={`doc-field-month${rtl ? "-rtl" : ""}`}>{text("الشهر", "חודש", "Month")}</label>
+                  <UiSelectControl triggerId={`doc-field-month${rtl ? "-rtl" : ""}`} ariaLabel="MM" value="" placeholder="MM" shellClass="ui-select-shell-full" options={monthOptions} />
+                </div>
+                <div class="doc-field">
+                  <label class="doc-field-label" for={`doc-field-year${rtl ? "-rtl" : ""}`}>{text("السنة", "שנה", "Year")}</label>
+                  <UiSelectControl triggerId={`doc-field-year${rtl ? "-rtl" : ""}`} ariaLabel="YYYY" value="" placeholder="YYYY" shellClass="ui-select-shell-full" options={docFieldYears.map((value) => ({ value, label: value }))} />
+                </div>
+                <div class="doc-field">
+                  <label class="doc-field-label" for={`doc-field-cvv${rtl ? "-rtl" : ""}`}>CVV</label>
+                  <input class="ui-input" id={`doc-field-cvv${rtl ? "-rtl" : ""}`} placeholder="123" required />
+                </div>
+              </div>
+            </div>
+          </fieldset>
+          <div class="doc-field-separator" aria-hidden="true"></div>
+          <fieldset class="doc-field-set">
+            <legend class="doc-field-legend">{text("عنوان الفوترة", "כתובת חיוב", "Billing Address")}</legend>
+            <p class="doc-field-description">{text("عنوان الفوترة المرتبط بطريقة الدفع الخاصة بك", "כתובת החיוב המשויכת לאמצעי התשלום שלך", "The billing address associated with your payment method")}</p>
+            <div class="doc-field-group is-nested">
+              <div class="doc-field is-horizontal" data-doc-field-toggle>
+                <DocFieldCheckboxControl id={`doc-field-shipping${rtl ? "-rtl" : ""}`} label={rtl ? "نفس عنوان الشحن" : "Same as shipping address"} checked />
+                <label class="doc-field-label is-normal" for={`doc-field-shipping${rtl ? "-rtl" : ""}`}>{text("نفس عنوان الشحن", "זהה לכתובת המשלוח", "Same as shipping address")}</label>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset class="doc-field-set">
+            <div class="doc-field-group is-nested">
+              <div class="doc-field">
+                <label class="doc-field-label" for={`doc-field-comments${rtl ? "-rtl" : ""}`}>{text("تعليقات", "הערות", "Comments")}</label>
+                <textarea class="ui-textarea doc-field-textarea" id={`doc-field-comments${rtl ? "-rtl" : ""}`} placeholder={rtl ? "أضف أي تعليقات إضافية" : "Add any additional comments"} data-placeholder-ar={rtl ? "أضف أي تعليقات إضافية" : undefined} data-placeholder-he={rtl ? "הוסף הערות נוספות" : undefined} data-placeholder-en={rtl ? "Add any additional comments" : undefined}></textarea>
+              </div>
+            </div>
+          </fieldset>
+          <div class="doc-field is-horizontal doc-field-actions">
+            <button class="doc-button is-default" type="submit">{text("إرسال", "שלח", "Submit")}</button>
+            <button class="doc-button is-outline" type="button">{text("إلغاء", "בטל", "Cancel")}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  )
+}
+
+function DocFieldPreview(props: { name: string }) {
+  const variant = untrack(() => props.name.replace("field-", ""))
+  if (variant === "demo") return <DocFieldPaymentForm />
+  if (variant === "rtl") return <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-field-rtl-preview" dir="rtl" data-lang="ar"><DocFieldPaymentForm rtl /></div></div>
+  if (variant === "input") return <fieldset class="doc-field-set doc-field-width-xs"><div class="doc-field-group"><div class="doc-field"><label class="doc-field-label" for="doc-username">Username</label><input class="ui-input" id="doc-username" placeholder="Max Leiter" /><p class="doc-field-description">Choose a unique username for your account.</p></div><div class="doc-field"><label class="doc-field-label" for="doc-password">Password</label><p class="doc-field-description">Must be at least 8 characters long.</p><input class="ui-input" id="doc-password" type="password" placeholder="••••••••" /></div></div></fieldset>
+  if (variant === "textarea") return <fieldset class="doc-field-set doc-field-width-xs"><div class="doc-field-group"><div class="doc-field"><label class="doc-field-label" for="doc-feedback">Feedback</label><textarea class="ui-textarea doc-field-feedback" id="doc-feedback" placeholder="Your feedback helps us improve..." rows={4}></textarea><p class="doc-field-description">Share your thoughts about our service.</p></div></div></fieldset>
+  if (variant === "select") return <div class="doc-field doc-field-width-xs"><label class="doc-field-label">Department</label><UiSelectControl ariaLabel="Department" value="" placeholder="Choose department" shellClass="ui-select-shell-full" options={["Engineering", "Design", "Marketing", "Sales", "Customer Support", "Human Resources", "Finance", "Operations"].map((label) => ({ value: label.toLowerCase().replace(/ /g, "-"), label }))} /><p class="doc-field-description">Select your department or area of work.</p></div>
+  if (variant === "slider") return <div class="doc-field doc-field-width-xs doc-field-slider" data-slider-scope="doc-field-price"><p class="doc-field-label">Price Range</p><p class="doc-field-description is-before-control">Set your budget range ($<span class="doc-field-numeric" data-slider-output="0">200</span> - <span class="doc-field-numeric" data-slider-output="1">800</span>).</p><div class="ui-slider" data-slider="doc-field-price" data-slider-min="0" data-slider-max="1000" data-slider-step="10" role="group" aria-label="Price Range"><span class="ui-slider-track"><span class="ui-slider-range" data-slider-range style="left:20%;right:20%"></span></span><span class="ui-slider-thumb" data-slider-thumb="0" data-slider-value="200" role="slider" tabIndex={0} aria-label="Minimum price" aria-valuemin={0} aria-valuemax={1000} aria-valuenow={200} style="left:20%"></span><span class="ui-slider-thumb" data-slider-thumb="1" data-slider-value="800" role="slider" tabIndex={0} aria-label="Maximum price" aria-valuemin={0} aria-valuemax={1000} aria-valuenow={800} style="left:80%"></span></div></div>
+  if (variant === "fieldset") return <fieldset class="doc-field-set doc-field-width-sm"><legend class="doc-field-legend">Address Information</legend><p class="doc-field-description">We need your address to deliver your order.</p><div class="doc-field-group"><div class="doc-field"><label class="doc-field-label" for="doc-street">Street Address</label><input class="ui-input" id="doc-street" placeholder="123 Main St" /></div><div class="doc-field-grid is-two"><div class="doc-field"><label class="doc-field-label" for="doc-city">City</label><input class="ui-input" id="doc-city" placeholder="New York" /></div><div class="doc-field"><label class="doc-field-label" for="doc-zip">Postal Code</label><input class="ui-input" id="doc-zip" placeholder="90502" /></div></div></div></fieldset>
+  if (variant === "checkbox") return <div class="doc-field-group doc-field-width-xs"><fieldset class="doc-field-set"><legend class="doc-field-legend is-label">Show these items on the desktop</legend><p class="doc-field-description">Select the items you want to show on the desktop.</p><div class="doc-field-group is-checkboxes">{["Hard disks", "External disks", "CDs, DVDs, and iPods", "Connected servers"].map((label, index) => <div class="doc-field is-horizontal" data-doc-field-toggle><DocFieldCheckboxControl id={`doc-finder-${index}`} label={label} /><label class="doc-field-label is-normal" for={`doc-finder-${index}`}>{label}</label></div>)}</div></fieldset><div class="doc-field-separator"></div><div class="doc-field is-horizontal is-content" data-doc-field-toggle><DocFieldCheckboxControl id="doc-sync-folders" label="Sync Desktop & Documents folders" checked /><div class="doc-field-content"><label class="doc-field-label" for="doc-sync-folders">Sync Desktop &amp; Documents folders</label><p class="doc-field-description">Your Desktop &amp; Documents folders are being synced with iCloud Drive. You can access them from other devices.</p></div></div></div>
+  if (variant === "radio") return <fieldset class="doc-field-set doc-field-width-xs"><legend class="doc-field-legend is-label">Subscription Plan</legend><p class="doc-field-description">Yearly and lifetime plans offer significant savings.</p><div class="doc-field-radio-group" data-radio-group role="radiogroup" aria-label="Subscription Plan">{[["monthly", "Monthly ($9.99/month)"], ["yearly", "Yearly ($99.99/year)"], ["lifetime", "Lifetime ($299.99)"]].map((item, index) => <label class="doc-field is-horizontal" data-radio-item data-checked={index === 0 ? "true" : "false"}><DocFieldRadioControl id={`doc-plan-${item[0]}`} label={item[1]} checked={index === 0} /><span class="doc-field-label is-normal">{item[1]}</span></label>)}</div></fieldset>
+  if (variant === "switch") return <div class="doc-field is-horizontal is-fit" data-doc-field-toggle><label class="doc-field-label" for="doc-2fa">Multi-factor authentication</label><UiSwitch id="doc-2fa" /></div>
+  if (variant === "choice-card") return <div class="doc-field-group doc-field-width-xs"><fieldset class="doc-field-set"><legend class="doc-field-legend is-label">Compute Environment</legend><p class="doc-field-description">Select the compute environment for your cluster.</p><div class="doc-field-radio-group" data-radio-group role="radiogroup" aria-label="Compute Environment">{[["kubernetes", "Kubernetes", "Run GPU workloads on a K8s cluster."], ["vm", "Virtual Machine", "Access a cluster to run GPU workloads."]].map((item, index) => <label class="doc-field-choice" data-radio-item data-checked={index === 0 ? "true" : "false"}><div class="doc-field is-horizontal is-content"><div class="doc-field-content"><span class="doc-field-label">{item[1]}</span><p class="doc-field-description">{item[2]}</p></div><DocFieldRadioControl id={`doc-choice-${item[0]}`} label={item[1]} checked={index === 0} /></div></label>)}</div></fieldset></div>
+  if (variant === "group") return <div class="doc-field-group doc-field-width-xs"><fieldset class="doc-field-set is-checkbox-set"><p class="doc-field-label">Responses</p><p class="doc-field-description">Get notified when ChatGPT responds to requests that take time, like research or image generation.</p><div class="doc-field-group is-nested"><div class="doc-field is-horizontal is-disabled"><DocFieldCheckboxControl id="doc-push" label="Push notifications" checked disabled /><label class="doc-field-label is-normal" for="doc-push">Push notifications</label></div></div></fieldset><div class="doc-field-separator"></div><fieldset class="doc-field-set is-checkbox-set"><p class="doc-field-label">Tasks</p><p class="doc-field-description">Get notified when tasks you've created have updates. <a href="#">Manage tasks</a></p><div class="doc-field-group is-checkboxes">{["Push notifications", "Email notifications"].map((label, index) => <div class="doc-field is-horizontal" data-doc-field-toggle><DocFieldCheckboxControl id={`doc-task-${index}`} label={label} /><label class="doc-field-label is-normal" for={`doc-task-${index}`}>{label}</label></div>)}</div></fieldset></div>
+  if (variant === "responsive") return <div class="doc-field-responsive"><form class="doc-field-form" data-doc-field-form><fieldset class="doc-field-set"><legend class="doc-field-legend">Profile</legend><p class="doc-field-description">Fill in your profile information.</p><div class="doc-field-group"><div class="doc-field is-responsive"><div class="doc-field-content"><label class="doc-field-label" for="doc-profile-name">Name</label><p class="doc-field-description">Provide your full name for identification</p></div><input class="ui-input" id="doc-profile-name" placeholder="Evil Rabbit" required /></div><div class="doc-field is-responsive doc-field-actions"><button class="doc-button is-default" type="submit">Submit</button><button class="doc-button is-outline" type="button">Cancel</button></div></div></fieldset></form></div>
+  return <DocFieldPaymentForm />
 }
 
 function DocEmptyPreview(props: { name: string }) {
