@@ -2810,6 +2810,88 @@ test.describe("shadcn v4 site", () => {
     await expect(demo.locator('[aria-current="page"]')).not.toHaveCSS("border-color", "rgba(0, 0, 0, 0)")
   })
 
+  test("popover docs match React content, alignment, form focus, dismissal, and RTL", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/base/popover")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(5)
+    for (let index = 0; index < 4; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(4).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+
+    const demo = page.locator('[data-doc-preview-name="popover-demo"]')
+    const demoTrigger = demo.getByRole("button", { name: "Open popover" })
+    await demoTrigger.click()
+    const demoPanel = demo.getByRole("dialog")
+    await expect(demoPanel).toBeVisible()
+    await expect(demoPanel).toHaveCSS("width", "320px")
+    await expect(demoPanel).toContainText("Dimensions")
+    await expect(demoPanel).toContainText("Set the dimensions for the layer.")
+    await expect(demoPanel.locator("input")).toHaveCount(4)
+    for (const [index, value] of ["100%", "300px", "25px", "none"].entries()) {
+      await expect(demoPanel.locator("input").nth(index)).toHaveValue(value)
+    }
+    await expect(demoPanel.locator("input").first()).toBeFocused()
+    await expectFocusRing(demoPanel.locator("input").first())
+    await page.keyboard.press("Escape")
+    await expect(demoPanel).toBeHidden()
+    await expect(demoTrigger).toBeFocused()
+
+    const basic = page.locator('[data-doc-preview-name="popover-basic"]')
+    const basicTrigger = basic.getByRole("button", { name: "Open Popover" })
+    await basicTrigger.click()
+    const basicPanel = basic.getByRole("dialog")
+    await expect(basicPanel).toHaveCSS("width", "320px")
+    await expect(basicPanel).toBeFocused()
+    const basicBoxes = await Promise.all([basicTrigger.boundingBox(), basicPanel.boundingBox()])
+    expect(basicBoxes[0]?.x).toBeCloseTo(basicBoxes[1]?.x ?? 0, 0)
+    await page.locator("main h1").click()
+    await expect(basic.locator("[data-doc-popover-panel]")).toBeHidden()
+
+    const alignments = page.locator('[data-doc-preview-name="popover-alignments"]')
+    await expect(alignments.locator("[data-doc-popover-trigger]")).toHaveText(["Start", "Center", "End"])
+    await expect(alignments.locator(".doc-popover-alignments")).toHaveCSS("gap", "24px")
+    for (const alignment of ["start", "center", "end"]) {
+      const popover = alignments.locator(`[data-doc-popover]:has([data-align="${alignment}"])`)
+      await popover.locator("[data-doc-popover-trigger]").click()
+      await expect(popover.getByRole("dialog")).toBeVisible()
+      await expect(popover.getByRole("dialog")).toHaveCSS("width", "160px")
+      await page.keyboard.press("Escape")
+    }
+
+    const form = page.locator('[data-doc-preview-name="popover-form"]')
+    await form.getByRole("button", { name: "Open Popover" }).click()
+    const formPanel = form.getByRole("dialog")
+    await expect(formPanel).toHaveCSS("width", "256px")
+    await expect(formPanel.locator("input").nth(0)).toHaveValue("100%")
+    await expect(formPanel.locator("input").nth(1)).toHaveValue("25px")
+    await expect(formPanel.locator("input").first()).toBeFocused()
+    await page.keyboard.press("Escape")
+
+    const rtl = page.locator('[data-doc-preview-name="popover-rtl"]')
+    const rtlRoot = rtl.locator(".doc-popover-rtl-group")
+    await expect(rtlRoot).toHaveAttribute("dir", "rtl")
+    await expect(rtl.locator("[data-doc-popover-trigger]")).toHaveText(["يسار", "أعلى", "أسفل", "يمين"])
+    for (const [index, side] of ["left", "top", "bottom", "right"].entries()) {
+      await rtl.locator("[data-doc-popover-trigger]").nth(index).click()
+      await expect(rtl.locator(`[data-doc-popover-panel][data-side="${side}"]`)).toBeVisible()
+      await expect(rtl.getByRole("dialog")).toContainText("الأبعاد")
+      await page.keyboard.press("Escape")
+    }
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.locator("[data-doc-popover-trigger]")).toHaveText(["שמאל", "למעלה", "למטה", "ימין"])
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtlRoot).toHaveAttribute("dir", "ltr")
+    await expect(rtl.locator("[data-doc-popover-trigger]")).toHaveText(["Left", "Top", "Bottom", "Right"])
+
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await rtl.getByRole("button", { name: "Bottom" }).click()
+    await expect(rtl.getByRole("dialog")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+  })
+
   test("kbd docs match React keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/base/kbd")

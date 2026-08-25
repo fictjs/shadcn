@@ -2748,6 +2748,52 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-pagination-rtl-preview[data-lang="he"] .doc-pagination { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 .doc-pagination[dir="rtl"] .doc-pagination-icon { transform: scaleX(-1); }
 
+.doc-component-card[data-doc-preview-name^="popover-"] { overflow: visible; }
+.doc-component-card[data-doc-preview-name^="popover-"]:not([data-doc-preview-name="popover-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="popover-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.doc-popover { position: relative; display: inline-flex; width: fit-content; color: var(--foreground); }
+.doc-popover:has(.doc-popover-panel:not([hidden])) { z-index: 75; }
+.doc-button.doc-popover-trigger { width: auto; min-width: 0; white-space: nowrap; }
+.doc-popover-panel { position: absolute; z-index: 75; box-sizing: border-box; width: 320px; border: 1px solid var(--border); border-radius: 10px; padding: 16px; color: var(--popover-foreground); background: var(--popover); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -2px rgb(0 0 0 / 10%); outline: none; }
+.doc-popover-panel[hidden] { display: none; }
+.doc-popover-panel[data-side="bottom"] { top: calc(100% + 4px); }
+.doc-popover-panel[data-side="top"] { bottom: calc(100% + 4px); }
+.doc-popover-panel[data-side="left"] { top: 50%; right: calc(100% + 4px); transform: translateY(-50%); }
+.doc-popover-panel[data-side="right"] { top: 50%; left: calc(100% + 4px); transform: translateY(-50%); }
+.doc-popover-panel[data-side="bottom"][data-align="start"],
+.doc-popover-panel[data-side="top"][data-align="start"] { left: 0; }
+.doc-popover-panel[data-side="bottom"][data-align="center"],
+.doc-popover-panel[data-side="top"][data-align="center"] { left: 50%; transform: translateX(-50%); }
+.doc-popover-panel[data-side="bottom"][data-align="end"],
+.doc-popover-panel[data-side="top"][data-align="end"] { right: 0; }
+.doc-popover-header { display: grid; gap: 6px; }
+.doc-popover-header h4,
+.doc-popover-header p { margin: 0; }
+.doc-popover-header h4 { font-size: 14px; font-weight: 500; line-height: 14px; }
+.doc-popover-header p { color: var(--muted-foreground); font-size: 14px; line-height: 20px; }
+.doc-popover-demo-content { display: grid; gap: 16px; }
+.doc-popover-dimensions { display: grid; gap: 8px; }
+.doc-popover-dimensions label { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: center; gap: 16px; font-size: 14px; line-height: 20px; }
+.doc-popover-dimensions label > span { font-weight: 500; }
+.doc-popover-dimensions input { grid-column: span 2; }
+.doc-popover-panel input { box-sizing: border-box; width: 100%; height: 32px; border: 1px solid var(--input); border-radius: 10px; padding: 4px 10px; color: inherit; background: transparent; font-family: inherit; font-size: 14px; line-height: 20px; outline: none; }
+.doc-popover-panel input:focus-visible { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.dark .doc-popover-panel input { background: color-mix(in oklab, var(--input) 30%, transparent); }
+.doc-popover-panel.is-basic { min-height: 84px; }
+.doc-popover-alignments { display: flex; align-items: center; gap: 24px; }
+.doc-popover-alignments .doc-popover-trigger { height: 32px; padding-inline: 12px; }
+.doc-popover-panel.is-alignment { width: 160px; font-size: 14px; line-height: 20px; }
+.doc-popover-panel.is-form { width: 256px; }
+.doc-popover-form-content,
+.doc-popover-form-fields { display: grid; gap: 16px; }
+.doc-popover-form-fields label { display: flex; align-items: center; gap: 12px; font-size: 14px; line-height: 20px; }
+.doc-popover-form-fields label > span { width: 50%; font-weight: 500; }
+.doc-popover-form-fields input { min-width: 0; }
+.doc-rtl-preview.doc-popover-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; }
+.doc-popover-rtl-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-popover-rtl-preview[data-lang="he"] .doc-popover-rtl-group { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+.doc-popover-panel.is-rtl { width: 320px; direction: inherit; text-align: start; }
+
 .doc-component-card[data-doc-preview-name^="empty-"]:not([data-doc-preview-name="empty-rtl"]) .doc-component-preview-stage { height: 384px; min-height: 384px; }
 .doc-component-card[data-doc-preview-name="empty-demo"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="empty-background"] .doc-component-preview-stage,

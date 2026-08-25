@@ -53,6 +53,7 @@ async function initResumableClient(): Promise<void> {
   wireDocMenubars()
   wireDocNavigationMenus()
   wireDocPaginationSelects()
+  wireDocPopovers()
   wireShowcaseMenus()
   wireRtlLocalization()
   wireShowcaseToggles()
@@ -2988,6 +2989,46 @@ function wireDocPaginationSelects(): void {
       trigger.focus({ preventScroll: true })
       event.preventDefault()
     })
+  })
+}
+
+function wireDocPopovers(): void {
+  const close = (popover: HTMLElement, restoreFocus = false): void => {
+    const trigger = popover.querySelector<HTMLElement>("[data-doc-popover-trigger]")
+    const panel = popover.querySelector<HTMLElement>("[data-doc-popover-panel]")
+    if (!trigger || !panel) return
+    panel.hidden = true
+    trigger.setAttribute("aria-expanded", "false")
+    if (restoreFocus) trigger.focus({ preventScroll: true })
+  }
+  const closeAll = (except?: HTMLElement): void => {
+    document.querySelectorAll<HTMLElement>("[data-doc-popover]").forEach((popover) => {
+      if (popover !== except) close(popover)
+    })
+  }
+  document.querySelectorAll<HTMLElement>("[data-doc-popover]").forEach((popover) => {
+    const trigger = popover.querySelector<HTMLElement>("[data-doc-popover-trigger]")
+    const panel = popover.querySelector<HTMLElement>("[data-doc-popover-panel]")
+    if (!trigger || !panel) return
+    trigger.addEventListener("click", (event) => {
+      event.stopPropagation()
+      const opening = panel.hidden
+      closeAll(popover)
+      panel.hidden = !opening
+      trigger.setAttribute("aria-expanded", String(opening))
+      if (opening) queueMicrotask(() => (panel.querySelector<HTMLElement>("input, button, [href]") ?? panel).focus({ preventScroll: true }))
+    })
+    panel.addEventListener("click", (event) => event.stopPropagation())
+    popover.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || panel.hidden) return
+      close(popover, true)
+      event.preventDefault()
+      event.stopPropagation()
+    })
+  })
+  document.addEventListener("click", (event) => {
+    if (event.target instanceof Element && event.target.closest("[data-doc-popover]")) return
+    closeAll()
   })
 }
 

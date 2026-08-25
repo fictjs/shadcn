@@ -4286,6 +4286,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocNavigationMenuPreview name={props.name} />
   ) : family === "pagination" ? (
     <DocPaginationPreview name={props.name} />
+  ) : family === "popover" ? (
+    <DocPopoverPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -4893,6 +4895,28 @@ function DocPaginationPreview(props: { name: string }) {
   )
   const content = iconsOnly ? <div class="doc-pagination-icons-layout"><label class="doc-pagination-field"><span>Rows per page</span><span class="ui-menu doc-pagination-select" data-menu><button type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><span data-doc-pagination-value>25</span><ChevronDownIcon /></button><span class="ui-menu-panel doc-pagination-select-panel" data-menu-panel role="menu" hidden>{["10", "25", "50", "100"].map((value) => <button type="button" class="ui-menu-item" role="menuitemradio" aria-checked={value === "25" ? "true" : "false"} data-menu-item data-doc-pagination-option={value}>{value}</button>)}</span></span></label>{navigation}</div> : navigation
   return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-pagination-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
+}
+
+function DocPopoverPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const rtl = name === "popover-rtl"
+  const text = (ar: string, he: string, en: string) => rtl ? <span data-doc-rtl-text data-text-ar={ar} data-text-he={he} data-text-en={en}>{ar}</span> : en
+  const header = () => <div class="doc-popover-header"><h4>{text("الأبعاد", "מימדים", "Dimensions")}</h4><p>{text("تعيين الأبعاد للطبقة.", "הגדר את המימדים לשכבה.", "Set the dimensions for the layer.")}</p></div>
+  const shell = (trigger: any, content: any, side = "bottom", align = "center", panelClass = "") => <span class="doc-popover" data-doc-popover><button type="button" class="doc-button is-outline doc-popover-trigger" data-doc-popover-trigger aria-haspopup="dialog" aria-expanded="false">{trigger}</button><div class={`doc-popover-panel ${panelClass}`} data-doc-popover-panel data-side={side} data-align={align} role="dialog" tabIndex={-1} hidden>{content}</div></span>
+  let content
+  if (name === "popover-demo") {
+    const fields = [["width", "Width", "100%"], ["maxWidth", "Max. width", "300px"], ["height", "Height", "25px"], ["maxHeight", "Max. height", "none"]]
+    content = shell("Open popover", <div class="doc-popover-demo-content">{header()}<div class="doc-popover-dimensions">{fields.map(([id, label, value]) => <label for={`popover-${id}`}><span>{label}</span><input id={`popover-${id}`} value={value} /></label>)}</div></div>, "bottom", "center", "is-demo")
+  } else if (name === "popover-basic") {
+    content = shell("Open Popover", header(), "bottom", "start", "is-basic")
+  } else if (name === "popover-alignments") {
+    content = <div class="doc-popover-alignments">{shell("Start", "Aligned to start", "bottom", "start", "is-alignment")}{shell("Center", "Aligned to center", "bottom", "center", "is-alignment")}{shell("End", "Aligned to end", "bottom", "end", "is-alignment")}</div>
+  } else if (name === "popover-form") {
+    content = shell("Open Popover", <div class="doc-popover-form-content">{header()}<div class="doc-popover-form-fields"><label for="popover-form-width"><span>Width</span><input id="popover-form-width" value="100%" /></label><label for="popover-form-height"><span>Height</span><input id="popover-form-height" value="25px" /></label></div></div>, "bottom", "start", "is-form")
+  } else {
+    content = <div class="doc-popover-rtl-group" data-doc-rtl-direction dir="rtl">{shell(text("يسار", "שמאל", "Left"), header(), "left", "center", "is-rtl")}{shell(text("أعلى", "למעלה", "Top"), header(), "top", "center", "is-rtl")}{shell(text("أسفل", "למטה", "Bottom"), header(), "bottom", "center", "is-rtl")}{shell(text("يمين", "ימין", "Right"), header(), "right", "center", "is-rtl")}</div>
+  }
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-popover-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
 function DocEmptyPreview(props: { name: string }) {
