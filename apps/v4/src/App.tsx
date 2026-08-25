@@ -6094,31 +6094,40 @@ function DocChartPreview(props: { name: string }) {
   const values = [[186, 80], [305, 200], [237, 120], [73, 190], [209, 130], [214, 140]]
   // Recharts lays the plot out with a 5px margin and a "nice" y-domain of 320
   // for this data; the baseline moves up as the axis and legend claim space.
-  const baseline = showLegend ? 223 : showAxis ? 251 : 281
+  // The RTL preview is rendered into a larger 558x314 box, so it carries its
+  // own scaled-up geometry rather than being stretched from the 509x286 one.
+  const baseline = isRtl ? 250.9 : showLegend ? 223 : showAxis ? 251 : 281
   const barScale = (baseline - 5) / 320
-  const gridLines = showLegend
-    ? [5, 59.5, 114, 168.5, 223]
-    : showAxis
-      ? [5, 66.5, 128, 189.5, 251]
-      : [5, 74, 143, 212, 281]
+  const gridLines = isRtl
+    ? [5, 66.5, 127.9, 189.4, 250.9]
+    : showLegend
+      ? [5, 59.5, 114, 168.5, 223]
+      : showAxis
+        ? [5, 66.5, 128, 189.5, 251]
+        : [5, 74, 143, 212, 281]
+  const barStart = isRtl ? 14.2 : 13.3
+  const barStep = isRtl ? 91.3 : 83.167
+  const barWidth = isRtl ? 34 : 31
+  const mobileOffset = isRtl ? 38 : 35
+  const gridEnd = isRtl ? 553 : 504
 
   const bars = isDemo ? [[222, 150], [97, 180], [167, 120], [242, 260], [373, 290], [301, 340], [245, 180], [409, 320], [59, 110], [261, 190], [327, 350], [292, 210], [342, 380], [137, 220], [120, 170], [138, 190], [446, 360], [364, 410], [243, 180], [89, 150], [137, 200], [224, 170], [138, 230], [387, 290], [215, 250], [75, 130], [383, 420], [122, 180], [315, 240], [454, 380]] : values
   const renderedBars = isRtl ? [...bars].reverse() : bars
   const chart = <div class={`doc-chart${isRtl ? " is-rtl" : ""}`} data-chart data-doc-chart dir={isRtl ? "rtl" : "ltr"} data-doc-rtl-direction={isRtl ? "true" : undefined}>
-    <svg viewBox={`0 0 ${isDemo ? 590 : 509} ${isDemo ? 250 : 286}`} role="img" aria-label="Desktop and mobile visitors">
-      <g class="doc-chart-grid">{showGrid ? (isDemo ? [0, 55, 110, 165, 220].map((y) => <line x1="12" x2="578" y1={y} y2={y}></line>) : gridLines.map((y) => <line x1="5" x2="504" y1={y} y2={y}></line>)) : null}</g>
+    <svg viewBox={`0 0 ${isDemo ? 590 : isRtl ? 558 : 509} ${isDemo ? 250 : isRtl ? 314 : 286}`} role="img" aria-label="Desktop and mobile visitors">
+      <g class="doc-chart-grid">{showGrid ? (isDemo ? [0, 55, 110, 165, 220].map((y) => <line x1="12" x2="578" y1={y} y2={y}></line>) : gridLines.map((y) => <line x1="5" x2={gridEnd} y1={y} y2={y}></line>)) : null}</g>
       <g class="doc-chart-bars">{renderedBars.map((pair, index) => {
-        const x = isDemo ? 13.9 + index * 18.85 : 13.3 + index * 83.167
+        const x = isDemo ? 13.9 + index * 18.85 : barStart + index * barStep
         const desktopHeight = isDemo ? pair[0] * 0.3666 : pair[0] * barScale
         const mobileHeight = isDemo ? pair[1] * 0.3666 : pair[1] * barScale
-        return <g data-doc-chart-bar data-label={isDemo ? `Apr ${index + 1}` : ["January", "February", "March", "April", "May", "June"][index]} data-desktop={pair[0]} data-mobile={pair[1]}><rect class="is-desktop" data-doc-chart-value-desktop={desktopHeight} data-doc-chart-value-mobile={mobileHeight} x={x} y={isDemo ? 220 - desktopHeight : baseline - desktopHeight} width={isDemo ? 15 : 31} height={desktopHeight} rx={isDemo ? "0" : "4"}></rect>{isDemo ? null : <rect class="is-mobile" x={x + 35} y={baseline - mobileHeight} width="31" height={mobileHeight} rx="4"></rect>}</g>
+        return <g data-doc-chart-bar data-label={isDemo ? `Apr ${index + 1}` : ["January", "February", "March", "April", "May", "June"][index]} data-desktop={pair[0]} data-mobile={pair[1]}><rect class="is-desktop" data-doc-chart-value-desktop={desktopHeight} data-doc-chart-value-mobile={mobileHeight} x={x} y={isDemo ? 220 - desktopHeight : baseline - desktopHeight} width={isDemo ? 15 : barWidth} height={desktopHeight} rx={isDemo ? "0" : "4"}></rect>{isDemo ? null : <rect class="is-mobile" x={x + mobileOffset} y={baseline - mobileHeight} width={barWidth} height={mobileHeight} rx="4"></rect>}</g>
       })}</g>
       {isDemo ? <g class="doc-chart-axis">{[2, 6, 10, 14, 18, 22, 26, 30].map((day) => <text x={21.4 + (day - 1) * 18.85} y="242" text-anchor="middle">Apr {day}</text>)}</g> : showAxis ? <g class="doc-chart-axis">{["Jan", "Feb", "Mar", "Apr", "May", "Jun"].map((label, index) => {
         const sourceIndex = isRtl ? 5 - index : index
         const english = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"][sourceIndex]
         const arabic = ["ينا", "فبر", "مار", "أبر", "ماي", "يون"][sourceIndex]
         const hebrew = ["ינו", "פבר", "מרץ", "אפר", "מאי", "יונ"][sourceIndex]
-        return <text x={46.6 + index * 83.167} y={baseline + 24} text-anchor="middle" data-doc-rtl-text={isRtl ? "true" : undefined} data-text-ar={isRtl ? arabic : undefined} data-text-he={isRtl ? hebrew : undefined} data-text-en={isRtl ? english : undefined}>{isRtl ? arabic : label}</text>
+        return <text x={barStart + (mobileOffset + barWidth) / 2 + index * barStep} y={baseline + 24} text-anchor="middle" data-doc-rtl-text={isRtl ? "true" : undefined} data-text-ar={isRtl ? arabic : undefined} data-text-he={isRtl ? hebrew : undefined} data-text-en={isRtl ? english : undefined}>{isRtl ? arabic : label}</text>
       })}</g> : null}
     </svg>
     {showLegend ? <div class="doc-chart-legend"><span><i class="is-desktop"></i><b data-doc-rtl-text={isRtl ? "true" : undefined} data-text-ar="سطح المكتب" data-text-he="שולחן עבודה" data-text-en="Desktop">{isRtl ? "سطح المكتب" : "Desktop"}</b></span><span><i class="is-mobile"></i><b data-doc-rtl-text={isRtl ? "true" : undefined} data-text-ar="الجوال" data-text-he="נייד" data-text-en="Mobile">{isRtl ? "الجوال" : "Mobile"}</b></span></div> : null}<div class="doc-chart-hover" role="tooltip" hidden></div>

@@ -3749,8 +3749,12 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-chart-demo-card { width: 638px; height: 438px; overflow: hidden; border: 0; border-radius: var(--radius-xl); background: var(--card); }
 /* The React docs render chart-demo under their theme-blue palette, so the
    series colours differ from the #2563eb/#60a5fa the other examples pin. */
-.doc-chart-demo-card .doc-chart-bars .is-desktop { fill: rgb(43 127 255); }
-.doc-chart-demo-card .doc-chart-bars .is-mobile { fill: rgb(142 197 255); }
+.doc-chart-demo-card .doc-chart-bars .is-desktop,
+.doc-chart-rtl-preview .doc-chart-bars .is-desktop { fill: rgb(43 127 255); }
+.doc-chart-demo-card .doc-chart-bars .is-mobile,
+.doc-chart-rtl-preview .doc-chart-bars .is-mobile { fill: rgb(142 197 255); }
+.doc-chart-rtl-preview .doc-chart-legend i.is-desktop { background: rgb(43 127 255); }
+.doc-chart-rtl-preview .doc-chart-legend i.is-mobile { background: rgb(142 197 255); }
 
 .doc-chart-demo-card > header { display: grid; height: 99px; grid-template-columns: 1fr 288px; border-bottom: 1px solid var(--border); }
 .doc-chart-demo-card > header > div:first-child { padding: 1.5rem; }
