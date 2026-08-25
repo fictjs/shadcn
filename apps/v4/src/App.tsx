@@ -3921,7 +3921,7 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
   const doc = props.route.doc as DocPage
 
   return (
-    <section class="docs-layout" data-slot="docs">
+    <section class="docs-layout" data-slot="docs" data-doc-page={doc.slug.split("/").slice(-1)[0]}>
       <aside class="docs-sidebar">
         {props.route.docNavigation.map((section) => (
           <div class="docs-sidebar-section" key={section.title}>
@@ -4276,6 +4276,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocInputOtpPreview name={props.name} />
   ) : family === "kbd" ? (
     <DocKbdPreview name={props.name} />
+  ) : family === "label" ? (
+    <DocLabelPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -4717,6 +4719,20 @@ function DocKbdPreview(props: { name: string }) {
   if (variant === "input-group") return <div data-slot="input-group" class="ui-input-group doc-input-group-shell doc-kbd-input-group"><input data-slot="input-group-control" class="ui-input-group-input" aria-label="Search" placeholder="Search..." /><span data-slot="input-group-addon" class="ui-input-group-addon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span><span data-slot="input-group-addon" data-align="inline-end" class="ui-input-group-addon ui-input-group-addon-end">{key("⌘")}{key("K")}</span></div>
   if (variant === "rtl") return <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-kbd-rtl-preview" dir="rtl" data-lang="ar">{demo(true)}</div></div>
   return demo()
+}
+
+function DocLabelPreview(props: { name: string }) {
+  const rtl = untrack(() => props.name === "label-rtl")
+  const id = rtl ? "label-terms-rtl" : "label-terms"
+  const control = (
+    <div class="doc-label-demo" data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}>
+      <button id={id} type="button" role="checkbox" class="doc-checkbox-control" aria-checked="false" data-state="unchecked" data-doc-checkbox><span aria-hidden="true">✓</span></button>
+      <label class="doc-label-text" for={id} data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}>
+        {rtl ? <DocFieldText ar="قبول الشروط والأحكام" he="קבל תנאים והגבלות" en="Accept terms and conditions" /> : "Accept terms and conditions"}
+      </label>
+    </div>
+  )
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-label-rtl-preview" dir="rtl" data-lang="ar">{control}</div></div> : control
 }
 
 function DocEmptyPreview(props: { name: string }) {

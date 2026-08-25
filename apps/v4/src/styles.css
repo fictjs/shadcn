@@ -2623,6 +2623,16 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .ui-tooltip[data-kbd-tooltip="true"] .doc-kbd { color: var(--primary-foreground); background: color-mix(in oklab, var(--primary-foreground) 20%, transparent); }
 .dark .ui-tooltip[data-kbd-tooltip="true"] .doc-kbd { background: color-mix(in oklab, var(--primary-foreground) 10%, transparent); }
 
+.doc-component-card[data-doc-preview-name="label-demo"] .doc-component-preview-stage { display: flex; height: 288px; min-height: 288px; align-items: center; justify-content: center; }
+.doc-component-card[data-doc-preview-name="label-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.docs-layout[data-doc-page="label"] .doc-component-card[data-doc-preview-name="field-demo"] .doc-component-preview-stage { height: 704px; min-height: 704px; }
+.doc-label-demo { display: flex; width: fit-content; align-items: center; gap: 8px; }
+.doc-label-demo .doc-checkbox-control { margin-top: 0; }
+.doc-label-text { display: flex; height: 16px; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; line-height: 14px; user-select: none; }
+.doc-label-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; }
+.doc-label-rtl-preview .doc-label-demo { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-label-rtl-preview[data-lang="he"] .doc-label-demo { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+
 .doc-component-card[data-doc-preview-name^="empty-"]:not([data-doc-preview-name="empty-rtl"]) .doc-component-preview-stage { height: 384px; min-height: 384px; }
 .doc-component-card[data-doc-preview-name="empty-demo"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="empty-background"] .doc-component-preview-stage,
