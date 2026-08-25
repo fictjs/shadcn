@@ -2601,6 +2601,7 @@ test.describe("shadcn v4 site", () => {
 
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(page.locator("html")).toHaveClass(/dark/)
+    await save.scrollIntoViewIfNeeded()
     await save.focus()
     await expect(tooltip).toBeVisible()
     await expect(tooltip.locator('[data-slot="kbd"]')).not.toHaveCSS(
