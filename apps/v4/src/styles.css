@@ -2842,6 +2842,31 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-radio-rtl-preview .doc-radio-group { font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-radio-rtl-preview[data-lang="he"] .doc-radio-group { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 
+.doc-component-card[data-doc-preview-name="resizable-demo"] .doc-component-preview-stage { height: 320px; min-height: 320px; }
+.doc-component-card[data-doc-preview-name="resizable-vertical"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="resizable-handle"] .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="resizable-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.doc-resizable-group { display: flex; box-sizing: border-box; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; color: var(--foreground); }
+.doc-resizable-group.is-horizontal { flex-direction: row; }
+.doc-resizable-group.is-vertical { flex-direction: column; }
+.doc-resizable-group.is-complex { width: 384px; height: 202px; }
+.doc-resizable-group.is-simple { width: 384px; height: 200px; }
+.doc-resizable-group.is-handle { width: 450px; height: 200px; }
+.doc-resizable-group.is-nested { width: 100%; height: 100%; border: 0; border-radius: 0; }
+.doc-resizable-panel { display: flex; min-width: 0; min-height: 0; flex-grow: 0; flex-shrink: 1; align-items: center; justify-content: center; padding: 24px; }
+.doc-resizable-panel > strong { font-size: 14px; font-weight: 600; line-height: 20px; }
+.doc-resizable-panel > .doc-resizable-group { margin: -24px; }
+.doc-resizable-handle { position: relative; z-index: 1; display: flex; flex: 0 0 1px; align-items: center; justify-content: center; background: var(--border); outline: none; }
+.doc-resizable-group.is-horizontal > .doc-resizable-handle { width: 1px; cursor: col-resize; }
+.doc-resizable-group.is-vertical > .doc-resizable-handle { width: 100%; height: 1px; cursor: row-resize; }
+.doc-resizable-handle:focus-visible { background: var(--ring); box-shadow: 0 0 0 1px var(--ring); }
+.doc-resizable-handle > span { display: flex; box-sizing: border-box; width: 12px; height: 24px; flex: 0 0 auto; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 4px; background: var(--background); }
+.doc-resizable-group.is-vertical > .doc-resizable-handle > span { width: 24px; height: 12px; transform: rotate(90deg); }
+.doc-resizable-handle svg { width: 10px; height: 10px; }
+.doc-rtl-preview.doc-resizable-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; }
+.doc-resizable-rtl-preview .doc-resizable-group { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-resizable-rtl-preview[data-lang="he"] .doc-resizable-group { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+
 .doc-component-card[data-doc-preview-name^="empty-"]:not([data-doc-preview-name="empty-rtl"]) .doc-component-preview-stage { height: 384px; min-height: 384px; }
 .doc-component-card[data-doc-preview-name="empty-demo"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="empty-background"] .doc-component-preview-stage,

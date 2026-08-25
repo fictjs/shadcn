@@ -55,6 +55,7 @@ async function initResumableClient(): Promise<void> {
   wireDocPaginationSelects()
   wireDocPopovers()
   wireDocProgress()
+  wireDocResizables()
   wireShowcaseMenus()
   wireRtlLocalization()
   wireShowcaseToggles()
@@ -3046,6 +3047,56 @@ function wireDocProgress(): void {
       const indicator = progress.querySelector<HTMLElement>(".doc-progress-indicator")
       if (indicator) indicator.style.transform = "translateX(-34%)"
     }, 500)
+  })
+}
+
+function wireDocResizables(): void {
+  const setValue = (group: HTMLElement, handle: HTMLElement, rawValue: number): void => {
+    const value = Math.max(10, Math.min(90, rawValue))
+    const panels = Array.from(group.querySelectorAll<HTMLElement>(":scope > [data-doc-resizable-panel]"))
+    if (panels.length < 2) return
+    panels[0].style.flexBasis = `${value}%`
+    panels[1].style.flexBasis = `${100 - value}%`
+    handle.setAttribute("aria-valuenow", String(Math.round(value)))
+  }
+  document.querySelectorAll<HTMLElement>("[data-doc-resizable-handle]").forEach((handle) => {
+    const group = handle.parentElement
+    if (!group?.matches("[data-doc-resizable-group]")) return
+    handle.addEventListener("keydown", (event) => {
+      const current = Number(handle.getAttribute("aria-valuenow") ?? "50")
+      const vertical = group.dataset.orientation === "vertical"
+      const rtl = group.dir === "rtl"
+      let delta = 0
+      if (vertical && event.key === "ArrowDown") delta = 2
+      else if (vertical && event.key === "ArrowUp") delta = -2
+      else if (!vertical && event.key === "ArrowRight") delta = rtl ? -2 : 2
+      else if (!vertical && event.key === "ArrowLeft") delta = rtl ? 2 : -2
+      if (delta === 0) return
+      setValue(group, handle, current + delta)
+      event.preventDefault()
+    })
+  })
+  document.addEventListener("pointerdown", (event) => {
+    const handle = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-doc-resizable-handle]") : null
+    const group = handle?.parentElement
+    if (!handle || !group?.matches("[data-doc-resizable-group]")) return
+    event.preventDefault()
+    const update = (pointer: PointerEvent): void => {
+      const rect = group.getBoundingClientRect()
+      const vertical = group.dataset.orientation === "vertical"
+      const ratio = vertical ? (pointer.clientY - rect.top) / rect.height : group.dir === "rtl" ? (rect.right - pointer.clientX) / rect.width : (pointer.clientX - rect.left) / rect.width
+      setValue(group, handle, ratio * 100)
+    }
+    update(event)
+    const move = (pointer: PointerEvent) => update(pointer)
+    const up = () => {
+      document.removeEventListener("pointermove", move)
+      document.removeEventListener("pointerup", up)
+      document.removeEventListener("pointercancel", up)
+    }
+    document.addEventListener("pointermove", move)
+    document.addEventListener("pointerup", up)
+    document.addEventListener("pointercancel", up)
   })
 }
 

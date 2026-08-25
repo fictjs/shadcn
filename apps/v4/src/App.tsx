@@ -4292,6 +4292,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocProgressPreview name={props.name} />
   ) : family === "radio-group" ? (
     <DocRadioGroupPreview name={props.name} />
+  ) : family === "resizable" ? (
+    <DocResizablePreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -4958,6 +4960,19 @@ function DocRadioGroupPreview(props: { name: string }) {
   })}</div>
   const content = variant === "fieldset" || variant === "invalid" ? <fieldset class="doc-radio-fieldset"><legend>{variant === "invalid" ? "Notification Preferences" : "Subscription Plan"}</legend><p>{variant === "invalid" ? "Choose how you want to receive notifications." : "Yearly and lifetime plans offer significant savings."}</p>{group}</fieldset> : group
   return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-radio-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
+}
+
+function DocResizablePreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const rtl = name === "resizable-rtl"
+  const text = (ar: string, he: string, en: string) => rtl ? <span data-doc-rtl-text data-text-ar={ar} data-text-he={he} data-text-en={en}>{ar}</span> : en
+  const handle = (orientation: "horizontal" | "vertical", withHandle = false, value = 50) => <div class={`doc-resizable-handle${withHandle ? " with-handle" : ""}`} data-doc-resizable-handle role="separator" tabIndex={0} aria-orientation={orientation} aria-valuemin={10} aria-valuemax={90} aria-valuenow={value}>{withHandle ? <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 7h.01M9 12h.01M9 17h.01M15 7h.01M15 12h.01M15 17h.01"></path></svg></span> : null}</div>
+  const complex = <div class="doc-resizable-group is-horizontal is-complex" data-doc-resizable-group data-orientation="horizontal" data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}><div class="doc-resizable-panel" data-doc-resizable-panel style="flex-basis:50%"><strong>{text("واحد", "אחד", "One")}</strong></div>{handle("vertical", true)}<div class="doc-resizable-panel" data-doc-resizable-panel style="flex-basis:50%"><div class="doc-resizable-group is-vertical is-nested" data-doc-resizable-group data-orientation="vertical" dir={rtl ? "rtl" : "ltr"}><div class="doc-resizable-panel" data-doc-resizable-panel style="flex-basis:25%"><strong>{text("اثنان", "שניים", "Two")}</strong></div>{handle("horizontal", true, 25)}<div class="doc-resizable-panel" data-doc-resizable-panel style="flex-basis:75%"><strong>{text("ثلاثة", "שלושה", "Three")}</strong></div></div></div></div>
+  let content
+  if (name === "resizable-demo" || rtl) content = complex
+  else if (name === "resizable-vertical") content = <div class="doc-resizable-group is-vertical is-simple" data-doc-resizable-group data-orientation="vertical"><div class="doc-resizable-panel" data-doc-resizable-panel style="flex-basis:25%"><strong>Header</strong></div>{handle("horizontal", false, 25)}<div class="doc-resizable-panel" data-doc-resizable-panel style="flex-basis:75%"><strong>Content</strong></div></div>
+  else content = <div class="doc-resizable-group is-horizontal is-handle" data-doc-resizable-group data-orientation="horizontal"><div class="doc-resizable-panel" data-doc-resizable-panel style="flex-basis:25%"><strong>Sidebar</strong></div>{handle("vertical", true, 25)}<div class="doc-resizable-panel" data-doc-resizable-panel style="flex-basis:75%"><strong>Content</strong></div></div>
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-resizable-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
 function DocEmptyPreview(props: { name: string }) {
