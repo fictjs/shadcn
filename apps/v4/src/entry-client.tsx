@@ -35,6 +35,7 @@ async function initResumableClient(): Promise<void> {
   wireDocDataTables()
   wireDocAlertDialogs()
   wireDocDialogs()
+  wireDocDrawers()
   wireDocAvatarMenus()
   wireDocButtonGroups()
   wireDocCalendars()
@@ -1472,6 +1473,137 @@ function wireDocDialogs(): void {
       close(true)
     }
   })
+}
+
+function wireDocDrawers(): void {
+  let activePortal: HTMLElement | null = null
+  let activeTrigger: HTMLButtonElement | null = null
+  let origin: { parent: Node; nextSibling: ChildNode | null } | null = null
+  let drag: { content: HTMLElement; pointerId: number; side: string; startX: number; startY: number; distance: number } | null = null
+
+  const close = (restoreFocus = false): void => {
+    if (!activePortal) return
+    const content = activePortal.querySelector<HTMLElement>("[data-doc-drawer-content]")
+    content?.style.removeProperty("transform")
+    content?.style.removeProperty("transition")
+    drag = null
+    activePortal.hidden = true
+    if (origin) origin.parent.insertBefore(activePortal, origin.nextSibling)
+    const trigger = activeTrigger
+    trigger?.setAttribute("aria-expanded", "false")
+    document.body.style.removeProperty("overflow")
+    activePortal = null
+    activeTrigger = null
+    origin = null
+    if (restoreFocus) trigger?.focus({ preventScroll: true })
+  }
+
+  const renderGoal = (content: HTMLElement, nextValue: number): void => {
+    const value = Math.max(200, Math.min(400, nextValue))
+    content.dataset.docDrawerGoalValue = String(value)
+    const language = content.dir === "rtl" ? (content.closest<HTMLElement>(".doc-rtl-preview-shell")?.querySelector<HTMLSelectElement>("[data-doc-rtl-language]")?.value ?? "ar") : "en"
+    const goal = content.querySelector<HTMLElement>("[data-doc-drawer-goal]")
+    if (goal) goal.textContent = value.toLocaleString(language === "ar" ? "ar-EG" : language === "he" ? "he-IL" : "en-US")
+    for (const button of content.querySelectorAll<HTMLButtonElement>("[data-doc-drawer-adjust]")) {
+      const adjustment = Number(button.dataset.docDrawerAdjust)
+      button.disabled = (adjustment < 0 && value <= 200) || (adjustment > 0 && value >= 400)
+    }
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+
+    const trigger = target.closest<HTMLButtonElement>("[data-doc-drawer-trigger]")
+    if (trigger) {
+      const root = trigger.closest<HTMLElement>("[data-doc-drawer-root]")
+      const portal = root?.querySelector<HTMLElement>("[data-doc-drawer-portal]")
+      const content = portal?.querySelector<HTMLElement>("[data-doc-drawer-content]")
+      if (!portal || !content) return
+      close()
+      activePortal = portal
+      activeTrigger = trigger
+      origin = { parent: portal.parentNode as Node, nextSibling: portal.nextSibling }
+      portal.hidden = false
+      document.body.append(portal)
+      trigger.setAttribute("aria-expanded", "true")
+      document.body.style.overflow = "hidden"
+      if (content.querySelector("[data-doc-drawer-goal]")) renderGoal(content, Number(content.dataset.docDrawerGoalValue ?? 350))
+      queueMicrotask(() => (content.querySelector<HTMLInputElement>("input") ?? content.querySelector<HTMLButtonElement>("button"))?.focus({ preventScroll: true }))
+      return
+    }
+
+    const adjust = target.closest<HTMLButtonElement>("[data-doc-drawer-adjust]")
+    if (adjust && activePortal) {
+      const content = activePortal.querySelector<HTMLElement>("[data-doc-drawer-content]")
+      if (content) renderGoal(content, Number(content.dataset.docDrawerGoalValue ?? 350) + Number(adjust.dataset.docDrawerAdjust ?? 0))
+      return
+    }
+
+    if (activePortal && (target.closest("[data-doc-drawer-close]") || target.closest("[data-doc-drawer-overlay]"))) {
+      close(true)
+    }
+  })
+
+  document.addEventListener("input", (event) => {
+    const select = event.target
+    if (!(select instanceof HTMLSelectElement) || !select.matches("[data-doc-rtl-language]")) return
+    const shell = select.closest<HTMLElement>(".doc-rtl-preview-shell")
+    const content = shell?.querySelector<HTMLElement>("[data-doc-drawer-content]")
+    for (const control of shell?.querySelectorAll<HTMLElement>("[data-doc-drawer-label]") ?? []) {
+      const label = control.getAttribute(`data-label-${select.value}`)
+      if (label) control.setAttribute("aria-label", label)
+    }
+    if (content?.querySelector("[data-doc-drawer-goal]")) queueMicrotask(() => renderGoal(content, Number(content.dataset.docDrawerGoalValue ?? 350)))
+  })
+
+  document.addEventListener("submit", (event) => {
+    const form = event.target
+    if (form instanceof HTMLFormElement && form.matches(".doc-drawer-profile-form")) event.preventDefault()
+  })
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && activePortal) {
+      event.preventDefault()
+      close(true)
+    }
+  })
+
+  document.addEventListener("pointerdown", (event) => {
+    const target = event.target
+    if (!(target instanceof Element) || !activePortal || event.button !== 0) return
+    const content = target.closest<HTMLElement>("[data-doc-drawer-content]")
+    if (!content || !activePortal.contains(content) || content.classList.contains("is-responsive") && matchMedia("(min-width: 768px)").matches) return
+    if (!target.closest(".doc-drawer-handle") && target.closest("button, input, textarea, select, a, form, .doc-drawer-scroll")) return
+    drag = { content, pointerId: event.pointerId, side: content.dataset.docDrawerSide ?? "bottom", startX: event.clientX, startY: event.clientY, distance: 0 }
+    content.setPointerCapture(event.pointerId)
+    content.style.transition = "none"
+  })
+
+  document.addEventListener("pointermove", (event) => {
+    if (!drag || drag.pointerId !== event.pointerId) return
+    const raw = drag.side === "bottom" ? event.clientY - drag.startY : drag.side === "top" ? drag.startY - event.clientY : drag.side === "right" ? event.clientX - drag.startX : drag.startX - event.clientX
+    drag.distance = Math.max(0, raw)
+    const signed = drag.side === "top" || drag.side === "left" ? -drag.distance : drag.distance
+    drag.content.style.transform = drag.side === "top" || drag.side === "bottom" ? `translateY(${signed}px)` : `translateX(${signed}px)`
+  })
+
+  const finishDrag = (event: PointerEvent): void => {
+    if (!drag || drag.pointerId !== event.pointerId) return
+    const current = drag
+    drag = null
+    if (current.content.hasPointerCapture(event.pointerId)) current.content.releasePointerCapture(event.pointerId)
+    if (current.distance >= 80) {
+      close(true)
+      return
+    }
+    current.content.style.transition = "transform 180ms ease-out"
+    current.content.style.removeProperty("transform")
+    window.setTimeout(() => current.content.style.removeProperty("transition"), 200)
+  }
+
+  document.addEventListener("pointerup", finishDrag)
+  document.addEventListener("pointercancel", finishDrag)
 }
 
 function wireDocAlertDialogs(): void {

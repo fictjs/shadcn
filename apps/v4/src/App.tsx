@@ -4264,6 +4264,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocCheckboxPreview name={props.name} />
   ) : family === "direction" && name === "card-rtl" ? (
     <DocCardPreview name={props.name} />
+  ) : family === "drawer" || name.startsWith("drawer-") ? (
+    <DocDrawerPreview name={props.name} />
   ) : family === "dialog" || name.startsWith("dialog-") ? (
     <DocDialogPreview name={props.name} />
   ) : family === "date-picker" || name.startsWith("date-picker-") ? (
@@ -4389,6 +4391,103 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <p>Registry preview surface for this documentation example.</p>
     </div>
   )
+}
+
+const docDrawerBars = [400, 300, 200, 300, 200, 278, 189, 239, 300, 200, 278, 189, 349]
+const docDrawerParagraph = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+
+function DocDrawerGoalContent(props: { name: string; rtl?: boolean }) {
+  const rtl = untrack(() => !!props.rtl)
+  return (
+    <div class="doc-drawer-goal-shell">
+      <header class="doc-drawer-header">
+        <h3 id={`${props.name}-title`} data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "نقل الهدف" : undefined} data-text-he={rtl ? "הזז מטרה" : undefined} data-text-en={rtl ? "Move Goal" : undefined}>{rtl ? "نقل الهدف" : "Move Goal"}</h3>
+        <p data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "حدد هدف نشاطك اليومي." : undefined} data-text-he={rtl ? "הגדר את יעד הפעילות היומי שלך." : undefined} data-text-en={rtl ? "Set your daily activity goal." : undefined}>{rtl ? "حدد هدف نشاطك اليومي." : "Set your daily activity goal."}</p>
+      </header>
+      <div class="doc-drawer-goal-body">
+        <div class="doc-drawer-goal-controls">
+          <button type="button" class="doc-drawer-round-button" data-doc-drawer-adjust="-10" data-doc-drawer-label={rtl ? "true" : undefined} data-label-ar={rtl ? "تقليل" : undefined} data-label-he={rtl ? "הקטן" : undefined} data-label-en={rtl ? "Decrease" : undefined} aria-label={rtl ? "تقليل" : "Decrease"}><MinusIcon /></button>
+          <div class="doc-drawer-goal-value">
+            <strong data-doc-drawer-goal>350</strong>
+            <span data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "سعرات حرارية/يوم" : undefined} data-text-he={rtl ? "קלוריות/יום" : undefined} data-text-en={rtl ? "Calories/day" : undefined}>{rtl ? "سعرات حرارية/يوم" : "Calories/day"}</span>
+          </div>
+          <button type="button" class="doc-drawer-round-button" data-doc-drawer-adjust="10" data-doc-drawer-label={rtl ? "true" : undefined} data-label-ar={rtl ? "زيادة" : undefined} data-label-he={rtl ? "הגדל" : undefined} data-label-en={rtl ? "Increase" : undefined} aria-label={rtl ? "زيادة" : "Increase"}><PlusIcon /></button>
+        </div>
+        <div class="doc-drawer-chart" aria-hidden="true">
+          {docDrawerBars.map((value) => <span style={`height:${Math.round(value / 4)}%`}></span>)}
+        </div>
+      </div>
+      <footer class="doc-drawer-footer">
+        <button type="button" class="doc-button is-default"><span data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "إرسال" : undefined} data-text-he={rtl ? "שלח" : undefined} data-text-en={rtl ? "Submit" : undefined}>{rtl ? "إرسال" : "Submit"}</span></button>
+        <button type="button" class="doc-button is-outline" data-doc-drawer-close><span data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "إلغاء" : undefined} data-text-he={rtl ? "בטל" : undefined} data-text-en={rtl ? "Cancel" : undefined}>{rtl ? "إلغاء" : "Cancel"}</span></button>
+      </footer>
+    </div>
+  )
+}
+
+function DocDrawerScrollableBody(props: { name: string }) {
+  return (
+    <>
+      <header class="doc-drawer-header"><h3 id={`${props.name}-title`}>Move Goal</h3><p>Set your daily activity goal.</p></header>
+      <div class="doc-drawer-scroll" data-doc-drawer-scroll>{Array.from({ length: 10 }, (_, index) => <p key={index}>{docDrawerParagraph}</p>)}</div>
+      <footer class="doc-drawer-footer"><button type="button" class="doc-button is-default">Submit</button><button type="button" class="doc-button is-outline" data-doc-drawer-close>Cancel</button></footer>
+    </>
+  )
+}
+
+function DocDrawerPortal(props: { name: string; side: string; rtl?: boolean; responsive?: boolean; sides?: boolean }) {
+  const rtl = untrack(() => !!props.rtl)
+  const responsive = untrack(() => !!props.responsive)
+  return (
+    <div class="doc-drawer-portal" data-doc-drawer-portal hidden>
+      <div class="doc-drawer-overlay" data-doc-drawer-overlay></div>
+      <div class={`doc-drawer-content is-${props.side}${responsive ? " is-responsive" : ""}${props.sides ? " is-sides" : ""}`} data-doc-drawer-content data-doc-drawer-side={props.side} data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"} role="dialog" aria-modal="true" aria-labelledby={`${props.name}-title`}>
+        <div class="doc-drawer-handle" aria-hidden="true"></div>
+        {responsive ? (
+          <div class="doc-drawer-profile">
+            <button type="button" class="doc-dialog-x doc-drawer-responsive-x" aria-label="Close" data-doc-drawer-close>×</button>
+            <header class="doc-drawer-header"><h3 id={`${props.name}-title`}>Edit profile</h3><p>Make changes to your profile here. Click save when you're done.</p></header>
+            <form class="doc-drawer-profile-form"><label>Email<input type="email" value="shadcn@example.com" /></label><label>Username<input value="@shadcn" /></label><button type="submit" class="doc-button is-default">Save changes</button></form>
+            <footer class="doc-drawer-footer doc-drawer-mobile-footer"><button type="button" class="doc-button is-outline" data-doc-drawer-close>Cancel</button></footer>
+          </div>
+        ) : props.side === "bottom" && (props.name === "drawer-demo" || rtl) ? (
+          <DocDrawerGoalContent name={props.name} rtl={rtl} />
+        ) : (
+          <DocDrawerScrollableBody name={props.name} />
+        )}
+      </div>
+    </div>
+  )
+}
+
+function DocDrawerPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const rtl = name === "drawer-rtl"
+
+  if (name === "drawer-sides") {
+    return (
+      <div class="doc-drawer-sides">
+        {(["top", "right", "bottom", "left"] as const).map((side) => (
+          <div data-doc-drawer-root>
+            <button type="button" class="doc-button is-outline doc-drawer-side-trigger" data-doc-drawer-trigger aria-haspopup="dialog" aria-expanded="false">{side}</button>
+            <DocDrawerPortal name={`drawer-${side}`} side={side} sides />
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  const side = name === "drawer-scrollable-content" ? "right" : "bottom"
+  const responsive = name === "drawer-dialog"
+  const trigger = responsive ? "Edit Profile" : name === "drawer-scrollable-content" ? "Scrollable Content" : rtl ? "فتح الدرج" : "Open Drawer"
+  const drawer = (
+    <div class="doc-drawer-preview" data-doc-drawer-root data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}>
+      <button type="button" class="doc-button is-outline" data-doc-drawer-trigger aria-haspopup="dialog" aria-expanded="false"><span data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "فتح الدرج" : undefined} data-text-he={rtl ? "פתח מגירה" : undefined} data-text-en={rtl ? "Open Drawer" : undefined}>{trigger}</span></button>
+      <DocDrawerPortal name={name} side={side} rtl={rtl} responsive={responsive} />
+    </div>
+  )
+
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-drawer-rtl-preview" dir="rtl" data-lang="ar">{drawer}</div></div> : drawer
 }
 
 function DocDialogPreview(props: { name: string }) {
