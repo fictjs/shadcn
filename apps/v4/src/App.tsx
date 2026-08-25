@@ -6106,14 +6106,14 @@ function DocChartPreview(props: { name: string }) {
   const renderedBars = isRtl ? [...bars].reverse() : bars
   const chart = <div class={`doc-chart${isRtl ? " is-rtl" : ""}`} data-chart data-doc-chart dir={isRtl ? "rtl" : "ltr"} data-doc-rtl-direction={isRtl ? "true" : undefined}>
     <svg viewBox={`0 0 ${isDemo ? 590 : 509} ${isDemo ? 250 : 286}`} role="img" aria-label="Desktop and mobile visitors">
-      <g class="doc-chart-grid">{showGrid ? (isDemo ? [44, 109, 174, 219].map((y) => <line x1="10" x2="580" y1={y} y2={y}></line>) : gridLines.map((y) => <line x1="5" x2="504" y1={y} y2={y}></line>)) : null}</g>
+      <g class="doc-chart-grid">{showGrid ? (isDemo ? [0, 55, 110, 165, 220].map((y) => <line x1="12" x2="578" y1={y} y2={y}></line>) : gridLines.map((y) => <line x1="5" x2="504" y1={y} y2={y}></line>)) : null}</g>
       <g class="doc-chart-bars">{renderedBars.map((pair, index) => {
-        const x = isDemo ? 12 + index * 19 : 13.3 + index * 83.167
-        const desktopHeight = isDemo ? pair[0] * 0.365 : pair[0] * barScale
-        const mobileHeight = isDemo ? pair[1] * 0.365 : pair[1] * barScale
-        return <g data-doc-chart-bar data-label={isDemo ? `Apr ${index + 1}` : ["January", "February", "March", "April", "May", "June"][index]} data-desktop={pair[0]} data-mobile={pair[1]}><rect class="is-desktop" data-doc-chart-value-desktop={desktopHeight} data-doc-chart-value-mobile={mobileHeight} x={x} y={isDemo ? 219 - desktopHeight : baseline - desktopHeight} width={isDemo ? 15 : 31} height={desktopHeight} rx={isDemo ? "0" : "4"}></rect>{isDemo ? null : <rect class="is-mobile" x={x + 35} y={baseline - mobileHeight} width="31" height={mobileHeight} rx="4"></rect>}</g>
+        const x = isDemo ? 13.9 + index * 18.85 : 13.3 + index * 83.167
+        const desktopHeight = isDemo ? pair[0] * 0.3666 : pair[0] * barScale
+        const mobileHeight = isDemo ? pair[1] * 0.3666 : pair[1] * barScale
+        return <g data-doc-chart-bar data-label={isDemo ? `Apr ${index + 1}` : ["January", "February", "March", "April", "May", "June"][index]} data-desktop={pair[0]} data-mobile={pair[1]}><rect class="is-desktop" data-doc-chart-value-desktop={desktopHeight} data-doc-chart-value-mobile={mobileHeight} x={x} y={isDemo ? 220 - desktopHeight : baseline - desktopHeight} width={isDemo ? 15 : 31} height={desktopHeight} rx={isDemo ? "0" : "4"}></rect>{isDemo ? null : <rect class="is-mobile" x={x + 35} y={baseline - mobileHeight} width="31" height={mobileHeight} rx="4"></rect>}</g>
       })}</g>
-      {isDemo ? <g class="doc-chart-axis">{[2, 6, 10, 14, 18, 22, 26, 30].map((day) => <text x={12 + (day - 1) * 19 + 7.5} y="243" text-anchor="middle">Apr {day}</text>)}</g> : showAxis ? <g class="doc-chart-axis">{["Jan", "Feb", "Mar", "Apr", "May", "Jun"].map((label, index) => {
+      {isDemo ? <g class="doc-chart-axis">{[2, 6, 10, 14, 18, 22, 26, 30].map((day) => <text x={21.4 + (day - 1) * 18.85} y="242" text-anchor="middle">Apr {day}</text>)}</g> : showAxis ? <g class="doc-chart-axis">{["Jan", "Feb", "Mar", "Apr", "May", "Jun"].map((label, index) => {
         const sourceIndex = isRtl ? 5 - index : index
         const english = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"][sourceIndex]
         const arabic = ["ينا", "فبر", "مار", "أبر", "ماي", "يون"][sourceIndex]

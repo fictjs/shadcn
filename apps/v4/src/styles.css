@@ -2190,7 +2190,7 @@ h1 {
 .doc-component-card[data-doc-preview-name="carousel-spacing"] .doc-component-preview-stage { height: 18rem; min-height: 18rem; }
 .doc-component-card[data-doc-preview-name="carousel-rtl"] .doc-component-preview-stage { display: block; height: 32rem; min-height: 32rem; padding: 0; }
 
-.doc-component-card[data-doc-preview-name="chart-demo"] .doc-component-preview-stage { display: block; height: 437px; min-height: 437px; padding: 0; }
+.doc-component-card[data-doc-preview-name="chart-demo"] .doc-component-preview-stage { display: block; height: 438px; min-height: 438px; padding: 0; }
 .doc-component-card[data-doc-preview-name^="chart-example"] .doc-component-preview-stage { height: 320px; min-height: 320px; }
 .doc-component-card[data-doc-preview-name="chart-tooltip"] .doc-component-preview-stage { height: 288px; min-height: 288px; padding: 0; }
 .doc-component-card[data-doc-preview-name="chart-rtl"] .doc-component-preview-stage { display: block; height: 432px; min-height: 432px; padding: 0; }
@@ -3744,7 +3744,14 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-chart-hover strong,
 .doc-chart-hover span { display: flex; justify-content: space-between; gap: 1rem; }
 .doc-chart-hover strong { margin-bottom: 0.25rem; }
-.doc-chart-demo-card { width: 638px; height: 437px; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--card); }
+/* The React docs render this preview with [&_.preview>div]:border-none, so the
+   card contributes no border box of its own. */
+.doc-chart-demo-card { width: 638px; height: 438px; overflow: hidden; border: 0; border-radius: var(--radius-xl); background: var(--card); }
+/* The React docs render chart-demo under their theme-blue palette, so the
+   series colours differ from the #2563eb/#60a5fa the other examples pin. */
+.doc-chart-demo-card .doc-chart-bars .is-desktop { fill: rgb(43 127 255); }
+.doc-chart-demo-card .doc-chart-bars .is-mobile { fill: rgb(142 197 255); }
+
 .doc-chart-demo-card > header { display: grid; height: 99px; grid-template-columns: 1fr 288px; border-bottom: 1px solid var(--border); }
 .doc-chart-demo-card > header > div:first-child { padding: 1.5rem; }
 .doc-chart-demo-card h4 { margin: 0; font-size: 1rem; font-weight: 600; }
@@ -3753,7 +3760,7 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-chart-demo-card > header > div:last-child button { display: flex; flex-direction: column; justify-content: center; border: 0; border-left: 1px solid var(--border); padding: 0 2rem; color: var(--muted-foreground); background: transparent; font: inherit; font-size: 0.75rem; text-align: left; }
 .doc-chart-demo-card > header > div:last-child button[aria-pressed="true"] { background: color-mix(in oklab, var(--muted) 45%, transparent); }
 .doc-chart-demo-card > header strong { color: var(--foreground); font-size: 1.875rem; font-weight: 700; }
-.doc-chart-demo-card .doc-chart { width: 590px; height: 250px; margin: 47px 23px 0; }
+.doc-chart-demo-card .doc-chart { width: 590px; height: 250px; margin: 48px 24px 0; }
 .doc-chart-tooltip-guide { position: relative; width: 638px; height: 288px; }
 .doc-chart-tooltip-guide > div { position: absolute; display: grid; min-width: 128px; gap: 0.25rem; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.5rem; background: var(--popover); box-shadow: 0 8px 18px rgb(0 0 0 / 12%); font-size: 0.75rem; }
 .doc-chart-tooltip-guide > div span { display: flex; justify-content: space-between; gap: 1.5rem; color: var(--muted-foreground); }

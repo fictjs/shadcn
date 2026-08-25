@@ -2343,7 +2343,9 @@ function wireDocCharts(): void {
     card.querySelectorAll<SVGRectElement>("[data-doc-chart-value-desktop]").forEach((bar) => {
       const height = Number(bar.dataset[`docChartValue${key}`])
       bar.setAttribute("height", String(height))
-      bar.setAttribute("y", String(219 - height))
+      bar.setAttribute("y", String(220 - height))
+      bar.classList.toggle("is-mobile", key === "Mobile")
+      bar.classList.toggle("is-desktop", key !== "Mobile")
     })
   })
 }
