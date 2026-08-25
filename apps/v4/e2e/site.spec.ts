@@ -195,6 +195,32 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".doc-header-row > h1")).toContainText("Installation")
   })
 
+  test("docs layout stays single-column until the desktop sidebar appears", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto("/docs/components/base/item")
+
+    const layout = page.locator(".docs-layout")
+    const main = page.locator(".doc-main")
+    const stage = page.locator('[data-doc-preview-name="item-demo"] .doc-component-preview-stage')
+    await expect(layout).toHaveCSS("grid-template-columns", "374px")
+    await expect(main).toHaveCSS("width", "374px")
+    await expect(stage).toHaveCSS("width", "340px")
+    await expect(page.locator(".docs-sidebar")).toBeHidden()
+
+    await page.setViewportSize({ width: 1023, height: 900 })
+    await expect(layout).toHaveCSS("grid-template-columns", "1007px")
+    await expect(main).toHaveCSS("width", "1007px")
+    await expect(page.locator(".docs-sidebar")).toBeHidden()
+
+    await page.setViewportSize({ width: 1024, height: 900 })
+    const desktopColumns = await layout.evaluate((element) =>
+      getComputedStyle(element).gridTemplateColumns.split(" ").map(Number.parseFloat),
+    )
+    expect(desktopColumns).toHaveLength(2)
+    expect(desktopColumns[0]).toBe(240)
+    await expect(page.locator(".docs-sidebar")).toBeVisible()
+  })
+
   test("mode toggle switches site theme and preview assets", async ({ page }) => {
     await page.setViewportSize({ width: 820, height: 900 })
     await page.goto("/")

@@ -12378,7 +12378,7 @@ body[data-dashboard-drawer-open="true"] {
   }
 }
 
-@media (max-width: 1139px) {
+@media (min-width: 1024px) and (max-width: 1139px) {
   .docs-layout {
     grid-template-columns: minmax(220px, 240px) minmax(0, 1fr);
   }
