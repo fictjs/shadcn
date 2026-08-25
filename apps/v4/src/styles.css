@@ -2532,6 +2532,75 @@ h1 {
 
 @keyframes doc-input-otp-caret { 50% { opacity: 0; } }
 
+.doc-component-card[data-doc-preview-name="item-demo"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="item-icon"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="item-avatar"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="item-image"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="item-link"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="item-dropdown"] .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name^="item-"]:not([data-doc-preview-name="item-rtl"]) .doc-component-preview-stage { display: flex; align-items: center; justify-content: center; }
+.doc-component-card[data-doc-preview-name="item-variant"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="item-size"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="item-group"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="item-header"] .doc-component-preview-stage { height: 384px; min-height: 384px; }
+.doc-component-card[data-doc-preview-name="item-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.doc-item-stack { display: flex; box-sizing: border-box; width: 100%; min-width: 0; flex-direction: column; gap: 24px; }
+.doc-item-stack.is-md { max-width: 448px; }
+.doc-item-stack.is-lg { max-width: 512px; }
+.doc-item-stack.is-sm { max-width: 384px; }
+.doc-item-stack.is-image-list,
+.doc-item-stack.is-group-list,
+.doc-item-stack.is-link-list { gap: 16px; }
+.doc-item { display: flex; box-sizing: border-box; width: 100%; min-width: 0; align-items: center; gap: 10px; border: 1px solid transparent; border-radius: var(--radius); padding: 10px 12px; color: var(--foreground); background: transparent; font-size: 14px; text-decoration: none; outline: none; transition: color 100ms ease, background-color 100ms ease, border-color 100ms ease, box-shadow 100ms ease; }
+.doc-item.is-outline { border-color: var(--border); }
+.doc-item.is-muted { background: color-mix(in oklab, var(--muted) 50%, transparent); }
+.doc-body a.doc-item { text-decoration: none; }
+a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparent); }
+.doc-item:focus-visible { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.doc-item.is-xs { gap: 8px; padding: 8px 10px; }
+.doc-item-content { display: flex; min-width: 0; flex: 1 1 auto; flex-direction: column; gap: 4px; }
+.doc-item-content.is-fixed { flex: 0 0 auto; text-align: center; }
+.doc-item-content.is-compact { gap: 0; }
+.doc-item-title { display: flex; width: fit-content; max-width: 100%; min-width: 0; align-items: center; gap: 8px; overflow: hidden; font-size: 14px; font-weight: 500; line-height: 19.25px; text-overflow: ellipsis; white-space: nowrap; }
+.doc-item-title span { color: var(--muted-foreground); }
+.doc-item-description { display: -webkit-box; min-width: 0; margin: 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; color: var(--muted-foreground); font-size: 14px; font-weight: 400; line-height: 21px; text-wrap: balance; }
+.doc-item.is-xs .doc-item-content { gap: 0; }
+.doc-item.is-xs .doc-item-description { font-size: 12px; line-height: 18px; }
+.doc-item-media { display: flex; flex: none; align-items: center; justify-content: center; gap: 8px; }
+.doc-item:has(.doc-item-description) > .doc-item-media { align-self: flex-start; transform: translateY(2px); }
+.doc-item-media.is-icon { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--muted); }
+.doc-item-media.is-icon svg { width: 16px; height: 16px; }
+.doc-item-media.is-verified svg { width: 20px; height: 20px; }
+.doc-item-actions { display: flex; flex: none; align-items: center; gap: 8px; }
+.doc-item-actions > svg { width: 16px; height: 16px; }
+.doc-item-avatar { width: 32px; height: 32px; border-radius: 999px; object-fit: cover; filter: grayscale(1); }
+.doc-item-avatar.is-large { width: 40px; height: 40px; }
+.doc-item-avatar.is-dropdown { width: 26px; height: 26px; }
+.doc-item-avatar-group { display: flex; width: 80px; }
+.doc-item-avatar-group img { box-sizing: border-box; width: 32px; height: 32px; border: 2px solid var(--background); border-radius: 999px; object-fit: cover; filter: grayscale(1); }
+.doc-item-avatar-group img + img { margin-inline-start: -8px; }
+.doc-item-song-image { width: 40px; height: 40px; border-radius: var(--radius-sm); object-fit: cover; filter: grayscale(1); }
+.doc-item-header-grid { display: grid; box-sizing: border-box; width: 100%; max-width: 558px; min-width: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.doc-item.is-header { align-items: stretch; flex-wrap: wrap; }
+.doc-item-header { display: flex; width: 100%; flex: 0 0 100%; align-items: center; justify-content: space-between; gap: 8px; }
+.doc-item-header img { width: 100%; aspect-ratio: 1; border-radius: var(--radius-sm); object-fit: cover; }
+.doc-item-dropdown { z-index: 1; }
+.doc-item-dropdown:has(> .doc-item-dropdown-panel:not([hidden])) { z-index: 70; }
+.doc-item-dropdown-panel { width: 192px; }
+.doc-item-dropdown-option { height: auto; padding: 0; }
+.doc-item-dropdown-option .doc-item { padding: 8px; }
+.doc-item-dropdown-option .doc-item-title { line-height: 19.25px; }
+.doc-item-dropdown-option .doc-item-description { line-height: 12px; }
+.doc-item-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; }
+.doc-item-rtl-preview .doc-item-stack { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-item-rtl-preview[data-lang="he"] .doc-item-stack { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+.doc-item[dir="rtl"] > .doc-item-actions > svg { transform: scaleX(-1); }
+
+@media (max-width: 640px) {
+  .doc-item-avatar-group { width: 32px; }
+  .doc-item-avatar-group img:not(:last-child) { display: none; }
+}
+
 .doc-component-card[data-doc-preview-name^="empty-"]:not([data-doc-preview-name="empty-rtl"]) .doc-component-preview-stage { height: 384px; min-height: 384px; }
 .doc-component-card[data-doc-preview-name="empty-demo"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="empty-background"] .doc-component-preview-stage,

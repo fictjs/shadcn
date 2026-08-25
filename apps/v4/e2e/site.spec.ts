@@ -2267,6 +2267,129 @@ test.describe("shadcn v4 site", () => {
     await expect(invalid.locator('[data-slot="input-otp-group"]').first()).toHaveCSS("box-shadow", /3px/)
   })
 
+  test("item docs match React layouts, variants, media, links, dropdown, and RTL", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/base/item")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(11)
+    const stageHeights = [288, 384, 384, 288, 288, 288, 384, 384, 288, 288, 352]
+    for (let index = 0; index < stageHeights.length; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS(
+        "height",
+        `${stageHeights[index]}px`,
+      )
+    }
+    expect((await previews.allInnerTexts()).join(" ")).not.toContain("Registry preview surface")
+
+    const expectBox = async (locator: ReturnType<typeof page.locator>, width: number, height: number) => {
+      const box = await locator.boundingBox()
+      expect(box?.width).toBeCloseTo(width, 2)
+      expect(box?.height).toBeCloseTo(height, 2)
+    }
+
+    const demo = page.locator('[data-doc-preview-name="item-demo"]')
+    const demoItems = demo.locator('[data-slot="item"]')
+    await expectBox(demo.locator(".doc-item-stack"), 448, 132.25)
+    await expectBox(demoItems.nth(0), 448, 66.25)
+    await expectBox(demoItems.nth(1), 448, 42)
+    await expect(demoItems.nth(0)).toHaveClass(/is-outline/)
+    await expect(demo.getByRole("button", { name: "Action" })).toHaveCSS("height", "28px")
+    await expect(demoItems.nth(1)).toHaveAttribute("href", "#")
+    await expect(demoItems.nth(1)).toHaveCSS("text-decoration-line", "none")
+
+    const variants = page.locator('[data-doc-preview-name="item-variant"]')
+    await expectBox(variants.locator(".doc-item-stack"), 448, 246.75)
+    await expect(variants.locator('[data-slot="item"]')).toHaveCount(3)
+    await expect(variants.locator('[data-slot="item"]').nth(0)).toHaveClass(/is-default/)
+    await expect(variants.locator('[data-slot="item"]').nth(1)).toHaveClass(/is-outline/)
+    await expect(variants.locator('[data-slot="item"]').nth(2)).toHaveClass(/is-muted/)
+
+    const sizes = page.locator('[data-doc-preview-name="item-size"]')
+    const sizeItems = sizes.locator('[data-slot="item"]')
+    await expectBox(sizes.locator(".doc-item-stack"), 448, 235.75)
+    await expectBox(sizeItems.nth(0), 448, 66.25)
+    await expectBox(sizeItems.nth(1), 448, 66.25)
+    await expectBox(sizeItems.nth(2), 448, 55.25)
+
+    const icon = page.locator('[data-doc-preview-name="item-icon"]')
+    await expectBox(icon.locator('[data-slot="item"]'), 512, 66.25)
+    await expectBox(icon.locator(".doc-item-media.is-icon"), 32, 32)
+    await expect(icon.getByRole("button", { name: "Review" })).toBeVisible()
+
+    const avatar = page.locator('[data-doc-preview-name="item-avatar"]')
+    await expectBox(avatar.locator(".doc-item-stack"), 512, 156.5)
+    await expect(avatar.locator('[data-slot="item"]')).toHaveCount(2)
+    await expectBox(avatar.locator(".doc-item-avatar.is-large"), 40, 40)
+    await expect(avatar.locator(".doc-item-avatar.is-large")).toHaveAttribute(
+      "src",
+      "https://github.com/evilrabbit.png",
+    )
+    await expect(avatar.locator(".doc-item-avatar-group img")).toHaveCount(3)
+    await expect(avatar.getByRole("button", { name: "Invite" })).toHaveCount(2)
+
+    const image = page.locator('[data-doc-preview-name="item-image"]')
+    await expectBox(image.locator(".doc-item-stack"), 448, 230.75)
+    const imageStageBox = await image.locator(".doc-component-preview-stage").boundingBox()
+    const imageStackBox = await image.locator(".doc-item-stack").boundingBox()
+    expect((imageStackBox?.y ?? 0) - (imageStageBox?.y ?? 0)).toBeCloseTo(28.625, 2)
+    await expect(image.locator('[data-slot="item"]')).toHaveCount(3)
+    await expectBox(image.locator(".doc-item-song-image").first(), 40, 40)
+    await expect(image).toContainText("Midnight City Lights - Electric Nights")
+    await expect(image).toContainText("Neon Dreams")
+    await expect(image).toContainText("3:45")
+
+    const group = page.locator('[data-doc-preview-name="item-group"]')
+    await expectBox(group.locator(".doc-item-stack"), 384, 230.75)
+    await expect(group.locator('[data-slot="item"]')).toHaveCount(3)
+    await expect(group).toContainText("shadcn@vercel.com")
+
+    const header = page.locator('[data-doc-preview-name="item-header"]')
+    await expectBox(header.locator(".doc-item-header-grid"), 558, 246.578125)
+    const headerItems = header.locator('[data-slot="item"]')
+    await expect(headerItems).toHaveCount(3)
+    await expectBox(headerItems.first(), 175.328125, 246.578125)
+    await expect(header.locator(".doc-item-header img")).toHaveCount(3)
+
+    const links = page.locator('[data-doc-preview-name="item-link"]')
+    await expectBox(links.locator(".doc-item-stack"), 448, 148.5)
+    await expect(links.locator('a[data-slot="item"]')).toHaveCount(2)
+    await expect(links.locator('a[data-slot="item"]').nth(1)).toHaveAttribute("target", "_blank")
+    await expect(links.locator('a[data-slot="item"]').nth(1)).toHaveAttribute("rel", "noopener noreferrer")
+
+    const dropdown = page.locator('[data-doc-preview-name="item-dropdown"]')
+    const trigger = dropdown.getByRole("button", { name: "Select" })
+    await expectBox(trigger, 86.296875, 32)
+    await trigger.click()
+    const menu = dropdown.getByRole("menu")
+    await expect(menu).toBeVisible()
+    await expect(menu.getByRole("menuitem")).toHaveCount(3)
+    await expect(menu).toContainText("evilrabbit@vercel.com")
+    await page.keyboard.press("Escape")
+    await expect(menu).toBeHidden()
+    await expect(trigger).toBeFocused()
+
+    const rtl = page.locator('[data-doc-preview-name="item-rtl"]')
+    const rtlStack = rtl.locator(".doc-item-stack")
+    await expectBox(rtlStack, 448, 132.25)
+    await expect(rtlStack).toHaveAttribute("dir", "rtl")
+    await expect(rtl.getByText("عنصر أساسي", { exact: true })).toBeVisible()
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.getByText("פריט בסיסי", { exact: true })).toBeVisible()
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtl.getByText("Basic Item", { exact: true })).toBeVisible()
+    await expect(rtlStack).toHaveAttribute("dir", "ltr")
+
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(page.locator("html")).toHaveClass(/dark/)
+    await expect(variants.locator('[data-slot="item"]').nth(2)).not.toHaveCSS(
+      "background-color",
+      "rgba(0, 0, 0, 0)",
+    )
+    await expect(demoItems.nth(0)).toHaveCSS("border-top-width", "1px")
+  })
+
   test("direction docs reuse the complete RTL card preview instead of a placeholder", async ({ page }) => {
     await page.goto("/docs/components/base/direction")
     await waitForClientReady(page)
