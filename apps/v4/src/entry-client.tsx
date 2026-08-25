@@ -56,6 +56,7 @@ async function initResumableClient(): Promise<void> {
   wireDocPopovers()
   wireDocProgress()
   wireDocResizables()
+  wireDocSelects()
   wireShowcaseMenus()
   wireRtlLocalization()
   wireShowcaseToggles()
@@ -3097,6 +3098,71 @@ function wireDocResizables(): void {
     document.addEventListener("pointermove", move)
     document.addEventListener("pointerup", up)
     document.addEventListener("pointercancel", up)
+  })
+}
+
+function wireDocSelects(): void {
+  const close = (select: HTMLElement, restore = false): void => {
+    const trigger = select.querySelector<HTMLElement>("[data-doc-select-trigger]")
+    const panel = select.querySelector<HTMLElement>("[data-doc-select-panel]")
+    if (!trigger || !panel) return
+    panel.hidden = true
+    trigger.setAttribute("aria-expanded", "false")
+    if (restore) trigger.focus({ preventScroll: true })
+  }
+  document.querySelectorAll<HTMLElement>("[data-doc-select]").forEach((select) => {
+    const trigger = select.querySelector<HTMLElement>("[data-doc-select-trigger]")
+    const panel = select.querySelector<HTMLElement>("[data-doc-select-panel]")
+    const value = select.querySelector<HTMLElement>("[data-doc-select-value]")
+    if (!trigger || !panel || !value) return
+    const items = Array.from(panel.querySelectorAll<HTMLButtonElement>("[data-doc-select-item]"))
+    const current = items.find((item) => item.dataset.value === select.dataset.value)
+    if (current) current.setAttribute("aria-selected", "true")
+    const open = (): void => {
+      document.querySelectorAll<HTMLElement>("[data-doc-select]").forEach((other) => { if (other !== select) close(other) })
+      panel.hidden = false
+      trigger.setAttribute("aria-expanded", "true")
+      queueMicrotask(() => (items.find((item) => item.getAttribute("aria-selected") === "true") ?? items.find((item) => !item.disabled))?.focus({ preventScroll: true }))
+    }
+    const choose = (item: HTMLButtonElement): void => {
+      items.forEach((entry) => entry.setAttribute("aria-selected", String(entry === item)))
+      select.dataset.value = item.dataset.value ?? ""
+      const label = item.querySelector<HTMLElement>(":scope > span:first-child")
+      value.textContent = label?.textContent ?? ""
+      if (item.dataset.labelAr) {
+        value.dataset.textAr = item.dataset.labelAr
+        value.dataset.textHe = item.dataset.labelHe ?? ""
+        value.dataset.textEn = item.dataset.labelEn ?? ""
+      }
+      close(select, true)
+    }
+    trigger.addEventListener("click", () => panel.hidden ? open() : close(select))
+    trigger.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return
+      open()
+      event.preventDefault()
+    })
+    panel.addEventListener("click", (event) => {
+      const item = event.target instanceof Element ? event.target.closest<HTMLButtonElement>("[data-doc-select-item]") : null
+      if (item && !item.disabled) choose(item)
+    })
+    panel.addEventListener("keydown", (event) => {
+      const active = document.activeElement instanceof HTMLButtonElement ? document.activeElement : null
+      if (event.key === "Escape") { close(select, true); event.preventDefault(); return }
+      if (event.key === "Enter" || event.key === " ") { if (active?.matches("[data-doc-select-item]") && !active.disabled) choose(active); event.preventDefault(); return }
+      if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return
+      const enabled = items.filter((item) => !item.disabled)
+      const index = Math.max(0, enabled.indexOf(active as HTMLButtonElement))
+      enabled[(index + (event.key === "ArrowDown" ? 1 : -1) + enabled.length) % enabled.length]?.focus({ preventScroll: true })
+      event.preventDefault()
+    })
+  })
+  document.querySelectorAll<HTMLElement>("[data-doc-select-align-switch]").forEach((toggle) => {
+    toggle.addEventListener("click", () => toggle.setAttribute("aria-checked", String(toggle.getAttribute("aria-checked") !== "true")))
+  })
+  document.addEventListener("click", (event) => {
+    if (event.target instanceof Element && event.target.closest("[data-doc-select]")) return
+    document.querySelectorAll<HTMLElement>("[data-doc-select]").forEach((select) => close(select))
   })
 }
 

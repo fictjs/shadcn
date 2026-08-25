@@ -4296,6 +4296,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocResizablePreview name={props.name} />
   ) : family === "scroll-area" ? (
     <DocScrollAreaPreview name={props.name} />
+  ) : family === "select" ? (
+    <DocSelectPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -4986,6 +4988,26 @@ function DocScrollAreaPreview(props: { name: string }) {
   const horizontal = <div class="doc-scroll-area is-horizontal" data-doc-scroll-area><div class="doc-scroll-viewport" data-doc-scroll-viewport><div class="doc-scroll-works">{works.map(([artist, art]) => <figure><div><img src={art} alt={`Photo by ${artist}`} width="300" height="400" /></div><figcaption>Photo by <strong>{artist}</strong></figcaption></figure>)}</div></div><span class="doc-scrollbar is-horizontal" aria-hidden="true"><span></span></span></div>
   const content = name === "scroll-area-horizontal-demo" ? horizontal : vertical
   return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-scroll-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
+}
+
+function DocSelectPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const variant = name.replace("select-", "")
+  const rtl = variant === "rtl"
+  const text = (ar: string, he: string, en: string) => rtl ? <span data-doc-rtl-text data-text-ar={ar} data-text-he={he} data-text-en={en}>{ar}</span> : en
+  const fruits = rtl ? [["apple", "تفاح", "תפוח", "Apple"], ["banana", "موز", "בננה", "Banana"], ["blueberry", "توت أزرق", "אוכמניה", "Blueberry"], ["grapes", "عنب", "ענבים", "Grapes"], ["pineapple", "أناناس", "אננס", "Pineapple"]] : [["apple", "Apple"], ["banana", "Banana"], ["blueberry", "Blueberry"], ["grapes", "Grapes"], ["pineapple", "Pineapple"]]
+  const vegetables = rtl ? [["carrot", "جزر", "גזר", "Carrot"], ["broccoli", "بروكلي", "ברוקולי", "Broccoli"], ["spinach", "سبانخ", "תרד", "Spinach"]] : [["carrot", "Carrot"], ["broccoli", "Broccoli"], ["spinach", "Spinach"]]
+  const timezones = ["Eastern Standard Time", "Central Standard Time", "Mountain Standard Time", "Pacific Standard Time", "Alaska Standard Time", "Hawaii Standard Time", "Greenwich Mean Time", "Central European Time", "Eastern European Time", "Western European Summer Time", "Central Africa Time", "East Africa Time", "Moscow Time", "India Standard Time", "China Standard Time", "Japan Standard Time", "Korea Standard Time", "Indonesia Central Standard Time", "Australian Western Standard Time", "Australian Central Standard Time", "Australian Eastern Standard Time", "New Zealand Standard Time", "Fiji Time", "Argentina Time", "Bolivia Time", "Brasilia Time", "Chile Standard Time"].map((label, index) => [`tz-${index}`, label])
+  const item = (entry: string[], disabled = false) => <button type="button" class="doc-select-item" role="option" aria-selected="false" data-doc-select-item data-value={entry[0]} data-label-ar={rtl ? entry[1] : undefined} data-label-he={rtl ? entry[2] : undefined} data-label-en={rtl ? entry[3] : undefined} disabled={disabled}><span>{rtl ? text(entry[1], entry[2], entry[3]) : entry[1]}</span><span class="doc-select-check">✓</span></button>
+  const label = (ar: string, he: string, en: string) => <span class="doc-select-label">{text(ar, he, en)}</span>
+  const grouped = variant === "groups" || rtl
+  const scrollable = variant === "scrollable"
+  const entries = scrollable ? <>{label("North America", "North America", "North America")}{timezones.slice(0, 6).map((entry) => item(entry))}{label("Europe & Africa", "Europe & Africa", "Europe & Africa")}{timezones.slice(6, 12).map((entry) => item(entry))}{label("Asia", "Asia", "Asia")}{timezones.slice(12, 18).map((entry) => item(entry))}{label("Australia & Pacific", "Australia & Pacific", "Australia & Pacific")}{timezones.slice(18, 23).map((entry) => item(entry))}{label("South America", "South America", "South America")}{timezones.slice(23).map((entry) => item(entry))}</> : grouped ? <>{label(rtl ? "الفواكه" : "Fruits", rtl ? "פירות" : "Fruits", "Fruits")}{fruits.map((entry) => item(entry))}<span class="doc-select-separator"></span>{label(rtl ? "الخضروات" : "Vegetables", rtl ? "ירקות" : "Vegetables", "Vegetables")}{vegetables.map((entry) => item(entry))}</> : <>{variant === "demo" ? label("Fruits", "Fruits", "Fruits") : null}{fruits.map((entry) => item(entry, variant === "disabled" && entry[0] === "grapes"))}</>
+  const defaultValue = variant === "align-item" ? "banana" : ""
+  const placeholder = scrollable ? "Select a timezone" : rtl ? "اختر فاكهة" : "Select a fruit"
+  const select = <span class={`doc-select is-${variant}`} data-doc-select data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"} data-value={defaultValue}><button type="button" class="doc-select-trigger" data-doc-select-trigger aria-haspopup="listbox" aria-expanded="false" aria-invalid={variant === "invalid" ? "true" : undefined} disabled={variant === "disabled"}><span data-doc-select-value data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "اختر فاكهة" : undefined} data-text-he={rtl ? "בחר פרי" : undefined} data-text-en={rtl ? "Select a fruit" : undefined}>{defaultValue === "banana" ? "Banana" : placeholder}</span><ChevronDownIcon /></button><div class={`doc-select-panel${scrollable ? " is-scrollable" : ""}`} data-doc-select-panel role="listbox" hidden>{entries}</div></span>
+  const content = variant === "align-item" ? <div class="doc-select-align"><label><span><strong>Align Item</strong><small>Toggle to align the item with the trigger.</small></span><button type="button" role="switch" aria-checked="true" data-doc-select-align-switch><span></span></button></label>{select}</div> : variant === "invalid" ? <div class="doc-select-invalid-field"><label>Fruit</label>{select}<p>Please select a fruit.</p></div> : select
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-select-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
 function DocEmptyPreview(props: { name: string }) {
