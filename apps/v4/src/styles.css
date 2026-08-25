@@ -1939,9 +1939,13 @@ h1 {
   font-size: 1rem;
 }
 
+/* Flex, not grid, to mirror the React docs' preview box: when a preview is
+   taller than the padded stage, flex centres the overflow instead of pinning
+   it to the top. */
 .doc-component-preview-stage {
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 18rem;
   min-height: 18rem;
   background: var(--background);
@@ -3732,7 +3736,7 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-chart-legend i.is-mobile { fill: #60a5fa; background: #60a5fa; }
 .doc-chart-bars g:hover rect { opacity: 0.75; }
 .doc-chart-axis text { fill: var(--muted-foreground); font-size: 12px; }
-.doc-chart-legend { position: absolute; inset-inline: 0; bottom: 0; display: flex; justify-content: center; gap: 1.25rem; font-size: 0.875rem; }
+.doc-chart-legend { position: absolute; inset-inline: 0; bottom: 5px; display: flex; justify-content: center; gap: 1.25rem; font-size: 0.875rem; }
 .doc-chart-legend span { display: inline-flex; align-items: center; gap: 0.5rem; }
 .doc-chart-legend i { display: inline-block; width: 0.5rem; height: 0.5rem; border-radius: 2px; }
 .doc-chart-legend b { color: var(--foreground); font-weight: 400; }
