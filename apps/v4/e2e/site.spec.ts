@@ -2416,6 +2416,41 @@ test.describe("shadcn v4 site", () => {
     await expect(demoItems.nth(0)).toHaveCSS("border-top-width", "1px")
   })
 
+  test("item docs preserve React wrapping and media at mobile widths", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto("/docs/components/base/item")
+    await waitForClientReady(page)
+
+    const demo = page.locator('[data-doc-preview-name="item-demo"]')
+    const demoItems = demo.locator('[data-slot="item"]')
+    await expect(demo.locator(".doc-component-preview-stage")).toHaveCSS("width", "340px")
+    await expect(demo.locator(".doc-item-stack")).toHaveCSS("width", "260px")
+    await expect(demoItems.nth(0)).toHaveCSS("height", "87.25px")
+    await expect(demoItems.nth(1)).toHaveCSS("height", "60.5px")
+    await expect(demoItems.nth(1).locator(".doc-item-title")).toHaveCSS("height", "38.5px")
+
+    const variants = page.locator('[data-doc-preview-name="item-variant"] [data-slot="item"]')
+    await expect(variants).toHaveCount(3)
+    for (let index = 0; index < 3; index += 1) {
+      await expect(variants.nth(index)).toHaveCSS("width", "260px")
+      await expect(variants.nth(index)).toHaveCSS("height", "87.25px")
+    }
+
+    const avatar = page.locator('[data-doc-preview-name="item-avatar"]')
+    await expect(avatar.locator(".doc-item-avatar-group img").nth(0)).toBeHidden()
+    await expect(avatar.locator(".doc-item-avatar-group img").nth(1)).toBeHidden()
+    await expect(avatar.locator(".doc-item-avatar-group img").nth(2)).toBeVisible()
+
+    const headerItems = page.locator(
+      '[data-doc-preview-name="item-header"] [data-slot="item"]',
+    )
+    await expect(headerItems).toHaveCount(3)
+    for (let index = 0; index < 3; index += 1) {
+      await expect(headerItems.nth(index)).toHaveCSS("width", "76px")
+      await expect(headerItems.nth(index)).toHaveCSS("height", "166.5px")
+    }
+  })
+
   test("direction docs reuse the complete RTL card preview instead of a placeholder", async ({ page }) => {
     await page.goto("/docs/components/base/direction")
     await waitForClientReady(page)

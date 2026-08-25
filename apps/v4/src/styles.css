@@ -2551,17 +2551,17 @@ h1 {
 .doc-item-stack.is-image-list,
 .doc-item-stack.is-group-list,
 .doc-item-stack.is-link-list { gap: 16px; }
-.doc-item { display: flex; box-sizing: border-box; width: 100%; min-width: 0; align-items: center; gap: 10px; border: 1px solid transparent; border-radius: var(--radius); padding: 10px 12px; color: var(--foreground); background: transparent; font-size: 14px; text-decoration: none; outline: none; transition: color 100ms ease, background-color 100ms ease, border-color 100ms ease, box-shadow 100ms ease; }
+.doc-item { display: flex; box-sizing: border-box; width: 100%; min-width: 0; flex-wrap: wrap; align-items: center; gap: 10px; border: 1px solid transparent; border-radius: var(--radius); padding: 10px 12px; color: var(--foreground); background: transparent; font-size: 14px; text-decoration: none; outline: none; transition: color 100ms ease, background-color 100ms ease, border-color 100ms ease, box-shadow 100ms ease; }
 .doc-item.is-outline { border-color: var(--border); }
 .doc-item.is-muted { background: color-mix(in oklab, var(--muted) 50%, transparent); }
 .doc-body a.doc-item { text-decoration: none; }
 a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparent); }
 .doc-item:focus-visible { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
 .doc-item.is-xs { gap: 8px; padding: 8px 10px; }
-.doc-item-content { display: flex; min-width: 0; flex: 1 1 auto; flex-direction: column; gap: 4px; }
+.doc-item-content { display: flex; flex: 1 1 0%; flex-direction: column; gap: 4px; }
 .doc-item-content.is-fixed { flex: 0 0 auto; text-align: center; }
 .doc-item-content.is-compact { gap: 0; }
-.doc-item-title { display: flex; width: fit-content; max-width: 100%; min-width: 0; align-items: center; gap: 8px; overflow: hidden; font-size: 14px; font-weight: 500; line-height: 19.25px; text-overflow: ellipsis; white-space: nowrap; }
+.doc-item-title { display: flex; width: fit-content; max-width: 100%; min-width: 0; align-items: center; gap: 8px; overflow: hidden; font-size: 14px; font-weight: 500; line-height: 19.25px; text-overflow: ellipsis; }
 .doc-item-title span { color: var(--muted-foreground); }
 .doc-item-description { display: -webkit-box; min-width: 0; margin: 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; color: var(--muted-foreground); font-size: 14px; font-weight: 400; line-height: 21px; text-wrap: balance; }
 .doc-item.is-xs .doc-item-content { gap: 0; }
