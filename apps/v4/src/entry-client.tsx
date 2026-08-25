@@ -45,6 +45,7 @@ async function initResumableClient(): Promise<void> {
   wireDocCheckboxes()
   wireDocFields()
   wireDocInputGroups()
+  wireDocInputOtps()
   wireDocHoverCards()
   wireShowcaseSliders()
   wireShowcaseCounters()
@@ -2239,6 +2240,60 @@ function wireDocInputGroups(): void {
     if (!(textarea instanceof HTMLTextAreaElement) || !textarea.closest(".doc-input-group-custom")) return
     textarea.style.height = "auto"
     textarea.style.height = `${textarea.scrollHeight}px`
+  })
+}
+
+function wireDocInputOtps(): void {
+  const sync = (root: HTMLElement, active: boolean): void => {
+    const input = root.querySelector<HTMLInputElement>("[data-doc-input-otp-control]")
+    if (!input) return
+    const max = Number(root.dataset.docInputOtpMax || input.maxLength || 6)
+    let value = input.value.slice(0, max)
+    if (root.dataset.docInputOtpPattern === "digits") value = value.replace(/\D/g, "")
+    else if (root.dataset.docInputOtpPattern === "alphanumeric") value = value.replace(/[^a-z0-9]/gi, "")
+    if (input.value !== value) input.value = value
+    const slots = [...root.querySelectorAll<HTMLElement>("[data-doc-input-otp-slot]")]
+    slots.forEach((slot) => {
+      const index = Number(slot.dataset.docInputOtpSlot)
+      slot.textContent = value[index] || ""
+      delete slot.dataset.active
+    })
+    if (active && !input.disabled) {
+      const index = Math.min(input.selectionStart ?? value.length, Math.max(0, max - 1))
+      const slot = root.querySelector<HTMLElement>(`[data-doc-input-otp-slot="${index}"]`)
+      if (slot) slot.dataset.active = "true"
+    }
+    const output = root.closest<HTMLElement>(".doc-input-otp-controlled")?.querySelector<HTMLElement>("[data-doc-input-otp-output]")
+    if (output) output.textContent = value ? `You entered: ${value}` : "Enter your one-time password."
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-doc-input-otp]").forEach((root) => sync(root, false))
+  document.addEventListener("input", (event) => {
+    const input = event.target
+    if (!(input instanceof HTMLInputElement) || !input.matches("[data-doc-input-otp-control]")) return
+    const root = input.closest<HTMLElement>("[data-doc-input-otp]")
+    if (root) sync(root, true)
+  })
+  document.addEventListener("focusin", (event) => {
+    const input = event.target
+    if (!(input instanceof HTMLInputElement) || !input.matches("[data-doc-input-otp-control]")) return
+    const root = input.closest<HTMLElement>("[data-doc-input-otp]")
+    if (root) sync(root, true)
+  })
+  document.addEventListener("focusout", (event) => {
+    const input = event.target
+    if (!(input instanceof HTMLInputElement) || !input.matches("[data-doc-input-otp-control]")) return
+    const root = input.closest<HTMLElement>("[data-doc-input-otp]")
+    if (root) sync(root, false)
+  })
+  document.addEventListener("keyup", (event) => {
+    const input = event.target
+    if (!(input instanceof HTMLInputElement) || !input.matches("[data-doc-input-otp-control]")) return
+    const root = input.closest<HTMLElement>("[data-doc-input-otp]")
+    if (root) sync(root, true)
+  })
+  document.addEventListener("submit", (event) => {
+    if (event.target instanceof HTMLFormElement && event.target.matches("[data-doc-input-otp-form]")) event.preventDefault()
   })
 }
 
