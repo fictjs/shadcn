@@ -3109,6 +3109,24 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-rtl-preview.doc-spinner-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; }
 @keyframes doc-spinner-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .doc-spinner { animation-duration: 2s; } }
+
+.doc-component-card[data-doc-preview-name^="switch-"]:not([data-doc-preview-name="switch-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="switch-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.doc-switch-inline { display: flex; width: fit-content; align-items: center; gap: 8px; }
+.doc-switch-inline label, .doc-switch-field label { font-size: 14px; font-weight: 500; line-height: 20px; }
+.doc-switch-inline.is-disabled, .doc-switch-field.is-disabled { cursor: not-allowed; opacity: .5; }
+.doc-switch-field { display: flex; box-sizing: border-box; width: 384px; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.doc-switch-field > div { min-width: 0; flex: 1; }
+.doc-switch-field label { display: block; }
+.doc-switch-field p { margin: 4px 0 0; color: var(--muted-foreground); font-size: 14px; line-height: 20px; }
+.doc-switch-field.is-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.doc-switch-field.is-invalid label, .doc-switch-field.is-invalid p { color: var(--destructive); }
+.doc-switch-field.is-invalid .ui-switch { border-color: var(--destructive); }
+.doc-switch-cards { display: grid; width: 384px; gap: 12px; }
+.doc-switch-sizes { display: grid; width: 160px; gap: 24px; }
+.doc-switch-field[dir="rtl"] .ui-switch[data-checked="true"] span { transform: translateX(calc(-100% + 2px)); }
+.doc-rtl-preview.doc-switch-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-switch-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 .doc-sheet-sides { display: flex; flex-wrap: wrap; gap: 8px; }
 .doc-sheet-sides .doc-button { text-transform: capitalize; }
 .doc-sheet-content { position: fixed; z-index: 151; display: flex; box-sizing: border-box; flex-direction: column; gap: 24px; overflow: hidden; color: var(--foreground); background: var(--background); box-shadow: 0 16px 50px rgb(0 0 0 / 28%); outline: none; }
@@ -6754,6 +6772,10 @@ a.ui-item:hover {
 .ui-switch[data-checked="true"] span {
   transform: translateX(calc(100% - 2px));
 }
+
+.ui-switch.is-sm { width: 24px; height: 14px; }
+.ui-switch.is-sm span { width: 12px; height: 12px; }
+.ui-switch.is-sm[data-checked="true"] span { transform: translateX(calc(100% - 2px)); }
 
 .ui-counter-input {
   width: 3.5rem;

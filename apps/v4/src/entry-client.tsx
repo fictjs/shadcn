@@ -59,6 +59,7 @@ async function initResumableClient(): Promise<void> {
   wireDocSelects()
   wireDocSidebars()
   wireDocSonner()
+  wireDocSwitches()
   wireShowcaseMenus()
   wireRtlLocalization()
   wireShowcaseToggles()
@@ -173,6 +174,18 @@ function wireDocSonner(): void {
     if (event.key !== "Escape") return
     const toasts = document.querySelectorAll<HTMLElement>("[data-sonner-toast]")
     toasts.item(toasts.length - 1)?.remove()
+  })
+}
+
+function wireDocSwitches(): void {
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const control = target.closest<HTMLButtonElement>("[data-doc-switch]")
+    if (!control || control.disabled) return
+    const checked = control.dataset.checked !== "true"
+    control.dataset.checked = checked ? "true" : "false"
+    control.setAttribute("aria-checked", checked ? "true" : "false")
   })
 }
 

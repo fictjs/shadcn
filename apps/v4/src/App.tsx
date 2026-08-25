@@ -2790,15 +2790,18 @@ function RootAppearanceSettingsPreview() {
   )
 }
 
-function UiSwitch(props: { id?: string; checked?: boolean }) {
+function UiSwitch(props: { id?: string; checked?: boolean; disabled?: boolean; invalid?: boolean; size?: "sm" | "default"; ariaLabel?: string }) {
   return (
     <button
       id={props.id}
       type="button"
-      class="ui-switch"
+      class={`ui-switch${props.size === "sm" ? " is-sm" : ""}`}
       role="switch"
+      aria-label={props.ariaLabel}
       aria-checked={props.checked ? "true" : "false"}
+      aria-invalid={props.invalid ? "true" : undefined}
       data-checked={props.checked ? "true" : "false"}
+      disabled={props.disabled}
       onClick$={(event: MouseEvent) => {
         const target = event.currentTarget
         if (!(target instanceof HTMLButtonElement)) {
@@ -4312,6 +4315,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocSonnerPreview name={props.name} />
   ) : family === "spinner" ? (
     <DocSpinnerPreview name={props.name} />
+  ) : family === "switch" ? (
+    <DocSwitchPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -5154,6 +5159,21 @@ function DocSpinnerPreview(props: { name: string }) {
   else if (variant === "empty") content = <div class="doc-spinner-empty"><span><DocSpinner /></span><h3>Processing your request</h3><p>Please wait while we process your request. Do not refresh the page.</p><button type="button" class="doc-button is-outline">Cancel</button></div>
   else content = item(variant === "rtl")
   return variant === "rtl" ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-spinner-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
+}
+
+function DocSwitchPreview(props: { name: string }) {
+  const variant = untrack(() => props.name.replace("switch-", ""))
+  const control = (options: { id: string; checked?: boolean; disabled?: boolean; invalid?: boolean; size?: "sm"; label?: string }) => <button id={options.id} type="button" class={`ui-switch${options.size === "sm" ? " is-sm" : ""}`} role="switch" aria-label={options.label} aria-checked={options.checked ? "true" : "false"} aria-invalid={options.invalid ? "true" : undefined} data-checked={options.checked ? "true" : "false"} data-doc-switch disabled={options.disabled}><span></span></button>
+  const field = (options: { id: string; title: any; description?: any; checked?: boolean; disabled?: boolean; invalid?: boolean; card?: boolean; rtl?: boolean }) => <div class={`doc-switch-field${options.card ? " is-card" : ""}${options.disabled ? " is-disabled" : ""}${options.invalid ? " is-invalid" : ""}`} dir={options.rtl ? "rtl" : "ltr"} data-doc-rtl-direction={options.rtl ? "true" : undefined}><div><label for={options.id}>{options.title}</label>{options.description ? <p>{options.description}</p> : null}</div>{control({ id: options.id, checked: options.checked, disabled: options.disabled, invalid: options.invalid, label: typeof options.title === "string" ? options.title : undefined })}</div>
+  if (variant === "demo") return <div class="doc-switch-inline">{control({ id: "airplane-mode", label: "Airplane Mode" })}<label for="airplane-mode">Airplane Mode</label></div>
+  if (variant === "description") return field({ id: "switch-focus-mode", title: "Share across devices", description: "Focus is shared across devices, and turns off when you leave the app." })
+  if (variant === "choice-card") return <div class="doc-switch-cards">{field({ id: "switch-share", title: "Share across devices", description: "Focus is shared across devices, and turns off when you leave the app.", card: true })}{field({ id: "switch-notifications", title: "Enable notifications", description: "Receive notifications when focus mode is enabled or disabled.", checked: true, card: true })}</div>
+  if (variant === "disabled") return <div class="doc-switch-inline is-disabled">{control({ id: "switch-disabled-unchecked", disabled: true, label: "Disabled" })}<label for="switch-disabled-unchecked">Disabled</label></div>
+  if (variant === "invalid") return field({ id: "switch-terms", title: "Accept terms and conditions", description: "You must accept the terms and conditions to continue.", invalid: true })
+  if (variant === "sizes") return <div class="doc-switch-sizes"><div class="doc-switch-inline">{control({ id: "switch-size-sm", size: "sm", label: "Small" })}<label for="switch-size-sm">Small</label></div><div class="doc-switch-inline">{control({ id: "switch-size-default", label: "Default" })}<label for="switch-size-default">Default</label></div></div>
+  const title = <span data-doc-rtl-text data-text-ar="المشاركة عبر الأجهزة" data-text-he="שיתוף בין מכשירים" data-text-en="Share across devices">المشاركة عبر الأجهزة</span>
+  const description = <span data-doc-rtl-text data-text-ar="يتم مشاركة التركيز عبر الأجهزة، ويتم إيقاف تشغيله عند مغادرة التطبيق." data-text-he="המיקוד משותף בין מכשירים, וכבה כשאתה עוזב את האפליקציה." data-text-en="Focus is shared across devices, and turns off when you leave the app.">يتم مشاركة التركيز عبر الأجهزة، ويتم إيقاف تشغيله عند مغادرة التطبيق.</span>
+  return <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-switch-rtl-preview" dir="rtl" data-lang="ar">{field({ id: "switch-focus-mode-rtl", title, description, rtl: true })}</div></div>
 }
 
 function DocEmptyPreview(props: { name: string }) {

@@ -3612,6 +3612,78 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator(".doc-spinner-item")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
+  test("switch docs match React fields, cards, disabled, invalid, sizes, keyboard, and RTL", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/radix/switch")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(7)
+    for (let index = 0; index < 6; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(6).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+    expect((await previews.allInnerTexts()).join(" ")).not.toContain("Registry preview surface")
+
+    const demo = page.locator('[data-doc-preview-name="switch-demo"]')
+    const airplane = demo.getByRole("switch", { name: "Airplane Mode" })
+    await expect(airplane).toHaveCSS("width", "32px")
+    await expect(airplane).toHaveCSS("height", "18.3906px")
+    await expect(airplane.locator("span")).toHaveCSS("width", "16px")
+    await expect(airplane).toHaveAttribute("aria-checked", "false")
+    await airplane.click()
+    await expect(airplane).toHaveAttribute("aria-checked", "true")
+    await airplane.focus()
+    await page.keyboard.press("Space")
+    await expect(airplane).toHaveAttribute("aria-checked", "false")
+    await expectFocusRing(airplane)
+
+    const description = page.locator('[data-doc-preview-name="switch-description"]')
+    await expect(description.locator(".doc-switch-field")).toHaveCSS("width", "384px")
+    await expect(description).toContainText("Focus is shared across devices")
+
+    const cards = page.locator('[data-doc-preview-name="switch-choice-card"]')
+    await expect(cards.locator(".doc-switch-field.is-card")).toHaveCount(2)
+    const cardSwitches = cards.getByRole("switch")
+    await expect(cardSwitches.nth(0)).toHaveAttribute("aria-checked", "false")
+    await expect(cardSwitches.nth(1)).toHaveAttribute("aria-checked", "true")
+    await cardSwitches.nth(0).click()
+    await expect(cardSwitches.nth(0)).toHaveAttribute("aria-checked", "true")
+    await expect(cardSwitches.nth(1)).toHaveAttribute("aria-checked", "true")
+
+    const disabled = page.locator('[data-doc-preview-name="switch-disabled"]')
+    const disabledSwitch = disabled.getByRole("switch", { name: "Disabled" })
+    await expect(disabledSwitch).toBeDisabled()
+    await expect(disabled.locator(".doc-switch-inline")).toHaveCSS("opacity", "0.5")
+
+    const invalid = page.locator('[data-doc-preview-name="switch-invalid"]')
+    const invalidSwitch = invalid.getByRole("switch", { name: "Accept terms and conditions" })
+    await expect(invalidSwitch).toHaveAttribute("aria-invalid", "true")
+    await expect(invalid.locator(".doc-switch-field")).toHaveClass(/is-invalid/)
+
+    const sizes = page.locator('[data-doc-preview-name="switch-sizes"]')
+    const small = sizes.getByRole("switch", { name: "Small" })
+    const normal = sizes.getByRole("switch", { name: "Default" })
+    await expect(small).toHaveCSS("width", "24px")
+    await expect(small).toHaveCSS("height", "14px")
+    await expect(small.locator("span")).toHaveCSS("width", "12px")
+    await expect(normal).toHaveCSS("width", "32px")
+
+    const rtl = page.locator('[data-doc-preview-name="switch-rtl"]')
+    const rtlField = rtl.locator(".doc-switch-field")
+    const rtlSwitch = rtl.getByRole("switch")
+    await expect(rtlField).toHaveAttribute("dir", "rtl")
+    await expect(rtl).toContainText("المشاركة عبر الأجهزة")
+    await rtlSwitch.click()
+    await expect(rtlSwitch.locator("span")).toHaveCSS("transform", "matrix(1, 0, 0, 1, -14, 0)")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtlField).toHaveAttribute("dir", "ltr")
+    await expect(rtl).toContainText("Share across devices")
+    await expect(rtlSwitch.locator("span")).toHaveCSS("transform", "matrix(1, 0, 0, 1, 14, 0)")
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(rtlSwitch).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+  })
+
   test("kbd docs match React keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/base/kbd")
