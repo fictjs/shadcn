@@ -58,6 +58,7 @@ async function initResumableClient(): Promise<void> {
   wireDocResizables()
   wireDocSelects()
   wireDocSidebars()
+  wireDocSonner()
   wireShowcaseMenus()
   wireRtlLocalization()
   wireShowcaseToggles()
@@ -118,6 +119,61 @@ function wireDocSidebars(): void {
       }
     })
   }
+}
+
+function wireDocSonner(): void {
+  const iconFor = (type: string): string => type === "success" ? "✓" : type === "info" ? "i" : type === "warning" ? "!" : type === "error" ? "×" : ""
+  const titleFor = (type: string): string => type === "info"
+    ? "Be at the area 10 minutes before the event time"
+    : type === "warning"
+      ? "Event start time cannot be earlier than 8am"
+      : type === "error"
+        ? "Event has not been created"
+        : type === "promise"
+          ? "Loading..."
+          : "Event has been created"
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const trigger = target.closest<HTMLElement>("[data-doc-sonner-trigger]")
+    if (!trigger) return
+    const type = trigger.dataset.toastType ?? "default"
+    const position = trigger.dataset.toastPosition ?? "top-center"
+    let toaster = document.querySelector<HTMLOListElement>(`[data-doc-sonner-toaster="${position}"]`)
+    if (!toaster) {
+      toaster = document.createElement("ol")
+      toaster.className = `doc-sonner-toaster is-${position}`
+      toaster.dataset.docSonnerToaster = position
+      toaster.setAttribute("aria-label", "Notifications")
+      document.body.append(toaster)
+    }
+    const toast = document.createElement("li")
+    toast.className = `doc-sonner-toast is-${type}`
+    toast.dataset.sonnerToast = ""
+    toast.dataset.toastType = type
+    toast.tabIndex = 0
+    toast.setAttribute("role", type === "error" ? "alert" : "status")
+    const icon = iconFor(type)
+    toast.innerHTML = `${icon ? `<span class="doc-sonner-icon" aria-hidden="true">${icon}</span>` : ""}<div class="doc-sonner-content"><strong>${titleFor(type)}</strong>${trigger.dataset.toastDescription ? `<span>${trigger.dataset.toastDescription}</span>` : ""}</div>${trigger.dataset.toastAction ? `<button type="button" data-doc-sonner-action>${trigger.dataset.toastAction}</button>` : ""}`
+    toaster.append(toast)
+    requestAnimationFrame(() => toast.dataset.mounted = "true")
+    toast.querySelector<HTMLElement>("[data-doc-sonner-action]")?.addEventListener("click", () => toast.remove())
+    if (type === "promise") {
+      window.setTimeout(() => {
+        if (!toast.isConnected) return
+        toast.dataset.toastType = "success"
+        toast.className = "doc-sonner-toast is-success"
+        toast.innerHTML = '<span class="doc-sonner-icon" aria-hidden="true">✓</span><div class="doc-sonner-content"><strong>Event has been created</strong></div>'
+      }, 2000)
+    }
+  })
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return
+    const toasts = document.querySelectorAll<HTMLElement>("[data-sonner-toast]")
+    toasts.item(toasts.length - 1)?.remove()
+  })
 }
 
 function wireRtlLocalization(): void {

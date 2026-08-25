@@ -4308,6 +4308,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocSkeletonPreview name={props.name} />
   ) : family === "slider" ? (
     <DocSliderPreview name={props.name} />
+  ) : family === "sonner" ? (
+    <DocSonnerPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -5122,6 +5124,15 @@ function DocSliderPreview(props: { name: string }) {
   else if (variant === "rtl") content = slider([75], { rtl: true })
   else content = slider([75])
   return variant === "rtl" ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-slider-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
+}
+
+function DocSonnerPreview(props: { name: string }) {
+  const variant = untrack(() => props.name.replace("sonner-", ""))
+  const button = (label: string, options: { type?: string; description?: string; position?: string; action?: string } = {}) => <button type="button" class="doc-button is-outline" data-doc-sonner-trigger data-toast-type={options.type ?? "default"} data-toast-description={options.description} data-toast-position={options.position ?? "top-center"} data-toast-action={options.action}>{label}</button>
+  if (variant === "types") return <div class="doc-sonner-buttons">{button("Default")}{button("Success", { type: "success" })}{button("Info", { type: "info" })}{button("Warning", { type: "warning" })}{button("Error", { type: "error" })}{button("Promise", { type: "promise" })}</div>
+  if (variant === "description") return button("Show Toast", { description: "Monday, January 3rd at 6:00pm" })
+  if (variant === "position") return <div class="doc-sonner-buttons is-position">{["Top Left", "Top Center", "Top Right", "Bottom Left", "Bottom Center", "Bottom Right"].map((label) => button(label, { position: label.toLowerCase().replace(" ", "-") }))}</div>
+  return button("Show Toast", { description: "Sunday, December 03, 2023 at 9:00 AM", action: "Undo" })
 }
 
 function DocEmptyPreview(props: { name: string }) {
@@ -7374,6 +7385,7 @@ function getDocPreviewFamily(name: string): string {
     "popover",
     "progress",
     "slider",
+    "sonner",
     "resizable",
     "textarea",
     "calendar",

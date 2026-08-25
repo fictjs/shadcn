@@ -3481,6 +3481,72 @@ test.describe("shadcn v4 site", () => {
     await expect(rtlThumb).toHaveCSS("background-color", "rgb(255, 255, 255)")
   })
 
+  test("sonner docs match React toast content, types, actions, promise, positions, and theme", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/radix/sonner")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(4)
+    for (let index = 0; index < 4; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    expect((await previews.allInnerTexts()).join(" ")).not.toContain("Registry preview surface")
+
+    const demo = page.locator('[data-doc-preview-name="sonner-demo"]')
+    const demoButton = demo.getByRole("button", { name: "Show Toast" })
+    await expect(demoButton).toHaveCSS("height", "32px")
+    await demoButton.click()
+    const demoToast = page.locator('[data-sonner-toast][data-toast-type="default"]')
+    await expect(demoToast).toContainText("Event has been created")
+    await expect(demoToast).toContainText("Sunday, December 03, 2023 at 9:00 AM")
+    await expect(demoToast).toHaveCSS("width", "356px")
+    await expect(demoToast).toHaveCSS("border-radius", "10px")
+    await expect(demoToast).toHaveCSS("padding", "16px")
+    await demoToast.getByRole("button", { name: "Undo" }).click()
+    await expect(demoToast).toHaveCount(0)
+
+    const types = page.locator('[data-doc-preview-name="sonner-types"]')
+    await expect(types.locator("[data-doc-sonner-trigger]")).toHaveCount(6)
+    for (const [label, type, message] of [
+      ["Success", "success", "Event has been created"],
+      ["Info", "info", "Be at the area 10 minutes before the event time"],
+      ["Warning", "warning", "Event start time cannot be earlier than 8am"],
+      ["Error", "error", "Event has not been created"],
+    ] as const) {
+      await types.getByRole("button", { name: label }).click()
+      const toast = page.locator(`[data-sonner-toast][data-toast-type="${type}"]`).last()
+      await expect(toast).toContainText(message)
+      await expect(toast.locator(".doc-sonner-icon")).toBeVisible()
+      await page.keyboard.press("Escape")
+      await expect(toast).toHaveCount(0)
+    }
+    await types.getByRole("button", { name: "Promise" }).click()
+    const promise = page.locator('[data-sonner-toast][data-toast-type="promise"]')
+    await expect(promise).toContainText("Loading...")
+    await expect(page.locator('[data-sonner-toast][data-toast-type="success"]')).toContainText("Event has been created", { timeout: 3000 })
+    await page.keyboard.press("Escape")
+
+    const description = page.locator('[data-doc-preview-name="sonner-description"]')
+    await description.getByRole("button", { name: "Show Toast" }).click()
+    await expect(page.locator('[data-sonner-toast]').last()).toContainText("Monday, January 3rd at 6:00pm")
+    await page.keyboard.press("Escape")
+
+    const positions = page.locator('[data-doc-preview-name="sonner-position"]')
+    await positions.getByRole("button", { name: "Bottom Right" }).click()
+    const bottomRight = page.locator('[data-doc-sonner-toaster="bottom-right"]')
+    await expect(bottomRight).toHaveCSS("right", "16px")
+    await expect(bottomRight).toHaveCSS("bottom", "16px")
+    await page.keyboard.press("Escape")
+    await positions.getByRole("button", { name: "Top Left" }).click()
+    const topLeft = page.locator('[data-doc-sonner-toaster="top-left"]')
+    await expect(topLeft).toHaveCSS("top", "16px")
+    await expect(topLeft).toHaveCSS("left", "16px")
+
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(topLeft.locator("[data-sonner-toast]")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+  })
+
   test("kbd docs match React keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/base/kbd")
