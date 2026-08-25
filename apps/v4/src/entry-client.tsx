@@ -848,6 +848,15 @@ function wireDocAccordions(): void {
       const nextLabel = labelled.getAttribute(`data-label-${language}`)
       if (nextLabel) labelled.setAttribute("aria-label", nextLabel)
     }
+    for (const tooltipHost of shell.querySelectorAll<HTMLElement>("[data-doc-rtl-tooltip]")) {
+      const nextTooltip = tooltipHost.getAttribute(`data-tooltip-${language}`)
+      if (nextTooltip) tooltipHost.dataset.tooltip = nextTooltip
+      const label = tooltipHost.textContent?.trim()
+      if (label) tooltipHost.setAttribute("aria-label", label)
+      if (tooltipHost.matches(":hover") || tooltipHost.contains(document.activeElement)) {
+        tooltipHost.dispatchEvent(new CustomEvent("doc-tooltip-content-change", { bubbles: true }))
+      }
+    }
     for (const control of shell.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("[data-doc-rtl-placeholder]")) {
       const placeholder = control.getAttribute(`data-placeholder-${language}`)
       if (placeholder) control.placeholder = placeholder
@@ -5480,12 +5489,15 @@ function wireColorFormatSelectors(): void {
 
 function wireShowcaseTooltips(): void {
   let tooltip: HTMLElement | null = null
+  let activeHost: HTMLElement | null = null
+  let pointerHost: HTMLElement | null = null
   let scrollFrame = 0
 
   const ensureTooltip = (): HTMLElement => {
     if (!tooltip) {
       tooltip = document.createElement("div")
       tooltip.className = "ui-tooltip"
+      tooltip.id = "ui-tooltip"
       tooltip.setAttribute("role", "tooltip")
       tooltip.hidden = true
       document.body.append(tooltip)
@@ -5497,6 +5509,10 @@ function wireShowcaseTooltips(): void {
     if (tooltip) {
       tooltip.hidden = true
     }
+    if (activeHost?.getAttribute("aria-describedby") === "ui-tooltip") {
+      activeHost.removeAttribute("aria-describedby")
+    }
+    activeHost = null
   }
 
   const showTooltip = (host: HTMLElement): void => {
@@ -5505,7 +5521,11 @@ function wireShowcaseTooltips(): void {
       return
     }
 
+    window.cancelAnimationFrame(scrollFrame)
+    scrollFrame = 0
     const element = ensureTooltip()
+    activeHost = host
+    host.setAttribute("aria-describedby", element.id)
     const shortcut = host.dataset.tooltipKbd
     element.replaceChildren(document.createTextNode(text))
     if (shortcut) {
@@ -5529,13 +5549,26 @@ function wireShowcaseTooltips(): void {
     const hostRect = host.getBoundingClientRect()
     const tipRect = element.getBoundingClientRect()
     const margin = 8
-    let top = hostRect.top - tipRect.height - 6
-    if (top < margin) {
-      top = hostRect.bottom + 6
+    const offset = host.dataset.docTooltip === "true" ? 8 : 6
+    let side = host.dataset.tooltipSide ?? "top"
+    let top = side === "bottom" ? hostRect.bottom + offset : side === "top" ? hostRect.top - tipRect.height - offset : hostRect.top + hostRect.height / 2 - tipRect.height / 2
+    let left = side === "right" ? hostRect.right + offset : side === "left" ? hostRect.left - tipRect.width - offset : hostRect.left + hostRect.width / 2 - tipRect.width / 2
+    if (side === "top" && top < margin) {
+      side = "bottom"
+      top = hostRect.bottom + offset
+    } else if (side === "bottom" && top + tipRect.height > window.innerHeight - margin) {
+      side = "top"
+      top = hostRect.top - tipRect.height - offset
+    } else if (side === "left" && left < margin) {
+      side = "right"
+      left = hostRect.right + offset
+    } else if (side === "right" && left + tipRect.width > window.innerWidth - margin) {
+      side = "left"
+      left = hostRect.left - tipRect.width - offset
     }
-
-    let left = hostRect.left + hostRect.width / 2 - tipRect.width / 2
+    element.dataset.side = side
     left = Math.min(window.innerWidth - tipRect.width - margin, Math.max(margin, left))
+    top = Math.min(window.innerHeight - tipRect.height - margin, Math.max(margin, top))
 
     element.style.top = `${top + window.scrollY}px`
     element.style.left = `${left + window.scrollX}px`
@@ -5551,12 +5584,16 @@ function wireShowcaseTooltips(): void {
   document.addEventListener("pointerover", (event) => {
     const host = resolveHost(event.target)
     if (host) {
+      pointerHost = host
       showTooltip(host)
     }
   })
 
   document.addEventListener("pointerout", (event) => {
-    if (resolveHost(event.target)) {
+    const host = resolveHost(event.target)
+    const nextHost = resolveHost(event.relatedTarget)
+    if (host && host !== nextHost) {
+      pointerHost = nextHost
       hideTooltip()
     }
   })
@@ -5564,11 +5601,16 @@ function wireShowcaseTooltips(): void {
   document.addEventListener("focusin", (event) => {
     const host = resolveHost(event.target)
     if (host) {
+      pointerHost = null
       showTooltip(host)
     }
   })
 
   document.addEventListener("focusout", hideTooltip)
+  document.addEventListener("doc-tooltip-content-change", (event) => {
+    const host = resolveHost(event.target)
+    if (host) showTooltip(host)
+  })
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       hideTooltip()
@@ -5576,11 +5618,16 @@ function wireShowcaseTooltips(): void {
   })
   window.addEventListener("scroll", () => {
     const focusedHost = resolveHost(document.activeElement)
+    const hoveredHost = pointerHost
     hideTooltip()
     window.cancelAnimationFrame(scrollFrame)
-    if (!focusedHost) return
+    if (!focusedHost && !hoveredHost) return
     scrollFrame = window.requestAnimationFrame(() => {
-      if (resolveHost(document.activeElement) === focusedHost) showTooltip(focusedHost)
+      if (hoveredHost && pointerHost === hoveredHost && hoveredHost.matches(":hover")) {
+        showTooltip(hoveredHost)
+      } else if (focusedHost && resolveHost(document.activeElement) === focusedHost) {
+        showTooltip(focusedHost)
+      }
     })
   }, true)
 }

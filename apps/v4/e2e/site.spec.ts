@@ -4011,6 +4011,80 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.getByRole("button", { name: "Grid" })).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
+  test("tooltip docs match React sides, keyboard, disabled triggers, dismissal, and RTL", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/radix/tooltip")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(5)
+    for (let index = 0; index < 4; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(4).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+    expect((await previews.allInnerTexts()).join(" ")).not.toContain("Registry preview surface")
+
+    const tooltip = page.locator("#ui-tooltip")
+    const demo = page.locator('[data-doc-preview-name="tooltip-demo"]')
+    const hover = demo.getByRole("button", { name: "Hover" })
+    await hover.hover()
+    await expect(tooltip).toBeVisible()
+    await expect(tooltip).toHaveText("Add to library")
+    await expect(tooltip).toHaveAttribute("data-side", "top")
+    await expect(hover).toHaveAttribute("aria-describedby", "ui-tooltip")
+    await page.keyboard.press("Escape")
+    await expect(tooltip).toBeHidden()
+    await expect(hover).not.toHaveAttribute("aria-describedby")
+
+    const sides = page.locator('[data-doc-preview-name="tooltip-sides"]')
+    await sides.scrollIntoViewIfNeeded()
+    for (const side of ["left", "top", "bottom", "right"] as const) {
+      const trigger = sides.getByRole("button", { name: side, exact: true })
+      await trigger.hover()
+      await expect(tooltip).toBeVisible()
+      await expect(tooltip).toHaveAttribute("data-side", side)
+      const positions = await Promise.all([trigger, tooltip].map((locator) => locator.boundingBox()))
+      const [triggerBox, tooltipBox] = positions
+      expect(triggerBox).not.toBeNull()
+      expect(tooltipBox).not.toBeNull()
+      if (side === "left") expect(tooltipBox!.x + tooltipBox!.width).toBeLessThan(triggerBox!.x)
+      if (side === "right") expect(tooltipBox!.x).toBeGreaterThan(triggerBox!.x + triggerBox!.width)
+      if (side === "top") expect(tooltipBox!.y + tooltipBox!.height).toBeLessThan(triggerBox!.y)
+      if (side === "bottom") expect(tooltipBox!.y).toBeGreaterThan(triggerBox!.y + triggerBox!.height)
+      await page.mouse.move(2, 2)
+    }
+
+    const keyboard = page.locator('[data-doc-preview-name="tooltip-keyboard"]')
+    const save = keyboard.getByRole("button", { name: "Save changes" })
+    await expectFocusRing(save)
+    await expect(tooltip).toContainText("Save Changes")
+    await expect(tooltip.locator("kbd.doc-kbd")).toHaveText("S")
+
+    const disabled = page.locator('[data-doc-preview-name="tooltip-disabled"]')
+    await disabled.scrollIntoViewIfNeeded()
+    await disabled.locator(".doc-tooltip-disabled").hover()
+    await expect(tooltip).toHaveText("This feature is currently unavailable")
+    await expect(disabled.getByRole("button", { name: "Disabled" })).toBeDisabled()
+
+    const rtl = page.locator('[data-doc-preview-name="tooltip-rtl"]')
+    await rtl.scrollIntoViewIfNeeded()
+    const rtlButtons = rtl.locator(".doc-tooltip-row .doc-tooltip-button")
+    await expect(rtlButtons).toHaveText(["يسار", "أعلى", "أسفل", "يمين"])
+    await rtl.getByRole("button", { name: "يسار" }).hover()
+    await expect(tooltip).toHaveText("إضافة إلى المكتبة")
+    await expect(tooltip).toHaveAttribute("data-side", "left")
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtlButtons).toHaveText(["שמאל", "למעלה", "למטה", "ימין"])
+    await rtl.getByRole("button", { name: "שמאל" }).hover()
+    await expect(tooltip).toHaveText("הוסף לספרייה")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtl.locator(".doc-tooltip-row")).toHaveAttribute("dir", "ltr")
+    await rtl.getByRole("button", { name: "Left" }).hover()
+    await expect(tooltip).toHaveText("Add to library")
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(tooltip).toHaveCSS("background-color", "oklch(0.922 0 0)")
+  })
+
   test("kbd docs match React keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/base/kbd")

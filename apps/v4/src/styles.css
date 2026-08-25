@@ -3245,6 +3245,15 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-toggle-font-field code { border-radius: 6px; padding: 2px 4px; color: var(--foreground); background: var(--muted); }
 .doc-rtl-preview.doc-toggle-group-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-toggle-group-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+.doc-component-card[data-doc-preview-name^="tooltip-"]:not([data-doc-preview-name="tooltip-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name^="tooltip-"][data-doc-preview-name="tooltip-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.doc-tooltip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.doc-tooltip-row .doc-tooltip-button { width: fit-content; text-transform: capitalize; }
+.doc-tooltip-button.is-icon-sm { width: 32px; height: 32px; padding: 0; }
+.doc-tooltip-button.is-icon-sm svg { width: 16px; height: 16px; }
+.doc-tooltip-disabled { display: inline-block; width: fit-content; }
+.doc-rtl-preview.doc-tooltip-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-tooltip-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 .doc-sheet-sides { display: flex; flex-wrap: wrap; gap: 8px; }
 .doc-sheet-sides .doc-button { text-transform: capitalize; }
 .doc-sheet-content { position: fixed; z-index: 151; display: flex; box-sizing: border-box; flex-direction: column; gap: 24px; overflow: hidden; color: var(--foreground); background: var(--background); box-shadow: 0 16px 50px rgb(0 0 0 / 28%); outline: none; }
@@ -7354,6 +7363,21 @@ a.ui-item:hover {
   text-wrap: balance;
   pointer-events: none;
 }
+
+.ui-tooltip[data-side]::after {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--primary);
+  content: "";
+  transform: rotate(45deg);
+}
+
+.ui-tooltip[data-side="top"]::after { bottom: -3px; left: calc(50% - 5px); }
+.ui-tooltip[data-side="bottom"]::after { top: -3px; left: calc(50% - 5px); }
+.ui-tooltip[data-side="left"]::after { top: calc(50% - 5px); right: -3px; }
+.ui-tooltip[data-side="right"]::after { top: calc(50% - 5px); left: -3px; }
 
 .ui-tooltip[hidden] {
   display: none;

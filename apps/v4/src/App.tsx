@@ -4327,6 +4327,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocTogglePreview name={props.name} />
   ) : family === "toggle-group" ? (
     <DocToggleGroupPreview name={props.name} />
+  ) : family === "tooltip" ? (
+    <DocTooltipPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -5273,6 +5275,23 @@ function DocToggleGroupPreview(props: { name: string }) {
   else if (variant === "font-weight-selector") content = <div class="doc-toggle-font-field"><label>Font Weight</label>{group(["light", "normal", "medium", "bold"].map((value) => ({ value, label: value[0].toUpperCase() + value.slice(1), pressed: value === "normal" })), { outline: true, size: "lg", spacing: 2, font: true })}<p>Use <code data-doc-toggle-font-output>font-normal</code> to set the font weight.</p></div>
   else content = group([{ value: "list", label: "List", labelAr: "قائمة", labelHe: "רשימה", pressed: true }, { value: "grid", label: "Grid", labelAr: "شبكة", labelHe: "רשת" }, { value: "cards", label: "Cards", labelAr: "بطاقات", labelHe: "כרטיסים" }], { outline: true })
   return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-toggle-group-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
+}
+
+function DocTooltipPreview(props: { name: string }) {
+  const variant = untrack(() => props.name.replace("tooltip-", ""))
+  const rtl = variant === "rtl"
+  const tooltipButton = (label: any, options: { side?: "left" | "top" | "bottom" | "right"; tooltip?: string; tooltipAr?: string; tooltipHe?: string; ariaLabel?: string } = {}) => <button type="button" class="doc-button is-outline doc-tooltip-button" data-tooltip={rtl ? options.tooltipAr ?? options.tooltip ?? "Add to library" : options.tooltip ?? "Add to library"} data-tooltip-side={options.side ?? "top"} data-doc-tooltip="true" data-doc-rtl-tooltip={rtl ? "true" : undefined} data-tooltip-ar={options.tooltipAr} data-tooltip-he={options.tooltipHe} data-tooltip-en={options.tooltip} aria-label={options.ariaLabel}>{label}</button>
+  const sides = ["left", "top", "bottom", "right"] as const
+  let content
+  if (variant === "sides") content = <div class="doc-tooltip-row">{sides.map((side) => tooltipButton(side, { side }))}</div>
+  else if (variant === "keyboard") content = <button type="button" class="doc-button is-outline is-icon-sm doc-tooltip-button" aria-label="Save changes" data-tooltip="Save Changes" data-tooltip-kbd="S" data-tooltip-side="top" data-doc-tooltip="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15.2 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.8z"></path><path d="M17 21v-8H7v8"></path><path d="M7 3v5h8"></path></svg></button>
+  else if (variant === "disabled") content = <span class="doc-tooltip-disabled" data-tooltip="This feature is currently unavailable" data-tooltip-side="top" data-doc-tooltip="true"><button type="button" class="doc-button is-outline" disabled>Disabled</button></span>
+  else if (rtl) content = <div class="doc-tooltip-row" dir="rtl" data-doc-rtl-direction="true">{sides.map((side) => {
+    const labels = side === "left" ? ["يسار", "שמאל", "Left"] : side === "top" ? ["أعلى", "למעלה", "Top"] : side === "bottom" ? ["أسفل", "למטה", "Bottom"] : ["يمين", "ימין", "Right"]
+    return tooltipButton(<span data-doc-rtl-text data-text-ar={labels[0]} data-text-he={labels[1]} data-text-en={labels[2]}>{labels[0]}</span>, { side, tooltip: "Add to library", tooltipAr: "إضافة إلى المكتبة", tooltipHe: "הוסף לספרייה", ariaLabel: labels[0] })
+  })}</div>
+  else content = tooltipButton("Hover")
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-tooltip-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
 function DocEmptyPreview(props: { name: string }) {
