@@ -3547,6 +3547,71 @@ test.describe("shadcn v4 site", () => {
     await expect(topLeft.locator("[data-sonner-toast]")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
+  test("spinner docs match React item, custom, sizes, buttons, badges, inputs, empty, and RTL", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/radix/spinner")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(8)
+    for (let index = 0; index < 7; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(7).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+    expect((await previews.allInnerTexts()).join(" ")).not.toContain("Registry preview surface")
+
+    const demo = page.locator('[data-doc-preview-name="spinner-demo"]')
+    await expect(demo.locator(".doc-spinner-item")).toHaveCSS("width", "320px")
+    await expect(demo.locator(".doc-spinner-item")).toHaveCSS("height", "52px")
+    await expect(demo.getByRole("status", { name: "Loading" })).toHaveCSS("width", "16px")
+    await expect(demo.getByRole("status", { name: "Loading" })).toHaveCSS("animation-name", "doc-spinner-spin")
+    await expect(demo).toContainText("Processing payment...")
+    await expect(demo).toContainText("$100.00")
+
+    const custom = page.locator('[data-doc-preview-name="spinner-custom"]')
+    await expect(custom.getByRole("status", { name: "Loading" })).toHaveCount(1)
+    const sizes = page.locator('[data-doc-preview-name="spinner-size"]')
+    const sizeSpinners = sizes.getByRole("status", { name: "Loading" })
+    await expect(sizeSpinners).toHaveCount(4)
+    for (const [index, size] of [12, 16, 24, 32].entries()) {
+      await expect(sizeSpinners.nth(index)).toHaveCSS("width", `${size}px`)
+      await expect(sizeSpinners.nth(index)).toHaveCSS("height", `${size}px`)
+    }
+
+    const buttons = page.locator('[data-doc-preview-name="spinner-button"]')
+    await expect(buttons.locator("button:disabled")).toHaveCount(3)
+    await expect(buttons.getByRole("status", { name: "Loading" })).toHaveCount(3)
+    await expect(buttons).toContainText("Loading...")
+    await expect(buttons).toContainText("Please wait")
+    await expect(buttons).toContainText("Processing")
+
+    const badges = page.locator('[data-doc-preview-name="spinner-badge"]')
+    await expect(badges.locator(".doc-badge")).toHaveCount(3)
+    await expect(badges.getByRole("status", { name: "Loading" }).first()).toHaveCSS("width", "12px")
+
+    const inputs = page.locator('[data-doc-preview-name="spinner-input-group"]')
+    await expect(inputs.locator("input:disabled")).toHaveCount(1)
+    await expect(inputs.locator("textarea:disabled")).toHaveCount(1)
+    await expect(inputs.getByRole("status", { name: "Loading" })).toHaveCount(2)
+    await expect(inputs.getByRole("button", { name: "Send" })).toBeVisible()
+
+    const empty = page.locator('[data-doc-preview-name="spinner-empty"]')
+    await expect(empty).toContainText("Processing your request")
+    await expect(empty).toContainText("Do not refresh the page.")
+    await expect(empty.getByRole("button", { name: "Cancel" })).toBeVisible()
+
+    const rtl = page.locator('[data-doc-preview-name="spinner-rtl"]')
+    await expect(rtl.locator(".doc-spinner-item")).toHaveAttribute("dir", "rtl")
+    await expect(rtl).toContainText("جاري معالجة الدفع...")
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl).toContainText("מעבד תשלום...")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtl.locator(".doc-spinner-item")).toHaveAttribute("dir", "ltr")
+    await expect(rtl).toContainText("Processing payment...")
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(rtl.locator(".doc-spinner-item")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+  })
+
   test("kbd docs match React keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/base/kbd")

@@ -4310,6 +4310,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocSliderPreview name={props.name} />
   ) : family === "sonner" ? (
     <DocSonnerPreview name={props.name} />
+  ) : family === "spinner" ? (
+    <DocSpinnerPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -5133,6 +5135,25 @@ function DocSonnerPreview(props: { name: string }) {
   if (variant === "description") return button("Show Toast", { description: "Monday, January 3rd at 6:00pm" })
   if (variant === "position") return <div class="doc-sonner-buttons is-position">{["Top Left", "Top Center", "Top Right", "Bottom Left", "Bottom Center", "Bottom Right"].map((label) => button(label, { position: label.toLowerCase().replace(" ", "-") }))}</div>
   return button("Show Toast", { description: "Sunday, December 03, 2023 at 9:00 AM", action: "Undo" })
+}
+
+function DocSpinner(props: { size?: number; class?: string }) {
+  const size = untrack(() => props.size ?? 16)
+  return <svg class={`doc-spinner${props.class ? ` ${props.class}` : ""}`} role="status" aria-label="Loading" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.22-8.56"></path></svg>
+}
+
+function DocSpinnerPreview(props: { name: string }) {
+  const variant = untrack(() => props.name.replace("spinner-", ""))
+  const item = (rtl = false) => <div class="doc-spinner-item" dir={rtl ? "rtl" : "ltr"} data-doc-rtl-direction={rtl ? "true" : undefined}><DocSpinner /><strong data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "جاري معالجة الدفع..." : undefined} data-text-he={rtl ? "מעבד תשלום..." : undefined} data-text-en={rtl ? "Processing payment..." : undefined}>{rtl ? "جاري معالجة الدفع..." : "Processing payment..."}</strong><span data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "١٠٠.٠٠ دولار" : undefined} data-text-he={rtl ? "$100.00" : undefined} data-text-en={rtl ? "$100.00" : undefined}>{rtl ? "١٠٠.٠٠ دولار" : "$100.00"}</span></div>
+  let content
+  if (variant === "custom") content = <DocSpinner />
+  else if (variant === "size") content = <div class="doc-spinner-sizes">{[12, 16, 24, 32].map((size) => <DocSpinner size={size} />)}</div>
+  else if (variant === "button") content = <div class="doc-spinner-buttons">{[["Loading...", "is-default"], ["Please wait", "is-outline"], ["Processing", "is-secondary"]].map(([label, style]) => <button type="button" class={`doc-button ${style}`} disabled><DocSpinner />{label}</button>)}</div>
+  else if (variant === "badge") content = <div class="doc-spinner-badges">{[["Syncing", ""], ["Updating", "is-secondary"], ["Processing", "is-outline"]].map(([label, style]) => <span class={`doc-badge has-icon-start ${style}`}><DocSpinner size={12} />{label}</span>)}</div>
+  else if (variant === "input-group") content = <div class="doc-spinner-inputs"><label class="ui-input-group"><input class="ui-input-group-input" placeholder="Send a message..." disabled /><span class="ui-input-group-addon ui-input-group-addon-end"><DocSpinner /></span></label><label class="ui-input-group ui-input-group-block"><textarea class="ui-input-group-textarea" placeholder="Send a message..." disabled></textarea><span class="ui-input-group-addon ui-input-group-addon-block"><DocSpinner /> Validating...<button type="button" class="ui-input-group-button ui-input-group-button-primary" aria-label="Send">↑</button></span></label></div>
+  else if (variant === "empty") content = <div class="doc-spinner-empty"><span><DocSpinner /></span><h3>Processing your request</h3><p>Please wait while we process your request. Do not refresh the page.</p><button type="button" class="doc-button is-outline">Cancel</button></div>
+  else content = item(variant === "rtl")
+  return variant === "rtl" ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-spinner-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
 function DocEmptyPreview(props: { name: string }) {
@@ -7382,6 +7403,7 @@ function getDocPreviewFamily(name: string): string {
     "checkbox",
     "pagination",
     "skeleton",
+    "spinner",
     "popover",
     "progress",
     "slider",
