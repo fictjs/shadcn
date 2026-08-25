@@ -4264,6 +4264,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocCheckboxPreview name={props.name} />
   ) : family === "direction" && name === "card-rtl" ? (
     <DocCardPreview name={props.name} />
+  ) : family === "dropdown-menu" || name.startsWith("dropdown-menu-") ? (
+    <DocDropdownMenuPreview name={props.name} />
   ) : family === "drawer" || name.startsWith("drawer-") ? (
     <DocDrawerPreview name={props.name} />
   ) : family === "dialog" || name.startsWith("dialog-") ? (
@@ -4391,6 +4393,105 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <p>Registry preview surface for this documentation example.</p>
     </div>
   )
+}
+
+type DocDropdownEntry = {
+  type?: "item" | "label" | "separator" | "checkbox" | "radio" | "submenu"
+  label?: string
+  labelHe?: string
+  labelEn?: string
+  shortcut?: string
+  icon?: string
+  disabled?: boolean
+  destructive?: boolean
+  selected?: boolean
+  value?: string
+  children?: DocDropdownEntry[]
+}
+
+function renderDocDropdownIcon(kind: string) {
+  return kind === "card" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 10h18"></path></svg>
+  ) : kind === "settings" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1A8 8 0 0 0 15 6l-.3-2.5h-4L10.4 6a8 8 0 0 0-1.5 1.1l-2.4-1-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1a8 8 0 0 0 1.5 1.1l.3 2.5h4L15 18a8 8 0 0 0 1.5-1.1l2.4 1 2-3.4-2-1.5a7 7 0 0 0 .1-1Z"></path></svg>
+  ) : kind === "mail" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg>
+  ) : kind === "bell" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"></path></svg>
+  ) : kind === "trash" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"></path></svg>
+  ) : kind === "folder" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h7l2 2h9v11H3z"></path></svg>
+  ) : kind === "file" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h9l4 4v14H6zM14 3v5h5"></path></svg>
+  ) : kind === "logout" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 17l5-5-5-5M15 12H3M15 4h5v16h-5"></path></svg>
+  ) : kind === "edit" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 20 4-1 11-11-3-3L5 16zM14 7l3 3"></path></svg>
+  ) : kind === "share" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="2"></circle><circle cx="6" cy="12" r="2"></circle><circle cx="18" cy="19" r="2"></circle><path d="m8 11 8-5M8 13l8 5"></path></svg>
+  ) : (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>
+  )
+}
+
+function DocDropdownEntries(props: { entries: DocDropdownEntry[]; rtl?: boolean }) {
+  const entries = untrack(() => props.entries)
+  const rtl = untrack(() => !!props.rtl)
+  const text = (entry: DocDropdownEntry) => rtl ? <span data-doc-rtl-text data-text-ar={entry.label} data-text-he={entry.labelHe} data-text-en={entry.labelEn}>{entry.label}</span> : entry.label
+  return (
+    <>
+      {entries.map((entry) => entry.type === "separator" ? (
+        <span class="ui-menu-separator" aria-hidden="true"></span>
+      ) : entry.type === "label" ? (
+        <span class="ui-menu-label">{text(entry)}</span>
+      ) : entry.type === "submenu" ? (
+        <span class="ui-menu-sub ui-menu doc-dropdown-menu" data-menu>
+          <button type="button" class="ui-menu-item doc-dropdown-sub-trigger" role="menuitem" data-menu-item data-menu-trigger aria-haspopup="menu" aria-expanded="false">{entry.icon ? renderDocDropdownIcon(entry.icon) : null}{text(entry)}<span class="doc-dropdown-chevron" aria-hidden="true">›</span></button>
+          <div class="ui-menu-panel doc-dropdown-panel doc-dropdown-sub-panel" data-menu-panel data-menu-side={rtl ? "left" : "right"} role="menu" data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"} hidden><DocDropdownEntries entries={entry.children ?? []} rtl={rtl} /></div>
+        </span>
+      ) : (
+        <button type="button" class={`ui-menu-item doc-dropdown-item${entry.destructive ? " is-destructive" : ""}`} role={entry.type === "checkbox" ? "menuitemcheckbox" : entry.type === "radio" ? "menuitemradio" : "menuitem"} aria-checked={entry.type === "checkbox" || entry.type === "radio" ? (entry.selected ? "true" : "false") : undefined} data-selected={entry.type === "checkbox" || entry.type === "radio" ? (entry.selected ? "true" : "false") : undefined} data-menu-item data-doc-dropdown-checkbox={entry.type === "checkbox" ? "true" : undefined} data-doc-dropdown-radio={entry.type === "radio" ? "true" : undefined} data-doc-dropdown-radio-value={entry.type === "radio" ? entry.value : undefined} disabled={entry.disabled}>
+          {entry.type === "checkbox" ? <span class="doc-dropdown-check" aria-hidden="true">✓</span> : entry.type === "radio" ? <span class="doc-dropdown-radio" aria-hidden="true">●</span> : null}
+          {entry.icon ? renderDocDropdownIcon(entry.icon) : null}{text(entry)}{entry.shortcut ? <span class="doc-dropdown-shortcut">{entry.shortcut}</span> : null}
+        </button>
+      ))}
+    </>
+  )
+}
+
+function getDocDropdownEntries(variant: string, rtl: boolean): DocDropdownEntry[] {
+  const sep = (): DocDropdownEntry => ({ type: "separator" })
+  const label = (value: string): DocDropdownEntry => ({ type: "label", label: value })
+  const account = [label("My Account"), { label: "Profile", shortcut: "⇧⌘P" }, { label: "Billing", shortcut: "⌘B" }, { label: "Settings", shortcut: "⌘S" }]
+  if (rtl) return [
+    { type: "submenu", label: "الحساب", labelHe: "חשבון", labelEn: "Account", children: [{ label: "الملف الشخصي", labelHe: "פרופיל", labelEn: "Profile", icon: "user" }, { label: "الفوترة", labelHe: "חיוב", labelEn: "Billing", icon: "card" }, { label: "الإعدادات", labelHe: "הגדרות", labelEn: "Settings", icon: "settings" }] }, sep(),
+    { type: "label", label: "الفريق", labelHe: "הצוות", labelEn: "Team" }, { label: "الفريق", labelHe: "הצוות", labelEn: "Team" }, { type: "submenu", label: "دعوة المستخدمين", labelHe: "הזמן משתמשים", labelEn: "Invite users", children: [{ label: "البريد الإلكتروني", labelHe: "אימייל", labelEn: "Email" }, { label: "رسالة", labelHe: "הודעה", labelEn: "Message" }, { type: "submenu", label: "المزيد", labelHe: "עוד", labelEn: "More", children: [{ label: "تقويم", labelHe: "יומן", labelEn: "Calendar" }, { label: "دردشة", labelHe: "צ'אט", labelEn: "Chat" }, sep(), { label: "خطاف ويب", labelHe: "Webhook", labelEn: "Webhook" }] }, sep(), { label: "متقدم...", labelHe: "מתקדם...", labelEn: "Advanced..." }] }, { label: "فريق جديد", labelHe: "צוות חדש", labelEn: "New Team", shortcut: "⌘+T" }, sep(),
+    { type: "label", label: "عرض", labelHe: "תצוגה", labelEn: "View" }, { type: "checkbox", label: "شريط الحالة", labelHe: "שורת סטטוס", labelEn: "Status Bar", selected: true }, { type: "checkbox", label: "شريط النشاط", labelHe: "שורת פעילות", labelEn: "Activity Bar" }, { type: "checkbox", label: "اللوحة", labelHe: "לוח", labelEn: "Panel" }, sep(),
+    { type: "label", label: "الموضع", labelHe: "מיקום", labelEn: "Position" }, { type: "radio", label: "أعلى", labelHe: "למעלה", labelEn: "Top", value: "top" }, { type: "radio", label: "أسفل", labelHe: "למטה", labelEn: "Bottom", value: "bottom", selected: true }, { type: "radio", label: "يمين", labelHe: "ימין", labelEn: "Right", value: "right" }, { type: "radio", label: "يسار", labelHe: "שמאל", labelEn: "Left", value: "left" }, sep(), { label: "تسجيل الخروج", labelHe: "התנתק", labelEn: "Log out", destructive: true },
+  ]
+  if (variant === "demo") return [...account, sep(), { label: "Team" }, { type: "submenu", label: "Invite users", children: [{ label: "Email" }, { label: "Message" }, sep(), { label: "More..." }] }, { label: "New Team", shortcut: "⌘+T" }, sep(), { label: "GitHub" }, { label: "Support" }, { label: "API", disabled: true }, sep(), { label: "Log out", shortcut: "⇧⌘Q" }]
+  if (variant === "basic") return [label("My Account"), { label: "Profile" }, { label: "Billing" }, { label: "Settings" }, sep(), { label: "GitHub" }, { label: "Support" }, { label: "API", disabled: true }]
+  if (variant === "submenu") return [{ label: "Team" }, { type: "submenu", label: "Invite users", children: [{ label: "Email" }, { label: "Message" }, { type: "submenu", label: "More options", children: [{ label: "Calendly" }, { label: "Slack" }, sep(), { label: "Webhook" }] }, sep(), { label: "Advanced..." }] }, { label: "New Team", shortcut: "⌘+T" }]
+  if (variant === "shortcuts") return [...account, sep(), { label: "Log out", shortcut: "⇧⌘Q" }]
+  if (variant === "icons") return [{ label: "Profile", icon: "user" }, { label: "Billing", icon: "card" }, { label: "Settings", icon: "settings" }, sep(), { label: "Log out", icon: "logout", destructive: true }]
+  if (variant === "checkboxes") return [label("Appearance"), { type: "checkbox", label: "Status Bar", selected: true }, { type: "checkbox", label: "Activity Bar", disabled: true }, { type: "checkbox", label: "Panel" }]
+  if (variant === "checkboxes-icons") return [label("Notification Preferences"), { type: "checkbox", label: "Email notifications", icon: "mail", selected: true }, { type: "checkbox", label: "SMS notifications", icon: "share" }, { type: "checkbox", label: "Push notifications", icon: "bell", selected: true }]
+  if (variant === "radio-group") return [label("Panel Position"), { type: "radio", label: "Top", value: "top" }, { type: "radio", label: "Bottom", value: "bottom", selected: true }, { type: "radio", label: "Right", value: "right" }]
+  if (variant === "radio-icons") return [label("Select Payment Method"), { type: "radio", label: "Credit Card", icon: "card", value: "card", selected: true }, { type: "radio", label: "PayPal", icon: "user", value: "paypal" }, { type: "radio", label: "Bank Transfer", icon: "settings", value: "bank" }]
+  if (variant === "destructive") return [{ label: "Edit", icon: "edit" }, { label: "Share", icon: "share" }, sep(), { label: "Delete", icon: "trash", destructive: true }]
+  if (variant === "avatar") return [{ label: "Account", icon: "user" }, { label: "Billing", icon: "card" }, { label: "Notifications", icon: "bell" }, sep(), { label: "Sign Out", icon: "logout" }]
+  return [label("File"), { label: "New File", icon: "file", shortcut: "⌘N" }, { label: "New Folder", icon: "folder", shortcut: "⇧⌘N" }, { type: "submenu", label: "Open Recent", icon: "folder", children: [label("Recent Projects"), { label: "Project Alpha", icon: "file" }, { label: "Project Beta", icon: "file" }, { type: "submenu", label: "More Projects", children: [{ label: "Project Gamma" }, { label: "Project Delta" }] }, sep(), { label: "Browse...", icon: "folder" }] }, sep(), { label: "Save", icon: "file", shortcut: "⌘S" }, { label: "Export", icon: "share", shortcut: "⇧⌘E" }, sep(), label("View"), { type: "checkbox", label: "Show Sidebar", icon: "file", selected: true }, { type: "checkbox", label: "Show Status Bar", icon: "file" }, { type: "submenu", label: "Theme", icon: "settings", children: [label("Appearance"), { type: "radio", label: "Light", value: "light", selected: true }, { type: "radio", label: "Dark", value: "dark" }, { type: "radio", label: "System", value: "system" }] }, sep(), label("Account"), { label: "Profile", icon: "user", shortcut: "⇧⌘P" }, { label: "Billing", icon: "card" }, { type: "submenu", label: "Settings", icon: "settings", children: [label("Preferences"), { label: "Keyboard Shortcuts" }, { label: "Language" }, { type: "submenu", label: "Notifications", icon: "bell", children: [label("Notification Types"), { type: "checkbox", label: "Push Notifications", selected: true }, { type: "checkbox", label: "Email Notifications", selected: true }] }] }, sep(), { label: "Help & Support" }, { label: "Documentation" }, sep(), { label: "Sign Out", icon: "logout", shortcut: "⇧⌘Q", destructive: true }]
+}
+
+function DocDropdownMenuPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const variant = name.replace("dropdown-menu-", "")
+  const rtl = variant === "rtl"
+  const trigger = variant === "checkboxes-icons" ? "Notifications" : variant === "radio-icons" ? "Payment Method" : variant === "destructive" ? "Actions" : variant === "complex" ? "Complex Menu" : rtl ? "افتح القائمة" : "Open"
+  const width = variant === "demo" || variant === "checkboxes" ? "is-160" : variant === "checkboxes-icons" ? "is-192" : variant === "radio-icons" ? "is-224" : variant === "complex" ? "is-176" : rtl ? "is-144" : "is-128"
+  const menu = <span class="ui-menu doc-dropdown-menu" data-menu data-doc-dropdown-root data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}><button type="button" class={variant === "avatar" ? "doc-dropdown-avatar-trigger" : "doc-button is-outline"} data-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label={variant === "avatar" ? "Open account menu" : undefined}>{variant === "avatar" ? <img src="/avatars/shadcn.jpg" alt="shadcn" /> : <span data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "افتح القائمة" : undefined} data-text-he={rtl ? "פתח תפריט" : undefined} data-text-en={rtl ? "Open" : undefined}>{trigger}</span>}</button><div class={`ui-menu-panel doc-dropdown-panel ${width}`} data-menu-panel data-menu-side="bottom" data-menu-align={rtl ? "end" : variant === "avatar" ? "end" : "start"} role="menu" data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"} hidden><DocDropdownEntries entries={getDocDropdownEntries(variant, rtl)} rtl={rtl} /></div></span>
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-dropdown-rtl-preview" dir="rtl" data-lang="ar">{menu}</div></div> : menu
 }
 
 const docDrawerBars = [400, 300, 200, 300, 200, 278, 189, 239, 300, 200, 278, 189, 349]

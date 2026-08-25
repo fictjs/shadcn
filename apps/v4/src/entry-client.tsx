@@ -45,6 +45,7 @@ async function initResumableClient(): Promise<void> {
   wireDocCheckboxes()
   wireShowcaseSliders()
   wireShowcaseCounters()
+  wireDocDropdownMenus()
   wireShowcaseMenus()
   wireRtlLocalization()
   wireShowcaseToggles()
@@ -2545,6 +2546,29 @@ function closeShowcaseMenus(except?: Element | null): void {
   })
 }
 
+function wireDocDropdownMenus(): void {
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const checkbox = target.closest<HTMLElement>("[data-doc-dropdown-checkbox]")
+    if (checkbox && !checkbox.matches(":disabled")) {
+      const selected = checkbox.dataset.selected !== "true"
+      checkbox.dataset.selected = String(selected)
+      checkbox.setAttribute("aria-checked", String(selected))
+      return
+    }
+    const radio = target.closest<HTMLElement>("[data-doc-dropdown-radio]")
+    const panel = radio?.closest<HTMLElement>("[data-menu-panel]")
+    if (!radio || !panel) return
+    for (const item of panel.querySelectorAll<HTMLElement>("[data-doc-dropdown-radio]")) {
+      if (item.closest("[data-menu-panel]") !== panel) continue
+      const selected = item === radio
+      item.dataset.selected = String(selected)
+      item.setAttribute("aria-checked", String(selected))
+    }
+  })
+}
+
 function positionShowcaseMenu(panel: HTMLElement): void {
   const preferredSide = panel.dataset.menuPreferredSide ?? panel.dataset.menuSide ?? "bottom"
   const preferredAlign = panel.dataset.menuPreferredAlign ?? panel.dataset.menuAlign ?? "start"
@@ -2613,8 +2637,8 @@ function wireShowcaseMenus(): void {
     trigger.setAttribute("aria-expanded", "true")
     positionShowcaseMenu(panel)
     panel.dispatchEvent(new CustomEvent("showcase-menu-open", { bubbles: true }))
-    if (menu.dataset.docBreadcrumbMenu !== undefined || menu.matches(".doc-button-menu")) {
-      queueMicrotask(() => panel.querySelector<HTMLElement>("[data-menu-item]")?.focus({ preventScroll: true }))
+    if (menu.dataset.docBreadcrumbMenu !== undefined || menu.matches(".doc-button-menu, .doc-dropdown-menu")) {
+      queueMicrotask(() => panel.querySelector<HTMLElement>("[data-menu-item]:not(:disabled)")?.focus({ preventScroll: true }))
     }
   }
 
@@ -2765,23 +2789,49 @@ function wireShowcaseMenus(): void {
   })
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+    if (["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) {
       const activeItem = document.activeElement instanceof HTMLElement
-        ? document.activeElement.closest<HTMLElement>("[data-doc-breadcrumb-menu] [data-menu-item], .doc-button-menu [data-menu-item]")
+        ? document.activeElement.closest<HTMLElement>("[data-doc-breadcrumb-menu] [data-menu-item], .doc-button-menu [data-menu-item], .doc-dropdown-menu [data-menu-item]")
         : null
       const panel = activeItem?.closest<HTMLElement>("[data-menu-panel]")
       if (activeItem && panel) {
-        const items = [...panel.querySelectorAll<HTMLElement>("[data-menu-item]")]
+        const items = [...panel.querySelectorAll<HTMLElement>("[data-menu-item]:not(:disabled)")].filter((item) => item.closest("[data-menu-panel]") === panel)
         const currentIndex = items.indexOf(activeItem)
-        const delta = event.key === "ArrowDown" ? 1 : -1
-        items[(currentIndex + delta + items.length) % items.length]?.focus({ preventScroll: true })
+        const nextIndex = event.key === "Home" ? 0 : event.key === "End" ? items.length - 1 : (currentIndex + (event.key === "ArrowDown" ? 1 : -1) + items.length) % items.length
+        items[nextIndex]?.focus({ preventScroll: true })
         event.preventDefault()
         return
       }
     }
 
+    const dropdownItem = document.activeElement instanceof HTMLElement
+      ? document.activeElement.closest<HTMLElement>(".doc-dropdown-menu [data-menu-item]")
+      : null
+    if (dropdownItem) {
+      const panel = dropdownItem.closest<HTMLElement>("[data-menu-panel]")
+      const rtl = panel?.dir === "rtl"
+      const forward = rtl ? "ArrowLeft" : "ArrowRight"
+      const backward = rtl ? "ArrowRight" : "ArrowLeft"
+      if (event.key === forward && dropdownItem.matches("[data-menu-trigger]")) {
+        dropdownItem.click()
+        event.preventDefault()
+        return
+      }
+      if (event.key === backward) {
+        const submenu = panel?.closest<HTMLElement>(".ui-menu-sub[data-menu]")
+        const trigger = submenu?.querySelector<HTMLElement>(":scope > [data-menu-trigger]")
+        if (panel && submenu && trigger) {
+          panel.hidden = true
+          trigger.setAttribute("aria-expanded", "false")
+          trigger.focus({ preventScroll: true })
+          event.preventDefault()
+          return
+        }
+      }
+    }
+
     if (event.key === "Escape") {
-      const openBreadcrumbMenu = [...document.querySelectorAll<HTMLElement>("[data-doc-breadcrumb-menu], .doc-button-menu")]
+      const openBreadcrumbMenu = [...document.querySelectorAll<HTMLElement>("[data-doc-breadcrumb-menu], .doc-button-menu, .doc-dropdown-menu")]
         .find((menu) => !menu.querySelector<HTMLElement>(":scope > [data-menu-panel]")?.hidden)
       const trigger = openBreadcrumbMenu?.querySelector<HTMLElement>(":scope > [data-menu-trigger]")
       closeShowcaseMenus()
