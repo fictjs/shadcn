@@ -3196,8 +3196,8 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-component-card[data-doc-preview-name^="tabs-"]:not([data-doc-preview-name="tabs-demo"]):not([data-doc-preview-name="tabs-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
 .doc-component-card[data-doc-preview-name="tabs-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
 .doc-preview-tabs { display: grid; width: 400px; gap: 8px; }
-.doc-preview-tabs-list { display: inline-flex; width: fit-content; height: 32px; align-items: center; gap: 2px; border-radius: 10px; padding: 3px; background: var(--muted); color: var(--muted-foreground); }
-.doc-preview-tab { display: inline-flex; height: 26px; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 8px; padding: 0 10px; color: inherit; background: transparent; font: inherit; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer; outline: none; }
+.doc-preview-tabs-list { display: inline-flex; width: fit-content; height: 32px; align-items: center; gap: 0; border-radius: 10px; padding: 3px; background: var(--muted); color: var(--muted-foreground); }
+.doc-preview-tab { display: inline-flex; height: 25px; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 8px; padding: 2px 6px; color: inherit; background: transparent; font: inherit; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer; outline: none; }
 .doc-preview-tab[aria-selected="true"] { color: var(--foreground); background: var(--background); box-shadow: 0 1px 2px rgb(0 0 0 / 6%); }
 .doc-preview-tab:focus-visible { box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
 .doc-preview-tab:disabled { cursor: not-allowed; opacity: .5; }
@@ -3209,10 +3209,10 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-preview-tabs.is-vertical { width: auto; }
 .doc-preview-tabs.is-vertical .doc-preview-tabs-list { width: 128px; height: auto; flex-direction: column; align-items: stretch; }
 .doc-preview-tabs.is-vertical .doc-preview-tab { width: 100%; justify-content: flex-start; }
-.doc-preview-tabs-card { box-sizing: border-box; min-height: 184px; border-radius: 12px; padding: 16px; background: var(--card); box-shadow: 0 0 0 1px var(--border); }
-.doc-preview-tabs-card h3 { margin: 0; font-size: 18px; line-height: 24px; }
-.doc-preview-tabs-card p { margin: 4px 0 20px; color: var(--muted-foreground); font-size: 14px; line-height: 20px; }
-.doc-preview-tabs-card > div { color: var(--muted-foreground); font-size: 14px; line-height: 20px; }
+.doc-preview-tabs-card { box-sizing: border-box; border-radius: 12px; padding: 16px 0; background: var(--card); box-shadow: 0 0 0 1px var(--border); }
+.doc-preview-tabs-card h3 { margin: 0; padding: 0 16px; font-size: 16px; line-height: 22px; font-weight: 500; }
+.doc-preview-tabs-card p { margin: 4px 0 16px; padding: 0 16px; color: var(--muted-foreground); font-size: 14px; line-height: 20px; }
+.doc-preview-tabs-card > div { padding: 0 16px; color: var(--muted-foreground); font-size: 14px; line-height: 20px; }
 .doc-rtl-preview.doc-tabs-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-tabs-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 
