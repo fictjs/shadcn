@@ -37,6 +37,7 @@ async function initResumableClient(): Promise<void> {
   wireDocAvatarMenus()
   wireDocButtonGroups()
   wireDocCalendars()
+  wireDocDatePickers()
   wireDocCarousels()
   wireDocCharts()
   wireDocCheckboxes()
@@ -1696,6 +1697,124 @@ function wireDocCalendars(): void {
   })
 
   document.querySelectorAll<HTMLElement>("[data-doc-calendar]").forEach(refreshCalendar)
+}
+
+function wireDocDatePickers(): void {
+  let activePanel: HTMLElement | null = null
+  let activeRoot: HTMLElement | null = null
+  let activeTrigger: HTMLButtonElement | null = null
+  let origin: { parent: Node; nextSibling: ChildNode | null } | null = null
+
+  const close = (restoreFocus = false): void => {
+    if (!activePanel) return
+    activePanel.hidden = true
+    if (origin) origin.parent.insertBefore(activePanel, origin.nextSibling)
+    const trigger = activeTrigger
+    trigger?.setAttribute("aria-expanded", "false")
+    activePanel = null
+    activeRoot = null
+    activeTrigger = null
+    origin = null
+    if (restoreFocus) trigger?.focus({ preventScroll: true })
+  }
+
+  const open = (root: HTMLElement, trigger: HTMLButtonElement): void => {
+    close()
+    const panel = root.querySelector<HTMLElement>("[data-doc-date-popover]")
+    if (!panel) return
+    activePanel = panel
+    activeRoot = root
+    activeTrigger = trigger
+    origin = { parent: panel.parentNode as Node, nextSibling: panel.nextSibling }
+    panel.hidden = false
+    document.body.append(panel)
+    trigger.setAttribute("aria-expanded", "true")
+    const rect = trigger.getBoundingClientRect()
+    const margin = 8
+    const preferredLeft = root.dataset.datePickerVariant === "input" || root.dataset.datePickerVariant === "natural-language" ? rect.right - panel.offsetWidth : rect.left
+    panel.style.left = `${Math.max(margin, Math.min(preferredLeft, window.innerWidth - panel.offsetWidth - margin))}px`
+    const below = rect.bottom + 8
+    panel.style.top = `${below + panel.offsetHeight <= window.innerHeight - margin ? below : Math.max(margin, rect.top - panel.offsetHeight - 8)}px`
+    panel.querySelector<HTMLButtonElement>("[data-doc-calendar-day][aria-selected='true'], [data-doc-calendar-day]:not([data-outside])")?.focus({ preventScroll: true })
+  }
+
+  const formatDate = (value: string, language = "en"): string => {
+    const [year, month, day] = value.split("-").map(Number)
+    const locale = language === "ar" ? "ar-SA" : language === "he" ? "he-IL" : "en-US"
+    return new Intl.DateTimeFormat(locale, { year: "numeric", month: "long", day: "numeric" }).format(new Date(year, month - 1, day))
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const trigger = target.closest<HTMLButtonElement>("[data-doc-date-trigger]")
+    if (trigger) {
+      const root = trigger.closest<HTMLElement>("[data-doc-date-picker]")
+      if (root) activeRoot === root ? close(true) : open(root, trigger)
+      return
+    }
+    const day = target.closest<HTMLButtonElement>("[data-doc-calendar-day]")
+    if (day && activePanel?.contains(day) && activeRoot) {
+      const calendar = day.closest<HTMLElement>("[data-doc-calendar]")
+      const variant = activeRoot.dataset.datePickerVariant ?? "demo"
+      if (calendar?.dataset.calendarMode === "range") {
+        const start = calendar.dataset.rangeStart
+        const end = calendar.dataset.rangeEnd
+        const label = activeRoot.querySelector<HTMLElement>("[data-doc-date-label]")
+        if (start && end && label) {
+          label.textContent = `${new Intl.DateTimeFormat("en-US", { month: "short", day: "2-digit", year: "numeric" }).format(new Date(`${start}T00:00:00`))} - ${new Intl.DateTimeFormat("en-US", { month: "short", day: "2-digit", year: "numeric" }).format(new Date(`${end}T00:00:00`))}`
+          close(true)
+        }
+        return
+      }
+      const value = day.dataset.date
+      if (!value) return
+      const language = activeRoot.closest<HTMLElement>(".doc-rtl-preview-shell")?.querySelector<HTMLSelectElement>("[data-doc-rtl-language]")?.value ?? "en"
+      const formatted = formatDate(value, language)
+      const input = activeRoot.querySelector<HTMLInputElement>("[data-doc-date-input]")
+      const label = activeRoot.querySelector<HTMLElement>("[data-doc-date-label]")
+      if (input) input.value = formatted
+      if (label) label.textContent = formatted
+      if (variant === "natural-language") {
+        const output = activeRoot.querySelector<HTMLElement>("[data-doc-date-natural-output]")
+        if (output) output.textContent = formatted
+      }
+      close(true)
+      return
+    }
+    if (activePanel && !activePanel.contains(target)) close()
+  })
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && activePanel) {
+      event.preventDefault()
+      close(true)
+      return
+    }
+    const input = event.target
+    if (event.key === "ArrowDown" && input instanceof HTMLInputElement && input.matches("[data-doc-date-input]")) {
+      const root = input.closest<HTMLElement>("[data-doc-date-picker]")
+      const trigger = root?.querySelector<HTMLButtonElement>("[data-doc-date-trigger]")
+      if (root && trigger) {
+        event.preventDefault()
+        open(root, trigger)
+      }
+    }
+  })
+
+  document.addEventListener("input", (event) => {
+    const input = event.target
+    if (!(input instanceof HTMLInputElement) || !input.matches("[data-doc-date-input]")) return
+    const root = input.closest<HTMLElement>("[data-doc-date-picker]")
+    if (root?.dataset.datePickerVariant !== "natural-language") return
+    const normalized = input.value.trim().toLocaleLowerCase()
+    const date = new Date()
+    const days = normalized === "tomorrow" ? 1 : normalized === "next week" ? 7 : Number(normalized.match(/^in (\d+) days?$/)?.[1] ?? Number.NaN)
+    if (!Number.isFinite(days)) return
+    date.setDate(date.getDate() + days)
+    const output = root.querySelector<HTMLElement>("[data-doc-date-natural-output]")
+    if (output) output.textContent = new Intl.DateTimeFormat("en-US", { year: "numeric", month: "long", day: "2-digit" }).format(date)
+  })
 }
 
 function wireDocCarousels(): void {

@@ -4262,6 +4262,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
 
   return family === "checkbox" ? (
     <DocCheckboxPreview name={props.name} />
+  ) : family === "date-picker" || name.startsWith("date-picker-") ? (
+    <DocDatePickerPreview name={props.name} />
   ) : family === "data-table" || name.startsWith("data-table-") ? (
     <DocDataTablePreview name={props.name} />
   ) : family === "context-menu" || name.startsWith("context-menu-") ? (
@@ -4383,6 +4385,32 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <p>Registry preview surface for this documentation example.</p>
     </div>
   )
+}
+
+function DocDatePickerPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const rtl = name === "date-picker-rtl"
+  const picker = <DocDatePicker variant={name.replace("date-picker-", "")} rtl={rtl} />
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-date-picker-rtl-preview" dir="rtl" data-lang="ar">{picker}</div></div> : picker
+}
+
+function DocDatePicker(props: { variant: string; rtl?: boolean }) {
+  const variant = untrack(() => props.variant)
+  const rtl = untrack(() => !!props.rtl)
+  const year = new Date().getFullYear()
+  const month = new Date().getMonth()
+  const fieldLabel = variant === "basic" ? "Date" : variant === "range" ? "Date Picker Range" : variant === "dob" ? "Date of birth" : variant === "input" ? "Subscription Date" : variant === "natural-language" ? "Schedule Date" : ""
+  const triggerLabel = rtl ? "اختر تاريخًا" : variant === "range" ? `Jan 20, ${year} - Feb 09, ${year}` : variant === "dob" || variant === "time" ? "Select date" : "Pick a date"
+  const calendar = <DocCalendar variant={rtl ? "rtl" : variant === "range" ? "range" : "default"} year={variant === "range" ? year : variant === "input" ? 2025 : year} month={variant === "range" ? 0 : variant === "input" ? 5 : month} selectedDay={variant === "range" ? 20 : variant === "input" ? 1 : undefined} rangeEnd={variant === "range" ? 9 : undefined} months={variant === "range" ? 2 : 1} dropdown={variant === "dob" || variant === "natural-language"} />
+  const popover = <div class={`doc-date-popover${variant === "range" ? " is-range" : ""}`} data-doc-date-popover hidden>{calendar}</div>
+  if (variant === "input" || variant === "natural-language") {
+    const natural = variant === "natural-language"
+    return <div class={`doc-date-picker doc-date-input-picker${natural ? " is-natural" : ""}`} data-doc-date-picker data-date-picker-variant={variant}><label>{fieldLabel}<div class="doc-date-input-group"><input type="text" value={natural ? "In 2 days" : "June 01, 2025"} placeholder={natural ? "Tomorrow or next week" : "June 01, 2025"} data-doc-date-input /><button type="button" aria-label="Select date" data-doc-date-trigger aria-haspopup="dialog" aria-expanded="false">▣</button></div></label>{natural ? <p>Your post will be published on <strong data-doc-date-natural-output>August 27, 2026</strong>.</p> : null}{popover}</div>
+  }
+  if (variant === "time") {
+    return <div class="doc-date-picker doc-date-time-picker" data-doc-date-picker data-date-picker-variant={variant}><label>Date<button type="button" class="doc-date-trigger is-time" data-doc-date-trigger aria-haspopup="dialog" aria-expanded="false"><span data-doc-date-label>{triggerLabel}</span><ChevronDownIcon /></button></label><label>Time<input type="time" step="1" value="10:30:00" /></label>{popover}</div>
+  }
+  return <div class={`doc-date-picker${variant === "demo" || rtl ? " is-standalone" : ""}${variant === "range" ? " is-range" : ""}`} data-doc-date-picker data-date-picker-variant={variant} data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}>{variant !== "demo" && !rtl ? <label class="doc-date-field-label">{fieldLabel}</label> : null}<button type="button" class="doc-date-trigger" data-empty="true" data-doc-date-trigger aria-haspopup="dialog" aria-expanded="false"><span data-doc-date-label data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "اختر تاريخًا" : undefined} data-text-he={rtl ? "בחר תאריך" : undefined} data-text-en={rtl ? "Pick a date" : undefined}>{triggerLabel}</span>{variant === "demo" || rtl ? <ChevronDownIcon /> : variant === "range" ? renderDocButtonIcon("calendar") : null}</button>{popover}</div>
 }
 
 function DocDataTablePreview(props: { name: string }) {
