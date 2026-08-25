@@ -4278,6 +4278,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocKbdPreview name={props.name} />
   ) : family === "label" ? (
     <DocLabelPreview name={props.name} />
+  ) : family === "menubar" ? (
+    <DocMenubarPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -4735,6 +4737,103 @@ function DocLabelPreview(props: { name: string }) {
   return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-label-rtl-preview" dir="rtl" data-lang="ar">{control}</div></div> : control
 }
 
+type DocMenubarMenu = {
+  label: string
+  labelHe?: string
+  labelEn?: string
+  panelClass?: string
+  entries: DocDropdownEntry[]
+}
+
+function DocMenubarPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const rtl = name === "menubar-rtl"
+  const sep = (): DocDropdownEntry => ({ type: "separator" })
+  const fileEntries: DocDropdownEntry[] = [
+    { label: rtl ? "علامة تبويب جديدة" : "New Tab", labelHe: rtl ? "כרטיסייה חדשה" : undefined, labelEn: rtl ? "New Tab" : undefined, shortcut: "⌘T" },
+    { label: rtl ? "نافذة جديدة" : "New Window", labelHe: rtl ? "חלון חדש" : undefined, labelEn: rtl ? "New Window" : undefined, shortcut: "⌘N" },
+    { label: rtl ? "نافذة التصفح المتخفي الجديدة" : "New Incognito Window", labelHe: rtl ? "חלון גלישה בסתר חדש" : undefined, labelEn: rtl ? "New Incognito Window" : undefined, disabled: true },
+    sep(),
+    { type: "submenu", label: rtl ? "مشاركة" : "Share", labelHe: rtl ? "שתף" : undefined, labelEn: rtl ? "Share" : undefined, children: [
+      { label: rtl ? "رابط البريد الإلكتروني" : "Email link", labelHe: rtl ? "קישור אימייל" : undefined, labelEn: rtl ? "Email link" : undefined },
+      { label: rtl ? "الرسائل" : "Messages", labelHe: rtl ? "הודעות" : undefined, labelEn: rtl ? "Messages" : undefined },
+      { label: rtl ? "الملاحظات" : "Notes", labelHe: rtl ? "הערות" : undefined, labelEn: rtl ? "Notes" : undefined },
+    ] },
+    sep(),
+    { label: rtl ? "طباعة..." : "Print...", labelHe: rtl ? "הדפס..." : undefined, labelEn: rtl ? "Print..." : undefined, shortcut: "⌘P" },
+  ]
+  const editEntries: DocDropdownEntry[] = [
+    { label: rtl ? "تراجع" : "Undo", labelHe: rtl ? "בטל" : undefined, labelEn: rtl ? "Undo" : undefined, shortcut: "⌘Z" },
+    { label: rtl ? "إعادة" : "Redo", labelHe: rtl ? "בצע שוב" : undefined, labelEn: rtl ? "Redo" : undefined, shortcut: "⇧⌘Z" },
+    sep(),
+    { type: "submenu", label: rtl ? "بحث" : "Find", labelHe: rtl ? "מצא" : undefined, labelEn: rtl ? "Find" : undefined, children: [
+      { label: rtl ? "البحث على الويب" : "Search the web", labelHe: rtl ? "חפש באינטרנט" : undefined, labelEn: rtl ? "Search the web" : undefined },
+      sep(),
+      { label: rtl ? "بحث..." : "Find...", labelHe: rtl ? "מצא..." : undefined, labelEn: rtl ? "Find..." : undefined },
+      { label: rtl ? "البحث التالي" : "Find Next", labelHe: rtl ? "מצא הבא" : undefined, labelEn: rtl ? "Find Next" : undefined },
+      { label: rtl ? "البحث السابق" : "Find Previous", labelHe: rtl ? "מצא הקודם" : undefined, labelEn: rtl ? "Find Previous" : undefined },
+    ] },
+    sep(),
+    { label: rtl ? "قص" : "Cut", labelHe: rtl ? "גזור" : undefined, labelEn: rtl ? "Cut" : undefined },
+    { label: rtl ? "نسخ" : "Copy", labelHe: rtl ? "העתק" : undefined, labelEn: rtl ? "Copy" : undefined },
+    { label: rtl ? "لصق" : "Paste", labelHe: rtl ? "הדבק" : undefined, labelEn: rtl ? "Paste" : undefined },
+  ]
+  const viewEntries: DocDropdownEntry[] = [
+    { type: "checkbox", label: rtl ? "شريط الإشارات المرجعية" : "Bookmarks Bar", labelHe: rtl ? "סרגל סימניות" : undefined, labelEn: rtl ? "Bookmarks Bar" : undefined },
+    { type: "checkbox", label: rtl ? "عناوين URL الكاملة" : "Full URLs", labelHe: rtl ? "כתובות URL מלאות" : undefined, labelEn: rtl ? "Full URLs" : undefined, selected: true },
+    sep(),
+    { label: rtl ? "إعادة تحميل" : "Reload", labelHe: rtl ? "רענן" : undefined, labelEn: rtl ? "Reload" : undefined, shortcut: "⌘R" },
+    { label: rtl ? "إعادة تحميل قسري" : "Force Reload", labelHe: rtl ? "רענן בכוח" : undefined, labelEn: rtl ? "Force Reload" : undefined, shortcut: "⇧⌘R", disabled: true },
+    sep(),
+    { label: rtl ? "تبديل وضع ملء الشاشة" : "Toggle Fullscreen", labelHe: rtl ? "החלף מסך מלא" : undefined, labelEn: rtl ? "Toggle Fullscreen" : undefined },
+    sep(),
+    { label: rtl ? "إخفاء الشريط الجانبي" : "Hide Sidebar", labelHe: rtl ? "הסתר סרגל צד" : undefined, labelEn: rtl ? "Hide Sidebar" : undefined },
+  ]
+  const profileEntries: DocDropdownEntry[] = [
+    { type: "radio", label: "Andy", value: "andy" },
+    { type: "radio", label: "Benoit", value: "benoit", selected: true },
+    { type: "radio", label: "Luis", value: "luis" },
+    sep(),
+    { label: rtl ? "تعديل..." : "Edit...", labelHe: rtl ? "ערוך..." : undefined, labelEn: rtl ? "Edit..." : undefined },
+    sep(),
+    { label: rtl ? "إضافة ملف شخصي..." : "Add Profile...", labelHe: rtl ? "הוסף פרופיל..." : undefined, labelEn: rtl ? "Add Profile..." : undefined },
+  ]
+  const iconEntries: DocDropdownEntry[] = [
+    { label: "New File", icon: "file", shortcut: "⌘N" },
+    { label: "Open Folder", icon: "folder" },
+    sep(),
+    { label: "Save", icon: "save", shortcut: "⌘S" },
+  ]
+  const moreEntries: DocDropdownEntry[] = [
+    { label: "Settings", icon: "settings" },
+    { label: "Help", icon: "help" },
+    sep(),
+    { label: "Delete", icon: "trash", destructive: true },
+  ]
+  let menus: DocMenubarMenu[]
+  if (name === "menubar-checkbox") menus = [
+    { label: "View", panelClass: "is-wide", entries: [{ type: "checkbox", label: "Always Show Bookmarks Bar" }, { type: "checkbox", label: "Always Show Full URLs", selected: true }, sep(), { label: "Reload", shortcut: "⌘R" }, { label: "Force Reload", shortcut: "⇧⌘R", disabled: true }] },
+    { label: "Format", entries: [{ type: "checkbox", label: "Strikethrough", selected: true }, { type: "checkbox", label: "Code" }, { type: "checkbox", label: "Superscript" }] },
+  ]
+  else if (name === "menubar-radio") menus = [
+    { label: "Profiles", entries: profileEntries.filter((entry, index) => index < 4 || index === 4 || index === 6) },
+    { label: "Theme", entries: [{ type: "radio", label: "Light", value: "light" }, { type: "radio", label: "Dark", value: "dark" }, { type: "radio", label: "System", value: "system", selected: true }] },
+  ]
+  else if (name === "menubar-submenu") menus = [
+    { label: "File", entries: [{ type: "submenu", label: "Share", children: [{ label: "Email link" }, { label: "Messages" }, { label: "Notes" }] }, sep(), { label: "Print...", shortcut: "⌘P" }] },
+    { label: "Edit", entries: editEntries },
+  ]
+  else if (name === "menubar-icons") menus = [{ label: "File", entries: iconEntries }, { label: "More", entries: moreEntries }]
+  else menus = [
+    { label: rtl ? "ملف" : "File", labelHe: rtl ? "קובץ" : undefined, labelEn: rtl ? "File" : undefined, entries: fileEntries },
+    { label: rtl ? "تعديل" : "Edit", labelHe: rtl ? "ערוך" : undefined, labelEn: rtl ? "Edit" : undefined, entries: editEntries },
+    { label: rtl ? "عرض" : "View", labelHe: rtl ? "תצוגה" : undefined, labelEn: rtl ? "View" : undefined, panelClass: "is-view", entries: viewEntries },
+    { label: rtl ? "الملفات الشخصية" : "Profiles", labelHe: rtl ? "פרופילים" : undefined, labelEn: rtl ? "Profiles" : undefined, entries: profileEntries },
+  ]
+  const bar = <div class="doc-menubar" data-slot="menubar" data-doc-menubar data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}>{menus.map((menu, index) => <span class="ui-menu doc-dropdown-menu doc-menubar-menu" data-menu><button type="button" class="doc-menubar-trigger" role="menuitem" data-slot="menubar-trigger" data-doc-menubar-trigger data-menu-trigger aria-haspopup="menu" aria-expanded="false" data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? menu.label : undefined} data-text-he={menu.labelHe} data-text-en={menu.labelEn}>{menu.label}</button><div class={`ui-menu-panel doc-dropdown-panel doc-menubar-panel${menu.panelClass ? ` ${menu.panelClass}` : ""}`} data-slot="menubar-content" data-menu-panel data-menu-side="bottom" data-menu-align={rtl && index === 0 ? "end" : "start"} role="menu" data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"} hidden><DocDropdownEntries entries={menu.entries} rtl={rtl} /></div></span>)}</div>
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-menubar-rtl-preview" dir="rtl" data-lang="ar">{bar}</div></div> : bar
+}
+
 function DocEmptyPreview(props: { name: string }) {
   const name = untrack(() => props.name)
   const variant = name.replace("empty-", "")
@@ -4794,6 +4893,10 @@ function renderDocDropdownIcon(kind: string) {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h7l2 2h9v11H3z"></path></svg>
   ) : kind === "file" ? (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h9l4 4v14H6zM14 3v5h5"></path></svg>
+  ) : kind === "save" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3h12l2 2v16H5zM8 3v6h8V3M8 21v-7h8v7"></path></svg>
+  ) : kind === "help" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 9a2.7 2.7 0 1 1 4.1 2.3c-1 .6-1.6 1.1-1.6 2.2M12 17h.01"></path></svg>
   ) : kind === "logout" ? (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 17l5-5-5-5M15 12H3M15 4h5v16h-5"></path></svg>
   ) : kind === "edit" ? (

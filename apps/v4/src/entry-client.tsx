@@ -50,6 +50,7 @@ async function initResumableClient(): Promise<void> {
   wireShowcaseSliders()
   wireShowcaseCounters()
   wireDocDropdownMenus()
+  wireDocMenubars()
   wireShowcaseMenus()
   wireRtlLocalization()
   wireShowcaseToggles()
@@ -2835,6 +2836,60 @@ function wireDocDropdownMenus(): void {
       item.dataset.selected = String(selected)
       item.setAttribute("aria-checked", String(selected))
     }
+  })
+}
+
+function wireDocMenubars(): void {
+  const triggers = (bar: HTMLElement): HTMLElement[] => [...bar.querySelectorAll<HTMLElement>("[data-doc-menubar-trigger]")]
+  const moveToTrigger = (bar: HTMLElement, current: HTMLElement, offset: number, open: boolean): void => {
+    const items = triggers(bar)
+    const index = items.indexOf(current)
+    const next = items[(index + offset + items.length) % items.length]
+    if (!next) return
+    if (open) next.click()
+    else next.focus({ preventScroll: true })
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-doc-menubar]").forEach((bar) => {
+    triggers(bar).forEach((trigger) => {
+      trigger.addEventListener("pointerenter", (event) => {
+        if (event.pointerType !== "mouse" || trigger.getAttribute("aria-expanded") === "true") return
+        if (bar.querySelector('[data-doc-menubar-trigger][aria-expanded="true"]')) trigger.click()
+      })
+    })
+  })
+
+  document.addEventListener("keydown", (event) => {
+    const active = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    const bar = active?.closest<HTMLElement>("[data-doc-menubar]")
+    if (!active || !bar) return
+    const rtl = bar.dir === "rtl"
+    const nextKey = rtl ? "ArrowLeft" : "ArrowRight"
+    const previousKey = rtl ? "ArrowRight" : "ArrowLeft"
+    const activeTrigger = active.closest<HTMLElement>("[data-doc-menubar-trigger]")
+    if (activeTrigger) {
+      if (event.key === "ArrowDown") {
+        if (activeTrigger.getAttribute("aria-expanded") !== "true") activeTrigger.click()
+        queueMicrotask(() => activeTrigger.closest("[data-menu]")?.querySelector<HTMLElement>("[data-menu-panel] [data-menu-item]:not(:disabled)")?.focus({ preventScroll: true }))
+        event.preventDefault()
+        event.stopImmediatePropagation()
+      } else if (event.key === nextKey || event.key === previousKey) {
+        moveToTrigger(bar, activeTrigger, event.key === nextKey ? 1 : -1, activeTrigger.getAttribute("aria-expanded") === "true")
+        event.preventDefault()
+        event.stopImmediatePropagation()
+      }
+      return
+    }
+
+    const activeItem = active.closest<HTMLElement>(".doc-menubar-panel [data-menu-item]")
+    if (!activeItem || (activeItem.matches("[data-menu-trigger]") && event.key === nextKey)) return
+    if (activeItem.closest(".doc-dropdown-sub-panel") && event.key === previousKey) return
+    if (event.key !== nextKey && event.key !== previousKey) return
+    const currentTrigger = bar.querySelector<HTMLElement>('[data-doc-menubar-trigger][aria-expanded="true"]')
+    if (!currentTrigger) return
+    moveToTrigger(bar, currentTrigger, event.key === nextKey ? 1 : -1, true)
+    event.preventDefault()
+    event.stopImmediatePropagation()
   })
 }
 

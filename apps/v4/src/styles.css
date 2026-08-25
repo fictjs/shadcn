@@ -2633,6 +2633,33 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-label-rtl-preview .doc-label-demo { font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-label-rtl-preview[data-lang="he"] .doc-label-demo { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 
+.doc-component-card[data-doc-preview-name^="menubar-"] { overflow: visible; }
+.doc-component-card[data-doc-preview-name^="menubar-"]:not([data-doc-preview-name="menubar-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="menubar-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.doc-menubar { display: flex; box-sizing: border-box; width: 288px; height: 32px; align-items: center; gap: 2px; border: 1px solid var(--border); border-radius: 10px; padding: 3px; color: var(--foreground); background: var(--background); }
+.doc-menubar-menu { position: relative; display: inline-flex; }
+.doc-menubar-trigger { display: flex; height: 24px; align-items: center; border: 0; border-radius: 6px; padding: 2px 6px; color: inherit; background: transparent; font-family: inherit; font-size: 14px; font-weight: 500; line-height: 20px; outline: none; white-space: nowrap; }
+.doc-menubar-trigger:hover,
+.doc-menubar-trigger:focus-visible,
+.doc-menubar-trigger[aria-expanded="true"] { color: var(--accent-foreground); background: var(--accent); }
+.doc-component-card .doc-menubar-panel { width: max-content; min-width: 144px; max-height: none; overflow: visible; }
+.doc-component-card .doc-menubar-panel.is-wide { width: 256px; }
+.doc-component-card .doc-menubar-panel.is-view { min-width: 176px; }
+.doc-component-card .doc-menubar-menu > .doc-menubar-panel[data-menu-side="bottom"] { top: calc(100% + 8px); }
+.doc-component-card .doc-menubar-menu > .doc-menubar-panel[data-menu-side="top"] { bottom: calc(100% + 8px); }
+.doc-component-card .doc-menubar-menu > .doc-menubar-panel[data-menu-align="start"] { left: -4px; }
+.doc-component-card .doc-menubar-menu > .doc-menubar-panel[data-menu-align="end"] { right: -4px; }
+.doc-menubar-panel .ui-menu-item { min-height: 28px; border-radius: 8px; padding: 4px 6px; gap: 6px; font-size: 14px; line-height: 20px; }
+.doc-menubar-panel .ui-menu-item[role="menuitemcheckbox"],
+.doc-menubar-panel .ui-menu-item[role="menuitemradio"] { padding-inline: 32px 6px; }
+.doc-menubar-panel .doc-dropdown-check,
+.doc-menubar-panel .doc-dropdown-radio { inset-inline: 8px auto; }
+.doc-menubar-panel .doc-dropdown-shortcut { font-size: 12px; line-height: 16px; letter-spacing: 0.1em; }
+.doc-menubar-panel .ui-menu-separator { margin: 4px -4px; }
+.doc-menubar-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; }
+.doc-menubar-rtl-preview .doc-menubar { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-menubar-rtl-preview[data-lang="he"] .doc-menubar { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+
 .doc-component-card[data-doc-preview-name^="empty-"]:not([data-doc-preview-name="empty-rtl"]) .doc-component-preview-stage { height: 384px; min-height: 384px; }
 .doc-component-card[data-doc-preview-name="empty-demo"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="empty-background"] .doc-component-preview-stage,
