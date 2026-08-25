@@ -4327,6 +4327,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocSpinnerPreview name={props.name} />
   ) : family === "switch" ? (
     <DocSwitchPreview name={props.name} />
+  ) : family === "typography" ? (
+    <DocTypographyPreview name={props.name} />
   ) : family === "table" ? (
     <DocTablePreview name={props.name} />
   ) : family === "tabs" ? (
@@ -5196,6 +5198,107 @@ function DocSwitchPreview(props: { name: string }) {
   const title = <span data-doc-rtl-text data-text-ar="المشاركة عبر الأجهزة" data-text-he="שיתוף בין מכשירים" data-text-en="Share across devices">المشاركة عبر الأجهزة</span>
   const description = <span data-doc-rtl-text data-text-ar="يتم مشاركة التركيز عبر الأجهزة، ويتم إيقاف تشغيله عند مغادرة التطبيق." data-text-he="המיקוד משותף בין מכשירים, וכבה כשאתה עוזב את האפליקציה." data-text-en="Focus is shared across devices, and turns off when you leave the app.">يتم مشاركة التركيز عبر الأجهزة، ويتم إيقاف تشغيله عند مغادرة التطبيق.</span>
   return <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><RtlInfoIcon /></button></div><div class="doc-rtl-preview doc-switch-rtl-preview" dir="rtl" data-lang="ar">{field({ id: "switch-focus-mode-rtl", title, description, rtl: true })}</div></div>
+}
+
+function DocTypographyPreview(props: { name: string }) {
+  const variant = untrack(() => props.name.replace("typography-", ""))
+  const rtl = variant === "rtl"
+  const text = (ar: string, he: string, en: string) =>
+    rtl ? <span data-doc-rtl-text data-text-ar={ar} data-text-he={he} data-text-en={en}>{ar}</span> : en
+
+  const article = () => (
+    <div class="doc-typography-article" dir={rtl ? "rtl" : "ltr"}>
+      <h1 class="doc-typography-h1 is-start">{text("فرض الضرائب على الضحك: سجلات ضريبة النكتة", "מיסוי הצחוק: כרוניקות מס הבדיחה", "Taxing Laughter: The Joke Tax Chronicles")}</h1>
+      <p class="doc-typography-lead-paragraph">{text("في قديم الزمان، في أرض بعيدة، كان هناك ملك كسول جداً يقضي يومه كله مستلقياً على عرشه. في أحد الأيام، جاءه مستشاروه بمشكلة: المملكة كانت تنفد من المال.", "היה היה פעם, בארץ רחוקה, מלך עצלן מאוד שבילה את כל היום בהתרווחות על כס מלכותו. יום אחד, יועציו באו אליו עם בעיה: הממלכה נגמר לה הכסף.", "Once upon a time, in a far-off land, there was a very lazy king who spent all day lounging on his throne. One day, his advisors came to him with a problem: the kingdom was running out of money.")}</p>
+      <h2 class="doc-typography-h2">{text("خطة الملك", "התוכנית של המלך", "The King's Plan")}</h2>
+      <p class="doc-typography-p">
+        {text("فكر الملك طويلاً وبجد، وأخيراً توصل إلى", "המלך חשב ארוכות וקשות, ולבסוף העלה", "The king thought long and hard, and finally came up with")}{" "}
+        <a class="doc-typography-link" href="#">{text("خطة عبقرية", "תוכנית גאונית", "a brilliant plan")}</a>
+        {text(": سيفرض ضريبة على النكات في المملكة.", ": הוא ימסה את הבדיחות בממלכה.", ": he would tax the jokes in the kingdom.")}
+      </p>
+      <blockquote class="doc-typography-blockquote">{text("\"في النهاية،\" قال، \"الجميع يستمتع بنكتة جيدة، لذا من العدل أن يدفعوا مقابل هذا الامتياز.\"", "\"אחרי הכל,\" אמר, \"כולם נהנים מבדיחה טובה, אז זה רק הוגן שישלמו על הזכות הזו.\"", "\"After all,\" he said, \"everyone enjoys a good joke, so it's only fair that they should pay for the privilege.\"")}</blockquote>
+      <h3 class="doc-typography-h3">{text("ضريبة النكتة", "מס הבדיחה", "The Joke Tax")}</h3>
+      <p class="doc-typography-p">{text("لم يكن رعايا الملك سعداء. تذمروا واشتكوا، لكن الملك كان حازماً:", "נתיני המלך לא היו מרוצים. הם התלוננו והתרעמו, אבל המלך היה נחוש:", "The king's subjects were not amused. They grumbled and complained, but the king was firm:")}</p>
+      <ul class="doc-typography-list">
+        <li>{text("المستوى الأول من التورية: 5 قطع ذهبية", "רמה ראשונה של משחקי מילים: 5 מטבעות זהב", "1st level of puns: 5 gold coins")}</li>
+        <li>{text("المستوى الثاني من النكات: 10 قطع ذهبية", "רמה שנייה של בדיחות: 10 מטבעות זהב", "2nd level of jokes: 10 gold coins")}</li>
+        <li>{text("المستوى الثالث من النكات القصيرة: 20 قطعة ذهبية", "רמה שלישית של חידודים: 20 מטבעות זהב", "3rd level of one-liners: 20 gold coins")}</li>
+      </ul>
+      <p class="doc-typography-p">{text("نتيجة لذلك، توقف الناس عن رواية النكات، وغرقت المملكة في الكآبة. لكن كان هناك شخص واحد رفض أن تحبطه حماقة الملك: مهرج البلاط المسمى المازح.", "כתוצאה מכך, אנשים הפסיקו לספר בדיחות, והממלכה שקעה בעצב. אבל היה אדם אחד שסירב לתת לטיפשות המלך להפיל אותו: ליצן חצר בשם הבדחן.", "As a result, people stopped telling jokes, and the kingdom fell into a gloom. But there was one person who refused to let the king's foolishness get him down: a court jester named Jokester.")}</p>
+      <h3 class="doc-typography-h3">{text("ثورة المازح", "המרד של הבדחן", "Jokester's Revolt")}</h3>
+      <p class="doc-typography-p">{text("بدأ المازح يتسلل إلى القلعة في منتصف الليل ويترك النكات في كل مكان: تحت وسادة الملك، في حسائه، حتى في المرحاض الملكي. كان الملك غاضباً، لكنه لم يستطع إيقاف المازح.", "הבדחן התחיל להתגנב לטירה באמצע הלילה ולהשאיר בדיחות בכל מקום: מתחת לכרית המלך, במרק שלו, אפילו בשירותים המלכותיים. המלך היה זועם, אבל הוא לא הצליח לעצור את הבדחן.", "Jokester began sneaking into the castle in the middle of the night and leaving jokes all over the place: under the king's pillow, in his soup, even in the royal toilet. The king was furious, but he couldn't seem to stop Jokester.")}</p>
+      <p class="doc-typography-p">{text("وبعد ذلك، في يوم من الأيام، اكتشف سكان المملكة أن النكات التي تركها المازح كانت مضحكة جداً لدرجة أنهم لم يستطيعوا منع أنفسهم من الضحك. وبمجرد أن بدأوا بالضحك، لم يستطيعوا التوقف.", "ואז, יום אחד, תושבי הממלכה גילו שהבדיחות שהבדחן השאיר היו כל כך מצחיקות שהם לא יכלו להתאפק מלצחוק. וברגע שהתחילו לצחוק, הם לא יכלו להפסיק.", "And then, one day, the people of the kingdom discovered that the jokes left by Jokester were so funny that they couldn't help but laugh. And once they started laughing, they couldn't stop.")}</p>
+      <h3 class="doc-typography-h3">{text("ثورة الشعب", "המרד של העם", "The People's Rebellion")}</h3>
+      <p class="doc-typography-p">{text("شعر سكان المملكة بالبهجة من الضحك، وبدأوا في رواية النكات والتورية مرة أخرى، وسرعان ما أصبحت المملكة بأكملها جزءاً من النكتة.", "תושבי הממלכה, שהרגישו מרוממים מהצחוק, התחילו לספר בדיחות ומשחקי מילים שוב, ובקרוב כל הממלכה הייתה חלק מהבדיחה.", "The people of the kingdom, feeling uplifted by the laughter, started to tell jokes and puns again, and soon the entire kingdom was in on the joke.")}</p>
+      <div class="doc-typography-table-wrap">
+        <table class="doc-typography-table">
+          <thead>
+            <tr>
+              <th>{text("خزينة الملك", "אוצר המלך", "King's Treasury")}</th>
+              <th>{text("سعادة الشعب", "אושר העם", "People's happiness")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{text("فارغة", "ריק", "Empty")}</td>
+              <td>{text("فائضة", "גדוש", "Overflowing")}</td>
+            </tr>
+            <tr>
+              <td>{text("متواضعة", "צנוע", "Modest")}</td>
+              <td>{text("راضٍ", "מרוצה", "Satisfied")}</td>
+            </tr>
+            <tr>
+              <td>{text("ممتلئة", "מלא", "Full")}</td>
+              <td>{text("منتشٍ", "אקסטטי", "Ecstatic")}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="doc-typography-p">{text("الملك، عندما رأى مدى سعادة رعاياه، أدرك خطأ طرقه وألغى ضريبة النكتة. أُعلن المازح بطلاً، وعاشت المملكة في سعادة دائمة.", "המלך, כשראה כמה מאושרים נתיניו, הבין את טעותו וביטל את מס הבדיחה. הבדחן הוכרז כגיבור, והממלכה חיה באושר לנצח.", "The king, seeing how much happier his subjects were, realized the error of his ways and repealed the joke tax. Jokester was declared a hero, and the kingdom lived happily ever after.")}</p>
+      <p class="doc-typography-p">{text("مغزى القصة هو: لا تستهن أبداً بقوة الضحك الجيد وكن دائماً حذراً من الأفكار السيئة.", "המוסר של הסיפור הוא: לעולם אל תזלזל בכוח של צחוק טוב ותמיד היזהר מרעיונות רעים.", "The moral of the story is: never underestimate the power of a good laugh and always be careful of bad ideas.")}</p>
+    </div>
+  )
+
+  if (variant === "h1") return <h1 class="doc-typography-h1">Taxing Laughter: The Joke Tax Chronicles</h1>
+  if (variant === "h2") return <h2 class="doc-typography-h2">The People of the Kingdom</h2>
+  if (variant === "h3") return <h3 class="doc-typography-h3">The Joke Tax</h3>
+  if (variant === "h4") return <h4 class="doc-typography-h4">People stopped telling jokes</h4>
+  if (variant === "p") return <p class="doc-typography-p">The king, seeing how much happier his subjects were, realized the error of his ways and repealed the joke tax.</p>
+  if (variant === "blockquote") return <blockquote class="doc-typography-blockquote">"After all," he said, "everyone enjoys a good joke, so it's only fair that they should pay for the privilege."</blockquote>
+  if (variant === "list") return <ul class="doc-typography-list"><li>1st level of puns: 5 gold coins</li><li>2nd level of jokes: 10 gold coins</li><li>3rd level of one-liners : 20 gold coins</li></ul>
+  if (variant === "inline-code") return <code class="doc-typography-inline-code">@radix-ui/react-alert-dialog</code>
+  if (variant === "lead") return <p class="doc-typography-lead">A modal dialog that interrupts the user with important content and expects a response.</p>
+  if (variant === "large") return <div class="doc-typography-large">Are you absolutely sure?</div>
+  if (variant === "small") return <small class="doc-typography-small">Email address</small>
+  if (variant === "muted") return <p class="doc-typography-muted">Enter your email address.</p>
+  if (variant === "table") {
+    return (
+      <div class="doc-typography-table-wrap">
+        <table class="doc-typography-table">
+          <thead>
+            <tr>
+              <th>King's Treasury</th>
+              <th>People's happiness</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Empty</td><td>Overflowing</td></tr>
+            <tr><td>Modest</td><td>Satisfied</td></tr>
+            <tr><td>Full</td><td>Ecstatic</td></tr>
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+  if (rtl) {
+    return (
+      <div class="doc-rtl-preview-shell">
+        <div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><RtlInfoIcon /></button></div>
+        <div class="doc-rtl-preview doc-typography-rtl-preview" dir="rtl" data-lang="ar">{article()}</div>
+      </div>
+    )
+  }
+  return article()
 }
 
 function DocTablePreview(props: { name: string }) {

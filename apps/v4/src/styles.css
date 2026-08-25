@@ -1948,6 +1948,19 @@ h1 {
   padding: 2.5rem;
 }
 
+/* Article-length previews grow instead of being clipped to the 18rem stage. */
+.doc-component-preview-stage:has(.doc-typography-article),
+.doc-component-preview-stage:has(.doc-typography-rtl-preview) {
+  height: auto;
+  min-height: 18rem;
+  align-items: start;
+}
+
+.doc-component-preview-stage:has(.doc-typography-rtl-preview) {
+  display: block;
+  padding: 0;
+}
+
 .doc-component-code {
   position: relative;
   box-sizing: border-box;
@@ -5233,6 +5246,183 @@ a.doc-badge:focus-visible {
 
 .doc-accordion-card-content {
   padding: 0 0.9375rem;
+}
+
+/* Typography previews — mirrors the Tailwind utilities used by the React docs.
+   Prefixed with .doc-body so they win over the generic prose rules. */
+.doc-body .doc-typography-h1 {
+  scroll-margin-top: 5rem;
+  text-align: center;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  margin: 0;
+}
+
+.doc-body .doc-typography-h1.is-start {
+  text-align: start;
+}
+
+.doc-body .doc-typography-h2 {
+  scroll-margin-top: 5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.doc-body .doc-typography-h3 {
+  scroll-margin-top: 5rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.doc-body .doc-typography-h4 {
+  scroll-margin-top: 5rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.doc-body .doc-typography-p {
+  line-height: 1.75rem;
+  margin: 0;
+}
+
+.doc-body .doc-typography-lead-paragraph {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+.doc-body .doc-typography-lead {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+.doc-body .doc-typography-large {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+}
+
+.doc-body .doc-typography-small {
+  font-size: 0.875rem;
+  line-height: 1;
+  font-weight: 500;
+}
+
+.doc-body .doc-typography-muted {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+.doc-body .doc-typography-blockquote {
+  border-inline-start: 2px solid var(--border);
+  padding: 0;
+  padding-inline-start: 1.5rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: inherit;
+  margin: 1.5rem 0 0;
+}
+
+.doc-body .doc-typography-list {
+  display: block;
+  gap: 0;
+  margin: 1.5rem 0;
+  margin-inline-start: 1.5rem;
+  padding: 0;
+  line-height: 1.5;
+  list-style-type: disc;
+}
+
+.doc-body .doc-typography-list > li {
+  margin-top: 0.5rem;
+}
+
+.doc-body .doc-typography-inline-code {
+  position: relative;
+  border-radius: 0.25rem;
+  background: var(--muted);
+  padding: 0.2rem 0.3rem;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+}
+
+.doc-body .doc-typography-table-wrap {
+  width: 100%;
+  margin: 1.5rem 0;
+  overflow-y: auto;
+}
+
+.doc-body .doc-typography-table {
+  width: 100%;
+  border-collapse: collapse;
+  line-height: 1.5;
+}
+
+.doc-body .doc-typography-table tr {
+  border-top: 1px solid var(--border);
+}
+
+.doc-body .doc-typography-table tr:nth-child(even) {
+  background: var(--muted);
+}
+
+.doc-body .doc-typography-table th,
+.doc-body .doc-typography-table td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  text-align: start;
+}
+
+.doc-body .doc-typography-table th {
+  font-weight: 700;
+}
+
+/* The demo and RTL previews render a full article, so they grow with content
+   the way the React docs do via [&_.preview]:h-auto. */
+.doc-body .doc-typography-article {
+  width: 100%;
+  line-height: 1.5;
+}
+
+.doc-body .doc-typography-article > * + * {
+  margin-top: 1.5rem;
+}
+
+.doc-body .doc-typography-article .doc-typography-h2 {
+  margin-top: 2.5rem;
+}
+
+.doc-body .doc-typography-article .doc-typography-h3 {
+  margin-top: 2rem;
+}
+
+.doc-rtl-preview.doc-typography-rtl-preview {
+  box-sizing: border-box;
+  height: auto;
+  align-items: flex-start;
+  padding: 2.5rem;
+  font-family: "Noto Sans Arabic Variable", sans-serif;
 }
 
 .doc-rtl-preview-shell {
