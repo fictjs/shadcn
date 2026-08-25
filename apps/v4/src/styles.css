@@ -3492,23 +3492,32 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-data-table table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 .doc-data-table th,
 .doc-data-table td { box-sizing: border-box; border-bottom: 1px solid var(--border); padding: 0.5rem; text-align: start; white-space: nowrap; }
-.doc-data-table th { height: 40px; color: var(--muted-foreground); font-weight: 500; }
-.doc-data-table td { height: 48px; }
+.doc-data-table th { height: 40px; color: var(--foreground); font-weight: 500; }
+.doc-data-table td { height: 40px; vertical-align: middle; }
+/* Keep the inline controls off the text baseline so rows stay 41px like the
+   React docs instead of picking up a descender. */
+.doc-data-table td .doc-data-menu,
+.doc-data-table td .doc-data-action-trigger,
+.doc-data-table td .doc-checkbox-control,
+.doc-data-table th .doc-checkbox-control { vertical-align: middle; }
 .doc-data-table tbody tr:last-child td { border-bottom: 0; }
 .doc-data-table tr[data-state="selected"] { background: var(--muted); }
 .doc-data-table th[data-doc-data-col="select"],
-.doc-data-table td[data-doc-data-col="select"] { width: 48px; padding-inline: 1rem 0.5rem; }
+.doc-data-table td[data-doc-data-col="select"] { width: 33px; padding-inline: 0.5rem 0; }
 .doc-data-table th[data-doc-data-col="status"],
-.doc-data-table td[data-doc-data-col="status"] { width: 120px; }
+.doc-data-table td[data-doc-data-col="status"] { width: 119px; }
 .doc-data-table th[data-doc-data-col="amount"],
-.doc-data-table td[data-doc-data-col="amount"] { width: 110px; text-align: end; }
+.doc-data-table td[data-doc-data-col="amount"] { width: 100px; text-align: end; }
 .doc-data-table th[data-doc-data-col="actions"],
-.doc-data-table td[data-doc-data-col="actions"] { width: 48px; padding-inline: 0.5rem 1rem; text-align: end; }
+.doc-data-table td[data-doc-data-col="actions"] { width: 55px; padding-inline: 0.5rem; text-align: start; }
 .doc-data-status { text-transform: capitalize; }
+.doc-data-email { text-transform: lowercase; }
 .doc-data-amount { font-weight: 500; }
-.doc-data-sort { display: inline-flex; height: 32px; align-items: center; gap: 0.375rem; margin: -0.25rem 0; border: 0; border-radius: var(--radius-lg); padding: 0 0.625rem; color: var(--foreground); background: transparent; font: inherit; font-size: 0.875rem; }
+.doc-data-sort { display: inline-flex; height: 16px; align-items: center; gap: 0.5rem; border: 0; border-radius: var(--radius-lg); padding: 0; color: var(--foreground); background: transparent; font: inherit; font-size: 0.875rem; font-weight: 500; }
+.doc-data-sort-icon { display: block; width: 16px; height: 16px; }
 .doc-data-sort:hover { background: var(--muted); }
-.doc-data-action-trigger { display: inline-grid; width: 24px; height: 24px; place-items: center; border: 0; border-radius: var(--radius-md); padding: 0; color: var(--foreground); background: transparent; font-weight: 700; letter-spacing: 0.06em; }
+.doc-data-action-trigger { display: inline-grid; width: 24px; height: 24px; place-items: center; border: 0; border-radius: var(--radius-md); padding: 0; color: var(--foreground); background: transparent; }
+.doc-data-action-icon { display: block; width: 12px; height: 12px; }
 .doc-data-action-trigger:hover,
 .doc-data-action-trigger[aria-expanded="true"] { background: var(--muted); }
 .doc-data-footer { display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; padding: 1rem 0; }
