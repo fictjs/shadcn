@@ -52,6 +52,7 @@ async function initResumableClient(): Promise<void> {
   wireDocDropdownMenus()
   wireDocMenubars()
   wireDocNavigationMenus()
+  wireDocPaginationSelects()
   wireShowcaseMenus()
   wireRtlLocalization()
   wireShowcaseToggles()
@@ -2952,6 +2953,41 @@ function wireDocNavigationMenus(): void {
       close(menu, true)
       event.preventDefault()
     }
+  })
+}
+
+function wireDocPaginationSelects(): void {
+  document.querySelectorAll<HTMLElement>(".doc-pagination-select").forEach((select) => {
+    const trigger = select.querySelector<HTMLElement>("[data-menu-trigger]")
+    const panel = select.querySelector<HTMLElement>("[data-menu-panel]")
+    const value = select.querySelector<HTMLElement>("[data-doc-pagination-value]")
+    if (!trigger || !panel || !value) return
+    const close = (): void => {
+      trigger.setAttribute("aria-expanded", "false")
+      panel.hidden = true
+    }
+    trigger.addEventListener("click", (event) => {
+      event.stopPropagation()
+      const opening = panel.hidden
+      panel.hidden = !opening
+      trigger.setAttribute("aria-expanded", String(opening))
+      if (opening) queueMicrotask(() => panel.querySelector<HTMLElement>('[aria-checked="true"]')?.focus({ preventScroll: true }))
+    })
+    panel.addEventListener("click", (event) => {
+      event.stopPropagation()
+      const option = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-doc-pagination-option]") : null
+      if (!option) return
+      value.textContent = option.dataset.docPaginationOption ?? value.textContent
+      panel.querySelectorAll<HTMLElement>("[data-doc-pagination-option]").forEach((item) => item.setAttribute("aria-checked", String(item === option)))
+      close()
+      trigger.focus({ preventScroll: true })
+    })
+    select.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || panel.hidden) return
+      close()
+      trigger.focus({ preventScroll: true })
+      event.preventDefault()
+    })
   })
 }
 

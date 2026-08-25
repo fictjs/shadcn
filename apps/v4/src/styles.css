@@ -2717,6 +2717,37 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-navigation-rtl-preview[data-lang="he"] .doc-navigation-menu { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 .doc-navigation-menu[dir="rtl"] .doc-navigation-panel { right: 0; left: auto; }
 
+.doc-component-card[data-doc-preview-name^="pagination-"]:not([data-doc-preview-name="pagination-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="pagination-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.doc-pagination { display: flex; width: 100%; justify-content: center; color: var(--foreground); }
+.doc-body .doc-pagination-content { display: flex; align-items: center; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.doc-body .doc-pagination-content > li { margin: 0; }
+.doc-pagination-link,
+.doc-pagination-ellipsis { display: inline-flex; box-sizing: border-box; width: 32px; height: 32px; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: 10px; padding: 0; color: inherit; background: transparent; font-size: 14px; font-weight: 400; line-height: 20px; text-decoration: none; outline: none; }
+.doc-pagination-link.is-wide { width: auto; min-width: 32px; gap: 4px; padding: 6px; }
+.doc-pagination-link.is-active { border-color: var(--border); background: var(--background); box-shadow: 0 1px 2px rgb(0 0 0 / 5%); }
+.doc-pagination-link:hover,
+.doc-pagination-link:focus-visible { background: var(--accent); color: var(--accent-foreground); }
+.doc-pagination-link:focus-visible { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.doc-pagination-icon,
+.doc-pagination-ellipsis svg { width: 16px; height: 16px; flex: 0 0 16px; }
+.doc-pagination-icons-layout { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 16px; }
+.doc-pagination-icons-layout .doc-pagination { width: auto; margin: 0; }
+.doc-pagination-field { display: flex; width: fit-content; align-items: center; gap: 12px; color: var(--foreground); font-size: 14px; font-weight: 500; line-height: 20px; white-space: nowrap; }
+.doc-pagination-select { position: relative; display: inline-flex; }
+.doc-pagination-select > button { display: flex; box-sizing: border-box; width: 80px; height: 32px; align-items: center; justify-content: space-between; border: 1px solid var(--input); border-radius: 10px; padding: 4px 10px; color: inherit; background: transparent; font: inherit; font-weight: 400; outline: none; }
+.doc-pagination-select > button:hover,
+.doc-pagination-select > button[aria-expanded="true"] { background: var(--accent); }
+.doc-pagination-select > button:focus-visible { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.doc-pagination-select > button svg { width: 16px; height: 16px; color: var(--muted-foreground); }
+.doc-component-card .doc-pagination-select-panel { top: calc(100% + 4px); left: 0; width: 80px; min-width: 80px; padding: 4px; }
+.doc-pagination-select-panel .ui-menu-item { min-height: 28px; border-radius: 8px; padding: 4px 8px; }
+.dark .doc-pagination-select > button { background: color-mix(in oklab, var(--input) 30%, transparent); }
+.doc-rtl-preview.doc-pagination-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; }
+.doc-pagination-rtl-preview .doc-pagination { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-pagination-rtl-preview[data-lang="he"] .doc-pagination { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+.doc-pagination[dir="rtl"] .doc-pagination-icon { transform: scaleX(-1); }
+
 .doc-component-card[data-doc-preview-name^="empty-"]:not([data-doc-preview-name="empty-rtl"]) .doc-component-preview-stage { height: 384px; min-height: 384px; }
 .doc-component-card[data-doc-preview-name="empty-demo"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="empty-background"] .doc-component-preview-stage,

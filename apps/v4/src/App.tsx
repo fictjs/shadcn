@@ -4284,6 +4284,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocNativeSelectPreview name={props.name} />
   ) : family === "navigation-menu" ? (
     <DocNavigationMenuPreview name={props.name} />
+  ) : family === "pagination" ? (
+    <DocPaginationPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -4869,6 +4871,28 @@ function DocNavigationMenuPreview(props: { name: string }) {
   const links = (entries: string[][], kind: "started" | "components") => <ul class={`doc-navigation-grid is-${kind}`}>{entries.map((entry) => <li><a href={entry[6]} data-doc-navigation-link><span class="doc-navigation-title">{text(entry[0], entry[1], entry[2])}</span><span class="doc-navigation-description">{text(entry[3], entry[4], entry[5])}</span></a></li>)}</ul>
   const nav = <nav class="doc-navigation-menu" data-slot="navigation-menu" data-doc-navigation-menu data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}><ul class="doc-navigation-list" data-slot="navigation-menu-list"><li><button type="button" class="doc-navigation-trigger" data-slot="navigation-menu-trigger" data-doc-navigation-trigger aria-expanded="false">{text("البدء", "התחלה", "Getting started")}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button><div class="doc-navigation-panel is-started" data-slot="navigation-menu-content" data-doc-navigation-panel hidden>{links(started, "started")}</div></li><li><button type="button" class="doc-navigation-trigger" data-slot="navigation-menu-trigger" data-doc-navigation-trigger aria-expanded="false">{text("المكونات", "רכיבים", "Components")}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button><div class="doc-navigation-panel is-components" data-slot="navigation-menu-content" data-doc-navigation-panel hidden>{links(components, "components")}</div></li><li><a class="doc-navigation-direct-link" href="/docs" data-slot="navigation-menu-link">{text("الوثائق", "תיעוד", "Docs")}</a></li></ul></nav>
   return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-navigation-rtl-preview" dir="rtl" data-lang="ar">{nav}</div></div> : nav
+}
+
+function DocPaginationPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const rtl = name === "pagination-rtl"
+  const simple = name === "pagination-simple"
+  const iconsOnly = name === "pagination-icons-only"
+  const text = (ar: string, he: string, en: string) => rtl ? <span data-doc-rtl-text data-text-ar={ar} data-text-he={he} data-text-en={en}>{ar}</span> : en
+  const number = (value: number) => rtl ? text(["٠", "١", "٢", "٣"][value], String(value), String(value)) : String(value)
+  const arrow = (direction: "previous" | "next") => <svg class="doc-pagination-icon" data-direction={direction} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={direction === "previous" ? "m15 18-6-6 6-6" : "m9 18 6-6-6-6"}></path></svg>
+  const link = (label: string | number, active = false) => <li><a href="#" class={`doc-pagination-link${active ? " is-active" : ""}`} aria-current={active ? "page" : undefined}>{typeof label === "number" ? number(label) : label}</a></li>
+  const navigation = (
+    <nav class="doc-pagination" role="navigation" aria-label="pagination" data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}>
+      <ul class="doc-pagination-content">
+        {!simple ? <li><a href="#" class="doc-pagination-link is-wide" aria-label="Go to previous page">{arrow("previous")}{!iconsOnly ? text("السابق", "הקודם", "Previous") : null}</a></li> : null}
+        {!iconsOnly ? <>{link(1)}{link(2, true)}{link(3)}{simple ? <>{link(4)}{link(5)}</> : <li><span class="doc-pagination-ellipsis" aria-hidden="true"><MoreHorizontalIcon /></span></li>}</> : null}
+        {!simple ? <li><a href="#" class="doc-pagination-link is-wide" aria-label="Go to next page">{!iconsOnly ? text("التالي", "הבא", "Next") : null}{arrow("next")}</a></li> : null}
+      </ul>
+    </nav>
+  )
+  const content = iconsOnly ? <div class="doc-pagination-icons-layout"><label class="doc-pagination-field"><span>Rows per page</span><span class="ui-menu doc-pagination-select" data-menu><button type="button" data-menu-trigger aria-haspopup="menu" aria-expanded="false"><span data-doc-pagination-value>25</span><ChevronDownIcon /></button><span class="ui-menu-panel doc-pagination-select-panel" data-menu-panel role="menu" hidden>{["10", "25", "50", "100"].map((value) => <button type="button" class="ui-menu-item" role="menuitemradio" aria-checked={value === "25" ? "true" : "false"} data-menu-item data-doc-pagination-option={value}>{value}</button>)}</span></span></label>{navigation}</div> : navigation
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-pagination-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
 function DocEmptyPreview(props: { name: string }) {

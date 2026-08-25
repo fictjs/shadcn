@@ -2750,6 +2750,66 @@ test.describe("shadcn v4 site", () => {
     await expect(started).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
+  test("pagination docs match React layouts, links, selector, focus, and RTL", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/base/pagination")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(4)
+    for (let index = 0; index < 3; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(3).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+
+    const demo = page.locator('[data-doc-preview-name="pagination-demo"]')
+    const demoLinks = demo.locator(".doc-pagination-link")
+    await expect(demo.getByRole("navigation", { name: "pagination" })).toBeVisible()
+    await expect(demoLinks).toHaveCount(5)
+    await expect(demoLinks).toHaveText(["Previous", "1", "2", "3", "Next"])
+    await expect(demo.locator('[aria-current="page"]')).toHaveText("2")
+    await expect(demo.locator('[aria-current="page"]')).toHaveCSS("width", "32px")
+    await expect(demo.locator('[aria-current="page"]')).toHaveCSS("height", "32px")
+    await expect(demo.locator(".doc-pagination-ellipsis svg")).toHaveCSS("width", "16px")
+    await expect(demo.getByRole("link", { name: "Go to previous page" })).toHaveAttribute("href", "#")
+    await expectFocusRing(demo.getByRole("link", { name: "1" }))
+
+    const simple = page.locator('[data-doc-preview-name="pagination-simple"]')
+    await expect(simple.locator(".doc-pagination-link")).toHaveText(["1", "2", "3", "4", "5"])
+    await expect(simple.locator('[aria-current="page"]')).toHaveText("2")
+
+    const icons = page.locator('[data-doc-preview-name="pagination-icons-only"]')
+    await expect(icons.locator(".doc-pagination-icons-layout")).toHaveCSS("justify-content", "space-between")
+    await expect(icons.locator(".doc-pagination-field")).toContainText("Rows per page")
+    await expect(icons.locator(".doc-pagination-link")).toHaveCount(2)
+    const select = icons.locator(".doc-pagination-select")
+    await expect(select.locator("[data-menu-trigger]")).toHaveCSS("width", "80px")
+    await expect(select.locator("[data-menu-trigger]")).toHaveCSS("height", "32px")
+    await select.locator("[data-menu-trigger]").click()
+    await expect(select.getByRole("menu")).toBeVisible()
+    await expect(select.getByRole("menuitemradio")).toHaveText(["10", "25", "50", "100"])
+    await expect(select.getByRole("menuitemradio", { name: "25" })).toBeFocused()
+    await select.getByRole("menuitemradio", { name: "50" }).click()
+    await expect(select.locator("[data-doc-pagination-value]")).toHaveText("50")
+    await expect(select.locator('[data-doc-pagination-option="50"]')).toHaveAttribute("aria-checked", "true")
+    await expect(select.locator("[data-menu-panel]")).toBeHidden()
+
+    const rtl = page.locator('[data-doc-preview-name="pagination-rtl"]')
+    const rtlNav = rtl.getByRole("navigation", { name: "pagination" })
+    await expect(rtlNav).toHaveAttribute("dir", "rtl")
+    await expect(rtl.locator(".doc-pagination-link")).toHaveText(["السابق", "١", "٢", "٣", "التالي"])
+    await expect(rtl.locator(".doc-pagination-icon").first()).toHaveCSS("transform", /matrix\(-1/)
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl.locator(".doc-pagination-link")).toHaveText(["הקודם", "1", "2", "3", "הבא"])
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtlNav).toHaveAttribute("dir", "ltr")
+    await expect(rtl.locator(".doc-pagination-link")).toHaveText(["Previous", "1", "2", "3", "Next"])
+
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(page.locator("html")).toHaveClass(/dark/)
+    await expect(demo.locator('[aria-current="page"]')).not.toHaveCSS("border-color", "rgba(0, 0, 0, 0)")
+  })
+
   test("kbd docs match React keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/base/kbd")
