@@ -4302,6 +4302,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocSeparatorPreview name={props.name} />
   ) : family === "sheet" ? (
     <DocSheetPreview name={props.name} />
+  ) : family === "sidebar" ? (
+    <DocSidebarPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -5038,6 +5040,56 @@ function DocSheetPreview(props: { name: string }) {
   else if (variant === "no-close-button") content = sheet("Open Sheet", "right", true)
   else content = sheet(text("فتح", "פתח", "Open"), rtl ? "left" : "right")
   return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-sheet-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
+}
+
+function DocSidebarIcon(props: { kind: string }) {
+  const paths: Record<string, any> = {
+    playground: <><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M7 8h4M7 12h2"></path></>,
+    models: <><rect x="4" y="5" width="16" height="14" rx="2"></rect><path d="M9 9h6M9 13h6"></path></>,
+    docs: <><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v17H6.5A2.5 2.5 0 0 0 4 22z"></path><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H13v17h4.5A2.5 2.5 0 0 1 20 22z"></path></>,
+    settings: <><circle cx="12" cy="12" r="3"></circle><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1A8 8 0 0 0 15 6l-.3-2.5h-4L10.4 6a8 8 0 0 0-1.5 1.1l-2.4-1-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1a8 8 0 0 0 1.5 1.1l.3 2.5h4L15 18a8 8 0 0 0 1.5-1.1l2.4 1 2-3.4-2-1.5a7 7 0 0 0 .1-1Z"></path></>,
+  }
+  return <svg class="doc-sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{paths[props.kind] ?? <path d="M4 4h16v16H4z"></path>}</svg>
+}
+
+function DocSidebarPreview(props: { name: string }) {
+  untrack(() => props.name)
+  const groups = [
+    { title: "Playground", icon: "playground", open: true, items: ["History", "Starred", "Settings"] },
+    { title: "Models", icon: "models", items: ["Genesis", "Explorer", "Quantum"] },
+    { title: "Documentation", icon: "docs", items: ["Introduction", "Get Started", "Tutorials", "Changelog"] },
+    { title: "Settings", icon: "settings", items: ["General", "Team", "Billing", "Limits"] },
+  ]
+  return (
+    <div class="doc-sidebar-demo" data-doc-sidebar-root data-state="expanded">
+      <aside class="doc-sidebar-panel" aria-label="Application sidebar">
+        <button type="button" class="doc-sidebar-team" aria-label="Switch team">
+          <span class="doc-sidebar-team-logo">▰</span><span class="doc-sidebar-copy"><strong>Acme Inc</strong><small>Enterprise</small></span><span class="doc-sidebar-chevrons">⌃<br />⌄</span>
+        </button>
+        <div class="doc-sidebar-content">
+          <p class="doc-sidebar-group-label">Platform</p>
+          <nav aria-label="Platform">
+            {groups.map((group) => (
+              <div class="doc-sidebar-nav-group" data-doc-sidebar-group data-open={group.open ? "true" : "false"}>
+                <button type="button" class="doc-sidebar-nav-button" data-doc-sidebar-group-trigger aria-expanded={group.open ? "true" : "false"}>
+                  <DocSidebarIcon kind={group.icon} /><span class="doc-sidebar-copy">{group.title}</span><span class="doc-sidebar-chevron">›</span>
+                </button>
+                <div class="doc-sidebar-submenu" data-doc-sidebar-group-content hidden={!group.open}>
+                  {group.items.map((item) => <a href="#">{item}</a>)}
+                </div>
+              </div>
+            ))}
+          </nav>
+        </div>
+        <button type="button" class="doc-sidebar-user" aria-label="User menu">
+          <img src="/avatars/shadcn.jpg" alt="shadcn" /><span class="doc-sidebar-copy"><strong>shadcn</strong><small>m@example.com</small></span><span class="doc-sidebar-chevrons">⌃<br />⌄</span>
+        </button>
+      </aside>
+      <main class="doc-sidebar-inset">
+        <button type="button" class="doc-sidebar-trigger" data-doc-sidebar-trigger aria-label="Toggle Sidebar" title="Toggle Sidebar"><span aria-hidden="true"></span></button>
+      </main>
+    </div>
+  )
 }
 
 function DocEmptyPreview(props: { name: string }) {

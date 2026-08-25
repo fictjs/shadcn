@@ -57,6 +57,7 @@ async function initResumableClient(): Promise<void> {
   wireDocProgress()
   wireDocResizables()
   wireDocSelects()
+  wireDocSidebars()
   wireShowcaseMenus()
   wireRtlLocalization()
   wireShowcaseToggles()
@@ -87,6 +88,36 @@ async function initResumableClient(): Promise<void> {
   wireCreateRoute()
   wireClientFilters()
   document.documentElement.dataset.clientReady = "true"
+}
+
+function wireDocSidebars(): void {
+  const roots = Array.from(document.querySelectorAll<HTMLElement>("[data-doc-sidebar-root]"))
+  for (const root of roots) {
+    if (root.dataset.docSidebarReady === "true") continue
+    root.dataset.docSidebarReady = "true"
+    const toggle = (): void => {
+      const collapsed = root.dataset.state === "collapsed"
+      root.dataset.state = collapsed ? "expanded" : "collapsed"
+    }
+    root.querySelector<HTMLElement>("[data-doc-sidebar-trigger]")?.addEventListener("click", toggle)
+    for (const trigger of root.querySelectorAll<HTMLElement>("[data-doc-sidebar-group-trigger]")) {
+      trigger.addEventListener("click", () => {
+        const group = trigger.closest<HTMLElement>("[data-doc-sidebar-group]")
+        const content = group?.querySelector<HTMLElement>("[data-doc-sidebar-group-content]")
+        if (!group || !content || root.dataset.state === "collapsed") return
+        const open = group.dataset.open === "true"
+        group.dataset.open = open ? "false" : "true"
+        trigger.setAttribute("aria-expanded", open ? "false" : "true")
+        content.hidden = open
+      })
+    }
+    document.addEventListener("keydown", (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "b") {
+        event.preventDefault()
+        toggle()
+      }
+    })
+  }
 }
 
 function wireRtlLocalization(): void {

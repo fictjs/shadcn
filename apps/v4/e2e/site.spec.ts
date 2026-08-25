@@ -3317,6 +3317,47 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByRole("dialog", { name: "Edit profile" })).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
+  test("sidebar docs match React layout, navigation, collapse, shortcut, and dark theme", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/radix/sidebar")
+    await waitForClientReady(page)
+
+    const preview = page.locator('[data-doc-preview-name="sidebar-demo"]')
+    const stage = preview.locator(".doc-component-preview-stage")
+    const root = preview.locator("[data-doc-sidebar-root]")
+    const panel = preview.locator(".doc-sidebar-panel")
+    await expect(stage).toHaveCSS("height", "400px")
+    await expect(preview.locator(".doc-component-code")).toBeHidden()
+    await expect(panel).toHaveCSS("width", "252px")
+    await expect(panel).toContainText("Acme Inc")
+    await expect(panel).toContainText("Enterprise")
+    await expect(panel).toContainText("Platform")
+    await expect(panel.locator("[data-doc-sidebar-group]")).toHaveCount(4)
+    await expect(panel.getByRole("link", { name: "History" })).toBeVisible()
+
+    const models = panel.getByRole("button", { name: /Models/ })
+    await expect(models).toHaveAttribute("aria-expanded", "false")
+    await models.click()
+    await expect(models).toHaveAttribute("aria-expanded", "true")
+    await expect(panel.getByRole("link", { name: "Genesis" })).toBeVisible()
+
+    const trigger = preview.getByRole("button", { name: "Toggle Sidebar" })
+    await trigger.click()
+    await expect(root).toHaveAttribute("data-state", "collapsed")
+    await expect(panel).toHaveCSS("width", "48px")
+    await expect(panel.locator(".doc-sidebar-copy").first()).toBeHidden()
+    await page.keyboard.press("Control+b")
+    await expect(root).toHaveAttribute("data-state", "expanded")
+    await expect(panel).toHaveCSS("width", "252px")
+
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(panel).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+
+    await page.setViewportSize({ width: 390, height: 844 })
+    await expect(stage).toHaveCSS("height", "320px")
+    await expect(panel).toHaveCSS("width", "220px")
+  })
+
   test("kbd docs match React keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/base/kbd")
