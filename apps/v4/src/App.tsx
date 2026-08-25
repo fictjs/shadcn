@@ -4274,6 +4274,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocInputGroupPreview name={props.name} />
   ) : family === "input-otp" ? (
     <DocInputOtpPreview name={props.name} />
+  ) : family === "kbd" ? (
+    <DocKbdPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -4693,6 +4695,28 @@ function DocItemPreview(props: { name: string }) {
   }
   if (variant === "rtl") return <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-item-rtl-preview" dir="rtl" data-lang="ar"><div class="doc-item-stack is-md" data-doc-rtl-direction dir="rtl">{item(<>{content(<DocFieldText ar="عنصر أساسي" he="פריט בסיסי" en="Basic Item" />, <DocFieldText ar="عنصر بسيط يحتوي على عنوان ووصف." he="פריט פשוט עם כותרת ותיאור." en="A simple item with title and description." />)}{actions(<button type="button" class="doc-button is-outline is-sm"><DocFieldText ar="إجراء" he="פעולה" en="Action" /></button>)}</>, { variant: "outline", dir: "rtl", rtl: true })}{item(<>{media(icon("check"), "is-verified")}{content(<DocFieldText ar="تم التحقق من ملفك الشخصي." he="הפרופיל שלך אומת." en="Your profile has been verified." />)}{actions(icon("chevron"))}</>, { variant: "outline", size: "sm", href: "#", dir: "rtl", rtl: true })}</div></div></div>
   return <div class="doc-item-stack is-md">{item(content("Basic Item", "A simple item with title and description."), { variant: "outline" })}</div>
+}
+
+function DocKbdPreview(props: { name: string }) {
+  const variant = untrack(() => props.name.replace("kbd-", ""))
+  const key = (value: string, className = "") => (
+    <kbd data-slot="kbd" class={`doc-kbd${className ? ` ${className}` : ""}`}>{value}</kbd>
+  )
+  const group = (children: any) => <kbd data-slot="kbd-group" class="doc-kbd-group">{children}</kbd>
+  const demo = (rtl = false) => (
+    <div class="doc-kbd-stack" data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}>
+      {group(<>{key("⌘")}{key("⇧", "is-shift")}{key("⌥")}{key("⌃")}</>)}
+      {group(<>{key("Ctrl")}<span>+</span>{key("B")}</>)}
+    </div>
+  )
+
+  if (variant === "demo") return demo()
+  if (variant === "group") return <div class="doc-kbd-stack"><p class="doc-kbd-copy">Use {group(<>{key("Ctrl + B")}{key("Ctrl + K")}</>)} to open the command palette</p></div>
+  if (variant === "button") return <button type="button" class="doc-button is-outline doc-kbd-button">Accept {key("⏎", "is-inline-end is-enter")}</button>
+  if (variant === "tooltip") return <div class="doc-kbd-tooltip-buttons doc-button-group"><button type="button" class="doc-button is-outline" data-tooltip="Save Changes" data-tooltip-kbd="S">Save</button><button type="button" class="doc-button is-outline" data-tooltip="Print Document" data-tooltip-kbd="Ctrl,P">Print</button></div>
+  if (variant === "input-group") return <div data-slot="input-group" class="ui-input-group doc-input-group-shell doc-kbd-input-group"><input data-slot="input-group-control" class="ui-input-group-input" aria-label="Search" placeholder="Search..." /><span data-slot="input-group-addon" class="ui-input-group-addon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span><span data-slot="input-group-addon" data-align="inline-end" class="ui-input-group-addon ui-input-group-addon-end">{key("⌘")}{key("K")}</span></div>
+  if (variant === "rtl") return <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-kbd-rtl-preview" dir="rtl" data-lang="ar">{demo(true)}</div></div>
+  return demo()
 }
 
 function DocEmptyPreview(props: { name: string }) {

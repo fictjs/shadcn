@@ -2601,6 +2601,28 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
   .doc-item-avatar-group img:not(:last-child) { display: none; }
 }
 
+.doc-component-card[data-doc-preview-name^="kbd-"]:not([data-doc-preview-name="kbd-rtl"]) .doc-component-preview-stage { display: flex; height: 288px; min-height: 288px; align-items: center; justify-content: center; }
+.doc-component-card[data-doc-preview-name="kbd-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.doc-kbd-stack { display: flex; width: fit-content; flex-direction: column; align-items: center; gap: 16px; font-size: 15px; line-height: 22.5px; }
+.doc-kbd { display: inline-flex; box-sizing: border-box; width: fit-content; min-width: 20px; height: 20px; align-items: center; justify-content: center; gap: 4px; border-radius: 6px; padding: 0 4px; color: var(--muted-foreground); background: var(--muted); font-family: var(--font-sans); font-size: 12px; font-weight: 500; line-height: 16px; user-select: none; pointer-events: none; }
+.doc-kbd.is-shift { width: 22.171875px; }
+.doc-kbd.is-enter { width: 21.125px; }
+.doc-kbd-group { display: inline-flex; align-items: center; gap: 4px; color: inherit; font-family: inherit; font-size: inherit; font-style: normal; font-weight: inherit; line-height: inherit; }
+.doc-kbd-copy { margin: 0; color: var(--muted-foreground); font-size: 14px; line-height: 21px; }
+.doc-button.doc-kbd-button { width: 93.734375px; padding-inline-end: 8px; }
+.doc-kbd-button .doc-kbd.is-inline-end { transform: translateX(2px); }
+.doc-kbd-tooltip-buttons { display: flex; flex-wrap: wrap; gap: 0; }
+.doc-kbd-tooltip-buttons.doc-button-group > .doc-button + .doc-button { margin-inline-start: -1px; }
+.doc-kbd-input-group { width: 320px; max-width: 320px; }
+.doc-kbd-input-group .doc-kbd { border-radius: 5px; }
+.doc-kbd-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; }
+.doc-kbd-rtl-preview .doc-kbd-stack { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-kbd-rtl-preview[data-lang="he"] .doc-kbd-stack { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+.ui-tooltip[data-kbd-tooltip="true"] { display: flex; align-items: center; gap: 8px; border-radius: var(--radius-md); padding-inline-end: 6px; }
+.ui-tooltip[data-kbd-tooltip="true"] .doc-kbd-group { gap: 4px; }
+.ui-tooltip[data-kbd-tooltip="true"] .doc-kbd { color: var(--primary-foreground); background: color-mix(in oklab, var(--primary-foreground) 20%, transparent); }
+.dark .ui-tooltip[data-kbd-tooltip="true"] .doc-kbd { background: color-mix(in oklab, var(--primary-foreground) 10%, transparent); }
+
 .doc-component-card[data-doc-preview-name^="empty-"]:not([data-doc-preview-name="empty-rtl"]) .doc-component-preview-stage { height: 384px; min-height: 384px; }
 .doc-component-card[data-doc-preview-name="empty-demo"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="empty-background"] .doc-component-preview-stage,

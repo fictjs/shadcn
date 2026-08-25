@@ -2451,6 +2451,106 @@ test.describe("shadcn v4 site", () => {
     }
   })
 
+  test("kbd docs match React keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/base/kbd")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(6)
+    for (let index = 0; index < 5; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS(
+        "height",
+        "288px",
+      )
+    }
+    await expect(previews.nth(5).locator(".doc-component-preview-stage")).toHaveCSS(
+      "height",
+      "352px",
+    )
+    expect((await previews.allInnerTexts()).join(" ")).not.toContain("Purposeful type")
+
+    const demo = page.locator('[data-doc-preview-name="kbd-demo"]')
+    await expect(demo.locator(".doc-kbd-stack")).toHaveCSS("width", "94.1719px")
+    await expect(demo.locator(".doc-kbd-stack")).toHaveCSS("height", "58.5px")
+    await expect(demo.locator('[data-slot="kbd-group"]')).toHaveCount(2)
+    const demoKeys = demo.locator('[data-slot="kbd"]')
+    await expect(demoKeys).toHaveCount(6)
+    await expect(demoKeys).toHaveText(["⌘", "⇧", "⌥", "⌃", "Ctrl", "B"])
+    await expect(demoKeys.nth(0)).toHaveCSS("width", "20px")
+    await expect(demoKeys.nth(1)).toHaveCSS("width", "22.1719px")
+    await expect(demoKeys.nth(4)).toHaveCSS("width", "29.2031px")
+    for (let index = 0; index < 6; index += 1) {
+      await expect(demoKeys.nth(index)).toHaveCSS("height", "20px")
+      await expect(demoKeys.nth(index)).toHaveCSS("font-size", "12px")
+      await expect(demoKeys.nth(index)).toHaveCSS("line-height", "16px")
+      await expect(demoKeys.nth(index)).toHaveCSS("border-radius", "6px")
+    }
+
+    const group = page.locator('[data-doc-preview-name="kbd-group"]')
+    await expect(group.locator(".doc-kbd-stack")).toHaveCSS("width", "323.406px")
+    await expect(group.locator(".doc-kbd-stack")).toHaveCSS("height", "21px")
+    await expect(group.locator('[data-slot="kbd"]')).toHaveText(["Ctrl + B", "Ctrl + K"])
+    await expect(group).toContainText("to open the command palette")
+
+    const button = page.locator('[data-doc-preview-name="kbd-button"]')
+    const accept = button.getByRole("button", { name: "Accept ⏎" })
+    await expect(accept).toHaveCSS("width", "93.7344px")
+    await expect(accept).toHaveCSS("height", "32px")
+    await expect(accept.locator('[data-slot="kbd"]')).toHaveCSS("width", "21.125px")
+
+    const tooltipPreview = page.locator('[data-doc-preview-name="kbd-tooltip"]')
+    const tooltipButtons = tooltipPreview.locator(".doc-kbd-tooltip-buttons")
+    await expect(tooltipButtons).toHaveCSS("width", "106.688px")
+    const save = tooltipPreview.getByRole("button", { name: "Save" })
+    await save.scrollIntoViewIfNeeded()
+    await page.waitForTimeout(100)
+    await save.hover()
+    const tooltip = page.locator('.ui-tooltip[data-kbd-tooltip="true"]')
+    await expect(tooltip).toBeVisible()
+    await expect(tooltip).toContainText("Save Changes")
+    await expect(tooltip.locator('[data-slot="kbd"]')).toHaveText("S")
+    await expect(tooltip.locator('[data-slot="kbd"]')).toHaveCSS("width", "20px")
+    await expect(tooltip).toHaveCSS("height", "32px")
+    await page.mouse.move(0, 0)
+    await expect(tooltip).toBeHidden()
+
+    const print = tooltipPreview.getByRole("button", { name: "Print" })
+    await print.focus()
+    await expect(tooltip).toBeVisible()
+    await expect(tooltip).toContainText("Print Document")
+    await expect(tooltip.locator('[data-slot="kbd"]')).toHaveText(["Ctrl", "P"])
+    await page.keyboard.press("Escape")
+    await expect(tooltip).toBeHidden()
+
+    const inputPreview = page.locator('[data-doc-preview-name="kbd-input-group"]')
+    const inputGroup = inputPreview.locator('[data-slot="input-group"]')
+    await expect(inputGroup).toHaveCSS("width", "320px")
+    await expect(inputGroup).toHaveCSS("height", "32px")
+    await expect(inputPreview.locator('[data-slot="kbd"]')).toHaveText(["⌘", "K"])
+    const search = inputPreview.getByPlaceholder("Search...")
+    await search.focus()
+    await expect(inputGroup).toHaveCSS("box-shadow", /3px/)
+
+    const rtl = page.locator('[data-doc-preview-name="kbd-rtl"]')
+    const rtlStack = rtl.locator(".doc-kbd-stack")
+    await expect(rtlStack).toHaveCSS("width", "94.1719px")
+    await expect(rtlStack).toHaveAttribute("dir", "rtl")
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtlStack).toHaveAttribute("dir", "rtl")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtlStack).toHaveAttribute("dir", "ltr")
+
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(page.locator("html")).toHaveClass(/dark/)
+    await save.focus()
+    await expect(tooltip).toBeVisible()
+    await expect(tooltip.locator('[data-slot="kbd"]')).not.toHaveCSS(
+      "background-color",
+      "rgba(0, 0, 0, 0)",
+    )
+  })
+
   test("direction docs reuse the complete RTL card preview instead of a placeholder", async ({ page }) => {
     await page.goto("/docs/components/base/direction")
     await waitForClientReady(page)

@@ -4965,7 +4965,24 @@ function wireShowcaseTooltips(): void {
     }
 
     const element = ensureTooltip()
-    element.textContent = text
+    const shortcut = host.dataset.tooltipKbd
+    element.replaceChildren(document.createTextNode(text))
+    if (shortcut) {
+      element.dataset.kbdTooltip = "true"
+      const group = document.createElement("kbd")
+      group.className = "doc-kbd-group"
+      group.dataset.slot = "kbd-group"
+      for (const value of shortcut.split(",")) {
+        const key = document.createElement("kbd")
+        key.className = "doc-kbd"
+        key.dataset.slot = "kbd"
+        key.textContent = value
+        group.append(key)
+      }
+      element.append(group)
+    } else {
+      delete element.dataset.kbdTooltip
+    }
     element.hidden = false
 
     const hostRect = host.getBoundingClientRect()
