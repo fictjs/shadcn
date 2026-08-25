@@ -4995,6 +4995,7 @@ function wireColorFormatSelectors(): void {
 
 function wireShowcaseTooltips(): void {
   let tooltip: HTMLElement | null = null
+  let scrollFrame = 0
 
   const ensureTooltip = (): HTMLElement => {
     if (!tooltip) {
@@ -5088,7 +5089,15 @@ function wireShowcaseTooltips(): void {
       hideTooltip()
     }
   })
-  window.addEventListener("scroll", hideTooltip, true)
+  window.addEventListener("scroll", () => {
+    const focusedHost = resolveHost(document.activeElement)
+    hideTooltip()
+    window.cancelAnimationFrame(scrollFrame)
+    if (!focusedHost) return
+    scrollFrame = window.requestAnimationFrame(() => {
+      if (resolveHost(document.activeElement) === focusedHost) showTooltip(focusedHost)
+    })
+  }, true)
 }
 
 function wireBlockViewer(): void {
