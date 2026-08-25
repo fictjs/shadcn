@@ -2681,6 +2681,42 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-native-select-rtl-preview[data-lang="he"] .doc-native-select { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 .doc-native-select-rtl-preview[data-lang="en"] .doc-native-select select { width: 129px; }
 
+.doc-component-card[data-doc-preview-name^="navigation-menu-"] { overflow: visible; }
+.doc-component-card[data-doc-preview-name="navigation-menu-demo"] .doc-component-preview-stage { height: 384px; min-height: 384px; }
+.doc-component-card[data-doc-preview-name="navigation-menu-rtl"] .doc-component-preview-stage { display: block; height: 448px; min-height: 448px; padding: 0; }
+.doc-navigation-menu { position: relative; z-index: 1; width: max-content; color: var(--foreground); }
+.doc-navigation-menu:has(.doc-navigation-panel:not([hidden])) { z-index: 70; }
+.doc-body .doc-navigation-list { display: flex; height: 36px; align-items: center; gap: 0; margin: 0; padding: 0; list-style: none; }
+.doc-navigation-list > li { position: static; display: flex; }
+.doc-navigation-trigger,
+.doc-navigation-direct-link { display: inline-flex; box-sizing: border-box; height: 36px; align-items: center; border: 0; border-radius: 10px; padding: 6px 10px; color: inherit; background: var(--background); font-family: inherit; font-size: 14px; font-weight: 500; line-height: 20px; text-decoration: none; outline: none; }
+.doc-navigation-trigger { gap: 4px; }
+.doc-navigation-trigger svg { position: relative; top: 1px; width: 12px; height: 12px; transition: transform 150ms; }
+.doc-navigation-trigger[aria-expanded="true"] svg { transform: rotate(180deg); }
+.doc-navigation-trigger:hover,
+.doc-navigation-trigger:focus-visible,
+.doc-navigation-trigger[aria-expanded="true"],
+.doc-navigation-direct-link:hover,
+.doc-navigation-direct-link:focus-visible { color: var(--accent-foreground); background: var(--accent); }
+.doc-navigation-panel { position: absolute; z-index: 70; top: 42px; left: 0; box-sizing: border-box; border-radius: 10px; padding: 4px; color: var(--popover-foreground); background: var(--popover); box-shadow: 0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent), 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -2px rgb(0 0 0 / 10%); }
+.doc-navigation-panel[hidden] { display: none; }
+.doc-navigation-panel.is-started { width: 392px; height: 170px; }
+.doc-navigation-panel.is-components { width: 608px; height: 246px; }
+.doc-body .doc-navigation-grid { gap: 0; margin: 0; padding: 0; list-style: none; }
+.doc-body .doc-navigation-grid.is-started { display: block; width: 384px; }
+.doc-body .doc-navigation-grid.is-components { display: grid; width: 600px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.doc-navigation-grid a { display: flex; box-sizing: border-box; flex-direction: column; gap: 4px; border-radius: 8px; padding: 8px; color: inherit; text-decoration: none; outline: none; }
+.doc-navigation-grid.is-started a { height: 54px; }
+.doc-navigation-grid.is-components a { height: 74px; }
+.doc-navigation-grid a:hover,
+.doc-navigation-grid a:focus-visible { background: var(--accent); color: var(--accent-foreground); }
+.doc-navigation-title { font-size: 14px; font-weight: 500; line-height: 14px; }
+.doc-navigation-description { display: -webkit-box; overflow: hidden; color: var(--muted-foreground); font-size: 14px; line-height: 20px; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.doc-rtl-preview.doc-navigation-rtl-preview { box-sizing: border-box; height: 384px; align-items: center; padding: 40px; }
+.doc-navigation-rtl-preview .doc-navigation-menu { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-navigation-rtl-preview[data-lang="he"] .doc-navigation-menu { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+.doc-navigation-menu[dir="rtl"] .doc-navigation-panel { right: 0; left: auto; }
+
 .doc-component-card[data-doc-preview-name^="empty-"]:not([data-doc-preview-name="empty-rtl"]) .doc-component-preview-stage { height: 384px; min-height: 384px; }
 .doc-component-card[data-doc-preview-name="empty-demo"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="empty-background"] .doc-component-preview-stage,

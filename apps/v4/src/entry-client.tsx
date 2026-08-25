@@ -51,6 +51,7 @@ async function initResumableClient(): Promise<void> {
   wireShowcaseCounters()
   wireDocDropdownMenus()
   wireDocMenubars()
+  wireDocNavigationMenus()
   wireShowcaseMenus()
   wireRtlLocalization()
   wireShowcaseToggles()
@@ -2890,6 +2891,67 @@ function wireDocMenubars(): void {
     moveToTrigger(bar, currentTrigger, event.key === nextKey ? 1 : -1, true)
     event.preventDefault()
     event.stopImmediatePropagation()
+  })
+}
+
+function wireDocNavigationMenus(): void {
+  const close = (menu: HTMLElement, focus = false): void => {
+    const trigger = menu.querySelector<HTMLElement>('[data-doc-navigation-trigger][aria-expanded="true"]')
+    menu.querySelectorAll<HTMLElement>("[data-doc-navigation-trigger]").forEach((item) => item.setAttribute("aria-expanded", "false"))
+    menu.querySelectorAll<HTMLElement>("[data-doc-navigation-panel]").forEach((panel) => { panel.hidden = true })
+    if (focus) trigger?.focus({ preventScroll: true })
+  }
+  const open = (menu: HTMLElement, trigger: HTMLElement): void => {
+    const item = trigger.closest("li")
+    const panel = item?.querySelector<HTMLElement>("[data-doc-navigation-panel]")
+    if (!panel) return
+    close(menu)
+    trigger.setAttribute("aria-expanded", "true")
+    panel.hidden = false
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-doc-navigation-menu]").forEach((menu) => {
+    let openTimer = 0
+    let closeTimer = 0
+    menu.querySelectorAll<HTMLElement>("[data-doc-navigation-trigger]").forEach((trigger) => {
+      trigger.addEventListener("click", () => {
+        if (trigger.getAttribute("aria-expanded") === "true") close(menu)
+        else open(menu, trigger)
+      })
+      trigger.addEventListener("pointerenter", (event) => {
+        if (event.pointerType !== "mouse") return
+        window.clearTimeout(openTimer)
+        window.clearTimeout(closeTimer)
+        openTimer = window.setTimeout(() => open(menu, trigger), 100)
+      })
+    })
+    menu.addEventListener("pointerleave", (event) => {
+      if (event.pointerType !== "mouse") return
+      window.clearTimeout(openTimer)
+      closeTimer = window.setTimeout(() => close(menu), 120)
+    })
+  })
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element) || target.closest("[data-doc-navigation-menu]")) return
+    document.querySelectorAll<HTMLElement>("[data-doc-navigation-menu]").forEach((menu) => close(menu))
+  })
+  document.addEventListener("keydown", (event) => {
+    const active = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    const menu = active?.closest<HTMLElement>("[data-doc-navigation-menu]")
+    if (!active || !menu) return
+    const trigger = active.closest<HTMLElement>("[data-doc-navigation-trigger]")
+    if (trigger && event.key === "ArrowDown") {
+      open(menu, trigger)
+      queueMicrotask(() => trigger.closest("li")?.querySelector<HTMLElement>("[data-doc-navigation-link]")?.focus({ preventScroll: true }))
+      event.preventDefault()
+      return
+    }
+    if (event.key === "Escape") {
+      close(menu, true)
+      event.preventDefault()
+    }
   })
 }
 
