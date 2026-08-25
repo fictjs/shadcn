@@ -3043,6 +3043,24 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-rtl-preview.doc-skeleton-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; }
 @keyframes doc-skeleton-pulse { 50% { opacity: .5; } }
 @media (prefers-reduced-motion: reduce) { .doc-skeleton { animation: none; } }
+
+.doc-component-card[data-doc-preview-name^="slider-"]:not([data-doc-preview-name="slider-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="slider-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.doc-component-card .doc-slider { width: 320px; height: 12px; margin: 0; }
+.doc-slider .ui-slider-track { height: 4px; }
+.doc-slider .ui-slider-thumb { width: 12px; height: 12px; border-color: var(--primary); background: #fff; }
+.doc-slider.is-disabled { cursor: not-allowed; opacity: .5; }
+.doc-slider.is-disabled .ui-slider-thumb { cursor: not-allowed; }
+.doc-slider-verticals { display: flex; width: 320px; align-items: center; justify-content: center; gap: 24px; }
+.doc-slider.is-vertical { width: 12px; height: 160px; flex-direction: column; }
+.doc-slider.is-vertical .ui-slider-track { width: 4px; height: 100%; }
+.doc-slider.is-vertical .ui-slider-range { right: 0; left: 0; }
+.doc-slider.is-vertical .ui-slider-thumb { transform: translate(-50%, -50%); }
+.doc-slider-controlled { display: grid; width: 320px; gap: 12px; }
+.doc-slider-controlled > div { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; line-height: 20px; }
+.doc-slider-controlled label { font-weight: 500; }
+.doc-slider-controlled > div > span { color: var(--muted-foreground); }
+.doc-rtl-preview.doc-slider-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; }
 .doc-sheet-sides { display: flex; flex-wrap: wrap; gap: 8px; }
 .doc-sheet-sides .doc-button { text-transform: capitalize; }
 .doc-sheet-content { position: fixed; z-index: 151; display: flex; box-sizing: border-box; flex-direction: column; gap: 24px; overflow: hidden; color: var(--foreground); background: var(--background); box-shadow: 0 16px 50px rgb(0 0 0 / 28%); outline: none; }

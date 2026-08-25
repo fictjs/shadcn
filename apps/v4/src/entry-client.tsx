@@ -675,6 +675,9 @@ function wireDocAccordions(): void {
     for (const directionalContent of shell.querySelectorAll<HTMLElement>("[data-doc-rtl-direction]")) {
       directionalContent.dir = direction
     }
+    for (const slider of shell.querySelectorAll<HTMLElement>("[data-slider-direction]")) {
+      slider.dataset.sliderDirection = direction
+    }
     for (const text of shell.querySelectorAll<HTMLElement>("[data-doc-rtl-text]")) {
       const nextText = text.getAttribute(`data-text-${language}`)
       if (nextText) {
@@ -2575,6 +2578,7 @@ function wireShowcaseSliders(): void {
       ? document.querySelector<HTMLElement>(`[data-slider-scope="${scopeName}"]`)
       : slider.parentElement
     const isRtl = slider.dataset.sliderDirection === "rtl"
+    const isVertical = slider.dataset.sliderOrientation === "vertical"
 
     const logicalPosition = (ratio: number): string => {
       const percent = ratio * 100
@@ -2585,7 +2589,10 @@ function wireShowcaseSliders(): void {
 
     thumbs.forEach((thumb, index) => {
       const ratio = (values[index] - min) / span
-      if (isRtl) {
+      if (isVertical) {
+        thumb.style.left = "50%"
+        thumb.style.top = `${(1 - ratio) * 100}%`
+      } else if (isRtl) {
         thumb.style.left = ""
         thumb.style.insetInlineStart = logicalPosition(ratio)
       } else {
@@ -2600,7 +2607,10 @@ function wireShowcaseSliders(): void {
       const highest = Math.max(...values)
       const lowRatio = (lowest - min) / span
       const highRatio = (highest - min) / span
-      if (isRtl) {
+      if (isVertical) {
+        range.style.top = `${(1 - highRatio) * 100}%`
+        range.style.bottom = `${lowRatio * 100}%`
+      } else if (isRtl) {
         range.style.left = ""
         range.style.right = ""
         range.style.insetInlineStart = logicalPosition(lowRatio)
@@ -2655,13 +2665,16 @@ function wireShowcaseSliders(): void {
     syncSlider(slider)
   }
 
-  const valueFromPointer = (slider: HTMLElement, clientX: number): number => {
+  const valueFromPointer = (slider: HTMLElement, clientX: number, clientY: number): number => {
     const min = readNumber(slider.dataset.sliderMin, 0)
     const max = readNumber(slider.dataset.sliderMax, 100)
     const rect = slider.getBoundingClientRect()
     const isRtl = slider.dataset.sliderDirection === "rtl"
-    const ratio = rect.width > 0
-      ? isRtl
+    const isVertical = slider.dataset.sliderOrientation === "vertical"
+    const ratio = isVertical && rect.height > 0
+      ? (rect.bottom - clientY) / rect.height
+      : rect.width > 0
+        ? isRtl
         ? (rect.right - clientX - 6) / Math.max(1, rect.width - 12)
         : (clientX - rect.left) / rect.width
       : 0
@@ -2675,7 +2688,7 @@ function wireShowcaseSliders(): void {
     }
 
     const slider = target.closest<HTMLElement>("[data-slider]")
-    if (!slider) {
+    if (!slider || slider.dataset.sliderDisabled === "true") {
       return
     }
 
@@ -2684,7 +2697,7 @@ function wireShowcaseSliders(): void {
       return
     }
 
-    const pointerValue = valueFromPointer(slider, event.clientX)
+    const pointerValue = valueFromPointer(slider, event.clientX, event.clientY)
     const directThumb = target.closest<HTMLElement>("[data-slider-thumb]")
     const activeThumb =
       directThumb ??
@@ -2699,7 +2712,7 @@ function wireShowcaseSliders(): void {
     setThumbValue(slider, activeThumb, pointerValue)
 
     const onMove = (moveEvent: PointerEvent): void => {
-      setThumbValue(slider, activeThumb, valueFromPointer(slider, moveEvent.clientX))
+      setThumbValue(slider, activeThumb, valueFromPointer(slider, moveEvent.clientX, moveEvent.clientY))
     }
 
     const onUp = (): void => {
@@ -2721,7 +2734,7 @@ function wireShowcaseSliders(): void {
 
     const thumb = target.closest<HTMLElement>("[data-slider-thumb]")
     const slider = thumb?.closest<HTMLElement>("[data-slider]")
-    if (!thumb || !slider) {
+    if (!thumb || !slider || slider.dataset.sliderDisabled === "true") {
       return
     }
 

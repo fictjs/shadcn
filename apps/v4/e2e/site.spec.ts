@@ -3408,6 +3408,79 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator(".doc-skeleton").first()).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
+  test("slider docs match React values, ranges, vertical controls, disabled state, and RTL", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/radix/slider")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(7)
+    for (let index = 0; index < 6; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(6).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+    expect((await previews.allInnerTexts()).join(" ")).not.toContain("Registry preview surface")
+
+    const demo = page.locator('[data-doc-preview-name="slider-demo"]')
+    const demoSlider = demo.locator(".doc-slider")
+    const demoThumb = demo.getByRole("slider")
+    await expect(demoSlider).toHaveCSS("width", "320px")
+    await expect(demoSlider.locator(".ui-slider-track")).toHaveCSS("height", "4px")
+    await expect(demoThumb).toHaveCSS("width", "12px")
+    await expect(demoThumb).toHaveCSS("height", "12px")
+    await expect(demoThumb).toHaveAttribute("aria-valuenow", "75")
+    await demoThumb.focus()
+    await page.keyboard.press("ArrowRight")
+    await expect(demoThumb).toHaveAttribute("aria-valuenow", "76")
+    await expect(demoThumb).not.toHaveCSS("box-shadow", "none")
+
+    const range = page.locator('[data-doc-preview-name="slider-range"]')
+    await expect(range.getByRole("slider")).toHaveCount(2)
+    await expect(range.getByRole("slider").nth(0)).toHaveAttribute("aria-valuenow", "25")
+    await expect(range.getByRole("slider").nth(1)).toHaveAttribute("aria-valuenow", "50")
+    const multiple = page.locator('[data-doc-preview-name="slider-multiple"]')
+    await expect(multiple.getByRole("slider")).toHaveCount(3)
+    for (const [index, value] of ["10", "20", "70"].entries()) {
+      await expect(multiple.getByRole("slider").nth(index)).toHaveAttribute("aria-valuenow", value)
+    }
+
+    const vertical = page.locator('[data-doc-preview-name="slider-vertical"]')
+    await expect(vertical.locator(".doc-slider.is-vertical")).toHaveCount(2)
+    await expect(vertical.locator(".doc-slider.is-vertical").first()).toHaveCSS("height", "160px")
+    await expect(vertical.locator(".doc-slider.is-vertical").first()).toHaveCSS("width", "12px")
+    const firstVertical = vertical.getByRole("slider").first()
+    await firstVertical.focus()
+    await page.keyboard.press("ArrowUp")
+    await expect(firstVertical).toHaveAttribute("aria-valuenow", "51")
+
+    const controlled = page.locator('[data-doc-preview-name="slider-controlled"]')
+    const controlledThumb = controlled.getByRole("slider").first()
+    await expect(controlled).toContainText("0.3, 0.7")
+    await controlledThumb.focus()
+    await page.keyboard.press("ArrowRight")
+    await expect(controlled).toContainText("0.4, 0.7")
+
+    const disabled = page.locator('[data-doc-preview-name="slider-disabled"]')
+    const disabledThumb = disabled.getByRole("slider")
+    await expect(disabledThumb).toHaveAttribute("aria-disabled", "true")
+    await expect(disabledThumb).toHaveAttribute("tabindex", "-1")
+    await expect(disabled.locator(".doc-slider")).toHaveCSS("opacity", "0.5")
+
+    const rtl = page.locator('[data-doc-preview-name="slider-rtl"]')
+    const rtlSlider = rtl.locator(".doc-slider")
+    const rtlThumb = rtl.getByRole("slider")
+    await expect(rtlSlider).toHaveAttribute("dir", "rtl")
+    await rtlThumb.focus()
+    await page.keyboard.press("ArrowRight")
+    await expect(rtlThumb).toHaveAttribute("aria-valuenow", "74")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtlSlider).toHaveAttribute("dir", "ltr")
+    await page.keyboard.press("ArrowRight")
+    await expect(rtlThumb).toHaveAttribute("aria-valuenow", "75")
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(rtlThumb).toHaveCSS("background-color", "rgb(255, 255, 255)")
+  })
+
   test("kbd docs match React keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/base/kbd")

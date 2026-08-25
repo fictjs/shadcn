@@ -4306,6 +4306,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocSidebarPreview name={props.name} />
   ) : family === "skeleton" ? (
     <DocSkeletonPreview name={props.name} />
+  ) : family === "slider" ? (
+    <DocSliderPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -5106,6 +5108,20 @@ function DocSkeletonPreview(props: { name: string }) {
   else if (variant === "table") content = <div class="doc-skeleton-table">{Array.from({ length: 5 }, () => <div>{block("is-flex")}{block("is-w-96")}{block("is-w-80")}</div>)}</div>
   else content = demo
   return variant === "rtl" ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-skeleton-rtl-preview" dir="rtl" data-lang="ar" data-doc-rtl-direction="true">{content}</div></div> : content
+}
+
+function DocSliderPreview(props: { name: string }) {
+  const variant = untrack(() => props.name.replace("slider-", ""))
+  const slider = (values: number[], options: { vertical?: boolean; disabled?: boolean; rtl?: boolean; id?: string } = {}) => <div class={`ui-slider doc-slider${options.vertical ? " is-vertical" : ""}${options.disabled ? " is-disabled" : ""}`} data-slider={options.id ?? `doc-slider-${variant}`} data-slider-min="0" data-slider-max={variant === "controlled" ? "1" : "100"} data-slider-step={variant === "controlled" ? "0.1" : variant === "multiple" ? "10" : variant === "range" ? "5" : "1"} data-slider-direction={options.rtl ? "rtl" : "ltr"} data-slider-orientation={options.vertical ? "vertical" : "horizontal"} data-slider-disabled={options.disabled ? "true" : undefined} role="group" aria-label={options.vertical ? "Vertical slider" : "Slider"} dir={options.rtl ? "rtl" : "ltr"} data-doc-rtl-direction={options.rtl ? "true" : undefined}><span class="ui-slider-track"><span class="ui-slider-range" data-slider-range></span></span>{values.map((value, index) => <span class="ui-slider-thumb" data-slider-thumb={String(index)} data-slider-value={String(value)} role="slider" tabIndex={options.disabled ? -1 : 0} aria-label={`Value ${index + 1}`} aria-valuemin={0} aria-valuemax={variant === "controlled" ? 1 : 100} aria-valuenow={value} aria-disabled={options.disabled ? "true" : undefined}></span>)}</div>
+  let content
+  if (variant === "range") content = slider([25, 50])
+  else if (variant === "multiple") content = slider([10, 20, 70])
+  else if (variant === "vertical") content = <div class="doc-slider-verticals">{slider([50], { vertical: true, id: "doc-slider-vertical-1" })}{slider([25], { vertical: true, id: "doc-slider-vertical-2" })}</div>
+  else if (variant === "controlled") content = <div class="doc-slider-controlled" data-slider-scope="doc-slider-controlled"><div><label>Temperature</label><span><span data-slider-output="0">0.3</span>, <span data-slider-output="1">0.7</span></span></div>{slider([0.3, 0.7], { id: "doc-slider-controlled" })}</div>
+  else if (variant === "disabled") content = slider([50], { disabled: true })
+  else if (variant === "rtl") content = slider([75], { rtl: true })
+  else content = slider([75])
+  return variant === "rtl" ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-slider-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
 function DocEmptyPreview(props: { name: string }) {
@@ -7357,6 +7373,7 @@ function getDocPreviewFamily(name: string): string {
     "skeleton",
     "popover",
     "progress",
+    "slider",
     "resizable",
     "textarea",
     "calendar",
