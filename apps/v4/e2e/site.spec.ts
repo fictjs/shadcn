@@ -3358,6 +3358,56 @@ test.describe("shadcn v4 site", () => {
     await expect(panel).toHaveCSS("width", "220px")
   })
 
+  test("skeleton docs match React profile, card, text, form, table, animation, and RTL", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/radix/skeleton")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(7)
+    for (const name of ["skeleton-demo", "skeleton-avatar", "skeleton-text", "skeleton-form", "skeleton-table"]) {
+      await expect(page.locator(`[data-doc-preview-name="${name}"] .doc-component-preview-stage`)).toHaveCSS("height", "288px")
+    }
+    await expect(page.locator('[data-doc-preview-name="skeleton-card"] .doc-component-preview-stage')).toHaveCSS("height", "320px")
+    await expect(page.locator('[data-doc-preview-name="skeleton-rtl"] .doc-component-preview-stage')).toHaveCSS("height", "352px")
+    expect((await previews.allInnerTexts()).join(" ")).not.toContain("Registry preview surface")
+
+    const demo = page.locator('[data-doc-preview-name="skeleton-demo"]')
+    await expect(demo.locator('[data-slot="skeleton"]')).toHaveCount(3)
+    await expect(demo.locator(".is-avatar-lg")).toHaveCSS("width", "48px")
+    await expect(demo.locator(".is-avatar-lg")).toHaveCSS("height", "48px")
+    await expect(demo.locator(".is-w-250")).toHaveCSS("width", "250px")
+    await expect(demo.locator(".is-w-200")).toHaveCSS("width", "200px")
+    await expect(demo.locator(".doc-skeleton").first()).toHaveCSS("animation-name", "doc-skeleton-pulse")
+
+    const avatar = page.locator('[data-doc-preview-name="skeleton-avatar"]')
+    await expect(avatar.locator(".is-avatar-sm")).toHaveCSS("width", "40px")
+    await expect(avatar.locator(".is-w-150")).toHaveCSS("width", "150px")
+
+    const card = page.locator('[data-doc-preview-name="skeleton-card"] .doc-skeleton-card')
+    await expect(card).toHaveCSS("width", "320px")
+    await expect(card).toHaveCSS("height", "246px")
+    await expect(card.locator(".is-card-media")).toHaveCSS("width", "288px")
+    await expect(card.locator(".is-card-media")).toHaveCSS("height", "162px")
+
+    const text = page.locator('[data-doc-preview-name="skeleton-text"]')
+    await expect(text.locator(".doc-skeleton").first()).toHaveCSS("width", "320px")
+    await expect(text.locator(".doc-skeleton").last()).toHaveCSS("width", "240px")
+    const form = page.locator('[data-doc-preview-name="skeleton-form"]')
+    await expect(form.locator('[data-slot="skeleton"]')).toHaveCount(5)
+    await expect(form.locator(".is-input").first()).toHaveCSS("width", "320px")
+    const table = page.locator('[data-doc-preview-name="skeleton-table"]')
+    await expect(table.locator('[data-slot="skeleton"]')).toHaveCount(15)
+    await expect(table.locator(".doc-skeleton-table")).toHaveCSS("width", "384px")
+
+    const rtl = page.locator('[data-doc-preview-name="skeleton-rtl"]')
+    await expect(rtl.locator(".doc-skeleton-rtl-preview")).toHaveAttribute("dir", "rtl")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtl.locator(".doc-skeleton-rtl-preview")).toHaveAttribute("dir", "ltr")
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(rtl.locator(".doc-skeleton").first()).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+  })
+
   test("kbd docs match React keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/base/kbd")

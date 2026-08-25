@@ -4304,6 +4304,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocSheetPreview name={props.name} />
   ) : family === "sidebar" ? (
     <DocSidebarPreview name={props.name} />
+  ) : family === "skeleton" ? (
+    <DocSkeletonPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -5090,6 +5092,20 @@ function DocSidebarPreview(props: { name: string }) {
       </main>
     </div>
   )
+}
+
+function DocSkeletonPreview(props: { name: string }) {
+  const variant = untrack(() => props.name.replace("skeleton-", ""))
+  const block = (className: string) => <span class={`doc-skeleton ${className}`} data-slot="skeleton"></span>
+  const demo = <div class="doc-skeleton-profile">{block("is-avatar-lg")}<div>{block("is-w-250")}{block("is-w-200")}</div></div>
+  let content
+  if (variant === "avatar") content = <div class="doc-skeleton-profile is-small">{block("is-avatar-sm")}<div>{block("is-w-150")}{block("is-w-100")}</div></div>
+  else if (variant === "card") content = <div class="doc-skeleton-card"><header>{block("is-w-192")}{block("is-w-144")}</header><div>{block("is-card-media")}</div></div>
+  else if (variant === "text") content = <div class="doc-skeleton-stack is-text">{block("is-full")}{block("is-full")}{block("is-three-quarters")}</div>
+  else if (variant === "form") content = <div class="doc-skeleton-form"><div>{block("is-w-80")}{block("is-input")}</div><div>{block("is-w-96")}{block("is-input")}</div>{block("is-button")}</div>
+  else if (variant === "table") content = <div class="doc-skeleton-table">{Array.from({ length: 5 }, () => <div>{block("is-flex")}{block("is-w-96")}{block("is-w-80")}</div>)}</div>
+  else content = demo
+  return variant === "rtl" ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-skeleton-rtl-preview" dir="rtl" data-lang="ar" data-doc-rtl-direction="true">{content}</div></div> : content
 }
 
 function DocEmptyPreview(props: { name: string }) {
