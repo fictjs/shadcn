@@ -3868,6 +3868,66 @@ test.describe("shadcn v4 site", () => {
     await expectFocusRing(rtlTextarea)
   })
 
+  test("toggle docs match React variants, text, sizes, disabled, pressed state, focus, and RTL", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/radix/toggle")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(6)
+    for (let index = 0; index < 5; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(5).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+    expect((await previews.allInnerTexts()).join(" ")).not.toContain("Primary Outline Ghost")
+
+    const demo = page.locator('[data-doc-preview-name="toggle-demo"]')
+    const bookmark = demo.getByRole("button", { name: "Toggle bookmark" })
+    await expect(bookmark).toHaveCSS("height", "28px")
+    await expect(bookmark).toHaveCSS("border-radius", "8px")
+    await expect(bookmark).toHaveAttribute("aria-pressed", "false")
+    await bookmark.click()
+    await expect(bookmark).toHaveAttribute("aria-pressed", "true")
+    await expect(bookmark.locator("svg")).not.toHaveCSS("fill", "none")
+    await bookmark.focus()
+    await page.keyboard.press("Space")
+    await expect(bookmark).toHaveAttribute("aria-pressed", "false")
+    await expectFocusRing(bookmark)
+
+    const outline = page.locator('[data-doc-preview-name="toggle-outline"]')
+    await expect(outline.locator(".doc-toggle.is-outline")).toHaveCount(2)
+    await expect(outline.getByRole("button")).toHaveText(["Italic", "Bold", "View Code"])
+    await outline.getByRole("button", { name: "Toggle italic" }).click()
+    await expect(outline.getByRole("button", { name: "Toggle italic" })).toHaveAttribute("aria-pressed", "true")
+    await expect(outline.getByRole("button", { name: "Toggle bold" })).toHaveAttribute("aria-pressed", "false")
+
+    const text = page.locator('[data-doc-preview-name="toggle-text"]')
+    await expect(text.getByRole("button", { name: "Toggle italic" })).not.toHaveClass(/is-outline/)
+
+    const sizes = page.locator('[data-doc-preview-name="toggle-sizes"]')
+    await expect(sizes.getByRole("button", { name: "Toggle small" })).toHaveCSS("height", "28px")
+    await expect(sizes.getByRole("button", { name: "Toggle default" })).toHaveCSS("height", "32px")
+    await expect(sizes.getByRole("button", { name: "Toggle large" })).toHaveCSS("height", "36px")
+
+    const disabled = page.locator('[data-doc-preview-name="toggle-disabled"]')
+    await expect(disabled.locator(".doc-toggle:disabled")).toHaveCount(2)
+    await expect(disabled.locator(".doc-toggle:disabled").first()).toHaveCSS("opacity", "0.5")
+
+    const rtl = page.locator('[data-doc-preview-name="toggle-rtl"]')
+    const rtlToggle = rtl.getByRole("button", { name: "Toggle bookmark" })
+    await expect(rtlToggle).toHaveAttribute("dir", "rtl")
+    await expect(rtl).toContainText("إشارة مرجعية")
+    await rtlToggle.click()
+    await expect(rtlToggle).toHaveAttribute("aria-pressed", "true")
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtl).toContainText("סימנייה")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtlToggle).toHaveAttribute("dir", "ltr")
+    await expect(rtl).toContainText("Bookmark")
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(rtlToggle).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+  })
+
   test("kbd docs match React keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/base/kbd")

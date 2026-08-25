@@ -3192,6 +3192,25 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-textarea-button .doc-button { width: 100%; }
 .doc-rtl-preview.doc-textarea-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-textarea-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+
+.doc-component-card[data-doc-preview-name^="toggle-"]:not([data-doc-preview-name="toggle-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="toggle-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.doc-toggle-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.doc-toggle { display: inline-flex; height: 32px; align-items: center; justify-content: center; gap: 6px; border: 1px solid transparent; border-radius: 10px; padding: 0 10px; color: var(--foreground); background: transparent; font: inherit; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer; outline: none; }
+.doc-toggle:hover, .doc-toggle[aria-pressed="true"] { background: var(--accent); color: var(--accent-foreground); }
+.doc-toggle.is-outline { border-color: var(--border); background: var(--background); }
+.doc-toggle.is-outline:hover, .doc-toggle.is-outline[aria-pressed="true"] { background: var(--accent); }
+.doc-toggle.is-sm { height: 28px; border-radius: 8px; padding-inline: 8px; }
+.doc-toggle.is-lg { height: 36px; padding-inline: 12px; }
+.doc-toggle:focus-visible { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.doc-toggle:disabled { cursor: not-allowed; opacity: .5; }
+.doc-toggle svg { width: 16px; height: 16px; }
+.doc-toggle[aria-pressed="true"] svg { fill: currentColor; }
+.doc-toggle-letter { display: inline-flex; width: 16px; height: 16px; align-items: center; justify-content: center; font-family: serif; font-size: 15px; line-height: 16px; }
+.doc-toggle-letter.is-italic { font-style: italic; }
+.doc-toggle-letter.is-bold { font-weight: 700; }
+.doc-rtl-preview.doc-toggle-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-toggle-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 .doc-sheet-sides { display: flex; flex-wrap: wrap; gap: 8px; }
 .doc-sheet-sides .doc-button { text-transform: capitalize; }
 .doc-sheet-content { position: fixed; z-index: 151; display: flex; box-sizing: border-box; flex-direction: column; gap: 24px; overflow: hidden; color: var(--foreground); background: var(--background); box-shadow: 0 16px 50px rgb(0 0 0 / 28%); outline: none; }

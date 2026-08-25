@@ -4323,6 +4323,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocTabsPreview name={props.name} />
   ) : family === "textarea" ? (
     <DocTextareaPreview name={props.name} />
+  ) : family === "toggle" ? (
+    <DocTogglePreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -5231,6 +5233,24 @@ function DocTextareaPreview(props: { name: string }) {
   else if (rtl) content = field({ label: <span data-doc-rtl-text data-text-ar="التعليقات" data-text-he="משוב" data-text-en="Feedback">التعليقات</span>, description: <span data-doc-rtl-text data-text-ar="شاركنا أفكارك حول خدمتنا." data-text-he="שתף את מחשבותיך על השירות שלנו." data-text-en="Share your thoughts about our service.">شاركنا أفكارك حول خدمتنا.</span> })
   else content = textarea()
   return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-textarea-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
+}
+
+function DocToggleIcon(props: { kind: "bookmark" | "italic" | "bold" }) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{props.kind === "bookmark" ? <path d="M6 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18l-6-4-6 4z"></path> : props.kind === "italic" ? <><path d="M19 4h-9"></path><path d="M14 20H5"></path><path d="M15 4 9 20"></path></> : <><path d="M6 4h8a4 4 0 0 1 0 8H6z"></path><path d="M6 12h9a4 4 0 0 1 0 8H6z"></path></>}</svg>
+}
+
+function DocTogglePreview(props: { name: string }) {
+  const variant = untrack(() => props.name.replace("toggle-", ""))
+  const rtl = variant === "rtl"
+  const toggle = (label: any, options: { ariaLabel: string; outline?: boolean; size?: "sm" | "default" | "lg"; disabled?: boolean; icon?: "bookmark" | "italic" | "bold" }) => <button type="button" class={`doc-toggle${options.outline ? " is-outline" : ""} is-${options.size ?? "default"}`} aria-label={options.ariaLabel} aria-pressed="false" data-toggle="doc" data-toggle-active="false" disabled={options.disabled} dir={rtl ? "rtl" : "ltr"} data-doc-rtl-direction={rtl ? "true" : undefined}>{options.icon ? <DocToggleIcon kind={options.icon} /> : null}{label}</button>
+  let content
+  if (variant === "outline") content = <div class="doc-toggle-row">{toggle("Italic", { ariaLabel: "Toggle italic", outline: true, icon: "italic" })}{toggle("Bold", { ariaLabel: "Toggle bold", outline: true, icon: "bold" })}</div>
+  else if (variant === "text") content = toggle("Italic", { ariaLabel: "Toggle italic", icon: "italic" })
+  else if (variant === "sizes") content = <div class="doc-toggle-row">{toggle("Small", { ariaLabel: "Toggle small", outline: true, size: "sm" })}{toggle("Default", { ariaLabel: "Toggle default", outline: true })}{toggle("Large", { ariaLabel: "Toggle large", outline: true, size: "lg" })}</div>
+  else if (variant === "disabled") content = <div class="doc-toggle-row">{toggle("Disabled", { ariaLabel: "Toggle disabled", disabled: true })}{toggle("Disabled", { ariaLabel: "Toggle disabled outline", outline: true, disabled: true })}</div>
+  else if (rtl) content = toggle(<span data-doc-rtl-text data-text-ar="إشارة مرجعية" data-text-he="סימנייה" data-text-en="Bookmark">إشارة مرجعية</span>, { ariaLabel: "Toggle bookmark", outline: true, size: "sm", icon: "bookmark" })
+  else content = toggle("Bookmark", { ariaLabel: "Toggle bookmark", outline: true, size: "sm", icon: "bookmark" })
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-toggle-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
 function DocEmptyPreview(props: { name: string }) {
