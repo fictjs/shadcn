@@ -3127,6 +3127,29 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-switch-field[dir="rtl"] .ui-switch[data-checked="true"] span { transform: translateX(calc(-100% + 2px)); }
 .doc-rtl-preview.doc-switch-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-switch-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+
+.doc-component-card[data-doc-preview-name="table-demo"] .doc-component-preview-stage { height: 480px; min-height: 480px; }
+.doc-component-card[data-doc-preview-name="table-footer"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="table-actions"] .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="table-rtl"] { overflow: visible; }
+.doc-component-card[data-doc-preview-name="table-rtl"] .doc-component-preview-stage { display: block; height: 451.5px; min-height: 451.5px; padding: 0; }
+.doc-table-scroll { width: 100%; overflow: visible; }
+.doc-table { width: 100%; border-collapse: collapse; color: var(--foreground); font-size: 14px; line-height: 20px; }
+.doc-table caption { caption-side: bottom; height: 20px; padding-top: 16px; color: var(--muted-foreground); text-align: start; }
+.doc-table th { height: 40px; padding: 0 8px; color: var(--muted-foreground); font-weight: 500; text-align: start; vertical-align: middle; }
+.doc-table td { height: 37px; padding: 0 8px; border-top: 1px solid var(--border); text-align: start; vertical-align: middle; }
+.doc-table td strong { font-weight: 500; }
+.doc-table .is-numeric { text-align: end; }
+.doc-table tfoot { background: var(--muted); font-weight: 500; }
+.doc-table tfoot td { height: 40px; }
+.doc-table tbody tr:hover { background: color-mix(in oklab, var(--muted) 50%, transparent); }
+.doc-table-actions .doc-table-menu { display: inline-flex; position: relative; }
+.doc-table-action { display: inline-flex; width: 32px; height: 32px; align-items: center; justify-content: center; border: 0; border-radius: 8px; color: inherit; background: transparent; font: inherit; letter-spacing: 1px; cursor: pointer; }
+.doc-table-action:hover, .doc-table-action:focus-visible { background: var(--accent); outline: none; }
+.doc-table-action:focus-visible { box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.doc-table-menu-panel { min-width: 128px; text-align: start; }
+.doc-rtl-preview.doc-table-rtl-preview { box-sizing: border-box; height: 387.5px; align-items: center; padding: 40px; font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-table-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 .doc-sheet-sides { display: flex; flex-wrap: wrap; gap: 8px; }
 .doc-sheet-sides .doc-button { text-transform: capitalize; }
 .doc-sheet-content { position: fixed; z-index: 151; display: flex; box-sizing: border-box; flex-direction: column; gap: 24px; overflow: hidden; color: var(--foreground); background: var(--background); box-shadow: 0 16px 50px rgb(0 0 0 / 28%); outline: none; }

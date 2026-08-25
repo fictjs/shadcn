@@ -4317,6 +4317,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocSpinnerPreview name={props.name} />
   ) : family === "switch" ? (
     <DocSwitchPreview name={props.name} />
+  ) : family === "table" ? (
+    <DocTablePreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -5174,6 +5176,26 @@ function DocSwitchPreview(props: { name: string }) {
   const title = <span data-doc-rtl-text data-text-ar="المشاركة عبر الأجهزة" data-text-he="שיתוף בין מכשירים" data-text-en="Share across devices">المشاركة عبر الأجهزة</span>
   const description = <span data-doc-rtl-text data-text-ar="يتم مشاركة التركيز عبر الأجهزة، ويتم إيقاف تشغيله عند مغادرة التطبيق." data-text-he="המיקוד משותף בין מכשירים, וכבה כשאתה עוזב את האפליקציה." data-text-en="Focus is shared across devices, and turns off when you leave the app.">يتم مشاركة التركيز عبر الأجهزة، ويتم إيقاف تشغيله عند مغادرة التطبيق.</span>
   return <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-switch-rtl-preview" dir="rtl" data-lang="ar">{field({ id: "switch-focus-mode-rtl", title, description, rtl: true })}</div></div>
+}
+
+function DocTablePreview(props: { name: string }) {
+  const variant = untrack(() => props.name.replace("table-", ""))
+  const rtl = variant === "rtl"
+  const text = (ar: string, he: string, en: string) => rtl ? <span data-doc-rtl-text data-text-ar={ar} data-text-he={he} data-text-en={en}>{ar}</span> : en
+  const invoices = [
+    ["INV001", ["مدفوع", "שולם", "Paid"], ["بطاقة ائتمانية", "כרטיס אשראי", "Credit Card"], "$250.00"],
+    ["INV002", ["قيد الانتظار", "ממתין", "Pending"], ["PayPal", "PayPal", "PayPal"], "$150.00"],
+    ["INV003", ["غير مدفوع", "לא שולם", "Unpaid"], ["تحويل بنكي", "העברה בנקאית", "Bank Transfer"], "$350.00"],
+    ["INV004", ["مدفوع", "שולם", "Paid"], ["بطاقة ائتمانية", "כרטיס אשראי", "Credit Card"], "$450.00"],
+    ["INV005", ["مدفوع", "שולם", "Paid"], ["PayPal", "PayPal", "PayPal"], "$550.00"],
+    ["INV006", ["قيد الانتظار", "ממתין", "Pending"], ["تحويل بنكي", "העברה בנקאית", "Bank Transfer"], "$200.00"],
+    ["INV007", ["غير مدفوع", "לא שולם", "Unpaid"], ["بطاقة ائتمانية", "כרטיס אשראי", "Credit Card"], "$300.00"],
+  ] as const
+  const invoiceTable = (rows: number) => <div class="doc-table-scroll"><table class="doc-table" dir={rtl ? "rtl" : "ltr"} data-doc-rtl-direction={rtl ? "true" : undefined}><caption>{text("قائمة بفواتيرك الأخيرة.", "רשימת החשבוניות האחרונות שלך.", "A list of your recent invoices.")}</caption><thead><tr><th>{text("الفاتورة", "חשבונית", "Invoice")}</th><th>{text("الحالة", "סטטוס", "Status")}</th><th>{text("الطريقة", "שיטה", "Method")}</th><th class="is-numeric">{text("المبلغ", "סכום", "Amount")}</th></tr></thead><tbody>{invoices.slice(0, rows).map((invoice) => <tr><td><strong>{invoice[0]}</strong></td><td>{text(invoice[1][0], invoice[1][1], invoice[1][2])}</td><td>{text(invoice[2][0], invoice[2][1], invoice[2][2])}</td><td class="is-numeric">{invoice[3]}</td></tr>)}</tbody><tfoot><tr><td colSpan={3}>{text("المجموع", 'סה"כ', "Total")}</td><td class="is-numeric">$2,500.00</td></tr></tfoot></table></div>
+  const actionRows = [["Wireless Mouse", "$29.99"], ["Mechanical Keyboard", "$129.99"], ["USB-C Hub", "$49.99"]]
+  const actions = <div class="doc-table-scroll"><table class="doc-table doc-table-actions"><thead><tr><th>Product</th><th>Price</th><th class="is-numeric">Actions</th></tr></thead><tbody>{actionRows.map((row) => <tr><td><strong>{row[0]}</strong></td><td>{row[1]}</td><td class="is-numeric"><span class="ui-menu doc-table-menu" data-menu><button type="button" class="doc-table-action" data-menu-trigger aria-label={`Open menu for ${row[0]}`} aria-haspopup="menu" aria-expanded="false">•••</button><div class="ui-menu-panel doc-table-menu-panel" data-menu-panel data-menu-side="bottom" data-menu-align="end" role="menu" hidden><button type="button" class="ui-menu-item" data-menu-item role="menuitem">Edit</button><button type="button" class="ui-menu-item" data-menu-item role="menuitem">Duplicate</button><span class="ui-menu-separator"></span><button type="button" class="ui-menu-item is-destructive" data-menu-item role="menuitem">Delete</button></div></span></td></tr>)}</tbody></table></div>
+  const content = variant === "actions" ? actions : invoiceTable(variant === "footer" ? 3 : 7)
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-table-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
 function DocEmptyPreview(props: { name: string }) {
