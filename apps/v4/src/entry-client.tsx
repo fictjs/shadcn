@@ -44,6 +44,7 @@ async function initResumableClient(): Promise<void> {
   wireDocCharts()
   wireDocCheckboxes()
   wireDocFields()
+  wireDocHoverCards()
   wireShowcaseSliders()
   wireShowcaseCounters()
   wireDocDropdownMenus()
@@ -2174,6 +2175,133 @@ function wireDocFields(): void {
     const checked = control.dataset.checked !== "true"
     control.dataset.checked = checked ? "true" : "false"
     control.setAttribute("aria-checked", checked ? "true" : "false")
+  })
+}
+
+function wireDocHoverCards(): void {
+  const panelToRoot = new WeakMap<HTMLElement, HTMLElement>()
+  const origins = new WeakMap<HTMLElement, { parent: Node; nextSibling: ChildNode | null }>()
+  const openTimers = new WeakMap<HTMLElement, ReturnType<typeof setTimeout>>()
+  const closeTimers = new WeakMap<HTMLElement, ReturnType<typeof setTimeout>>()
+
+  document.querySelectorAll<HTMLElement>("[data-doc-hover-card]").forEach((root) => {
+    const panel = root.querySelector<HTMLElement>("[data-doc-hover-content]")
+    if (panel) panelToRoot.set(panel, root)
+  })
+
+  const clearTimer = (map: WeakMap<HTMLElement, ReturnType<typeof setTimeout>>, root: HTMLElement): void => {
+    const timer = map.get(root)
+    if (timer) clearTimeout(timer)
+    map.delete(root)
+  }
+
+  const close = (root: HTMLElement): void => {
+    clearTimer(openTimers, root)
+    clearTimer(closeTimers, root)
+    const trigger = root.querySelector<HTMLElement>("[data-doc-hover-trigger]")
+    const panel = document.querySelector<HTMLElement>(`[data-doc-hover-content][data-doc-hover-owner="${root.dataset.docHoverOwner}"]`) || root.querySelector<HTMLElement>("[data-doc-hover-content]")
+    if (!panel) return
+    panel.hidden = true
+    panel.style.removeProperty("top")
+    panel.style.removeProperty("left")
+    trigger?.setAttribute("aria-expanded", "false")
+    const origin = origins.get(panel)
+    if (origin) origin.parent.insertBefore(panel, origin.nextSibling)
+  }
+
+  const position = (root: HTMLElement, trigger: HTMLElement, panel: HTMLElement): void => {
+    const triggerBox = trigger.getBoundingClientRect()
+    const panelWidth = panel.offsetWidth
+    const panelHeight = panel.offsetHeight
+    const requestedSide = root.dataset.docHoverSide || "bottom"
+    const rtl = getComputedStyle(root).direction === "rtl"
+    const side = requestedSide === "inline-start" ? (rtl ? "right" : "left") : requestedSide === "inline-end" ? (rtl ? "left" : "right") : requestedSide
+    const offset = 4
+    let left = triggerBox.left + (triggerBox.width - panelWidth) / 2 + 4
+    let top = triggerBox.top + (triggerBox.height - panelHeight) / 2 + 4
+    if (side === "left") left = triggerBox.left - panelWidth - offset
+    if (side === "right") left = triggerBox.right + offset
+    if (side === "top") top = triggerBox.top - panelHeight - offset
+    if (side === "bottom") top = triggerBox.bottom + offset
+    if (side === "left" || side === "right") top = triggerBox.top + (triggerBox.height - panelHeight) / 2 + 4
+    if (side === "top" || side === "bottom") left = triggerBox.left + (triggerBox.width - panelWidth) / 2 + 4
+    panel.style.left = `${Math.max(8, Math.min(window.innerWidth - panelWidth - 8, left))}px`
+    panel.style.top = `${Math.max(8, Math.min(window.innerHeight - panelHeight - 8, top))}px`
+    panel.dataset.side = requestedSide
+    panel.dataset.align = "center"
+  }
+
+  const open = (root: HTMLElement): void => {
+    clearTimer(openTimers, root)
+    clearTimer(closeTimers, root)
+    const trigger = root.querySelector<HTMLElement>("[data-doc-hover-trigger]")
+    const panel = root.querySelector<HTMLElement>("[data-doc-hover-content]")
+    if (!trigger || !panel) return
+    if (!origins.has(panel)) origins.set(panel, { parent: panel.parentNode || root, nextSibling: panel.nextSibling })
+    const owner = root.dataset.docHoverOwner || `hover-${Math.random().toString(36).slice(2)}`
+    root.dataset.docHoverOwner = owner
+    panel.dataset.docHoverOwner = owner
+    document.body.append(panel)
+    panel.hidden = false
+    trigger.setAttribute("aria-expanded", "true")
+    position(root, trigger, panel)
+  }
+
+  const scheduleOpen = (root: HTMLElement): void => {
+    clearTimer(closeTimers, root)
+    if (root.querySelector<HTMLElement>("[data-doc-hover-trigger]")?.getAttribute("aria-expanded") === "true") return
+    clearTimer(openTimers, root)
+    openTimers.set(root, setTimeout(() => open(root), Number(root.dataset.docHoverDelay || 100)))
+  }
+
+  const scheduleClose = (root: HTMLElement): void => {
+    clearTimer(openTimers, root)
+    clearTimer(closeTimers, root)
+    closeTimers.set(root, setTimeout(() => close(root), Number(root.dataset.docHoverCloseDelay || 100)))
+  }
+
+  const rootFor = (target: Element): HTMLElement | null => {
+    const ownRoot = target.closest<HTMLElement>("[data-doc-hover-card]")
+    if (ownRoot) return ownRoot
+    const panel = target.closest<HTMLElement>("[data-doc-hover-content]")
+    return panel ? panelToRoot.get(panel) || null : null
+  }
+
+  document.addEventListener("pointerover", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const root = rootFor(target)
+    if (root) scheduleOpen(root)
+  })
+  document.addEventListener("pointerout", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const root = rootFor(target)
+    if (!root) return
+    const related = event.relatedTarget
+    const panel = document.querySelector<HTMLElement>(`[data-doc-hover-content][data-doc-hover-owner="${root.dataset.docHoverOwner}"]`)
+    if (related instanceof Node && (root.contains(related) || !!panel?.contains(related))) return
+    scheduleClose(root)
+  })
+  document.addEventListener("focusin", (event) => {
+    const target = event.target
+    if (target instanceof Element) {
+      const root = target.closest<HTMLElement>("[data-doc-hover-card]")
+      if (root) scheduleOpen(root)
+    }
+  })
+  document.addEventListener("focusout", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const root = target.closest<HTMLElement>("[data-doc-hover-card]")
+    if (!root) return
+    const related = event.relatedTarget
+    if (related instanceof Node && root.contains(related)) return
+    scheduleClose(root)
+  })
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return
+    document.querySelectorAll<HTMLElement>("[data-doc-hover-card][data-doc-hover-owner]").forEach(close)
   })
 }
 

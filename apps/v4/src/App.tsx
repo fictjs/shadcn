@@ -4266,6 +4266,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocCardPreview name={props.name} />
   ) : family === "field" || name.startsWith("field-") ? (
     <DocFieldPreview name={props.name} />
+  ) : family === "hover-card" || name.startsWith("hover-card-") ? (
+    <DocHoverCardPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
     <DocEmptyPreview name={props.name} />
   ) : family === "dropdown-menu" || name.startsWith("dropdown-menu-") ? (
@@ -4520,6 +4522,32 @@ function DocFieldPreview(props: { name: string }) {
   if (variant === "group") return <div class="doc-field-group doc-field-width-xs"><fieldset class="doc-field-set is-checkbox-set"><p class="doc-field-label">Responses</p><p class="doc-field-description">Get notified when ChatGPT responds to requests that take time, like research or image generation.</p><div class="doc-field-group is-nested"><div class="doc-field is-horizontal is-disabled"><DocFieldCheckboxControl id="doc-push" label="Push notifications" checked disabled /><label class="doc-field-label is-normal" for="doc-push">Push notifications</label></div></div></fieldset><div class="doc-field-separator"></div><fieldset class="doc-field-set is-checkbox-set"><p class="doc-field-label">Tasks</p><p class="doc-field-description">Get notified when tasks you've created have updates. <a href="#">Manage tasks</a></p><div class="doc-field-group is-checkboxes">{["Push notifications", "Email notifications"].map((label, index) => <div class="doc-field is-horizontal" data-doc-field-toggle><DocFieldCheckboxControl id={`doc-task-${index}`} label={label} /><label class="doc-field-label is-normal" for={`doc-task-${index}`}>{label}</label></div>)}</div></fieldset></div>
   if (variant === "responsive") return <div class="doc-field-responsive"><form class="doc-field-form" data-doc-field-form><fieldset class="doc-field-set"><legend class="doc-field-legend">Profile</legend><p class="doc-field-description">Fill in your profile information.</p><div class="doc-field-group"><div class="doc-field is-responsive"><div class="doc-field-content"><label class="doc-field-label" for="doc-profile-name">Name</label><p class="doc-field-description">Provide your full name for identification</p></div><input class="ui-input" id="doc-profile-name" placeholder="Evil Rabbit" required /></div><div class="doc-field is-responsive doc-field-actions"><button class="doc-button is-default" type="submit">Submit</button><button class="doc-button is-outline" type="button">Cancel</button></div></div></fieldset></form></div>
   return <DocFieldPaymentForm />
+}
+
+function DocHoverCardItem(props: { trigger: string; triggerHe?: string; triggerEn?: string; side?: string; delay?: number; demo?: boolean; rtl?: boolean }) {
+  const rtl = untrack(() => !!props.rtl)
+  const side = untrack(() => props.side || "bottom")
+  return (
+    <span class="doc-hover-card" data-doc-hover-card data-doc-hover-delay={String(props.delay ?? 100)} data-doc-hover-close-delay="100" data-doc-hover-side={side} data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}>
+      <button type="button" class={props.demo ? "doc-button is-link doc-hover-trigger" : "doc-button is-outline doc-hover-trigger"} data-doc-hover-trigger aria-expanded="false">
+        {rtl ? <DocFieldText ar={props.trigger} he={props.triggerHe || props.trigger} en={props.triggerEn || props.trigger} /> : props.trigger}
+      </button>
+      <div class={`doc-hover-content${props.demo ? " is-demo" : rtl ? " is-product" : " is-side"}`} data-doc-hover-content data-doc-hover-side={side} data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"} hidden>
+        {props.demo ? <><strong>@nextjs</strong><p>The React Framework – created and maintained by @vercel.</p><small>Joined December 2021</small></> : rtl ? <><strong><DocFieldText ar="سماعات لاسلكية" he="אוזניות אלחוטיות" en="Wireless Headphones" /></strong><p><DocFieldText ar="٩٩.٩٩ $" he="99.99 $" en="$99.99" /></p></> : <><strong>Hover Card</strong><p>This hover card appears on the {side} side of the trigger.</p></>}
+      </div>
+    </span>
+  )
+}
+
+function DocHoverCardPreview(props: { name: string }) {
+  const variant = untrack(() => props.name.replace("hover-card-", ""))
+  if (variant === "sides") return <div class="doc-hover-row">{["left", "top", "bottom", "right"].map((side) => <DocHoverCardItem trigger={side[0].toUpperCase() + side.slice(1)} side={side} delay={100} />)}</div>
+  if (variant === "rtl") {
+    const physical = [["يسار", "שמאל", "Left", "left"], ["أعلى", "למעלה", "Top", "top"], ["أسفل", "למטה", "Bottom", "bottom"], ["يمين", "ימין", "Right", "right"]]
+    const logical = [["بداية السطر", "תחילת השורה", "Inline Start", "inline-start"], ["نهاية السطر", "סוף השורה", "Inline End", "inline-end"]]
+    return <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-hover-rtl-preview" dir="rtl" data-lang="ar"><div class="doc-hover-rtl-grid"><div class="doc-hover-row">{physical.map((item) => <DocHoverCardItem trigger={item[0]} triggerHe={item[1]} triggerEn={item[2]} side={item[3]} delay={10} rtl />)}</div><div class="doc-hover-row">{logical.map((item) => <DocHoverCardItem trigger={item[0]} triggerHe={item[1]} triggerEn={item[2]} side={item[3]} delay={10} rtl />)}</div></div></div></div>
+  }
+  return <DocHoverCardItem trigger="Hover Here" delay={10} demo />
 }
 
 function DocEmptyPreview(props: { name: string }) {

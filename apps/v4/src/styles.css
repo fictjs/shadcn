@@ -2340,6 +2340,34 @@ h1 {
   .doc-field-grid.is-three { gap: 12px; }
 }
 
+.doc-component-card[data-doc-preview-name="hover-card-demo"] { overflow: visible; }
+.doc-component-card[data-doc-preview-name="hover-card-demo"] .doc-component-preview-stage { height: 320px; min-height: 320px; }
+.doc-component-card[data-doc-preview-name="hover-card-sides"] { overflow: visible; }
+.doc-component-card[data-doc-preview-name="hover-card-sides"] .doc-component-preview-stage { height: 352px; min-height: 352px; }
+.doc-component-card[data-doc-preview-name="hover-card-rtl"] { overflow: visible; }
+.doc-component-card[data-doc-preview-name="hover-card-rtl"] .doc-component-preview-stage { display: block; height: 384px; min-height: 384px; padding: 0; }
+.doc-hover-card { display: inline-flex; }
+.doc-hover-trigger { text-transform: none; }
+.doc-hover-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.doc-hover-content { position: fixed; z-index: 80; box-sizing: border-box; display: flex; width: 256px; flex-direction: column; border-radius: 10px; background: var(--popover); color: var(--popover-foreground); padding: 10px; font-size: 14px; line-height: 20px; outline: none; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent); animation: doc-hover-card-in 100ms ease-out; }
+.doc-hover-content[hidden] { display: none; }
+.doc-hover-content strong,
+.doc-hover-content p { margin: 0; }
+.doc-hover-content strong { font-weight: 600; }
+.doc-hover-content.is-demo { gap: 2px; }
+.doc-hover-content.is-demo small { margin-top: 4px; color: var(--muted-foreground); font-size: 12px; line-height: 16px; }
+.doc-hover-content.is-side,
+.doc-hover-content.is-product { gap: 4px; }
+.doc-hover-content.is-product p { color: var(--muted-foreground); }
+.doc-rtl-preview.doc-hover-rtl-preview { box-sizing: border-box; height: 320px; align-items: center; padding: 24px; }
+.doc-hover-rtl-grid { display: grid; gap: 16px; font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-hover-rtl-preview[data-lang="he"] .doc-hover-rtl-grid { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+
+@keyframes doc-hover-card-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 .doc-component-card[data-doc-preview-name^="empty-"]:not([data-doc-preview-name="empty-rtl"]) .doc-component-preview-stage { height: 384px; min-height: 384px; }
 .doc-component-card[data-doc-preview-name="empty-demo"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="empty-background"] .doc-component-preview-stage,
