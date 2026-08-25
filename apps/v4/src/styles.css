@@ -2660,6 +2660,27 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-menubar-rtl-preview .doc-menubar { font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-menubar-rtl-preview[data-lang="he"] .doc-menubar { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 
+.doc-component-card[data-doc-preview-name^="native-select-"]:not([data-doc-preview-name="native-select-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="native-select-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.doc-native-select { position: relative; width: fit-content; color: var(--foreground); }
+.doc-native-select select { display: block; box-sizing: border-box; height: 32px; appearance: none; border: 1px solid var(--input); border-radius: 10px; padding: 4px 32px 4px 10px; color: inherit; background: transparent; font-family: inherit; font-size: 14px; line-height: 20px; outline: none; user-select: none; transition: color 150ms, border-color 150ms, box-shadow 150ms, background-color 150ms; }
+.doc-native-select > svg { pointer-events: none; position: absolute; top: 50%; right: 10px; width: 16px; height: 16px; transform: translateY(-50%); color: var(--muted-foreground); }
+.doc-native-select.is-demo select { width: 129px; }
+.doc-native-select.is-groups select { width: 188px; }
+.doc-native-select.is-disabled { opacity: 0.5; }
+.doc-native-select.is-disabled select { width: 106px; pointer-events: none; cursor: not-allowed; }
+.doc-native-select.is-invalid select { width: 111px; border-color: var(--destructive); box-shadow: 0 0 0 3px color-mix(in oklab, var(--destructive) 20%, transparent); }
+.doc-native-select select:focus-visible { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.dark .doc-native-select select { background: color-mix(in oklab, var(--input) 30%, transparent); }
+.dark .doc-native-select select:hover:not(:disabled) { background: color-mix(in oklab, var(--input) 50%, transparent); }
+.dark .doc-native-select.is-invalid select { border-color: color-mix(in oklab, var(--destructive) 50%, transparent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--destructive) 40%, transparent); }
+.doc-native-select[dir="rtl"] select { width: 104px; padding: 4px 10px 4px 32px; }
+.doc-native-select[dir="rtl"] > svg { right: auto; left: 10px; }
+.doc-native-select-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; }
+.doc-native-select-rtl-preview .doc-native-select { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-native-select-rtl-preview[data-lang="he"] .doc-native-select { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+.doc-native-select-rtl-preview[data-lang="en"] .doc-native-select select { width: 129px; }
+
 .doc-component-card[data-doc-preview-name^="empty-"]:not([data-doc-preview-name="empty-rtl"]) .doc-component-preview-stage { height: 384px; min-height: 384px; }
 .doc-component-card[data-doc-preview-name="empty-demo"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="empty-background"] .doc-component-preview-stage,

@@ -2609,6 +2609,76 @@ test.describe("shadcn v4 site", () => {
     await expect(demo.locator('[data-slot="menubar-content"]:visible')).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
+  test("native select docs match React sizing, options, groups, states, focus, and RTL", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/base/native-select")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(5)
+    for (let index = 0; index < 4; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(4).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+
+    const expectedWidths = ["129px", "188px", "106px", "111px", "104px"]
+    for (let index = 0; index < 5; index += 1) {
+      const select = previews.nth(index).locator('[data-slot="native-select"]')
+      const icon = previews.nth(index).locator('[data-slot="native-select-icon"]')
+      await expect(select).toHaveCSS("width", expectedWidths[index])
+      await expect(select).toHaveCSS("height", "32px")
+      await expect(select).toHaveCSS("font-size", "14px")
+      await expect(select).toHaveCSS("line-height", "20px")
+      await expect(select).toHaveCSS("border-radius", "10px")
+      await expect(icon).toHaveCSS("width", "16px")
+      await expect(icon).toHaveCSS("height", "16px")
+    }
+
+    const demo = page.locator('[data-doc-preview-name="native-select-demo"]')
+    const demoSelect = demo.locator("select")
+    await expect(demoSelect.locator("option")).toHaveText(["Select status", "Todo", "In Progress", "Done", "Cancelled"])
+    await expect(demoSelect).toHaveValue("")
+    await demoSelect.selectOption("done")
+    await expect(demoSelect).toHaveValue("done")
+    await expectFocusRing(demoSelect)
+
+    const groups = page.locator('[data-doc-preview-name="native-select-groups"] select')
+    await expect(groups.locator("optgroup")).toHaveCount(3)
+    await expect(groups.locator("optgroup").nth(0)).toHaveAttribute("label", "Engineering")
+    await expect(groups.locator("optgroup").nth(1)).toHaveAttribute("label", "Sales")
+    await expect(groups.locator("optgroup").nth(2)).toHaveAttribute("label", "Operations")
+    await expect(groups.locator("option")).toHaveCount(10)
+    await groups.selectOption("ops-manager")
+    await expect(groups).toHaveValue("ops-manager")
+
+    const disabled = page.locator('[data-doc-preview-name="native-select-disabled"]')
+    await expect(disabled.locator("select")).toBeDisabled()
+    await expect(disabled.locator('[data-slot="native-select-wrapper"]')).toHaveCSS("opacity", "0.5")
+
+    const invalid = page.locator('[data-doc-preview-name="native-select-invalid"] select')
+    await expect(invalid).toHaveAttribute("aria-invalid", "true")
+    await expect(invalid).toHaveCSS("box-shadow", /3px/)
+
+    const rtl = page.locator('[data-doc-preview-name="native-select-rtl"]')
+    const rtlRoot = rtl.locator('[data-slot="native-select-wrapper"]')
+    const rtlSelect = rtl.locator('[data-slot="native-select"]')
+    await expect(rtlRoot).toHaveAttribute("dir", "rtl")
+    await expect(rtlSelect).toHaveCSS("padding", "4px 10px 4px 32px")
+    await expect(rtlSelect.locator("option")).toHaveText(["اختر الحالة", "مهام", "قيد التنفيذ", "منجز", "ملغي"])
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtlSelect.locator("option")).toHaveText(["בחר סטטוס", "לעשות", "בתהליך", "הושלם", "בוטל"])
+    await expect(rtlRoot).toHaveAttribute("dir", "rtl")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtlRoot).toHaveAttribute("dir", "ltr")
+    await expect(rtlSelect).toHaveCSS("width", "129px")
+    await expect(rtlSelect.locator("option")).toHaveText(["Select status", "Todo", "In Progress", "Done", "Cancelled"])
+
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(page.locator("html")).toHaveClass(/dark/)
+    await expect(demoSelect).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+    await expect(invalid).toHaveCSS("box-shadow", /3px/)
+  })
+
   test("kbd docs match React keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/base/kbd")

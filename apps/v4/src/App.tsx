@@ -4280,6 +4280,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocLabelPreview name={props.name} />
   ) : family === "menubar" ? (
     <DocMenubarPreview name={props.name} />
+  ) : family === "native-select" ? (
+    <DocNativeSelectPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -4832,6 +4834,18 @@ function DocMenubarPreview(props: { name: string }) {
   ]
   const bar = <div class="doc-menubar" data-slot="menubar" data-doc-menubar data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}>{menus.map((menu, index) => <span class="ui-menu doc-dropdown-menu doc-menubar-menu" data-menu><button type="button" class="doc-menubar-trigger" role="menuitem" data-slot="menubar-trigger" data-doc-menubar-trigger data-menu-trigger aria-haspopup="menu" aria-expanded="false" data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? menu.label : undefined} data-text-he={menu.labelHe} data-text-en={menu.labelEn}>{menu.label}</button><div class={`ui-menu-panel doc-dropdown-panel doc-menubar-panel${menu.panelClass ? ` ${menu.panelClass}` : ""}`} data-slot="menubar-content" data-menu-panel data-menu-side="bottom" data-menu-align={rtl && index === 0 ? "end" : "start"} role="menu" data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"} hidden><DocDropdownEntries entries={menu.entries} rtl={rtl} /></div></span>)}</div>
   return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-menubar-rtl-preview" dir="rtl" data-lang="ar">{bar}</div></div> : bar
+}
+
+function DocNativeSelectPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const rtl = name === "native-select-rtl"
+  const groups = name === "native-select-groups"
+  const disabled = name === "native-select-disabled"
+  const invalid = name === "native-select-invalid"
+  const option = (value: string, label: string, labelHe?: string, labelEn?: string) => <option data-slot="native-select-option" value={value} data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? label : undefined} data-text-he={labelHe} data-text-en={labelEn}>{label}</option>
+  const options = rtl ? <>{option("", "اختر الحالة", "בחר סטטוס", "Select status")}{option("todo", "مهام", "לעשות", "Todo")}{option("in-progress", "قيد التنفيذ", "בתהליך", "In Progress")}{option("done", "منجز", "הושלם", "Done")}{option("cancelled", "ملغي", "בוטל", "Cancelled")}</> : groups ? <>{option("", "Select department")}<optgroup data-slot="native-select-optgroup" label="Engineering">{option("frontend", "Frontend")}{option("backend", "Backend")}{option("devops", "DevOps")}</optgroup><optgroup data-slot="native-select-optgroup" label="Sales">{option("sales-rep", "Sales Rep")}{option("account-manager", "Account Manager")}{option("sales-director", "Sales Director")}</optgroup><optgroup data-slot="native-select-optgroup" label="Operations">{option("support", "Customer Support")}{option("product-manager", "Product Manager")}{option("ops-manager", "Operations Manager")}</optgroup></> : disabled ? <>{option("", "Disabled")}{option("apple", "Apple")}{option("banana", "Banana")}{option("blueberry", "Blueberry")}</> : invalid ? <>{option("", "Error state")}{option("apple", "Apple")}{option("banana", "Banana")}{option("blueberry", "Blueberry")}</> : <>{option("", "Select status")}{option("todo", "Todo")}{option("in-progress", "In Progress")}{option("done", "Done")}{option("cancelled", "Cancelled")}</>
+  const control = <div class={`doc-native-select is-${name.replace("native-select-", "")}`} data-slot="native-select-wrapper" data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}><select data-slot="native-select" aria-label={rtl ? "اختر الحالة" : groups ? "Select department" : disabled ? "Disabled" : invalid ? "Error state" : "Select status"} aria-invalid={invalid ? "true" : undefined} disabled={disabled}>{options}</select><svg data-slot="native-select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></div>
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-native-select-rtl-preview" dir="rtl" data-lang="ar">{control}</div></div> : control
 }
 
 function DocEmptyPreview(props: { name: string }) {
