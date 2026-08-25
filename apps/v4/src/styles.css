@@ -2867,6 +2867,35 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-resizable-rtl-preview .doc-resizable-group { font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-resizable-rtl-preview[data-lang="he"] .doc-resizable-group { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 
+.doc-component-card[data-doc-preview-name="scroll-area-demo"] .doc-component-preview-stage { height: 384px; min-height: 384px; }
+.doc-component-card[data-doc-preview-name="scroll-area-horizontal-demo"] .doc-component-preview-stage { height: 512px; min-height: 512px; }
+.doc-component-card[data-doc-preview-name="scroll-area-rtl"] .doc-component-preview-stage { display: block; height: 432px; min-height: 432px; padding: 0; }
+.doc-scroll-area { position: relative; box-sizing: border-box; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; color: var(--foreground); background: var(--background); }
+.doc-scroll-area.is-vertical { width: 192px; height: 288px; }
+.doc-scroll-area.is-horizontal { width: 384px; }
+.doc-scroll-viewport { width: 100%; height: 100%; overflow: auto; scrollbar-width: none; }
+.doc-scroll-viewport::-webkit-scrollbar { display: none; }
+.doc-scroll-tags { padding: 16px; }
+.doc-scroll-tags h4 { margin: 0 0 16px; font-size: 14px; font-weight: 500; line-height: 14px; }
+.doc-scroll-tags > div { font-size: 14px; line-height: 20px; }
+.doc-scroll-separator { display: block; height: 1px; margin: 8px 0; background: var(--border); }
+.doc-scrollbar { position: absolute; display: flex; padding: 1px; touch-action: none; user-select: none; }
+.doc-scrollbar.is-vertical { top: 0; right: 0; width: 10px; height: 100%; border-inline-start: 1px solid transparent; }
+.doc-scroll-area[dir="rtl"] .doc-scrollbar.is-vertical { right: auto; left: 0; }
+.doc-scrollbar.is-horizontal { right: 0; bottom: 0; left: 0; height: 10px; flex-direction: column; border-top: 1px solid transparent; }
+.doc-scrollbar > span { position: relative; flex: 1; border-radius: 999px; background: var(--border); }
+.doc-scrollbar.is-vertical > span { max-height: 56px; }
+.doc-scrollbar.is-horizontal > span { max-width: 120px; }
+.doc-scroll-works { display: flex; width: max-content; gap: 16px; padding: 16px; }
+.doc-scroll-works figure { width: 300px; flex: 0 0 auto; margin: 0; }
+.doc-scroll-works figure > div { overflow: hidden; border-radius: 8px; }
+.doc-scroll-works img { display: block; width: 300px; height: 400px; object-fit: cover; }
+.doc-scroll-works figcaption { padding-top: 8px; color: var(--muted-foreground); font-size: 12px; line-height: 16px; }
+.doc-scroll-works figcaption strong { color: var(--foreground); font-weight: 600; }
+.doc-rtl-preview.doc-scroll-rtl-preview { box-sizing: border-box; height: 368px; align-items: center; padding: 40px; }
+.doc-scroll-rtl-preview .doc-scroll-area { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-scroll-rtl-preview[data-lang="he"] .doc-scroll-area { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+
 .doc-component-card[data-doc-preview-name^="empty-"]:not([data-doc-preview-name="empty-rtl"]) .doc-component-preview-stage { height: 384px; min-height: 384px; }
 .doc-component-card[data-doc-preview-name="empty-demo"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="empty-background"] .doc-component-preview-stage,

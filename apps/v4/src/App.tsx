@@ -4294,6 +4294,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocRadioGroupPreview name={props.name} />
   ) : family === "resizable" ? (
     <DocResizablePreview name={props.name} />
+  ) : family === "scroll-area" ? (
+    <DocScrollAreaPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -4973,6 +4975,17 @@ function DocResizablePreview(props: { name: string }) {
   else if (name === "resizable-vertical") content = <div class="doc-resizable-group is-vertical is-simple" data-doc-resizable-group data-orientation="vertical"><div class="doc-resizable-panel" data-doc-resizable-panel style="flex-basis:25%"><strong>Header</strong></div>{handle("horizontal", false, 25)}<div class="doc-resizable-panel" data-doc-resizable-panel style="flex-basis:75%"><strong>Content</strong></div></div>
   else content = <div class="doc-resizable-group is-horizontal is-handle" data-doc-resizable-group data-orientation="horizontal"><div class="doc-resizable-panel" data-doc-resizable-panel style="flex-basis:25%"><strong>Sidebar</strong></div>{handle("vertical", true, 25)}<div class="doc-resizable-panel" data-doc-resizable-panel style="flex-basis:75%"><strong>Content</strong></div></div>
   return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-resizable-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
+}
+
+function DocScrollAreaPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const rtl = name === "scroll-area-rtl"
+  const tags = Array.from({ length: 50 }, (_, index) => `v1.2.0-beta.${50 - index}`)
+  const vertical = <div class="doc-scroll-area is-vertical" data-doc-scroll-area data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}><div class="doc-scroll-viewport" data-doc-scroll-viewport><div class="doc-scroll-tags"><h4 data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "العلامات" : undefined} data-text-he={rtl ? "תגיות" : undefined} data-text-en={rtl ? "Tags" : undefined}>{rtl ? "العلامات" : "Tags"}</h4>{tags.map((tag) => <><div>{tag}</div><span class="doc-scroll-separator"></span></>)}</div></div><span class="doc-scrollbar is-vertical" aria-hidden="true"><span></span></span></div>
+  const works = [["Ornella Binni", "https://images.unsplash.com/photo-1465869185982-5a1a7522cbcb?auto=format&fit=crop&w=300&q=80"], ["Tom Byrom", "https://images.unsplash.com/photo-1548516173-3cabfa4607e9?auto=format&fit=crop&w=300&q=80"], ["Vladimir Malyavko", "https://images.unsplash.com/photo-1494337480532-3725c85fd2ab?auto=format&fit=crop&w=300&q=80"]]
+  const horizontal = <div class="doc-scroll-area is-horizontal" data-doc-scroll-area><div class="doc-scroll-viewport" data-doc-scroll-viewport><div class="doc-scroll-works">{works.map(([artist, art]) => <figure><div><img src={art} alt={`Photo by ${artist}`} width="300" height="400" /></div><figcaption>Photo by <strong>{artist}</strong></figcaption></figure>)}</div></div><span class="doc-scrollbar is-horizontal" aria-hidden="true"><span></span></span></div>
+  const content = name === "scroll-area-horizontal-demo" ? horizontal : vertical
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-scroll-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
 function DocEmptyPreview(props: { name: string }) {
