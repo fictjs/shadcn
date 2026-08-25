@@ -3210,6 +3210,48 @@ test.describe("shadcn v4 site", () => {
     await expect(demoTrigger).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
+  test("separator docs match React horizontal, vertical, menu, list, and RTL layouts", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/base/separator")
+    await waitForClientReady(page)
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(5)
+    for (let index = 0; index < 4; index += 1) await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    await expect(previews.nth(4).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+
+    const demo = page.locator('[data-doc-preview-name="separator-demo"]')
+    await expect(demo.locator(".doc-separator-demo")).toHaveCSS("width", "384px")
+    await expect(demo.getByRole("separator")).toHaveAttribute("aria-orientation", "horizontal")
+    await expect(demo.getByRole("separator")).toHaveCSS("height", "1px")
+    await expect(demo).toContainText("The Foundation for your Design System")
+
+    const vertical = page.locator('[data-doc-preview-name="separator-vertical"]')
+    await expect(vertical.locator(".doc-separator-vertical")).toHaveText("BlogDocsSource")
+    await expect(vertical.getByRole("separator")).toHaveCount(2)
+    await expect(vertical.getByRole("separator").first()).toHaveCSS("width", "1px")
+    await expect(vertical.getByRole("separator").first()).toHaveCSS("height", "20px")
+
+    const menu = page.locator('[data-doc-preview-name="separator-menu"]')
+    await expect(menu.locator("strong")).toHaveText(["Settings", "Account", "Help"])
+    await expect(menu.locator("small")).toHaveText(["Manage preferences", "Profile & security", "Support & docs"])
+    await expect(menu.getByRole("separator")).toHaveCount(2)
+
+    const list = page.locator('[data-doc-preview-name="separator-list"]')
+    await expect(list.locator("dt")).toHaveText(["Item 1", "Item 2", "Item 3"])
+    await expect(list.locator("dd")).toHaveText(["Value 1", "Value 2", "Value 3"])
+    await expect(list.getByRole("separator")).toHaveCount(2)
+
+    const rtl = page.locator('[data-doc-preview-name="separator-rtl"]')
+    const rtlDemo = rtl.locator(".doc-separator-demo")
+    await expect(rtlDemo).toHaveAttribute("dir", "rtl")
+    await expect(rtlDemo).toContainText("الأساس لنظام التصميم الخاص بك")
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtlDemo).toContainText("הבסיס למערכת העיצוב שלך")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtlDemo).toHaveAttribute("dir", "ltr")
+    await expect(rtlDemo).toContainText("The Foundation for your Design System")
+  })
+
   test("kbd docs match React keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/base/kbd")

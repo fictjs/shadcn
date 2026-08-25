@@ -2940,6 +2940,28 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-select-rtl-preview[data-lang="he"] .doc-select { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 .doc-select[dir="rtl"] .doc-select-panel { right: 0; left: auto; }
 
+.doc-component-card[data-doc-preview-name^="separator-"]:not([data-doc-preview-name="separator-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="separator-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.doc-separator { display: block; flex-shrink: 0; background: var(--border); }
+.doc-separator.is-horizontal { width: 100%; height: 1px; }
+.doc-separator.is-vertical { width: 1px; height: 100%; }
+.doc-separator-demo { display: flex; width: 384px; flex-direction: column; gap: 16px; color: var(--foreground); font-size: 14px; line-height: 20px; }
+.doc-separator-demo > div { display: flex; flex-direction: column; gap: 6px; }
+.doc-separator-demo strong { font-weight: 500; line-height: 14px; }
+.doc-separator-demo > div > span { color: var(--muted-foreground); }
+.doc-separator-demo p { margin: 0; }
+.doc-separator-vertical { display: flex; height: 20px; align-items: center; gap: 16px; color: var(--foreground); font-size: 14px; line-height: 20px; }
+.doc-separator-menu { display: flex; height: 36px; align-items: center; gap: 16px; color: var(--foreground); }
+.doc-separator-menu > div { display: flex; flex-direction: column; gap: 4px; }
+.doc-separator-menu strong { font-size: 14px; font-weight: 500; line-height: 16px; }
+.doc-separator-menu small { color: var(--muted-foreground); font-size: 12px; line-height: 16px; white-space: nowrap; }
+.doc-separator-list { display: flex; width: 384px; flex-direction: column; gap: 8px; color: var(--foreground); font-size: 14px; line-height: 20px; }
+.doc-separator-list dl { display: flex; align-items: center; justify-content: space-between; margin: 0; }
+.doc-separator-list dd { margin: 0; color: var(--muted-foreground); }
+.doc-rtl-preview.doc-separator-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; }
+.doc-separator-rtl-preview .doc-separator-demo { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-separator-rtl-preview[data-lang="he"] .doc-separator-demo { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+
 .doc-component-card[data-doc-preview-name^="empty-"]:not([data-doc-preview-name="empty-rtl"]) .doc-component-preview-stage { height: 384px; min-height: 384px; }
 .doc-component-card[data-doc-preview-name="empty-demo"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="empty-background"] .doc-component-preview-stage,

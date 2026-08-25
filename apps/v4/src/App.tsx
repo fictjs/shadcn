@@ -4298,6 +4298,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocScrollAreaPreview name={props.name} />
   ) : family === "select" ? (
     <DocSelectPreview name={props.name} />
+  ) : family === "separator" ? (
+    <DocSeparatorPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -5008,6 +5010,19 @@ function DocSelectPreview(props: { name: string }) {
   const select = <span class={`doc-select is-${variant}`} data-doc-select data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"} data-value={defaultValue}><button type="button" class="doc-select-trigger" data-doc-select-trigger aria-haspopup="listbox" aria-expanded="false" aria-invalid={variant === "invalid" ? "true" : undefined} disabled={variant === "disabled"}><span data-doc-select-value data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? "اختر فاكهة" : undefined} data-text-he={rtl ? "בחר פרי" : undefined} data-text-en={rtl ? "Select a fruit" : undefined}>{defaultValue === "banana" ? "Banana" : placeholder}</span><ChevronDownIcon /></button><div class={`doc-select-panel${scrollable ? " is-scrollable" : ""}`} data-doc-select-panel role="listbox" hidden>{entries}</div></span>
   const content = variant === "align-item" ? <div class="doc-select-align"><label><span><strong>Align Item</strong><small>Toggle to align the item with the trigger.</small></span><button type="button" role="switch" aria-checked="true" data-doc-select-align-switch><span></span></button></label>{select}</div> : variant === "invalid" ? <div class="doc-select-invalid-field"><label>Fruit</label>{select}<p>Please select a fruit.</p></div> : select
   return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-select-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
+}
+
+function DocSeparatorPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const rtl = name === "separator-rtl"
+  const text = (ar: string, he: string, en: string) => rtl ? <span data-doc-rtl-text data-text-ar={ar} data-text-he={he} data-text-en={en}>{ar}</span> : en
+  const demo = <div class="doc-separator-demo" data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}><div><strong>shadcn/ui</strong><span>{text("الأساس لنظام التصميم الخاص بك", "הבסיס למערכת העיצוב שלך", "The Foundation for your Design System")}</span></div><span class="doc-separator is-horizontal" role="separator" aria-orientation="horizontal"></span><p>{text("مجموعة من المكونات المصممة بشكل جميل يمكنك تخصيصها وتوسيعها والبناء عليها.", "סט של רכיבים מעוצבים בצורה יפה שאתה יכול להתאים אישית, להרחיב ולבנות עליהם.", "A set of beautifully designed components that you can customize, extend, and build on.")}</p></div>
+  let content
+  if (name === "separator-demo" || rtl) content = demo
+  else if (name === "separator-vertical") content = <div class="doc-separator-vertical"><span>Blog</span><span class="doc-separator is-vertical" role="separator" aria-orientation="vertical"></span><span>Docs</span><span class="doc-separator is-vertical" role="separator" aria-orientation="vertical"></span><span>Source</span></div>
+  else if (name === "separator-menu") content = <div class="doc-separator-menu">{[["Settings", "Manage preferences"], ["Account", "Profile & security"], ["Help", "Support & docs"]].map((entry, index) => <>{index > 0 ? <span class="doc-separator is-vertical" role="separator" aria-orientation="vertical"></span> : null}<div><strong>{entry[0]}</strong><small>{entry[1]}</small></div></>)}</div>
+  else content = <div class="doc-separator-list">{[["Item 1", "Value 1"], ["Item 2", "Value 2"], ["Item 3", "Value 3"]].map((entry, index) => <>{index > 0 ? <span class="doc-separator is-horizontal" role="separator" aria-orientation="horizontal"></span> : null}<dl><dt>{entry[0]}</dt><dd>{entry[1]}</dd></dl></>)}</div>
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-separator-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
 function DocEmptyPreview(props: { name: string }) {
