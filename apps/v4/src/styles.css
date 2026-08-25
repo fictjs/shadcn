@@ -2176,6 +2176,46 @@ h1 {
 .doc-component-card[data-doc-preview-name="chart-tooltip"] .doc-component-preview-stage { height: 288px; min-height: 288px; padding: 0; }
 .doc-component-card[data-doc-preview-name="chart-rtl"] .doc-component-preview-stage { display: block; height: 432px; min-height: 432px; padding: 0; }
 
+.doc-component-card[data-doc-preview-name="command-demo"] .doc-component-preview-stage { height: 392px; min-height: 392px; }
+.doc-component-card[data-doc-preview-name^="command-"]:not([data-doc-preview-name="command-demo"]):not([data-doc-preview-name="command-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="command-rtl"] .doc-component-preview-stage { display: block; height: 456px; min-height: 456px; padding: 0; }
+.doc-command-surface { box-sizing: border-box; display: flex; width: 384px; height: 312px; flex-direction: column; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-xl); color: var(--foreground); background: var(--popover); }
+.doc-command-input { position: relative; box-sizing: border-box; display: flex; height: 44px; flex: 0 0 44px; align-items: center; margin: 0; padding: 0.375rem 0.5rem; }
+.doc-command-input::before { position: absolute; inset: 0.375rem 0.5rem; border: 1px solid color-mix(in oklab, var(--input) 30%, transparent); border-radius: var(--radius-lg); background: color-mix(in oklab, var(--input) 30%, transparent); content: ""; }
+.doc-command-input > span { position: relative; display: inline-grid; width: 1.5rem; height: 2rem; flex: 0 0 1.5rem; place-items: center; color: var(--muted-foreground); }
+.doc-command-input svg { width: 1rem; height: 1rem; }
+.doc-command-input input { position: relative; min-width: 0; height: 2rem; flex: 1; border: 0; padding: 0 0.5rem 0 0; color: var(--foreground); background: transparent; font: inherit; font-size: 0.875rem; outline: none; }
+.doc-command-input input::placeholder { color: var(--muted-foreground); opacity: 1; }
+.doc-command-list { box-sizing: border-box; min-height: 0; flex: 1; overflow-y: auto; padding: 0 0.25rem 0.25rem; }
+.doc-command-group { padding: 0.25rem; }
+.doc-command-group + .doc-command-group { margin-top: 0.25rem; border-top: 1px solid var(--border); padding-top: 0.5rem; }
+.doc-command-group h5 { margin: 0; padding: 0.25rem 0.5rem 0.375rem; color: var(--muted-foreground); font-size: 0.75rem; font-weight: 400; line-height: 1rem; }
+.doc-command-item { display: flex; width: 100%; height: 2rem; align-items: center; gap: 0.5rem; border: 0; border-radius: var(--radius-md); padding: 0 0.5rem; color: var(--foreground); background: transparent; font: inherit; font-size: 0.875rem; text-align: start; outline: none; }
+.doc-command-item[data-highlighted],
+.doc-command-item:hover:not(:disabled) { background: var(--accent); color: var(--accent-foreground); }
+.doc-command-item:disabled { color: var(--muted-foreground); opacity: 0.6; }
+.doc-command-item > svg { width: 1rem; height: 1rem; flex: 0 0 1rem; }
+.doc-command-item > kbd { margin-inline-start: auto; color: var(--muted-foreground); font-family: inherit; font-size: 0.75rem; }
+.doc-command-empty { padding: 2rem 0; color: var(--muted-foreground); font-size: 0.875rem; text-align: center; }
+.doc-command-empty[hidden],
+.doc-command-group[hidden],
+.doc-command-item[hidden] { display: none; }
+.doc-command-launch { display: flex; flex-direction: column; gap: 1rem; }
+.doc-command-portal { position: fixed; z-index: 120; inset: 0; }
+.doc-command-portal[hidden] { display: none; }
+.doc-command-overlay { position: absolute; inset: 0; background: rgb(0 0 0 / 18%); }
+.doc-command-dialog { position: fixed; z-index: 121; top: 33.3328125%; left: 50%; width: 384px; transform: translateX(-50%); }
+.doc-command-dialog .doc-command-surface { height: 309px; border: 0; box-shadow: 0 12px 40px rgb(0 0 0 / 22%); }
+.doc-command-dialog.is-basic .doc-command-surface,
+.doc-command-dialog.is-shortcuts .doc-command-surface { height: 176px; }
+.doc-command-dialog.is-scrollable .doc-command-surface { height: 332px; }
+.doc-command-dialog.is-scrollable .doc-command-list { height: 288px; flex: 0 0 288px; }
+.doc-command-rtl-preview { box-sizing: border-box; height: 392px; align-items: center; }
+.doc-command-surface.is-rtl { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-command-rtl-preview[data-lang="he"] .doc-command-surface { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+.doc-command-surface.is-rtl .doc-command-input > span { order: 2; }
+.doc-command-surface.is-rtl .doc-command-input input { padding-inline: 0.5rem 0; text-align: right; }
+
 .doc-component-card[data-doc-preview-name^="combobox-"]:not([data-doc-preview-name="combobox-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
 .doc-component-card[data-doc-preview-name="combobox-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
 .doc-combobox { position: relative; width: max-content; color: var(--foreground); }

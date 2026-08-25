@@ -4262,6 +4262,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
 
   return family === "checkbox" ? (
     <DocCheckboxPreview name={props.name} />
+  ) : family === "command" || name.startsWith("command-") ? (
+    <DocCommandPreview name={props.name} />
   ) : family === "combobox" ? (
     <DocComboboxPreview name={props.name} />
   ) : family === "collapsible" ? (
@@ -4377,6 +4379,64 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <p>Registry preview surface for this documentation example.</p>
     </div>
   )
+}
+
+type DocCommandItem = { label: string; icon?: string; shortcut?: string; disabled?: boolean; labelHe?: string; labelEn?: string }
+type DocCommandGroup = { heading: string; headingHe?: string; headingEn?: string; items: DocCommandItem[] }
+
+function DocCommandPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const isRtl = name === "command-rtl"
+  if (name === "command-demo" || isRtl) {
+    const command = <DocCommandSurface variant="full" rtl={isRtl} />
+    return isRtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-command-rtl-preview" dir="rtl" data-lang="ar">{command}</div></div> : command
+  }
+
+  const variant = name === "command-basic" ? "basic" : name === "command-shortcuts" ? "shortcuts" : name === "command-scrollable" ? "scrollable" : "full"
+  const dialogId = `${name}-dialog`
+  return <div class="doc-command-launch"><button type="button" class="doc-button is-outline" data-slot="button" data-variant="outline" data-size="default" data-doc-command-open aria-haspopup="dialog" aria-controls={dialogId}>Open Menu</button><div class="doc-command-portal" data-doc-command-portal hidden><div class="doc-command-overlay" data-doc-command-overlay></div><div id={dialogId} class={`doc-command-dialog is-${variant}`} role="dialog" aria-modal="true" aria-label="Command Palette"><DocCommandSurface variant={variant} dialog /></div></div></div>
+}
+
+function DocCommandSurface(props: { variant: string; rtl?: boolean; dialog?: boolean }) {
+  const variant = untrack(() => props.variant)
+  const rtl = untrack(() => !!props.rtl)
+  const dialog = untrack(() => !!props.dialog)
+  const fullGroups: DocCommandGroup[] = [
+    { heading: rtl ? "اقتراحات" : "Suggestions", headingHe: rtl ? "הצעות" : undefined, headingEn: rtl ? "Suggestions" : undefined, items: [
+      { label: rtl ? "التقويم" : "Calendar", labelHe: rtl ? "לוח שנה" : undefined, labelEn: rtl ? "Calendar" : undefined, icon: "calendar" },
+      { label: rtl ? "البحث عن الرموز التعبيرية" : "Search Emoji", labelHe: rtl ? "חפש אמוג'י" : undefined, labelEn: rtl ? "Search Emoji" : undefined, icon: "smile" },
+      { label: rtl ? "الآلة الحاسبة" : "Calculator", labelHe: rtl ? "מחשבון" : undefined, labelEn: rtl ? "Calculator" : undefined, icon: "calculator", disabled: !dialog },
+    ] },
+    { heading: rtl ? "الإعدادات" : "Settings", headingHe: rtl ? "הגדרות" : undefined, headingEn: rtl ? "Settings" : undefined, items: [
+      { label: rtl ? "الملف الشخصي" : "Profile", labelHe: rtl ? "פרופיל" : undefined, labelEn: rtl ? "Profile" : undefined, icon: "user", shortcut: "⌘P" },
+      { label: rtl ? "الفوترة" : "Billing", labelHe: rtl ? "חיוב" : undefined, labelEn: rtl ? "Billing" : undefined, icon: "card", shortcut: "⌘B" },
+      { label: rtl ? "الإعدادات" : "Settings", labelHe: rtl ? "הגדרות" : undefined, labelEn: rtl ? "Settings" : undefined, icon: "settings", shortcut: "⌘S" },
+    ] },
+  ]
+  const basicGroups: DocCommandGroup[] = [{ heading: "Suggestions", items: [{ label: "Calendar" }, { label: "Search Emoji" }, { label: "Calculator" }] }]
+  const shortcutGroups: DocCommandGroup[] = [{ heading: "Settings", items: fullGroups[1].items }]
+  const scrollGroups: DocCommandGroup[] = [
+    { heading: "Navigation", items: [{ label: "Home", icon: "home", shortcut: "⌘H" }, { label: "Inbox", icon: "inbox", shortcut: "⌘I" }, { label: "Documents", icon: "file", shortcut: "⌘D" }, { label: "Folders", icon: "folder", shortcut: "⌘F" }] },
+    { heading: "Actions", items: [{ label: "New File", icon: "plus", shortcut: "⌘N" }, { label: "New Folder", icon: "folder", shortcut: "⇧⌘N" }, { label: "Copy", icon: "copy", shortcut: "⌘C" }, { label: "Cut", icon: "cut", shortcut: "⌘X" }, { label: "Paste", icon: "paste", shortcut: "⌘V" }, { label: "Delete", icon: "trash", shortcut: "⌫" }] },
+    { heading: "View", items: [{ label: "Grid View", icon: "grid" }, { label: "List View", icon: "list" }, { label: "Zoom In", icon: "plus", shortcut: "⌘+" }, { label: "Zoom Out", icon: "minus", shortcut: "⌘-" }] },
+    { heading: "Account", items: [{ label: "Profile", icon: "user", shortcut: "⌘P" }, { label: "Billing", icon: "card", shortcut: "⌘B" }, { label: "Settings", icon: "settings", shortcut: "⌘S" }, { label: "Notifications", icon: "bell" }, { label: "Help & Support", icon: "help" }] },
+    { heading: "Tools", items: [{ label: "Calculator", icon: "calculator" }, { label: "Calendar", icon: "calendar" }, { label: "Image Editor", icon: "image" }, { label: "Code Editor", icon: "code" }] },
+  ]
+  const groups = variant === "basic" ? basicGroups : variant === "shortcuts" ? shortcutGroups : variant === "scrollable" ? scrollGroups : fullGroups
+  const placeholder = rtl ? "اكتب أمرًا أو ابحث..." : "Type a command or search..."
+  return <div class={`doc-command-surface is-${variant}${dialog ? " is-dialog" : ""}${rtl ? " is-rtl" : ""}`} data-slot="command" data-doc-command data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}><label class="doc-command-input"><span>{renderDocCommandIcon("search")}</span><input aria-label="Command search" placeholder={placeholder} data-doc-command-input data-placeholder-ar={rtl ? placeholder : undefined} data-placeholder-he={rtl ? "הקלד פקודה או חפש..." : undefined} data-placeholder-en={rtl ? "Type a command or search..." : undefined} /></label><div class="doc-command-list" data-slot="command-list" data-doc-command-list role="listbox">{groups.map((group, groupIndex) => <section class="doc-command-group" data-doc-command-group><h5 data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? group.heading : undefined} data-text-he={group.headingHe} data-text-en={group.headingEn}>{group.heading}</h5>{group.items.map((item, itemIndex) => <button type="button" class="doc-command-item" role="option" aria-selected={groupIndex === 0 && itemIndex === 0 ? "true" : "false"} data-highlighted={groupIndex === 0 && itemIndex === 0 ? "" : undefined} data-doc-command-item disabled={item.disabled}>{item.icon ? renderDocCommandIcon(item.icon) : null}<span data-doc-command-label data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? item.label : undefined} data-text-he={item.labelHe} data-text-en={item.labelEn}>{item.label}</span>{item.shortcut ? <kbd>{item.shortcut}</kbd> : null}</button>)}</section>)}<div class="doc-command-empty" data-doc-command-empty hidden>{rtl ? <span data-doc-rtl-text data-text-ar="لم يتم العثور على نتائج." data-text-he="לא נמצאו תוצאות." data-text-en="No results found.">لم يتم العثور على نتائج.</span> : "No results found."}</div></div></div>
+}
+
+function renderDocCommandIcon(kind: string) {
+  return kind === "search" ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+    : kind === "calendar" ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 11h18"></path></svg>
+      : kind === "smile" ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"></path></svg>
+        : kind === "calculator" ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"></rect><path d="M8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 19h.01M12 19h.01M16 19h.01"></path></svg>
+          : kind === "user" ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3"></circle><path d="M7 21v-2a5 5 0 0 1 10 0v2"></path></svg>
+            : kind === "card" ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"></rect><path d="M3 10h18"></path></svg>
+              : kind === "settings" ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.5-1H3v-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.5V3h4v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9a1.7 1.7 0 0 0 1.5 1h.1v4h-.1a1.7 1.7 0 0 0-1.5 1z"></path></svg>
+                : kind === "plus" || kind === "minus" ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={kind === "plus" ? "M12 5v14M5 12h14" : "M5 12h14"}></path></svg>
+                  : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"></rect><path d="M8 9h8M8 13h6M8 17h4"></path></svg>
 }
 
 type DocComboboxOption = { value: string; label: string; description?: string; group?: string; groupStart?: boolean; groupEnd?: boolean }

@@ -1129,6 +1129,79 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator("[data-doc-combobox-chip]")).toContainText("Technology")
   })
 
+  test("command docs match React geometry, filtering, dialogs, keyboard, scrolling, and RTL", async ({ page }) => {
+    await page.goto("/docs/components/base/command")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(6)
+    await expect(previews.nth(0).locator(".doc-component-preview-stage")).toHaveCSS("height", "392px")
+    for (let index = 1; index <= 4; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(5).locator(".doc-component-preview-stage")).toHaveCSS("height", "456px")
+
+    const demo = page.locator('[data-doc-preview-name="command-demo"]')
+    const demoCommand = demo.locator("[data-doc-command]")
+    const demoInput = demo.getByRole("textbox", { name: "Command search" })
+    await expect(demoCommand).toHaveCSS("width", "384px")
+    await expect(demoCommand).toHaveCSS("height", "312px")
+    await expect(demo.locator("[data-doc-command-item]")).toHaveCount(6)
+    await expect(demo.locator("[data-doc-command-item][data-highlighted]")).toContainText("Calendar")
+    await expect(demo.getByRole("option", { name: "Calculator" })).toBeDisabled()
+    await demoInput.fill("billing")
+    await expect(demo.locator('[data-doc-command-item]:visible')).toHaveCount(1)
+    await expect(demo.locator('[data-doc-command-item]:visible')).toContainText("Billing")
+    await demoInput.fill("missing command")
+    await expect(demo.locator("[data-doc-command-empty]")).toBeVisible()
+    await demoInput.fill("")
+    await demoInput.press("Home")
+    await demoInput.press("ArrowDown")
+    await demoInput.press("ArrowDown")
+    await expect(demo.locator("[data-doc-command-item][data-highlighted]")).toContainText("Profile")
+
+    const dialogExamples = [
+      ["command-basic", "176px"],
+      ["command-shortcuts", "176px"],
+      ["command-groups", "309px"],
+      ["command-scrollable", "332px"],
+    ] as const
+    for (const [name, height] of dialogExamples) {
+      const preview = page.locator(`[data-doc-preview-name="${name}"]`)
+      const trigger = preview.getByRole("button", { name: "Open Menu" })
+      await trigger.click()
+      const portal = page.locator("[data-doc-command-portal]:visible")
+      const command = portal.locator("[data-doc-command]")
+      await expect(portal).toHaveCount(1)
+      await expect(command).toHaveCSS("width", "384px")
+      await expect(command).toHaveCSS("height", height)
+      await expect(command.getByRole("textbox", { name: "Command search" })).toBeFocused()
+      if (name === "command-scrollable") {
+        const list = command.locator("[data-doc-command-list]")
+        await expect(list).toHaveCSS("height", "288px")
+        expect(await list.evaluate((element) => element.scrollHeight)).toBeGreaterThan(288)
+      }
+      await page.keyboard.press("Escape")
+      await expect(portal).toBeHidden()
+      await expect(trigger).toBeFocused()
+    }
+
+    const rtl = page.locator('[data-doc-preview-name="command-rtl"]')
+    const rtlCommand = rtl.locator("[data-doc-command]")
+    const rtlInput = rtl.getByRole("textbox", { name: "Command search" })
+    await expect(rtlCommand).toHaveAttribute("dir", "rtl")
+    await expect(rtlInput).toHaveAttribute("placeholder", "اكتب أمرًا أو ابحث...")
+    await expect(rtl.locator("[data-doc-command-item]").first()).toContainText("التقويم")
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtlCommand).toHaveAttribute("dir", "rtl")
+    await expect(rtlInput).toHaveAttribute("placeholder", "הקלד פקודה או חפש...")
+    await expect(rtl.locator("[data-doc-command-item]").first()).toContainText("לוח שנה")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtlCommand).toHaveAttribute("dir", "ltr")
+    await expect(rtlInput).toHaveAttribute("placeholder", "Type a command or search...")
+    await expect(rtl.locator("[data-doc-command-item]").first()).toContainText("Calendar")
+  })
+
   test("collapsible docs match React geometry, state, keyboard, settings, file tabs, and RTL", async ({ page }) => {
     await page.goto("/docs/components/base/collapsible")
     await waitForClientReady(page)

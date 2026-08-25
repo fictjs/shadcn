@@ -30,6 +30,7 @@ async function initResumableClient(): Promise<void> {
   wireDocAccordions()
   wireDocCollapsibles()
   wireDocComboboxes()
+  wireDocCommands()
   wireDocAlertDialogs()
   wireDocAvatarMenus()
   wireDocButtonGroups()
@@ -1016,6 +1017,133 @@ function wireDocComboboxes(): void {
 
   window.addEventListener("resize", positionPanel)
   window.addEventListener("scroll", positionPanel, true)
+}
+
+function wireDocCommands(): void {
+  let activePortal: HTMLElement | null = null
+  let activeTrigger: HTMLButtonElement | null = null
+  let origin: { parent: Node; nextSibling: ChildNode | null } | null = null
+
+  const items = (command: HTMLElement): HTMLButtonElement[] => [
+    ...command.querySelectorAll<HTMLButtonElement>("[data-doc-command-item]:not([hidden]):not(:disabled)"),
+  ]
+
+  const setHighlight = (command: HTMLElement, item?: HTMLButtonElement): void => {
+    command.querySelectorAll<HTMLButtonElement>("[data-doc-command-item]").forEach((candidate) => {
+      const highlighted = candidate === item
+      if (highlighted) candidate.dataset.highlighted = ""
+      else delete candidate.dataset.highlighted
+      candidate.setAttribute("aria-selected", String(highlighted))
+    })
+  }
+
+  const filter = (command: HTMLElement, queryValue: string): void => {
+    const query = queryValue.trim().toLocaleLowerCase()
+    let visibleCount = 0
+    command.querySelectorAll<HTMLElement>("[data-doc-command-group]").forEach((group) => {
+      let groupCount = 0
+      group.querySelectorAll<HTMLButtonElement>("[data-doc-command-item]").forEach((item) => {
+        const visible = !query || (item.querySelector<HTMLElement>("[data-doc-command-label]")?.textContent ?? "").toLocaleLowerCase().includes(query)
+        item.hidden = !visible
+        if (visible) {
+          visibleCount += 1
+          groupCount += 1
+        }
+      })
+      group.hidden = groupCount === 0
+    })
+    const empty = command.querySelector<HTMLElement>("[data-doc-command-empty]")
+    if (empty) empty.hidden = visibleCount !== 0
+    setHighlight(command, items(command)[0])
+  }
+
+  const close = (restoreFocus = false): void => {
+    if (!activePortal) return
+    activePortal.hidden = true
+    if (origin) origin.parent.insertBefore(activePortal, origin.nextSibling)
+    const trigger = activeTrigger
+    activePortal = null
+    activeTrigger = null
+    origin = null
+    if (restoreFocus) trigger?.focus()
+  }
+
+  const open = (trigger: HTMLButtonElement): void => {
+    close()
+    const portal = trigger.parentElement?.querySelector<HTMLElement>("[data-doc-command-portal]")
+    const command = portal?.querySelector<HTMLElement>("[data-doc-command]")
+    const input = command?.querySelector<HTMLInputElement>("[data-doc-command-input]")
+    if (!portal || !command || !input) return
+    activePortal = portal
+    activeTrigger = trigger
+    origin = { parent: portal.parentNode as Node, nextSibling: portal.nextSibling }
+    portal.hidden = false
+    document.body.append(portal)
+    input.value = ""
+    filter(command, "")
+    input.focus()
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const trigger = target.closest<HTMLButtonElement>("[data-doc-command-open]")
+    if (trigger) {
+      open(trigger)
+      return
+    }
+    if (target.closest("[data-doc-command-overlay]")) {
+      close(true)
+      return
+    }
+    const item = target.closest<HTMLButtonElement>("[data-doc-command-item]")
+    if (item && !item.disabled) {
+      const command = item.closest<HTMLElement>("[data-doc-command]")
+      if (command) setHighlight(command, item)
+      if (activePortal?.contains(item)) close(true)
+    }
+  })
+
+  document.addEventListener("input", (event) => {
+    const target = event.target
+    if (target instanceof HTMLSelectElement && target.matches("[data-doc-rtl-language]")) {
+      const shell = target.closest<HTMLElement>(".doc-rtl-preview-shell")
+      const input = shell?.querySelector<HTMLInputElement>("[data-doc-command-input]")
+      const language = target.value
+      const placeholder = input?.getAttribute(`data-placeholder-${language}`)
+      if (input && placeholder) input.placeholder = placeholder
+      return
+    }
+    if (!(target instanceof HTMLInputElement) || !target.matches("[data-doc-command-input]")) return
+    const command = target.closest<HTMLElement>("[data-doc-command]")
+    if (command) filter(command, target.value)
+  })
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && activePortal) {
+      event.preventDefault()
+      close(true)
+      return
+    }
+    const target = event.target
+    if (!(target instanceof HTMLInputElement) || !target.matches("[data-doc-command-input]")) return
+    const command = target.closest<HTMLElement>("[data-doc-command]")
+    if (!command || !["ArrowDown", "ArrowUp", "Home", "End", "Enter"].includes(event.key)) return
+    const available = items(command)
+    if (!available.length) return
+    const current = available.findIndex((item) => item.hasAttribute("data-highlighted"))
+    if (event.key === "Enter") {
+      if (current >= 0) {
+        event.preventDefault()
+        available[current].click()
+      }
+      return
+    }
+    const next = event.key === "Home" ? 0 : event.key === "End" ? available.length - 1 : event.key === "ArrowDown" ? (current + 1 + available.length) % available.length : (current - 1 + available.length) % available.length
+    event.preventDefault()
+    setHighlight(command, available[next])
+    available[next].scrollIntoView({ block: "nearest" })
+  })
 }
 
 function wireDocAlertDialogs(): void {
