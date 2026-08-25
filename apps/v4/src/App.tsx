@@ -4321,6 +4321,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocTablePreview name={props.name} />
   ) : family === "tabs" ? (
     <DocTabsPreview name={props.name} />
+  ) : family === "textarea" ? (
+    <DocTextareaPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -5214,6 +5216,21 @@ function DocTabsPreview(props: { name: string }) {
   const withPanels = variant === "demo" || rtl
   const tabs = <div class={`doc-preview-tabs${variant === "line" ? " is-line" : ""}${variant === "vertical" ? " is-vertical" : ""}`} data-doc-preview-tabs data-orientation={variant === "vertical" ? "vertical" : "horizontal"} dir={rtl ? "rtl" : "ltr"} data-doc-rtl-direction={rtl ? "true" : undefined}><div class="doc-preview-tabs-list" role="tablist" aria-orientation={variant === "vertical" ? "vertical" : "horizontal"}>{simple.map((entry, index) => <button type="button" role="tab" class="doc-preview-tab" data-doc-preview-tab data-value={entry.value} aria-selected={index === 0 ? "true" : "false"} tabIndex={index === 0 ? 0 : -1} disabled={"disabled" in entry ? entry.disabled : false}>{"icon" in entry ? <DocSidebarIcon kind={entry.icon === "code" ? "models" : "playground"} /> : null}{text(entry.label[0], entry.label[1], entry.label[2])}</button>)}</div>{withPanels ? <div class="doc-preview-tab-panels">{entries.map((entry, index) => <div class="doc-preview-tab-panel" role="tabpanel" data-doc-preview-tab-panel data-value={entry.value} hidden={index !== 0}><div class="doc-preview-tabs-card"><h3>{text(entry.label[0], entry.label[1], entry.label[2])}</h3><p>{text(entry.description[0], entry.description[1], entry.description[2])}</p><div>{text(entry.content[0], entry.content[1], entry.content[2])}</div></div></div>)}</div> : null}</div>
   return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-tabs-rtl-preview" dir="rtl" data-lang="ar">{tabs}</div></div> : tabs
+}
+
+function DocTextareaPreview(props: { name: string }) {
+  const variant = untrack(() => props.name.replace("textarea-", ""))
+  const rtl = variant === "rtl"
+  const textarea = (options: { id?: string; disabled?: boolean; invalid?: boolean; placeholder?: string } = {}) => <textarea id={options.id} class="doc-textarea" aria-invalid={options.invalid ? "true" : undefined} disabled={options.disabled} placeholder={options.placeholder ?? "Type your message here."} data-doc-rtl-placeholder={rtl ? "true" : undefined} data-placeholder-ar={rtl ? "تعليقاتك تساعدنا على التحسين..." : undefined} data-placeholder-he={rtl ? "המשוב שלך עוזר לנו להשתפר..." : undefined} data-placeholder-en={rtl ? "Your feedback helps us improve..." : undefined} dir={rtl ? "rtl" : "ltr"} data-doc-rtl-direction={rtl ? "true" : undefined}></textarea>
+  const field = (options: { label: any; description?: any; disabled?: boolean; invalid?: boolean }) => <div class={`doc-textarea-field${options.disabled ? " is-disabled" : ""}${options.invalid ? " is-invalid" : ""}`} dir={rtl ? "rtl" : "ltr"} data-doc-rtl-direction={rtl ? "true" : undefined}><label for={rtl ? "feedback" : options.invalid ? "textarea-invalid" : options.disabled ? "textarea-disabled" : "textarea-message"}>{options.label}</label>{!options.invalid && options.description ? <p>{options.description}</p> : null}{textarea({ id: rtl ? "feedback" : options.invalid ? "textarea-invalid" : options.disabled ? "textarea-disabled" : "textarea-message", disabled: options.disabled, invalid: options.invalid, placeholder: rtl ? "تعليقاتك تساعدنا على التحسين..." : undefined })}{options.invalid && options.description ? <p>{options.description}</p> : null}</div>
+  let content
+  if (variant === "field") content = field({ label: "Message", description: "Enter your message below." })
+  else if (variant === "disabled") content = field({ label: "Message", disabled: true })
+  else if (variant === "invalid") content = field({ label: "Message", description: "Please enter a valid message.", invalid: true })
+  else if (variant === "button") content = <div class="doc-textarea-button">{textarea()}<button type="button" class="doc-button is-default">Send message</button></div>
+  else if (rtl) content = field({ label: <span data-doc-rtl-text data-text-ar="التعليقات" data-text-he="משוב" data-text-en="Feedback">التعليقات</span>, description: <span data-doc-rtl-text data-text-ar="شاركنا أفكارك حول خدمتنا." data-text-he="שתף את מחשבותיך על השירות שלנו." data-text-en="Share your thoughts about our service.">شاركنا أفكارك حول خدمتنا.</span> })
+  else content = textarea()
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-textarea-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
 function DocEmptyPreview(props: { name: string }) {

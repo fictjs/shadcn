@@ -3811,6 +3811,63 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator(".doc-preview-tabs-card").first()).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
+  test("textarea docs match React base, field, disabled, invalid, button, focus, and RTL", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 })
+    await page.goto("/docs/components/radix/textarea")
+    await waitForClientReady(page)
+
+    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+    await expect(previews).toHaveCount(6)
+    for (let index = 0; index < 5; index += 1) {
+      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
+    }
+    await expect(previews.nth(5).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+    expect((await previews.allInnerTexts()).join(" ")).not.toContain("Email name@example.com")
+
+    const demo = page.locator('[data-doc-preview-name="textarea-demo"]')
+    const demoTextarea = demo.getByPlaceholder("Type your message here.")
+    await expect(demoTextarea).toHaveCSS("width", "320px")
+    await expect(demoTextarea).toHaveCSS("min-height", "64px")
+    await expect(demoTextarea).toHaveCSS("border-radius", "10px")
+    await expect(demoTextarea).toHaveCSS("padding", "8px 10px")
+    await demoTextarea.fill("A detailed message")
+    await expect(demoTextarea).toHaveValue("A detailed message")
+    await expectFocusRing(demoTextarea)
+
+    const field = page.locator('[data-doc-preview-name="textarea-field"]')
+    await expect(field.locator("label")).toHaveText("Message")
+    await expect(field).toContainText("Enter your message below.")
+    await expect(field.locator("label")).toHaveAttribute("for", "textarea-message")
+
+    const disabled = page.locator('[data-doc-preview-name="textarea-disabled"]')
+    await expect(disabled.locator("textarea")).toBeDisabled()
+    await expect(disabled.locator(".doc-textarea-field")).toHaveCSS("opacity", "0.5")
+
+    const invalid = page.locator('[data-doc-preview-name="textarea-invalid"]')
+    const invalidTextarea = invalid.locator("textarea")
+    await expect(invalidTextarea).toHaveAttribute("aria-invalid", "true")
+    await expect(invalid).toContainText("Please enter a valid message.")
+    await expect(invalid.locator(".doc-textarea-field")).toHaveClass(/is-invalid/)
+
+    const button = page.locator('[data-doc-preview-name="textarea-button"]')
+    await expect(button.locator("textarea")).toHaveCSS("width", "320px")
+    await expect(button.getByRole("button", { name: "Send message" })).toHaveCSS("width", "320px")
+
+    const rtl = page.locator('[data-doc-preview-name="textarea-rtl"]')
+    const rtlTextarea = rtl.locator("textarea")
+    await expect(rtlTextarea).toHaveAttribute("dir", "rtl")
+    await expect(rtlTextarea).toHaveAttribute("placeholder", "تعليقاتك تساعدنا على التحسين...")
+    await expect(rtl).toContainText("شاركنا أفكارك حول خدمتنا.")
+    await rtl.getByLabel("Preview language").selectOption("he")
+    await expect(rtlTextarea).toHaveAttribute("placeholder", "המשוב שלך עוזר לנו להשתפר...")
+    await rtl.getByLabel("Preview language").selectOption("en")
+    await expect(rtlTextarea).toHaveAttribute("dir", "ltr")
+    await expect(rtlTextarea).toHaveAttribute("placeholder", "Your feedback helps us improve...")
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await rtlTextarea.focus()
+    await expectFocusRing(rtlTextarea)
+  })
+
   test("kbd docs match React keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/base/kbd")
