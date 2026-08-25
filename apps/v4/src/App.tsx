@@ -3955,7 +3955,7 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
         ))}
       </aside>
 
-      <article class="doc-main">
+      <article class="doc-main" data-doc-slug={doc.slug}>
         <div class="doc-main-shell">
           <header class="doc-header">
             <div class="doc-header-row">

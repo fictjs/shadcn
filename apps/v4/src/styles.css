@@ -2180,7 +2180,7 @@ h1 {
 .doc-component-card[data-doc-preview-name="card-demo"] .doc-component-preview-stage { height: 30rem; min-height: 30rem; }
 .doc-component-card[data-doc-preview-name="card-small"] .doc-component-preview-stage { height: 24rem; min-height: 24rem; }
 .doc-component-card[data-doc-preview-name="card-image"] .doc-component-preview-stage { height: 32rem; min-height: 32rem; }
-.doc-component-card[data-doc-preview-name="card-rtl"] .doc-component-preview-stage { display: block; height: 30rem; min-height: 30rem; padding: 0; }
+.doc-component-card[data-doc-preview-name="card-rtl"] .doc-component-preview-stage { display: block; height: 34rem; min-height: 34rem; padding: 0; }
 
 .doc-component-card[data-doc-preview-name="carousel-demo"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="carousel-orientation"] .doc-component-preview-stage,
@@ -2188,7 +2188,7 @@ h1 {
 .doc-component-card[data-doc-preview-name="carousel-plugin"] .doc-component-preview-stage { height: 32rem; min-height: 32rem; }
 .doc-component-card[data-doc-preview-name="carousel-size"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="carousel-spacing"] .doc-component-preview-stage { height: 18rem; min-height: 18rem; }
-.doc-component-card[data-doc-preview-name="carousel-rtl"] .doc-component-preview-stage { display: block; height: 32rem; min-height: 32rem; padding: 0; }
+.doc-component-card[data-doc-preview-name="carousel-rtl"] .doc-component-preview-stage { display: block; height: 36rem; min-height: 36rem; padding: 0; }
 
 .doc-component-card[data-doc-preview-name="chart-demo"] .doc-component-preview-stage { display: block; height: 438px; min-height: 438px; padding: 0; }
 .doc-component-card[data-doc-preview-name^="chart-example"] .doc-component-preview-stage { height: 320px; min-height: 320px; }
@@ -3911,7 +3911,11 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-card.is-image .doc-card-header { height: 66px; flex-basis: 66px; }
 .doc-card.is-image .doc-card-footer { height: 65px; flex: 0 0 65px; padding: 1rem 1rem 0.75rem; }
 .doc-card .doc-badge { display: inline-flex; height: 1.375rem; align-items: center; border-radius: var(--radius-md); padding: 0 0.5rem; background: var(--secondary); color: var(--secondary-foreground); font-size: 0.75rem; font-weight: 500; }
-.doc-rtl-preview.doc-card-rtl-preview { height: 30rem; align-items: flex-start; }
+.doc-rtl-preview.doc-card-rtl-preview { height: 30rem; align-items: center; }
+/* The direction page reuses the card-rtl preview but sizes it with h-auto,
+   so it is shorter than the 30rem the card page pins. */
+[data-doc-slug$="/direction"] .doc-component-card[data-doc-preview-name="card-rtl"] .doc-component-preview-stage { height: auto; min-height: 0; }
+[data-doc-slug$="/direction"] .doc-rtl-preview.doc-card-rtl-preview { height: 438px; }
 .doc-card-rtl-preview[data-lang="ar"] { font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-card-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 
