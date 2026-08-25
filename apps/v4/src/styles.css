@@ -5241,6 +5241,7 @@ a.doc-badge:focus-visible {
 
 .doc-rtl-preview-toolbar {
   display: flex;
+  position: relative;
   height: 4rem;
   align-items: center;
   border-bottom: 1px solid var(--border);
@@ -5248,15 +5249,31 @@ a.doc-badge:focus-visible {
 }
 
 .doc-rtl-preview-toolbar select {
+  appearance: none;
   width: 9rem;
   height: 1.75rem;
   border: 1px solid var(--input);
-  border-radius: 0.5rem;
-  background: var(--background);
+  border-radius: min(var(--radius-md), 10px);
+  background: transparent;
   color: var(--foreground);
-  padding: 0 0.5rem;
+  padding: 0 1.875rem 0 0.625rem;
   font: inherit;
   font-size: 0.875rem;
+}
+
+/* Chevron drawn over the native control: the select is 9rem wide and starts
+   after the toolbar's 1rem padding, so the icon sits 0.5rem inside its end. */
+.doc-rtl-preview-toolbar::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 8.5rem;
+  width: 1rem;
+  height: 1rem;
+  transform: translateY(-50%);
+  background-color: var(--muted-foreground);
+  mask: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center / 1rem 1rem no-repeat;
+  pointer-events: none;
 }
 
 .doc-rtl-info-button {
