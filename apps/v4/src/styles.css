@@ -2176,6 +2176,73 @@ h1 {
 .doc-component-card[data-doc-preview-name="chart-tooltip"] .doc-component-preview-stage { height: 288px; min-height: 288px; padding: 0; }
 .doc-component-card[data-doc-preview-name="chart-rtl"] .doc-component-preview-stage { display: block; height: 432px; min-height: 432px; padding: 0; }
 
+.doc-component-card[data-doc-preview-name^="combobox-"]:not([data-doc-preview-name="combobox-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="combobox-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.doc-combobox { position: relative; width: max-content; color: var(--foreground); }
+.doc-combobox-input-group { box-sizing: border-box; display: flex; width: 215.203125px; height: 2rem; align-items: center; overflow: hidden; border: 1px solid var(--input); border-radius: var(--radius-lg); background: transparent; transition: border-color 150ms ease, box-shadow 150ms ease; }
+.doc-combobox-input-group:focus-within { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.doc-combobox.is-invalid .doc-combobox-input-group { border-color: var(--destructive); box-shadow: 0 0 0 3px color-mix(in oklab, var(--destructive) 20%, transparent); }
+.doc-combobox.is-disabled .doc-combobox-input-group { opacity: 0.5; background: var(--muted); }
+.doc-combobox-input-group input { min-width: 0; height: 100%; flex: 1; border: 0; padding: 0 0 0 0.6875rem; color: var(--foreground); background: transparent; font: inherit; font-size: 0.875rem; outline: none; }
+.doc-combobox-input-group input::placeholder,
+.doc-combobox-chips input::placeholder,
+.doc-combobox-popup-search input::placeholder { color: var(--muted-foreground); opacity: 1; }
+.doc-combobox-toggle,
+.doc-combobox-clear { display: inline-grid; width: 1.875rem; height: 100%; flex: 0 0 1.875rem; place-items: center; border: 0; padding: 0; color: var(--muted-foreground); background: transparent; }
+.doc-combobox-clear { width: 1.5rem; flex-basis: 1.5rem; }
+.doc-combobox-clear[hidden],
+.doc-combobox-input-group:has(.doc-combobox-clear:not([hidden])) .doc-combobox-toggle { display: none; }
+.doc-combobox-toggle svg,
+.doc-combobox-clear svg { width: 1rem; height: 1rem; }
+.doc-combobox.has-globe .doc-combobox-input-group { width: 235.203125px; }
+.doc-combobox-globe { display: inline-grid; width: 2rem; height: 100%; flex: 0 0 2rem; place-items: center; color: var(--muted-foreground); }
+.doc-combobox-globe svg { width: 1rem; height: 1rem; }
+.doc-combobox.has-globe input { padding-left: 0; }
+.doc-combobox-popup-trigger { box-sizing: border-box; display: flex; width: 256px; height: 2rem; align-items: center; justify-content: space-between; border: 1px solid var(--input); border-radius: var(--radius-lg); padding: 0 0.6875rem; color: var(--foreground); background: transparent; font: inherit; font-size: 0.875rem; font-weight: 400; outline: none; }
+.doc-combobox-popup-trigger:hover { background: var(--accent); }
+.doc-combobox-popup-trigger:focus-visible { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.doc-combobox-popup-trigger svg { width: 1rem; height: 1rem; color: var(--muted-foreground); }
+.doc-combobox-chips { box-sizing: border-box; display: flex; width: 320px; min-height: 2rem; align-items: center; gap: 0.25rem; overflow: hidden; border: 1px solid var(--input); border-radius: var(--radius-lg); padding: 0.1875rem 0.25rem; background: transparent; }
+.doc-combobox-chips:focus-within { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.doc-combobox-chip { display: inline-flex; height: 1.375rem; flex: none; align-items: center; gap: 0.125rem; border-radius: var(--radius-md); padding-inline: 0.4375rem 0.1875rem; background: var(--muted); font-size: 0.75rem; line-height: 1rem; white-space: nowrap; }
+.doc-combobox-chip > button { display: inline-grid; width: 1rem; height: 1rem; place-items: center; border: 0; padding: 0; color: var(--muted-foreground); background: transparent; }
+.doc-combobox-chip svg { width: 0.75rem; height: 0.75rem; }
+.doc-combobox-chips > input { min-width: 2rem; height: 1.5rem; flex: 1; border: 0; padding: 0 0.25rem; color: var(--foreground); background: transparent; font: inherit; font-size: 0.875rem; outline: none; }
+.doc-combobox-panel { position: fixed; z-index: 80; box-sizing: border-box; width: 214px; max-height: 252px; overflow: auto; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 0.1875rem; color: var(--popover-foreground); background: var(--popover); box-shadow: 0 6px 18px rgb(0 0 0 / 12%); }
+.doc-combobox-panel[hidden] { display: none; }
+.doc-combobox-panel.is-wide { width: 240px; }
+.doc-combobox-panel.is-chips { width: 320px; }
+.doc-combobox-panel.is-popup { width: 284px; max-height: 288px; padding-top: 0.1875rem; }
+.doc-combobox-panel.is-rtl { width: 320px; max-height: 142.125px; font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-combobox-panel.is-rtl[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+.doc-combobox-list { display: flex; flex-direction: column; }
+.doc-combobox-item { position: relative; display: flex; width: 100%; min-height: 28px; align-items: center; border: 0; border-radius: calc(var(--radius-lg) - 2px); padding: 0.375rem 1.75rem 0.375rem 0.4375rem; color: var(--popover-foreground); background: transparent; font: inherit; font-size: 0.875rem; line-height: 1rem; text-align: left; outline: none; }
+.doc-combobox-item:hover,
+.doc-combobox-item[data-highlighted] { background: var(--accent); color: var(--accent-foreground); }
+.doc-combobox-item[hidden],
+.doc-combobox-group-label[hidden] { display: none; }
+.doc-combobox-item-copy { display: grid; min-width: 0; gap: 0.125rem; }
+.doc-combobox-item-copy strong { font-weight: 400; }
+.doc-combobox-item-copy small { color: var(--muted-foreground); font-size: 0.75rem; line-height: 1rem; }
+.doc-combobox-panel.is-custom .doc-combobox-item { min-height: 44px; align-items: flex-start; }
+.doc-combobox-panel.is-custom .doc-combobox-item-copy strong { font-weight: 500; }
+.doc-combobox-check { position: absolute; right: 0.4375rem; display: none; width: 1rem; height: 1rem; }
+.doc-combobox-check svg { width: 1rem; height: 1rem; }
+.doc-combobox-item[aria-selected="true"] .doc-combobox-check { display: inline-grid; place-items: center; }
+.doc-combobox-group-label { padding: 0.375rem 0.4375rem 0.25rem; color: var(--muted-foreground); font-size: 0.75rem; line-height: 1rem; }
+.doc-combobox-separator { display: block; height: 1px; margin: 0.1875rem -0.1875rem; background: var(--border); }
+.doc-combobox-empty { padding: 0.5rem; color: var(--muted-foreground); font-size: 0.875rem; text-align: center; }
+.doc-combobox-popup-search { padding-bottom: 0.1875rem; }
+.doc-combobox-popup-search input { box-sizing: border-box; width: 100%; height: 2rem; border: 1px solid var(--input); border-radius: var(--radius-md); padding: 0 0.6875rem; color: var(--foreground); background: transparent; font: inherit; font-size: 0.875rem; outline: none; }
+.doc-combobox-popup-search input:focus { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.doc-combobox-panel.is-rtl .doc-combobox-item { min-height: 28px; justify-content: flex-start; padding-block: 0; padding-inline: 1.75rem 0.4375rem; line-height: 1.5967; text-align: right; }
+.doc-combobox-panel.is-rtl .doc-combobox-check { right: auto; left: 0.4375rem; }
+.doc-combobox-rtl-preview { box-sizing: border-box; height: 288px; align-items: start; padding-top: 2.5rem; }
+.doc-combobox-rtl-field { display: grid; width: 320px; gap: 0.5rem; }
+.doc-combobox-rtl-field > label { font-size: 0.875rem; font-weight: 500; line-height: 1.375; }
+.doc-combobox-rtl-preview[data-lang="ar"] { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-combobox-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+
 .doc-component-card[data-doc-preview-name="collapsible-demo"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="collapsible-basic"] .doc-component-preview-stage { align-items: start; height: 288px; min-height: 288px; }
 .doc-component-card[data-doc-preview-name="collapsible-settings"] .doc-component-preview-stage { height: 288px; min-height: 288px; }

@@ -29,6 +29,7 @@ async function initResumableClient(): Promise<void> {
   wireDocPreviewCode()
   wireDocAccordions()
   wireDocCollapsibles()
+  wireDocComboboxes()
   wireDocAlertDialogs()
   wireDocAvatarMenus()
   wireDocButtonGroups()
@@ -722,6 +723,299 @@ function wireDocCollapsibles(): void {
     tabs[next]?.click()
     tabs[next]?.focus()
   })
+}
+
+function wireDocComboboxes(): void {
+  let activeRoot: HTMLElement | null = null
+  let activePanel: HTMLElement | null = null
+  let activeAnchor: HTMLElement | null = null
+  let origin: { parent: Node; nextSibling: ChildNode | null } | null = null
+
+  const rootForPanel = (panel: HTMLElement): HTMLElement | null => {
+    const owner = panel.dataset.docComboboxOwner
+    return owner ? document.getElementById(owner) : null
+  }
+
+  const setExpanded = (root: HTMLElement, expanded: boolean): void => {
+    root.querySelectorAll<HTMLElement>("[role='combobox']").forEach((control) => {
+      control.setAttribute("aria-expanded", String(expanded))
+    })
+  }
+
+  const setHighlight = (panel: HTMLElement, item?: HTMLButtonElement): void => {
+    panel.querySelectorAll<HTMLButtonElement>("[data-doc-combobox-item]").forEach((candidate) => {
+      if (candidate === item) candidate.dataset.highlighted = ""
+      else delete candidate.dataset.highlighted
+    })
+    const root = rootForPanel(panel)
+    const input = root?.querySelector<HTMLInputElement>("[data-doc-combobox-popup-input], [data-doc-combobox-input]")
+    if (input) {
+      if (item) {
+        if (!item.id) item.id = `${root?.dataset.comboboxId ?? "combobox"}-option-${item.dataset.value || "empty"}`
+        input.setAttribute("aria-activedescendant", item.id)
+      } else {
+        input.removeAttribute("aria-activedescendant")
+      }
+    }
+  }
+
+  const positionPanel = (): void => {
+    if (!activePanel || !activeAnchor) return
+    const anchor = activeAnchor.getBoundingClientRect()
+    const height = activePanel.offsetHeight
+    const top = anchor.bottom + 4 + height <= window.innerHeight
+      ? anchor.bottom + 4
+      : Math.max(4, anchor.top - height - 4)
+    let left = activeRoot?.dir === "rtl" ? anchor.right - activePanel.offsetWidth : anchor.left
+    left = Math.min(window.innerWidth - activePanel.offsetWidth - 4, Math.max(4, left))
+    activePanel.style.top = `${top}px`
+    activePanel.style.left = `${left}px`
+  }
+
+  const close = (restoreFocus = false): void => {
+    if (!activePanel || !activeRoot) return
+    activePanel.hidden = true
+    setExpanded(activeRoot, false)
+    setHighlight(activePanel)
+    if (origin) origin.parent.insertBefore(activePanel, origin.nextSibling)
+    const focusTarget = activeRoot.querySelector<HTMLElement>("[data-doc-combobox-popup-input], [data-doc-combobox-input], [data-doc-combobox-trigger]")
+    activePanel.style.removeProperty("top")
+    activePanel.style.removeProperty("left")
+    activePanel.removeAttribute("data-doc-combobox-owner")
+    activeRoot = null
+    activePanel = null
+    activeAnchor = null
+    origin = null
+    if (restoreFocus) focusTarget?.focus()
+  }
+
+  const visibleItems = (panel: HTMLElement): HTMLButtonElement[] => [
+    ...panel.querySelectorAll<HTMLButtonElement>("[data-doc-combobox-item]:not([hidden])"),
+  ]
+
+  const open = (root: HTMLElement, focusPopup = false): void => {
+    if (root.classList.contains("is-disabled")) return
+    const panel = root.querySelector<HTMLElement>("[data-doc-combobox-panel]")
+    const anchor = root.querySelector<HTMLElement>("[data-doc-combobox-trigger]")
+    if (!panel || !anchor) return
+    if (activeRoot === root) return
+    close()
+    activeRoot = root
+    activePanel = panel
+    activeAnchor = anchor
+    origin = { parent: panel.parentNode as Node, nextSibling: panel.nextSibling }
+    panel.dataset.docComboboxOwner = root.id
+    panel.dir = root.dir
+    const language = root.closest<HTMLElement>(".doc-rtl-preview")?.dataset.lang
+    if (language) panel.dataset.lang = language
+    panel.hidden = false
+    document.body.append(panel)
+    setExpanded(root, true)
+    const items = visibleItems(panel)
+    if (root.dataset.autoHighlight === "true") {
+      setHighlight(panel, items.find((item) => item.getAttribute("aria-selected") === "true") ?? items[0])
+    }
+    positionPanel()
+    if (focusPopup) panel.querySelector<HTMLInputElement>("[data-doc-combobox-popup-input]")?.focus()
+  }
+
+  const filter = (root: HTMLElement, value: string): void => {
+    const panel = activeRoot === root ? activePanel : root.querySelector<HTMLElement>("[data-doc-combobox-panel]")
+    if (!panel) return
+    const query = value.trim().toLocaleLowerCase()
+    let visibleCount = 0
+    panel.querySelectorAll<HTMLButtonElement>("[data-doc-combobox-item]").forEach((item) => {
+      const visible = !query || (item.textContent ?? "").toLocaleLowerCase().includes(query)
+      item.hidden = !visible
+      if (visible) visibleCount += 1
+    })
+    panel.querySelectorAll<HTMLElement>(".doc-combobox-group-label").forEach((label) => {
+      let sibling = label.nextElementSibling
+      let visible = false
+      while (sibling && !sibling.classList.contains("doc-combobox-group-label")) {
+        if (sibling.matches("[data-doc-combobox-item]:not([hidden])")) visible = true
+        sibling = sibling.nextElementSibling
+      }
+      label.hidden = !visible
+    })
+    const empty = panel.querySelector<HTMLElement>("[data-doc-combobox-empty]")
+    if (empty) empty.hidden = visibleCount !== 0
+    const first = visibleItems(panel)[0]
+    setHighlight(panel, root.dataset.autoHighlight === "true" ? first : undefined)
+    positionPanel()
+  }
+
+  const setSingleValue = (root: HTMLElement, panel: HTMLElement, item: HTMLButtonElement): void => {
+    panel.querySelectorAll<HTMLButtonElement>("[data-doc-combobox-item]").forEach((candidate) => candidate.setAttribute("aria-selected", String(candidate === item)))
+    const label = item.querySelector<HTMLElement>("[data-doc-combobox-option-text]")?.textContent ?? item.dataset.label ?? ""
+    const input = root.querySelector<HTMLInputElement>("[data-doc-combobox-input]")
+    const value = root.querySelector<HTMLElement>("[data-doc-combobox-value]")
+    if (input) input.value = label
+    if (value) value.textContent = label
+    const clear = root.querySelector<HTMLElement>("[data-doc-combobox-clear]")
+    if (clear) clear.hidden = false
+    close(true)
+  }
+
+  const removeChip = (root: HTMLElement, value: string): void => {
+    const panel = activeRoot === root ? activePanel : root.querySelector<HTMLElement>("[data-doc-combobox-panel]")
+    root.querySelector<HTMLElement>(`[data-doc-combobox-chip][data-value="${CSS.escape(value)}"]`)?.remove()
+    panel?.querySelector<HTMLButtonElement>(`[data-doc-combobox-item][data-value="${CSS.escape(value)}"]`)?.setAttribute("aria-selected", "false")
+  }
+
+  const toggleMultipleValue = (root: HTMLElement, panel: HTMLElement, item: HTMLButtonElement): void => {
+    const value = item.dataset.value ?? ""
+    const selected = item.getAttribute("aria-selected") === "true"
+    if (selected) {
+      removeChip(root, value)
+      return
+    }
+    item.setAttribute("aria-selected", "true")
+    const chips = root.querySelector<HTMLElement>("[data-slot='combobox-chips']")
+    const input = root.querySelector<HTMLInputElement>("[data-doc-combobox-input]")
+    if (!chips || !input) return
+    const chip = document.createElement("span")
+    chip.className = "doc-combobox-chip"
+    chip.dataset.docComboboxChip = ""
+    chip.dataset.value = value
+    const label = document.createElement("span")
+    label.dataset.docComboboxChipLabel = ""
+    label.textContent = item.querySelector<HTMLElement>("[data-doc-combobox-option-text]")?.textContent ?? item.dataset.label ?? value
+    const remove = document.createElement("button")
+    remove.type = "button"
+    remove.dataset.docComboboxRemove = ""
+    remove.setAttribute("aria-label", `Remove ${label.textContent}`)
+    remove.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>'
+    chip.append(label, remove)
+    chips.insertBefore(chip, input)
+    input.value = ""
+    filter(root, "")
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+
+    const remove = target.closest<HTMLButtonElement>("[data-doc-combobox-remove]")
+    if (remove) {
+      const root = remove.closest<HTMLElement>("[data-doc-combobox]")
+      const chip = remove.closest<HTMLElement>("[data-doc-combobox-chip]")
+      if (root && chip) removeChip(root, chip.dataset.value ?? "")
+      return
+    }
+
+    const clear = target.closest<HTMLButtonElement>("[data-doc-combobox-clear]")
+    if (clear) {
+      const root = clear.closest<HTMLElement>("[data-doc-combobox]")
+      const input = root?.querySelector<HTMLInputElement>("[data-doc-combobox-input]")
+      const panel = root?.querySelector<HTMLElement>("[data-doc-combobox-panel]")
+      if (root && input && panel) {
+        input.value = ""
+        panel.querySelectorAll("[data-doc-combobox-item]").forEach((item) => item.setAttribute("aria-selected", "false"))
+        clear.hidden = true
+        input.focus()
+        open(root)
+      }
+      return
+    }
+
+    const item = target.closest<HTMLButtonElement>("[data-doc-combobox-item]")
+    if (item) {
+      const panel = item.closest<HTMLElement>("[data-doc-combobox-panel]")
+      const root = panel ? rootForPanel(panel) : null
+      if (root && panel) {
+        if (root.dataset.multiple === "true") toggleMultipleValue(root, panel, item)
+        else setSingleValue(root, panel, item)
+      }
+      return
+    }
+
+    const trigger = target.closest<HTMLElement>("[data-doc-combobox-trigger], [data-doc-combobox-toggle]")
+    const root = trigger?.closest<HTMLElement>("[data-doc-combobox]")
+    if (root) {
+      const clickedInput = target.closest("[data-doc-combobox-input]")
+      if (activeRoot === root && !clickedInput) close()
+      else open(root, root.dataset.popup === "true")
+      return
+    }
+
+    if (activePanel && !activePanel.contains(target)) close()
+  })
+
+  document.addEventListener("input", (event) => {
+    const input = event.target
+    if (input instanceof HTMLSelectElement && input.matches("[data-doc-rtl-language]")) {
+      const shell = input.closest<HTMLElement>(".doc-rtl-preview-shell")
+      const root = shell?.querySelector<HTMLElement>("[data-doc-combobox][data-rtl='true']")
+      const language = input.value
+      if (root && ["ar", "he", "en"].includes(language)) {
+        const comboboxInput = root.querySelector<HTMLInputElement>("[data-doc-combobox-input]")
+        const placeholder = root.getAttribute(`data-placeholder-${language}`)
+        if (comboboxInput && placeholder) comboboxInput.placeholder = placeholder
+        const panel = activeRoot === root ? activePanel : root.querySelector<HTMLElement>("[data-doc-combobox-panel]")
+        if (panel) {
+          panel.dir = language === "en" ? "ltr" : "rtl"
+          panel.dataset.lang = language
+          panel.querySelectorAll<HTMLElement>("[data-doc-combobox-option-text]").forEach((text) => {
+            const nextText = text.getAttribute(`data-text-${language}`)
+            if (nextText) text.textContent = nextText
+          })
+          root.querySelectorAll<HTMLElement>("[data-doc-combobox-chip]").forEach((chip) => {
+            const option = panel.querySelector<HTMLElement>(`[data-doc-combobox-item][data-value="${CSS.escape(chip.dataset.value ?? "")}"] [data-doc-combobox-option-text]`)
+            const label = chip.querySelector<HTMLElement>("[data-doc-combobox-chip-label]")
+            if (label && option?.textContent) label.textContent = option.textContent
+          })
+        }
+      }
+      return
+    }
+    if (!(input instanceof HTMLInputElement) || !input.matches("[data-doc-combobox-input], [data-doc-combobox-popup-input]")) return
+    const root = input.closest<HTMLElement>("[data-doc-combobox]") ?? activeRoot
+    if (!root) return
+    open(root)
+    filter(root, input.value)
+  })
+
+  document.addEventListener("keydown", (event) => {
+    const input = event.target
+    if (!(input instanceof HTMLInputElement) || !input.matches("[data-doc-combobox-input], [data-doc-combobox-popup-input]")) return
+    const root = input.closest<HTMLElement>("[data-doc-combobox]") ?? activeRoot
+    if (!root) return
+    if (event.key === "Escape") {
+      if (activeRoot === root) {
+        event.preventDefault()
+        close(true)
+      }
+      return
+    }
+    if (!["ArrowDown", "ArrowUp", "Home", "End", "Enter"].includes(event.key)) return
+    if (activeRoot !== root) open(root)
+    if (!activePanel) return
+    const items = visibleItems(activePanel)
+    if (!items.length) return
+    const current = items.findIndex((item) => item.hasAttribute("data-highlighted"))
+    if (event.key === "Enter") {
+      if (current >= 0) {
+        event.preventDefault()
+        items[current].click()
+      }
+      return
+    }
+    const next = event.key === "Home" ? 0 : event.key === "End" ? items.length - 1 : event.key === "ArrowDown" ? (current + 1 + items.length) % items.length : (current - 1 + items.length) % items.length
+    event.preventDefault()
+    setHighlight(activePanel, items[next])
+    items[next].scrollIntoView({ block: "nearest" })
+  })
+
+  document.addEventListener("focusin", (event) => {
+    const input = event.target
+    if (!(input instanceof HTMLInputElement) || !input.matches("[data-doc-combobox-input]")) return
+    const root = input.closest<HTMLElement>("[data-doc-combobox]")
+    if (root) open(root)
+  })
+
+  window.addEventListener("resize", positionPanel)
+  window.addEventListener("scroll", positionPanel, true)
 }
 
 function wireDocAlertDialogs(): void {

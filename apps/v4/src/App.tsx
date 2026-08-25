@@ -4262,6 +4262,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
 
   return family === "checkbox" ? (
     <DocCheckboxPreview name={props.name} />
+  ) : family === "combobox" ? (
+    <DocComboboxPreview name={props.name} />
   ) : family === "collapsible" ? (
     <DocCollapsiblePreview name={props.name} />
   ) : family === "chart" ? (
@@ -4375,6 +4377,121 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <p>Registry preview surface for this documentation example.</p>
     </div>
   )
+}
+
+type DocComboboxOption = { value: string; label: string; description?: string; group?: string; groupStart?: boolean; groupEnd?: boolean }
+
+function DocComboboxPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const frameworks: DocComboboxOption[] = ["Next.js", "SvelteKit", "Nuxt.js", "Remix", "Astro"].map((label) => ({ value: label, label }))
+  const timezoneGroups = [
+    ["Americas", ["(GMT-5) New York", "(GMT-8) Los Angeles", "(GMT-6) Chicago", "(GMT-5) Toronto", "(GMT-8) Vancouver", "(GMT-3) São Paulo"]],
+    ["Europe", ["(GMT+0) London", "(GMT+1) Paris", "(GMT+1) Berlin", "(GMT+1) Rome", "(GMT+1) Madrid", "(GMT+1) Amsterdam"]],
+    ["Asia/Pacific", ["(GMT+9) Tokyo", "(GMT+8) Shanghai", "(GMT+8) Singapore", "(GMT+4) Dubai", "(GMT+11) Sydney", "(GMT+9) Seoul"]],
+  ] as const
+  const timezones: DocComboboxOption[] = timezoneGroups.flatMap(([group, values]) => values.map((label, index) => ({ value: label, label, group, groupStart: index === 0, groupEnd: group !== "Asia/Pacific" && index === values.length - 1 })))
+  const countries: DocComboboxOption[] = [
+    ["argentina", "Argentina", "South America (ar)"], ["australia", "Australia", "Oceania (au)"], ["brazil", "Brazil", "South America (br)"], ["canada", "Canada", "North America (ca)"], ["china", "China", "Asia (cn)"], ["colombia", "Colombia", "South America (co)"], ["egypt", "Egypt", "Africa (eg)"], ["france", "France", "Europe (fr)"], ["germany", "Germany", "Europe (de)"], ["italy", "Italy", "Europe (it)"], ["japan", "Japan", "Asia (jp)"], ["kenya", "Kenya", "Africa (ke)"], ["mexico", "Mexico", "North America (mx)"], ["new-zealand", "New Zealand", "Oceania (nz)"], ["nigeria", "Nigeria", "Africa (ng)"], ["south-africa", "South Africa", "Africa (za)"], ["south-korea", "South Korea", "Asia (kr)"], ["united-kingdom", "United Kingdom", "Europe (gb)"], ["united-states", "United States", "North America (us)"],
+  ].map(([value, label, description]) => ({ value, label, description }))
+  const popupCountries: DocComboboxOption[] = [{ value: "", label: "Select country" }, ...countries.map(({ value, label }) => ({ value, label }))]
+  const rtlCategories: DocComboboxOption[] = [
+    ["technology", "التكنولوجيا", "טכנולוגיה", "Technology"], ["design", "التصميم", "עיצוב", "Design"], ["business", "الأعمال", "עסקים", "Business"], ["marketing", "التسويق", "שיווק", "Marketing"], ["education", "التعليم", "חינוך", "Education"], ["health", "الصحة", "בריאות", "Health"],
+  ].map(([value, label, he, en]) => ({ value, label, description: `${he}|${en}` }))
+
+  const control = name === "combobox-multiple" ? (
+    <DocComboboxControl id={name} options={frameworks} placeholder="" selected="Next.js" multiple chips autoHighlight />
+  ) : name === "combobox-clear" ? (
+    <DocComboboxControl id={name} options={frameworks} placeholder="Select a framework" selected="Next.js" clear autoHighlight />
+  ) : name === "combobox-groups" ? (
+    <DocComboboxControl id={name} options={timezones} placeholder="Select a timezone" grouped />
+  ) : name === "combobox-custom" ? (
+    <DocComboboxControl id={name} options={countries} placeholder="Search countries..." custom />
+  ) : name === "combobox-invalid" ? (
+    <DocComboboxControl id={name} options={frameworks} placeholder="Select a framework" invalid />
+  ) : name === "combobox-disabled" ? (
+    <DocComboboxControl id={name} options={frameworks} placeholder="Select a framework" disabled />
+  ) : name === "combobox-auto-highlight" ? (
+    <DocComboboxControl id={name} options={frameworks} placeholder="Select a framework" autoHighlight />
+  ) : name === "combobox-popup" ? (
+    <DocComboboxControl id={name} options={popupCountries} placeholder="Search" selected="" popup autoHighlight />
+  ) : name === "combobox-input-group" ? (
+    <DocComboboxControl id={name} options={timezones} placeholder="Select a timezone" grouped globe />
+  ) : name === "combobox-rtl" ? (
+    <div class="doc-combobox-rtl-field" data-doc-rtl-direction dir="rtl">
+      <label data-doc-rtl-text data-text-ar="الفئات" data-text-he="קטגוריות" data-text-en="Categories">الفئات</label>
+      <DocComboboxControl id={name} options={rtlCategories} placeholder="أضف فئات" placeholderHe="הוסף קטגוריות" placeholderEn="Add categories" selected="technology" multiple chips autoHighlight rtl />
+    </div>
+  ) : (
+    <DocComboboxControl id={name} options={frameworks} placeholder="Select a framework" />
+  )
+
+  return name === "combobox-rtl" ? (
+    <div class="doc-rtl-preview-shell">
+      <div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div>
+      <div class="doc-rtl-preview doc-combobox-rtl-preview" dir="rtl" data-lang="ar">{control}</div>
+    </div>
+  ) : control
+}
+
+function DocComboboxControl(props: { id: string; options: DocComboboxOption[]; placeholder: string; placeholderHe?: string; placeholderEn?: string; selected?: string; multiple?: boolean; chips?: boolean; clear?: boolean; invalid?: boolean; disabled?: boolean; autoHighlight?: boolean; popup?: boolean; grouped?: boolean; custom?: boolean; globe?: boolean; rtl?: boolean }) {
+  const id = untrack(() => props.id)
+  const placeholder = untrack(() => props.placeholder)
+  const selected = untrack(() => props.selected)
+  const multiple = untrack(() => !!props.multiple)
+  const chips = untrack(() => !!props.chips)
+  const popup = untrack(() => !!props.popup)
+  const rtl = untrack(() => !!props.rtl)
+  const clear = untrack(() => !!props.clear)
+  const invalid = untrack(() => !!props.invalid)
+  const disabled = untrack(() => !!props.disabled)
+  const autoHighlight = untrack(() => !!props.autoHighlight)
+  const grouped = untrack(() => !!props.grouped)
+  const custom = untrack(() => !!props.custom)
+  const globe = untrack(() => !!props.globe)
+  const placeholderHe = untrack(() => props.placeholderHe)
+  const placeholderEn = untrack(() => props.placeholderEn)
+  const entries = untrack(() => props.options)
+  const selectedOption = entries.find((option) => option.value === selected)
+  const selectedLabel = selectedOption?.label ?? (popup ? "Select country" : "")
+  const panelId = `${id}-panel`
+  const translatedOption = (option: DocComboboxOption) => {
+    if (!rtl || !option.description) return option.label
+    const [he, en] = option.description.split("|")
+    return <span data-doc-combobox-option-text data-doc-rtl-text data-value={option.value} data-text-ar={option.label} data-text-he={he} data-text-en={en}>{option.label}</span>
+  }
+  return (
+    <div id={`${id}-root`} class={`doc-combobox${globe ? " has-globe" : ""}${invalid ? " is-invalid" : ""}${disabled ? " is-disabled" : ""}${popup ? " is-popup" : ""}${chips ? " has-chips" : ""}${rtl ? " is-rtl" : ""}`} data-doc-combobox data-combobox-id={id} data-multiple={multiple ? "true" : "false"} data-auto-highlight={autoHighlight ? "true" : "false"} data-popup={popup ? "true" : "false"} data-rtl={rtl ? "true" : "false"} data-placeholder-ar={rtl ? placeholder : undefined} data-placeholder-he={rtl ? placeholderHe : undefined} data-placeholder-en={rtl ? placeholderEn : undefined} data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}>
+      {popup ? (
+        <button type="button" class="doc-combobox-popup-trigger" data-doc-combobox-trigger role="combobox" aria-expanded="false" aria-controls={panelId}><span data-doc-combobox-value>{selectedLabel}</span>{renderDocComboboxIcon("chevron")}</button>
+      ) : chips ? (
+        <div class="doc-combobox-chips" data-slot="combobox-chips" data-doc-combobox-trigger>
+          {selectedOption ? <span class="doc-combobox-chip" data-doc-combobox-chip data-value={selectedOption.value}><span data-doc-combobox-chip-label>{translatedOption(selectedOption)}</span><button type="button" aria-label={`Remove ${selectedOption.label}`} data-doc-combobox-remove>{renderDocComboboxIcon("x")}</button></span> : null}
+          <input role="combobox" aria-expanded="false" aria-controls={panelId} placeholder={placeholder} data-doc-combobox-input />
+        </div>
+      ) : (
+        <div class="doc-combobox-input-group" data-slot="input-group" data-doc-combobox-trigger>
+          {globe ? <span class="doc-combobox-globe">{renderDocComboboxIcon("globe")}</span> : null}
+          <input role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls={panelId} aria-invalid={invalid ? "true" : undefined} placeholder={placeholder} value={selectedLabel} disabled={disabled} data-doc-combobox-input />
+          {clear && selectedOption ? <button type="button" class="doc-combobox-clear" aria-label="Clear selection" data-doc-combobox-clear>{renderDocComboboxIcon("x")}</button> : null}
+          <button type="button" class="doc-combobox-toggle" aria-label="Toggle options" tabIndex={-1} disabled={disabled} data-doc-combobox-toggle>{renderDocComboboxIcon("chevron")}</button>
+        </div>
+      )}
+      <div id={panelId} class={`doc-combobox-panel${grouped ? " is-grouped" : ""}${custom ? " is-custom" : ""}${popup ? " is-popup" : ""}${globe ? " is-wide" : ""}${chips ? " is-chips" : ""}${rtl ? " is-rtl" : ""}`} data-slot="combobox-content" data-doc-combobox-panel role="presentation" hidden>
+        {popup ? <div class="doc-combobox-popup-search"><input role="combobox" aria-label="Search countries" placeholder={placeholder} data-doc-combobox-popup-input /></div> : null}
+        <div class="doc-combobox-list" role="listbox" aria-multiselectable={multiple ? "true" : undefined}>
+          {entries.map((option) => <>{option.groupStart ? <div class="doc-combobox-group-label">{option.group}</div> : null}<button type="button" class="doc-combobox-item" role="option" aria-selected={option.value === selected ? "true" : "false"} data-value={option.value} data-label={option.label} data-doc-combobox-item><span class="doc-combobox-check">{renderDocComboboxIcon("check")}</span><span class="doc-combobox-item-copy"><strong>{translatedOption(option)}</strong>{custom && option.description ? <small>{option.description}</small> : null}</span></button>{option.groupEnd ? <span class="doc-combobox-separator"></span> : null}</>)}
+          <div class="doc-combobox-empty" data-doc-combobox-empty hidden>{grouped || globe ? "No timezones found." : custom ? "No countries found." : rtl ? <span data-doc-rtl-text data-text-ar="لم يتم العثور على فئات." data-text-he="לא נמצאו קטגוריות." data-text-en="No categories found.">لم يتم العثور على فئات.</span> : "No items found."}</div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function renderDocComboboxIcon(kind: "chevron" | "x" | "check" | "globe") {
+  return kind === "chevron" ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+    : kind === "x" ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      : kind === "check" ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m20 6-11 11-5-5"></path></svg>
+        : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg>
 }
 
 function DocCollapsiblePreview(props: { name: string }) {
