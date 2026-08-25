@@ -31,6 +31,7 @@ async function initResumableClient(): Promise<void> {
   wireDocCollapsibles()
   wireDocComboboxes()
   wireDocCommands()
+  wireDocContextMenus()
   wireDocAlertDialogs()
   wireDocAvatarMenus()
   wireDocButtonGroups()
@@ -1143,6 +1144,192 @@ function wireDocCommands(): void {
     event.preventDefault()
     setHighlight(command, available[next])
     available[next].scrollIntoView({ block: "nearest" })
+  })
+}
+
+function wireDocContextMenus(): void {
+  type PortalOrigin = { parent: Node; nextSibling: ChildNode | null }
+  const origins = new WeakMap<HTMLElement, PortalOrigin>()
+  let activePortal: HTMLElement | null = null
+  let activeTrigger: HTMLElement | null = null
+  let activeSubPortal: HTMLElement | null = null
+  let activeSubTrigger: HTMLButtonElement | null = null
+
+  const menuItems = (panel: HTMLElement): HTMLButtonElement[] => [
+    ...panel.querySelectorAll<HTMLButtonElement>(":scope > [data-doc-context-item]:not(:disabled), :scope > [data-doc-context-sub] > [data-doc-context-item]:not(:disabled)"),
+  ]
+
+  const restorePortal = (portal: HTMLElement | null): void => {
+    if (!portal) return
+    portal.hidden = true
+    const origin = origins.get(portal)
+    if (origin) origin.parent.insertBefore(portal, origin.nextSibling)
+  }
+
+  const closeSubmenu = (): void => {
+    if (activeSubTrigger) {
+      activeSubTrigger.setAttribute("aria-expanded", "false")
+      delete activeSubTrigger.dataset.open
+    }
+    restorePortal(activeSubPortal)
+    activeSubPortal = null
+    activeSubTrigger = null
+  }
+
+  const close = (restoreFocus = false): void => {
+    closeSubmenu()
+    restorePortal(activePortal)
+    const trigger = activeTrigger
+    activePortal = null
+    activeTrigger = null
+    if (restoreFocus) trigger?.focus({ preventScroll: true })
+  }
+
+  const placePanel = (panel: HTMLElement, x: number, y: number): void => {
+    const margin = 8
+    const width = panel.offsetWidth
+    const height = panel.offsetHeight
+    panel.style.left = `${Math.max(margin, Math.min(x, window.innerWidth - width - margin))}px`
+    panel.style.top = `${Math.max(margin, Math.min(y, window.innerHeight - height - margin))}px`
+  }
+
+  const openRoot = (root: HTMLElement, x: number, y: number): void => {
+    close()
+    const trigger = root.querySelector<HTMLElement>(":scope > [data-doc-context-trigger]")
+    const portal = root.querySelector<HTMLElement>(":scope > [data-doc-context-portal]")
+    const panel = portal?.querySelector<HTMLElement>("[data-doc-context-panel]")
+    if (!trigger || !portal || !panel) return
+    origins.set(portal, { parent: portal.parentNode as Node, nextSibling: portal.nextSibling })
+    activePortal = portal
+    activeTrigger = trigger
+    portal.hidden = false
+    document.body.append(portal)
+    panel.style.visibility = "hidden"
+    const side = root.dataset.docContextSide ?? "right"
+    const width = panel.offsetWidth
+    const height = panel.offsetHeight
+    const left = side === "left" ? x - width : side === "top" || side === "bottom" ? x + 4 : x
+    const top = side === "top" ? y - height : side === "left" || side === "right" ? y + 4 : y
+    placePanel(panel, left, top)
+    panel.style.visibility = ""
+    menuItems(panel)[0]?.focus({ preventScroll: true })
+  }
+
+  const openSubmenu = (trigger: HTMLButtonElement): void => {
+    if (activeSubTrigger === trigger && activeSubPortal && !activeSubPortal.hidden) return
+    closeSubmenu()
+    const wrapper = trigger.closest<HTMLElement>("[data-doc-context-sub]")
+    const portal = wrapper?.querySelector<HTMLElement>(":scope > [data-doc-context-sub-portal]")
+    const panel = portal?.querySelector<HTMLElement>("[data-doc-context-panel]")
+    if (!portal || !panel) return
+    origins.set(portal, { parent: portal.parentNode as Node, nextSibling: portal.nextSibling })
+    activeSubPortal = portal
+    activeSubTrigger = trigger
+    trigger.setAttribute("aria-expanded", "true")
+    trigger.dataset.open = ""
+    portal.hidden = false
+    document.body.append(portal)
+    panel.style.visibility = "hidden"
+    const rect = trigger.getBoundingClientRect()
+    const rtl = trigger.closest<HTMLElement>("[dir='rtl']") !== null
+    const x = rtl ? rect.left - panel.offsetWidth - 4 : rect.right + 4
+    placePanel(panel, x, rect.top - 4)
+    panel.style.visibility = ""
+  }
+
+  document.addEventListener("contextmenu", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const trigger = target.closest<HTMLElement>("[data-doc-context-trigger]")
+    const root = trigger?.closest<HTMLElement>("[data-doc-context-root]")
+    if (!trigger || !root) return
+    event.preventDefault()
+    openRoot(root, event.clientX, event.clientY)
+  })
+
+  document.addEventListener("pointerover", (event) => {
+    const target = event.target
+    if (!(target instanceof Element) || event.pointerType !== "mouse") return
+    const trigger = target.closest<HTMLButtonElement>("[data-doc-context-sub-trigger]")
+    if (trigger) openSubmenu(trigger)
+  })
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) return
+    const subTrigger = target.closest<HTMLButtonElement>("[data-doc-context-sub-trigger]")
+    if (subTrigger) {
+      event.preventDefault()
+      openSubmenu(subTrigger)
+      const submenuPanel = activeSubPortal?.querySelector<HTMLElement>("[data-doc-context-panel]")
+      if (submenuPanel) menuItems(submenuPanel)[0]?.focus({ preventScroll: true })
+      return
+    }
+    const item = target.closest<HTMLButtonElement>("[data-doc-context-item]")
+    if (item && (activePortal?.contains(item) || activeSubPortal?.contains(item))) {
+      event.preventDefault()
+      if (item.dataset.docContextCheck !== undefined) {
+        const checked = item.dataset.checked !== "true"
+        item.dataset.checked = String(checked)
+        item.setAttribute("aria-checked", String(checked))
+      } else if (item.dataset.docContextRadio !== undefined) {
+        const panel = item.closest<HTMLElement>("[data-doc-context-panel]")
+        const group = item.dataset.docContextGroup
+        panel?.querySelectorAll<HTMLButtonElement>(`[data-doc-context-radio][data-doc-context-group="${group}"]`).forEach((candidate) => {
+          const checked = candidate === item
+          candidate.dataset.checked = String(checked)
+          candidate.setAttribute("aria-checked", String(checked))
+        })
+      }
+      close(true)
+      return
+    }
+    if (!target.closest("[data-doc-context-panel]")) close()
+  })
+
+  document.addEventListener("keydown", (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLElement)) return
+    if ((event.key === "ContextMenu" || (event.shiftKey && event.key === "F10")) && target.matches("[data-doc-context-trigger]")) {
+      const root = target.closest<HTMLElement>("[data-doc-context-root]")
+      if (root) {
+        const rect = target.getBoundingClientRect()
+        event.preventDefault()
+        openRoot(root, rect.left + rect.width / 2, rect.top + rect.height / 2)
+      }
+      return
+    }
+    const panel = target.closest<HTMLElement>("[data-doc-context-panel]")
+    if (!panel || (!activePortal?.contains(panel) && !activeSubPortal?.contains(panel))) {
+      if (event.key === "Escape" && activePortal) {
+        event.preventDefault()
+        close(true)
+      }
+      return
+    }
+    const items = menuItems(panel)
+    const current = items.indexOf(target.closest<HTMLButtonElement>("[data-doc-context-item]") as HTMLButtonElement)
+    if (event.key === "ArrowDown" || event.key === "ArrowUp" || event.key === "Home" || event.key === "End") {
+      const next = event.key === "Home" ? 0 : event.key === "End" ? items.length - 1 : event.key === "ArrowDown" ? (current + 1 + items.length) % items.length : (current - 1 + items.length) % items.length
+      event.preventDefault()
+      items[next]?.focus({ preventScroll: true })
+    } else if (event.key === "ArrowRight" && target.matches("[data-doc-context-sub-trigger]")) {
+      event.preventDefault()
+      openSubmenu(target as HTMLButtonElement)
+      const submenuPanel = activeSubPortal?.querySelector<HTMLElement>("[data-doc-context-panel]")
+      if (submenuPanel) menuItems(submenuPanel)[0]?.focus({ preventScroll: true })
+    } else if (event.key === "ArrowLeft" && activeSubPortal?.contains(target)) {
+      event.preventDefault()
+      const trigger = activeSubTrigger
+      closeSubmenu()
+      trigger?.focus({ preventScroll: true })
+    } else if (event.key === "Escape") {
+      event.preventDefault()
+      close(true)
+    } else if ((event.key === "Enter" || event.key === " ") && current >= 0) {
+      event.preventDefault()
+      items[current]?.click()
+    }
   })
 }
 

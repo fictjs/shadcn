@@ -4262,6 +4262,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
 
   return family === "checkbox" ? (
     <DocCheckboxPreview name={props.name} />
+  ) : family === "context-menu" || name.startsWith("context-menu-") ? (
+    <DocContextMenuPreview name={props.name} />
   ) : family === "command" || name.startsWith("command-") ? (
     <DocCommandPreview name={props.name} />
   ) : family === "combobox" ? (
@@ -4379,6 +4381,78 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <p>Registry preview surface for this documentation example.</p>
     </div>
   )
+}
+
+type DocContextMenuItem = {
+  kind?: "item" | "label" | "separator" | "checkbox" | "radio" | "sub"
+  label?: string
+  labelHe?: string
+  labelEn?: string
+  shortcut?: string
+  disabled?: boolean
+  destructive?: boolean
+  checked?: boolean
+  value?: string
+  group?: string
+  icon?: string
+  children?: DocContextMenuItem[]
+}
+
+function DocContextMenuPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  if (name === "context-menu-sides") {
+    return <div class="doc-context-sides">
+      <DocContextMenuRoot variant="basic" label="Right click (top)" side="top" />
+      <DocContextMenuRoot variant="basic" label="Right click (right)" side="right" />
+      <DocContextMenuRoot variant="basic" label="Right click (bottom)" side="bottom" />
+      <DocContextMenuRoot variant="basic" label="Right click (left)" side="left" />
+    </div>
+  }
+  if (name === "context-menu-rtl") {
+    return <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-context-rtl-preview" dir="rtl" data-lang="ar"><DocContextMenuRoot variant="rtl" label="انقر بزر الماوس الأيمن هنا" labelHe="לחץ לחיצה ימנית כאן" labelEn="Right click here" rtl /></div></div>
+  }
+  const variant = name.replace("context-menu-", "")
+  return <DocContextMenuRoot variant={variant} label="Right click here" />
+}
+
+function DocContextMenuRoot(props: { variant: string; label: string; labelHe?: string; labelEn?: string; side?: string; rtl?: boolean }) {
+  const variant = untrack(() => props.variant)
+  const side = untrack(() => props.side || "right")
+  const rtl = untrack(() => !!props.rtl)
+  return <div class="doc-context-root" data-doc-context-root data-doc-context-side={side}>
+    <div class="doc-context-trigger" data-slot="context-menu-trigger" data-doc-context-trigger tabIndex={0} aria-haspopup="menu"><span data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? props.label : undefined} data-text-he={props.labelHe} data-text-en={props.labelEn}>{props.label}</span></div>
+    <div class="doc-context-portal" data-doc-context-portal hidden><DocContextMenuPanel variant={variant} rtl={rtl} /></div>
+  </div>
+}
+
+function DocContextMenuPanel(props: { variant: string; rtl?: boolean; submenu?: boolean; submenuKind?: string }) {
+  const variant = untrack(() => props.variant)
+  const rtl = untrack(() => !!props.rtl)
+  const submenu = untrack(() => !!props.submenu)
+  const submenuKind = untrack(() => props.submenuKind || "tools")
+  const basic: DocContextMenuItem[] = [{ label: "Back" }, { label: "Forward", disabled: true }, { label: "Reload" }]
+  const tools: DocContextMenuItem[] = [{ label: "Save Page...", labelHe: "שמור עמוד...", labelEn: "Save Page..." }, { label: "Create Shortcut...", labelHe: "צור קיצור דרך...", labelEn: "Create Shortcut..." }, { label: "Name Window...", labelHe: "שם חלון...", labelEn: "Name Window..." }, { kind: "separator" }, { label: "Developer Tools", labelHe: "כלי מפתח", labelEn: "Developer Tools" }, { kind: "separator" }, { label: "Delete", labelHe: "מחק", labelEn: "Delete", destructive: true }]
+  const navigation: DocContextMenuItem[] = [{ label: "رجوع", labelHe: "חזור", labelEn: "Back", icon: "back", shortcut: "⌘[" }, { label: "تقدم", labelHe: "קדימה", labelEn: "Forward", icon: "forward", shortcut: "⌘]", disabled: true }, { label: "إعادة تحميل", labelHe: "רענן", labelEn: "Reload", icon: "reload", shortcut: "⌘R" }]
+  const demo: DocContextMenuItem[] = [{ label: "Back", shortcut: "⌘[" }, { label: "Forward", shortcut: "⌘]", disabled: true }, { label: "Reload", shortcut: "⌘R" }, { kind: "sub", label: "More Tools", children: tools }, { kind: "separator" }, { kind: "checkbox", label: "Show Bookmarks", checked: true }, { kind: "checkbox", label: "Show Full URLs" }, { kind: "separator" }, { kind: "label", label: "People" }, { kind: "radio", label: "Pedro Duarte", value: "pedro", group: "people", checked: true }, { kind: "radio", label: "Colm Tuite", value: "colm", group: "people" }]
+  const checkboxes: DocContextMenuItem[] = [{ kind: "checkbox", label: "Show Bookmarks Bar", checked: true }, { kind: "checkbox", label: "Show Full URLs" }, { kind: "checkbox", label: "Show Developer Tools", checked: true }]
+  const destructive: DocContextMenuItem[] = [{ label: "Edit", icon: "edit" }, { label: "Share", icon: "share" }, { kind: "separator" }, { label: "Delete", icon: "delete", destructive: true }]
+  const groups: DocContextMenuItem[] = [{ kind: "label", label: "File" }, { label: "New File", shortcut: "⌘N" }, { label: "Open File", shortcut: "⌘O" }, { label: "Save", shortcut: "⌘S" }, { kind: "separator" }, { kind: "label", label: "Edit" }, { label: "Undo", shortcut: "⌘Z" }, { label: "Redo", shortcut: "⇧⌘Z" }, { kind: "separator" }, { label: "Cut", shortcut: "⌘X" }, { label: "Copy", shortcut: "⌘C" }, { label: "Paste", shortcut: "⌘V" }, { kind: "separator" }, { label: "Delete", shortcut: "⌫", destructive: true }]
+  const icons: DocContextMenuItem[] = [{ label: "Copy", icon: "copy" }, { label: "Cut", icon: "cut" }, { label: "Paste", icon: "paste" }, { kind: "separator" }, { label: "Delete", icon: "delete", destructive: true }]
+  const radio: DocContextMenuItem[] = [{ kind: "label", label: "People" }, { kind: "radio", label: "Pedro Duarte", value: "pedro", group: "people", checked: true }, { kind: "radio", label: "Colm Tuite", value: "colm", group: "people" }, { kind: "separator" }, { kind: "label", label: "Theme" }, { kind: "radio", label: "Light", value: "light", group: "theme", checked: true }, { kind: "radio", label: "Dark", value: "dark", group: "theme" }, { kind: "radio", label: "System", value: "system", group: "theme" }]
+  const shortcuts: DocContextMenuItem[] = [{ label: "Back", shortcut: "⌘[" }, { label: "Forward", shortcut: "⌘]", disabled: true }, { label: "Reload", shortcut: "⌘R" }, { kind: "separator" }, { label: "Save", shortcut: "⌘S" }, { label: "Save As...", shortcut: "⇧⌘S" }]
+  const submenuItems: DocContextMenuItem[] = [{ label: "Copy", shortcut: "⌘C" }, { label: "Cut", shortcut: "⌘X" }, { kind: "sub", label: "More Tools", children: tools }]
+  const rtlItems: DocContextMenuItem[] = [{ kind: "sub", label: "التنقل", labelHe: "ניווט", labelEn: "Navigation", children: navigation }, { kind: "sub", label: "المزيد من الأدوات", labelHe: "כלים נוספים", labelEn: "More Tools", children: tools }, { kind: "separator" }, { kind: "checkbox", label: "إظهار الإشارات المرجعية", labelHe: "הצג סימניות", labelEn: "Show Bookmarks", checked: true }, { kind: "checkbox", label: "إظهار عناوين URL الكاملة", labelHe: "הצג כתובות URL מלאות", labelEn: "Show Full URLs" }, { kind: "separator" }, { kind: "label", label: "الأشخاص", labelHe: "אנשים", labelEn: "People" }, { kind: "radio", label: "Pedro Duarte", labelHe: "Pedro Duarte", labelEn: "Pedro Duarte", value: "pedro", group: "people", checked: true }, { kind: "radio", label: "Colm Tuite", labelHe: "Colm Tuite", labelEn: "Colm Tuite", value: "colm", group: "people" }]
+  const entries = submenu ? (submenuKind === "navigation" ? navigation : tools) : variant === "basic" || variant === "sides" ? basic : variant === "checkboxes" ? checkboxes : variant === "destructive" ? destructive : variant === "groups" ? groups : variant === "icons" ? icons : variant === "radio" ? radio : variant === "shortcuts" ? shortcuts : variant === "submenu" ? submenuItems : variant === "rtl" ? rtlItems : demo
+  const wide = variant === "demo" || variant === "rtl"
+  return <div class={`doc-context-menu-panel${wide ? " is-wide" : ""}${submenu ? " is-submenu" : ""}`} data-slot={submenu ? "context-menu-sub-content" : "context-menu-content"} data-doc-context-panel data-doc-context-submenu={submenu ? "true" : undefined} data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"} role="menu">
+    {entries.map((entry) => entry.kind === "separator" ? <div class="doc-context-separator" role="separator"></div> : entry.kind === "label" ? <div class="doc-context-label" data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? entry.label : undefined} data-text-he={entry.labelHe} data-text-en={entry.labelEn}>{entry.label}</div> : entry.kind === "sub" ? <div class="doc-context-sub" data-doc-context-sub><button type="button" role="menuitem" class="doc-context-item" data-doc-context-item data-doc-context-sub-trigger aria-haspopup="menu" aria-expanded="false"><span data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? entry.label : undefined} data-text-he={entry.labelHe} data-text-en={entry.labelEn}>{entry.label}</span><ChevronRightIcon /></button><div class="doc-context-sub-portal" data-doc-context-sub-portal hidden><DocContextMenuPanel variant={variant} rtl={rtl} submenu submenuKind={entry.children === navigation ? "navigation" : "tools"} /></div></div> : <button type="button" class={`doc-context-item${entry.destructive ? " is-destructive" : ""}`} data-doc-context-item data-doc-context-check={entry.kind === "checkbox" ? "true" : undefined} data-doc-context-radio={entry.kind === "radio" ? "true" : undefined} data-doc-context-group={entry.group} data-doc-context-value={entry.value} data-checked={entry.checked ? "true" : "false"} role={entry.kind === "checkbox" ? "menuitemcheckbox" : entry.kind === "radio" ? "menuitemradio" : "menuitem"} aria-checked={entry.kind === "checkbox" || entry.kind === "radio" ? !!entry.checked : undefined} disabled={entry.disabled}>{entry.kind === "checkbox" || entry.kind === "radio" ? <span class="doc-context-check" aria-hidden="true"><CheckIcon /></span> : entry.icon ? renderDocContextIcon(entry.icon) : null}<span data-doc-rtl-text={rtl ? "true" : undefined} data-text-ar={rtl ? entry.label : undefined} data-text-he={entry.labelHe} data-text-en={entry.labelEn}>{entry.label}</span>{entry.shortcut ? <kbd>{entry.shortcut}</kbd> : null}</button>)}
+  </div>
+}
+
+function renderDocContextIcon(kind: string) {
+  return kind === "reload" ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"></path><path d="M20 4v7h-7"></path></svg>
+    : kind === "back" || kind === "forward" ? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={kind === "back" ? "M15 18l-6-6 6-6" : "M9 18l6-6-6-6"}></path></svg>
+      : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5h14v14H5z"></path><path d="M8 9h8M8 13h6"></path></svg>
 }
 
 type DocCommandItem = { label: string; icon?: string; shortcut?: string; disabled?: boolean; labelHe?: string; labelEn?: string }
