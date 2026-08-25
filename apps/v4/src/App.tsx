@@ -4262,6 +4262,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
 
   return family === "checkbox" ? (
     <DocCheckboxPreview name={props.name} />
+  ) : family === "collapsible" ? (
+    <DocCollapsiblePreview name={props.name} />
   ) : family === "chart" ? (
     <DocChartPreview name={props.name} />
   ) : family === "carousel" ? (
@@ -4372,6 +4374,104 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <h4>{formatDisplayLabel(family || "component preview")}</h4>
       <p>Registry preview surface for this documentation example.</p>
     </div>
+  )
+}
+
+function DocCollapsiblePreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const isRtl = name === "collapsible-rtl"
+  const content = name === "collapsible-basic" ? (
+    <article class="doc-collapsible-basic-card" data-slot="card">
+      <div data-slot="card-content">
+        <div class="doc-collapsible-basic" data-slot="collapsible" data-state="closed">
+          <div id="collapsible-basic-content" data-slot="collapsible-content" data-state="closed" hidden></div>
+        </div>
+      </div>
+    </article>
+  ) : name === "collapsible-settings" ? (
+    <article class="doc-collapsible-settings-card" data-slot="card">
+      <header data-slot="card-header">
+        <h4 data-slot="card-title">Radius</h4>
+        <p data-slot="card-description">Set the corner radius of the element.</p>
+      </header>
+      <div data-slot="card-content">
+        <div class="doc-collapsible-settings" data-slot="collapsible" data-state="closed" data-doc-collapsible>
+          <div class="doc-collapsible-settings-fields">
+            <label><span class="sr-only">Radius X</span><input aria-label="Radius X" value="0" /></label>
+            <label><span class="sr-only">Radius Y</span><input aria-label="Radius Y" value="0" /></label>
+            <div id="collapsible-settings-content" class="doc-collapsible-settings-content" data-slot="collapsible-content" data-state="closed" hidden>
+              <label><span class="sr-only">Radius X</span><input aria-label="Radius X expanded" value="0" /></label>
+              <label><span class="sr-only">Radius Y</span><input aria-label="Radius Y expanded" value="0" /></label>
+            </div>
+          </div>
+          <button type="button" class="doc-collapsible-settings-trigger" data-slot="collapsible-trigger" data-doc-collapsible-trigger data-state="closed" aria-expanded="false" aria-controls="collapsible-settings-content" aria-label="Expand radius controls">
+            <span data-doc-collapsible-closed-icon>{renderDocCollapsibleIcon("maximize")}</span>
+            <span data-doc-collapsible-open-icon hidden>{renderDocCollapsibleIcon("minimize")}</span>
+          </button>
+        </div>
+      </div>
+    </article>
+  ) : name === "collapsible-file-tree" ? (
+    <article class="doc-collapsible-file-card" data-slot="card">
+      <header data-slot="card-header">
+        <div class="doc-collapsible-tabs" role="tablist" aria-label="File tree view">
+          <button type="button" role="tab" aria-selected="true" data-state="active" data-doc-collapsible-tab>Explorer</button>
+          <button type="button" role="tab" aria-selected="false" data-state="inactive" data-doc-collapsible-tab>Outline</button>
+        </div>
+      </header>
+      <div class="doc-collapsible-file-list" data-slot="card-content">
+        {["app.tsx", "layout.tsx", "globals.css", "package.json", "tsconfig.json", "README.md", ".gitignore"].map((file) => (
+          <button type="button" class="doc-collapsible-file">{renderDocCollapsibleIcon("file")}<span>{file}</span></button>
+        ))}
+      </div>
+    </article>
+  ) : (
+    <DocCollapsibleOrder rtl={isRtl} />
+  )
+
+  return isRtl ? (
+    <div class="doc-rtl-preview-shell">
+      <div class="doc-rtl-preview-toolbar" dir="ltr">
+        <select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select>
+        <button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button>
+      </div>
+      <div class="doc-rtl-preview doc-collapsible-rtl-preview" dir="rtl" data-lang="ar">{content}</div>
+    </div>
+  ) : content
+}
+
+function DocCollapsibleOrder(props: { rtl: boolean }) {
+  const rtl = untrack(() => props.rtl)
+  const translated = (arabic: string, hebrew: string, english: string) => rtl
+    ? <span data-doc-rtl-text data-text-ar={arabic} data-text-he={hebrew} data-text-en={english}>{arabic}</span>
+    : english
+  const contentId = rtl ? "collapsible-rtl-content" : "collapsible-demo-content"
+  return (
+    <div class="doc-collapsible-order" data-slot="collapsible" data-state="closed" data-doc-collapsible data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}>
+      <div class="doc-collapsible-order-header">
+        <h4>{translated("الطلب #4189", "הזמנה #4189", "Order #4189")}</h4>
+        <button type="button" class="doc-collapsible-order-trigger" data-slot="collapsible-trigger" data-doc-collapsible-trigger data-state="closed" aria-expanded="false" aria-controls={contentId}>
+          {renderDocCollapsibleIcon("up-down")}<span class="sr-only">Toggle details</span>
+        </button>
+      </div>
+      <div class="doc-collapsible-order-row"><span>{translated("الحالة", "סטטוס", "Status")}</span><strong>{translated("تم الشحن", "נשלח", "Shipped")}</strong></div>
+      <div id={contentId} class="doc-collapsible-order-content" data-slot="collapsible-content" data-state="closed" hidden>
+        <div class="doc-collapsible-order-detail"><strong>{translated("عنوان الشحن", "כתובת משלוח", "Shipping address")}</strong><span>{translated("100 Market St, San Francisco", "100 Market St, San Francisco", "100 Market St, San Francisco")}</span></div>
+        <div class="doc-collapsible-order-detail"><strong>{translated("العناصر", "פריטים", "Items")}</strong><span>{translated("2x سماعات الاستوديو", "2x אוזניות סטודיו", "2x Studio Headphones")}</span></div>
+      </div>
+    </div>
+  )
+}
+
+function renderDocCollapsibleIcon(kind: "up-down" | "maximize" | "minimize" | "file") {
+  return kind === "up-down" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"></path></svg>
+  ) : kind === "maximize" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"></path></svg>
+  ) : kind === "minimize" ? (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"></path></svg>
+  ) : (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"></path></svg>
   )
 }
 

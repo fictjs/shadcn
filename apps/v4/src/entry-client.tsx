@@ -28,6 +28,7 @@ async function initResumableClient(): Promise<void> {
   wireDocTabsFallback()
   wireDocPreviewCode()
   wireDocAccordions()
+  wireDocCollapsibles()
   wireDocAlertDialogs()
   wireDocAvatarMenus()
   wireDocButtonGroups()
@@ -651,6 +652,75 @@ function wireDocAccordions(): void {
       }
       setItemState(item, index === 0)
     })
+  })
+}
+
+function wireDocCollapsibles(): void {
+  const setOpen = (root: HTMLElement, open: boolean): void => {
+    const trigger = root.querySelector<HTMLButtonElement>("[data-doc-collapsible-trigger]")
+    const content = root.querySelector<HTMLElement>("[data-slot='collapsible-content']")
+    if (!trigger || !content) {
+      return
+    }
+
+    const state = open ? "open" : "closed"
+    root.dataset.state = state
+    trigger.dataset.state = state
+    trigger.setAttribute("aria-expanded", String(open))
+    content.dataset.state = state
+    content.hidden = !open
+
+    const closedIcon = trigger.querySelector<HTMLElement>("[data-doc-collapsible-closed-icon]")
+    const openIcon = trigger.querySelector<HTMLElement>("[data-doc-collapsible-open-icon]")
+    if (closedIcon && openIcon) {
+      closedIcon.hidden = open
+      openIcon.hidden = !open
+      trigger.setAttribute("aria-label", open ? "Collapse radius controls" : "Expand radius controls")
+    }
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target
+    if (!(target instanceof Element)) {
+      return
+    }
+
+    const trigger = target.closest<HTMLButtonElement>("[data-doc-collapsible-trigger]")
+    if (trigger) {
+      const root = trigger.closest<HTMLElement>("[data-doc-collapsible]")
+      if (root) {
+        setOpen(root, trigger.getAttribute("aria-expanded") !== "true")
+      }
+      return
+    }
+
+    const tab = target.closest<HTMLButtonElement>("[data-doc-collapsible-tab]")
+    const tabList = tab?.closest<HTMLElement>("[role='tablist']")
+    if (!tab || !tabList) {
+      return
+    }
+    tabList.querySelectorAll<HTMLButtonElement>("[data-doc-collapsible-tab]").forEach((candidate) => {
+      const active = candidate === tab
+      candidate.dataset.state = active ? "active" : "inactive"
+      candidate.setAttribute("aria-selected", String(active))
+    })
+  })
+
+  document.addEventListener("keydown", (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLButtonElement) || !target.matches("[data-doc-collapsible-tab]")) {
+      return
+    }
+    const tabList = target.closest<HTMLElement>("[role='tablist']")
+    if (!tabList || (event.key !== "ArrowLeft" && event.key !== "ArrowRight" && event.key !== "Home" && event.key !== "End")) {
+      return
+    }
+    const tabs = [...tabList.querySelectorAll<HTMLButtonElement>("[data-doc-collapsible-tab]")]
+    const current = tabs.indexOf(target)
+    const next = event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : (current + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length
+    event.preventDefault()
+    tabs[next]?.click()
+    tabs[next]?.focus()
   })
 }
 

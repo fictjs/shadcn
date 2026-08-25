@@ -2176,6 +2176,65 @@ h1 {
 .doc-component-card[data-doc-preview-name="chart-tooltip"] .doc-component-preview-stage { height: 288px; min-height: 288px; padding: 0; }
 .doc-component-card[data-doc-preview-name="chart-rtl"] .doc-component-preview-stage { display: block; height: 432px; min-height: 432px; padding: 0; }
 
+.doc-component-card[data-doc-preview-name="collapsible-demo"] .doc-component-preview-stage,
+.doc-component-card[data-doc-preview-name="collapsible-basic"] .doc-component-preview-stage { align-items: start; height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="collapsible-settings"] .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="collapsible-file-tree"] .doc-component-preview-stage { height: 576px; min-height: 576px; }
+.doc-component-card[data-doc-preview-name="collapsible-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+
+.doc-collapsible-order { display: flex; width: 350px; flex-direction: column; gap: 0.5rem; color: var(--foreground); }
+.doc-collapsible-order-header { display: flex; height: 2rem; align-items: center; justify-content: space-between; gap: 1rem; padding-inline: 1rem; }
+.doc-collapsible-order-header h4 { margin: 0; font-size: 0.875rem; font-weight: 600; line-height: 1.25rem; }
+.doc-collapsible-order-trigger,
+.doc-collapsible-settings-trigger { display: inline-grid; width: 2rem; height: 2rem; flex: 0 0 2rem; place-items: center; border: 1px solid transparent; border-radius: var(--radius-lg); padding: 0; color: var(--foreground); background: transparent; outline: none; }
+.doc-collapsible-order-trigger:hover,
+.doc-collapsible-order-trigger[aria-expanded="true"] { background: var(--muted); }
+.doc-collapsible-order-trigger:focus-visible,
+.doc-collapsible-settings-trigger:focus-visible { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.doc-collapsible-order-trigger svg,
+.doc-collapsible-settings-trigger svg { width: 1rem; height: 1rem; }
+.doc-collapsible-order-row,
+.doc-collapsible-order-detail { box-sizing: border-box; display: flex; min-height: 38px; justify-content: space-between; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.5rem 1rem; font-size: 0.875rem; line-height: 1.25rem; }
+.doc-collapsible-order-row > span,
+.doc-collapsible-order-detail > span { color: var(--muted-foreground); }
+.doc-collapsible-order-row > strong,
+.doc-collapsible-order-detail > strong { font-weight: 500; }
+.doc-collapsible-order-content { display: flex; flex-direction: column; gap: 0.5rem; }
+.doc-collapsible-order-content[hidden] { display: none; }
+.doc-collapsible-order-detail { min-height: 58px; flex-direction: column; justify-content: center; }
+
+.doc-collapsible-basic-card { box-sizing: border-box; width: 384px; min-height: 32px; overflow: hidden; border-radius: var(--radius-xl); padding: 1rem; background: var(--card); box-shadow: 0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent); }
+.doc-collapsible-basic-card [data-slot="card-content"] { width: 100%; }
+.doc-collapsible-basic { min-height: 0; border-radius: var(--radius-md); }
+
+.doc-collapsible-settings-card { box-sizing: border-box; display: flex; width: 320px; flex-direction: column; gap: 0.75rem; overflow: hidden; border-radius: var(--radius-xl); padding: 0.75rem; color: var(--card-foreground); background: var(--card); box-shadow: 0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent); }
+.doc-collapsible-settings-card > header { display: grid; gap: 0.25rem; }
+.doc-collapsible-settings-card h4 { margin: 0; font-size: 0.875rem; font-weight: 500; line-height: 1.375; }
+.doc-collapsible-settings-card p { margin: 0; color: var(--muted-foreground); font-size: 0.875rem; line-height: 1.25rem; }
+.doc-collapsible-settings { display: flex; align-items: flex-start; gap: 0.5rem; }
+.doc-collapsible-settings-fields { display: grid; min-width: 0; flex: 1; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+.doc-collapsible-settings-fields label { display: block; min-width: 0; }
+.doc-collapsible-settings-fields input { box-sizing: border-box; width: 100%; height: 2rem; border: 1px solid var(--input); border-radius: var(--radius-md); padding: 0 0.6875rem; color: var(--foreground); background: transparent; font: inherit; font-size: 0.875rem; outline: none; }
+.doc-collapsible-settings-fields input:focus-visible { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.doc-collapsible-settings-content { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; gap: 0.5rem; }
+.doc-collapsible-settings-content[hidden] { display: none; }
+.doc-collapsible-settings-trigger { border-color: var(--input); }
+.doc-collapsible-settings-trigger:hover { background: var(--accent); }
+
+.doc-collapsible-file-card { box-sizing: border-box; display: flex; width: 256px; flex-direction: column; gap: 0.75rem; overflow: hidden; border-radius: var(--radius-xl); padding: 0.75rem; color: var(--card-foreground); background: var(--card); box-shadow: 0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent); }
+.doc-collapsible-tabs { display: grid; height: 2rem; grid-template-columns: repeat(2, minmax(0, 1fr)); border-radius: var(--radius-lg); padding: 0.1875rem; background: var(--muted); }
+.doc-collapsible-tabs button { border: 0; border-radius: calc(var(--radius-lg) - 2px); color: var(--muted-foreground); background: transparent; font: inherit; font-size: 0.875rem; font-weight: 500; outline: none; }
+.doc-collapsible-tabs button[data-state="active"] { color: var(--foreground); background: var(--background); box-shadow: 0 1px 2px rgb(0 0 0 / 10%); }
+.doc-collapsible-tabs button:focus-visible { box-shadow: 0 0 0 2px var(--ring); }
+.doc-collapsible-file-list { display: flex; flex-direction: column; gap: 0.25rem; padding-top: 1.25rem; }
+.doc-collapsible-file { display: flex; width: 100%; height: 1.75rem; align-items: center; gap: 0.5rem; border: 0; border-radius: var(--radius-md); padding: 0 0.5rem; color: var(--foreground); background: transparent; font: inherit; font-size: 0.875rem; text-align: start; }
+.doc-collapsible-file:hover { text-decoration: underline; }
+.doc-collapsible-file:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
+.doc-collapsible-file svg { width: 1rem; height: 1rem; flex: 0 0 1rem; }
+.doc-collapsible-rtl-preview { box-sizing: border-box; height: 288px; align-items: start; padding: 2.5rem; }
+.doc-collapsible-rtl-preview[data-lang="ar"] { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-collapsible-rtl-preview[data-lang="he"] { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+
 .doc-component-card[data-doc-preview-name="checkbox-demo"] .doc-component-preview-stage { height: 320px; min-height: 320px; }
 .doc-component-card[data-doc-preview-name^="checkbox-"]:not([data-doc-preview-name="checkbox-demo"]):not([data-doc-preview-name="checkbox-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
 .doc-component-card[data-doc-preview-name="checkbox-table"] .doc-component-preview-stage { padding: 2rem; }
