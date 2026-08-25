@@ -4300,6 +4300,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocSelectPreview name={props.name} />
   ) : family === "separator" ? (
     <DocSeparatorPreview name={props.name} />
+  ) : family === "sheet" ? (
+    <DocSheetPreview name={props.name} />
   ) : family === "item" ? (
     <DocItemPreview name={props.name} />
   ) : family === "empty" || name.startsWith("empty-") ? (
@@ -5023,6 +5025,19 @@ function DocSeparatorPreview(props: { name: string }) {
   else if (name === "separator-menu") content = <div class="doc-separator-menu">{[["Settings", "Manage preferences"], ["Account", "Profile & security"], ["Help", "Support & docs"]].map((entry, index) => <>{index > 0 ? <span class="doc-separator is-vertical" role="separator" aria-orientation="vertical"></span> : null}<div><strong>{entry[0]}</strong><small>{entry[1]}</small></div></>)}</div>
   else content = <div class="doc-separator-list">{[["Item 1", "Value 1"], ["Item 2", "Value 2"], ["Item 3", "Value 3"]].map((entry, index) => <>{index > 0 ? <span class="doc-separator is-horizontal" role="separator" aria-orientation="horizontal"></span> : null}<dl><dt>{entry[0]}</dt><dd>{entry[1]}</dd></dl></>)}</div>
   return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-separator-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
+}
+
+function DocSheetPreview(props: { name: string }) {
+  const name = untrack(() => props.name)
+  const variant = name.replace("sheet-", "")
+  const rtl = variant === "rtl"
+  const text = (ar: string, he: string, en: string) => rtl ? <span data-doc-rtl-text data-text-ar={ar} data-text-he={he} data-text-en={en}>{ar}</span> : en
+  const sheet = (trigger: any, side: string, noClose = false, long = false) => <div class="doc-sheet-preview" data-doc-dialog-root><button type="button" class="doc-button is-outline" data-doc-dialog-trigger aria-haspopup="dialog" aria-expanded="false">{trigger}</button><div class="doc-dialog-portal doc-sheet-portal" data-doc-dialog-portal hidden><div class="doc-dialog-overlay" data-doc-dialog-overlay></div><div class={`doc-sheet-content is-${side}${long ? " is-long" : ""}`} role="dialog" aria-modal="true" aria-label={rtl ? "تعديل الملف الشخصي" : long ? `Edit profile ${side}` : noClose ? "No Close Button" : "Edit profile"} data-doc-rtl-label={rtl ? "true" : undefined} data-label-ar={rtl ? "تعديل الملف الشخصي" : undefined} data-label-he={rtl ? "עריכת פרופיל" : undefined} data-label-en={rtl ? "Edit profile" : undefined} tabIndex={-1} data-doc-sheet-rtl-side={rtl ? "true" : undefined} data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}>{!noClose ? <button type="button" class="doc-dialog-x" aria-label="Close" data-doc-dialog-close>×</button> : null}<header><h3>{noClose ? "No Close Button" : text("تعديل الملف الشخصي", "עריכת פרופיל", "Edit profile")}</h3><p>{noClose ? "This sheet doesn't have a close button in the top-right corner. Click outside to close." : text("قم بإجراء تغييرات على ملفك الشخصي هنا. انقر حفظ عند الانتهاء.", "בצע שינויים בפרופיל שלך כאן. לחץ שמור כשתסיים.", "Make changes to your profile here. Click save when you're done.")}</p></header>{long ? <div class="doc-sheet-scroll">{Array.from({ length: 10 }, (_, index) => <p key={index}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>)}</div> : noClose ? null : <div class="doc-sheet-fields"><label><span>{text("الاسم", "שם", "Name")}</span><input value="Pedro Duarte" /></label><label><span>{text("اسم المستخدم", "שם משתמש", "Username")}</span><input value={rtl ? "peduarte" : "@peduarte"} /></label></div>}{!noClose ? <footer><button type="button" class="doc-button is-default" data-doc-dialog-close>{long ? "Save changes" : text("حفظ التغييرات", "שמור שינויים", "Save changes")}</button><button type="button" class="doc-button is-outline" data-doc-dialog-close>{long ? "Cancel" : text("إغلاق", "סגור", "Close")}</button></footer> : null}</div></div></div>
+  let content
+  if (variant === "side") content = <div class="doc-sheet-sides">{["top", "right", "bottom", "left"].map((side) => sheet(side, side, false, true))}</div>
+  else if (variant === "no-close-button") content = sheet("Open Sheet", "right", true)
+  else content = sheet(text("فتح", "פתח", "Open"), rtl ? "left" : "right")
+  return rtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><InfoIcon /></button></div><div class="doc-rtl-preview doc-sheet-rtl-preview" dir="rtl" data-lang="ar">{content}</div></div> : content
 }
 
 function DocEmptyPreview(props: { name: string }) {

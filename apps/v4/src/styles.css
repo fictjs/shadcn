@@ -2962,6 +2962,39 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-separator-rtl-preview .doc-separator-demo { font-family: "Noto Sans Arabic Variable", sans-serif; }
 .doc-separator-rtl-preview[data-lang="he"] .doc-separator-demo { font-family: "Noto Sans Hebrew Variable", sans-serif; }
 
+.doc-component-card[data-doc-preview-name^="sheet-"]:not([data-doc-preview-name="sheet-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }
+.doc-component-card[data-doc-preview-name="sheet-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
+.doc-sheet-sides { display: flex; flex-wrap: wrap; gap: 8px; }
+.doc-sheet-sides .doc-button { text-transform: capitalize; }
+.doc-sheet-content { position: fixed; z-index: 151; display: flex; box-sizing: border-box; flex-direction: column; gap: 24px; overflow: hidden; color: var(--foreground); background: var(--background); box-shadow: 0 16px 50px rgb(0 0 0 / 28%); outline: none; }
+.doc-sheet-content.is-right,
+.doc-sheet-content.is-left { top: 0; bottom: 0; width: min(400px, 80vw); padding: 24px 0; }
+.doc-sheet-content.is-right { right: 0; border-left: 1px solid var(--border); }
+.doc-sheet-content.is-left { left: 0; border-right: 1px solid var(--border); }
+.doc-sheet-content.is-top,
+.doc-sheet-content.is-bottom { right: 0; left: 0; max-height: 50vh; padding: 24px 0; }
+.doc-sheet-content.is-top { top: 0; border-bottom: 1px solid var(--border); }
+.doc-sheet-content.is-bottom { bottom: 0; border-top: 1px solid var(--border); }
+.doc-sheet-content header,
+.doc-sheet-fields,
+.doc-sheet-content footer { padding-inline: 16px; }
+.doc-sheet-content header { display: grid; gap: 6px; padding-inline-end: 48px; }
+.doc-sheet-content header h3,
+.doc-sheet-content header p { margin: 0; }
+.doc-sheet-content header h3 { font-size: 18px; font-weight: 600; line-height: 24px; }
+.doc-sheet-content header p { color: var(--muted-foreground); font-size: 14px; line-height: 20px; }
+.doc-sheet-fields { display: grid; flex: 1; align-content: start; gap: 24px; }
+.doc-sheet-fields label { display: grid; gap: 12px; font-size: 14px; font-weight: 500; line-height: 20px; }
+.doc-sheet-fields input { box-sizing: border-box; width: 100%; height: 32px; border: 1px solid var(--input); border-radius: 10px; padding: 4px 10px; color: inherit; background: transparent; font: inherit; outline: none; }
+.doc-sheet-fields input:focus-visible { border-color: var(--ring); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.doc-sheet-content footer { display: grid; gap: 8px; margin-top: auto; }
+.doc-sheet-content footer .doc-button { width: 100%; }
+.doc-sheet-scroll { min-height: 0; overflow-y: auto; padding: 0 16px; }
+.doc-sheet-scroll p { margin: 0 0 8px; font-size: 14px; line-height: 1.625; }
+.doc-sheet-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; }
+.doc-sheet-rtl-preview .doc-sheet-preview { font-family: "Noto Sans Arabic Variable", sans-serif; }
+.doc-sheet-rtl-preview[data-lang="he"] .doc-sheet-preview { font-family: "Noto Sans Hebrew Variable", sans-serif; }
+
 .doc-component-card[data-doc-preview-name^="empty-"]:not([data-doc-preview-name="empty-rtl"]) .doc-component-preview-stage { height: 384px; min-height: 384px; }
 .doc-component-card[data-doc-preview-name="empty-demo"] .doc-component-preview-stage,
 .doc-component-card[data-doc-preview-name="empty-background"] .doc-component-preview-stage,

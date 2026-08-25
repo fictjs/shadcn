@@ -650,9 +650,17 @@ function wireDocAccordions(): void {
         text.textContent = nextText
       }
     }
+    for (const labelled of shell.querySelectorAll<HTMLElement>("[data-doc-rtl-label]")) {
+      const nextLabel = labelled.getAttribute(`data-label-${language}`)
+      if (nextLabel) labelled.setAttribute("aria-label", nextLabel)
+    }
     for (const control of shell.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("[data-doc-rtl-placeholder]")) {
       const placeholder = control.getAttribute(`data-placeholder-${language}`)
       if (placeholder) control.placeholder = placeholder
+    }
+    for (const sheet of shell.querySelectorAll<HTMLElement>("[data-doc-sheet-rtl-side]")) {
+      sheet.classList.toggle("is-left", direction === "rtl")
+      sheet.classList.toggle("is-right", direction === "ltr")
     }
 
     if (!accordion) {
@@ -1475,7 +1483,7 @@ function wireDocDialogs(): void {
       document.body.append(portal)
       trigger.setAttribute("aria-expanded", "true")
       document.body.style.overflow = "hidden"
-      queueMicrotask(() => (content.querySelector<HTMLInputElement>("input:not([readonly])") ?? content.querySelector<HTMLButtonElement>("button"))?.focus({ preventScroll: true }))
+      queueMicrotask(() => (content.querySelector<HTMLInputElement>("input:not([readonly])") ?? content.querySelector<HTMLButtonElement>("button") ?? content).focus({ preventScroll: true }))
       return
     }
     if (activePortal && (target.closest("[data-doc-dialog-close]") || target.closest("[data-doc-dialog-overlay]"))) {
