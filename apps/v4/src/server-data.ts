@@ -1011,6 +1011,7 @@ function normalizeMdxStructures(value: string): string {
     return `\n${createDocMarker("component-source", { name, title, styleName })}\n`
   })
 
+  normalized = normalizeStepsMarkup(normalized)
   normalized = normalizeTabsMarkup(normalized)
   normalized = normalizeCalloutMarkup(normalized)
 
@@ -1040,11 +1041,9 @@ function normalizeMdxMarkup(segment: string): string {
     return `\n![${alt}](${src})\n`
   })
 
-  normalized = normalized.replace(/<Steps(?:\s[^>]*)?>/g, "\n")
-  normalized = normalized.replace(/<\/Steps>/g, "\n")
   normalized = normalized.replace(/<Step>([\s\S]*?)<\/Step>/g, (_, content) => {
     const item = collapseMdxWhitespace(stripResidualMdx(normalizeMdxMarkup(content)))
-    return item ? `\n1. ${item}\n` : "\n"
+    return item ? `\n:::step-item\n${item}\n:::endstep-item\n` : "\n"
   })
 
   normalized = normalized.replace(/<(?:Accordion|AccordionItem|AccordionPrimitive\.Item)(?:\s[^>]*)?>/g, "\n")
@@ -1128,6 +1127,13 @@ function normalizeTabsMarkup(value: string): string {
     }
 
     return `\n:::tabs\n${panels.join("\n\n")}\n:::endtabs\n`
+  })
+}
+
+function normalizeStepsMarkup(value: string): string {
+  return value.replace(/<Steps(?:\s[^>]*)?>([\s\S]*?)<\/Steps>/g, (_, content: string) => {
+    const inner = normalizeMdxBody(content).trim()
+    return inner ? `\n:::steps\n${inner}\n:::endsteps\n` : "\n"
   })
 }
 
@@ -1339,6 +1345,48 @@ function parseDocBody(body: string): {
         text: "",
       })
       index += 1
+      continue
+    }
+
+    if (trimmed.startsWith(":::steps")) {
+      const nestedLines: string[] = []
+      index += 1
+      while (index < lines.length && !(lines[index] || "").trim().startsWith(":::endsteps")) {
+        nestedLines.push(lines[index] || "")
+        index += 1
+      }
+      if (index < lines.length) {
+        index += 1
+      }
+
+      const nestedBody = parseDocBody(nestedLines.join("\n"))
+      blocks.push({
+        kind: "steps",
+        text: "",
+        children: nestedBody.blocks,
+      })
+      continue
+    }
+
+    if (trimmed.startsWith(":::step-item")) {
+      const stepLines: string[] = []
+      index += 1
+      while (index < lines.length && !(lines[index] || "").trim().startsWith(":::endstep-item")) {
+        stepLines.push(lines[index] || "")
+        index += 1
+      }
+      if (index < lines.length) {
+        index += 1
+      }
+
+      const raw = stepLines.join(" ").trim()
+      // Step titles render as headings but are deliberately kept out of the
+      // table of contents, matching the React docs.
+      blocks.push({
+        kind: "step",
+        text: cleanInlineMarkdown(raw),
+        inline: parseInlineMarkdown(raw),
+      })
       continue
     }
 

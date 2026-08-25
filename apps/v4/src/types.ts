@@ -33,6 +33,8 @@ export interface DocContentBlock {
     | "hr"
     | "image"
     | "callout"
+    | "steps"
+    | "step"
     | "tabs"
     | "component-preview"
     | "component-source"

@@ -4143,6 +4143,14 @@ function renderDocBlock(block: DocContentBlock, key: string) {
         <DocBlockList blocks={untrack(() => block.children || [])} keyPrefix={`${key}-callout`} />
       </div>
     </section>
+  ) : block.kind === "steps" ? (
+    <div class="doc-steps" key={key}>
+      <DocBlockList blocks={untrack(() => block.children || [])} keyPrefix={`${key}-steps`} />
+    </div>
+  ) : block.kind === "step" ? (
+    <h3 class="doc-step" key={key}>
+      <DocInline nodes={block.inline} text={block.text} />
+    </h3>
   ) : block.kind === "tabs" ? (
     <DocTabsBlock panels={untrack(() => block.panels || [])} blockKey={key} />
   ) : block.kind === "component-list" ? (
