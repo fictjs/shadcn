@@ -43,6 +43,7 @@ async function initResumableClient(): Promise<void> {
   wireDocCarousels()
   wireDocCharts()
   wireDocCheckboxes()
+  wireDocRadioGroups()
   wireDocFields()
   wireDocInputGroups()
   wireDocInputOtps()
@@ -2347,6 +2348,31 @@ function wireDocCharts(): void {
       bar.classList.toggle("is-mobile", key === "Mobile")
       bar.classList.toggle("is-desktop", key !== "Mobile")
     })
+  })
+}
+
+function wireDocRadioGroups(): void {
+  // Fict's SSR drops the `checked` property, so the docs mirror the selected
+  // radio onto data-checked. Restore the native state on hydration and keep the
+  // attribute in sync as the user picks a different option.
+  const sync = (group: HTMLElement): void => {
+    group.querySelectorAll<HTMLInputElement>('input[type="radio"][data-checked]').forEach((input) => {
+      input.dataset.checked = input.checked ? "true" : "false"
+    })
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-doc-radio-group]").forEach((group) => {
+    group.querySelectorAll<HTMLInputElement>('input[type="radio"][data-checked="true"]').forEach((input) => {
+      input.checked = true
+    })
+  })
+
+  document.addEventListener("change", (event) => {
+    const target = event.target
+    if (!(target instanceof HTMLInputElement) || target.type !== "radio") return
+    const group = target.closest<HTMLElement>("[data-doc-radio-group]")
+    if (!group) return
+    sync(group)
   })
 }
 

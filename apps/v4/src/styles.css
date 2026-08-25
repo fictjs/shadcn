@@ -2833,8 +2833,12 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-radio-field { display: flex; align-items: flex-start; gap: 12px; }
 .doc-radio-field > input,
 .doc-radio-card > input { box-sizing: border-box; width: 16px; height: 16px; flex: 0 0 16px; appearance: none; border: 1px solid var(--input); border-radius: 999px; margin: 2px 0 0; background: transparent; outline: none; }
+/* Fict's SSR does not serialise the `checked` property, so the selected state
+   is mirrored onto data-checked and kept in sync on the client. */
 .doc-radio-field > input:checked,
-.doc-radio-card > input:checked { border: 5px solid var(--primary); }
+.doc-radio-card > input:checked,
+.doc-radio-field > input[data-checked="true"],
+.doc-radio-card > input[data-checked="true"] { border: 5px solid var(--primary); }
 .doc-radio-field > input:hover:not(:disabled),
 .doc-radio-card > input:hover:not(:disabled) { border-color: var(--ring); }
 .doc-radio-field > input:focus-visible,
@@ -2848,8 +2852,19 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-radio-field.is-invalid input { border-color: var(--destructive); }
 .doc-radio-group.is-description,
 .doc-radio-group.is-rtl { gap: 16px; }
-.doc-radio-card { display: flex; box-sizing: border-box; width: 384px; align-items: center; justify-content: space-between; gap: 16px; border: 1px solid var(--border); border-radius: 10px; padding: 16px; cursor: pointer; }
-.doc-radio-card:has(input:checked) { border-color: var(--primary); }
+.doc-radio-group.is-choice-card { gap: 8px; }
+.doc-radio-card { display: flex; box-sizing: border-box; width: 384px; align-items: center; justify-content: space-between; gap: 16px; border: 1px solid var(--border); border-radius: 10px; padding: 10px; cursor: pointer; }
+.doc-radio-card:has(input:checked),
+.doc-radio-card:has(input[data-checked="true"]) {
+  border-color: color-mix(in oklab, var(--primary) 30%, transparent);
+  background: color-mix(in oklab, var(--primary) 5%, transparent);
+}
+
+.dark .doc-radio-card:has(input:checked),
+.dark .doc-radio-card:has(input[data-checked="true"]) {
+  border-color: color-mix(in oklab, var(--primary) 20%, transparent);
+  background: color-mix(in oklab, var(--primary) 10%, transparent);
+}
 .doc-radio-copy { display: grid; gap: 2px; }
 .doc-radio-copy strong { font-size: 14px; font-weight: 500; line-height: 20px; }
 .doc-radio-fieldset { width: 320px; border: 0; margin: 0; padding: 0; color: var(--foreground); }
@@ -3136,10 +3151,18 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-switch-field > div { min-width: 0; flex: 1; }
 .doc-switch-field label { display: block; }
 .doc-switch-field p { margin: 4px 0 0; color: var(--muted-foreground); font-size: 14px; line-height: 20px; }
-.doc-switch-field.is-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.doc-switch-field.is-card { border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
+.doc-switch-field.is-card:has(.ui-switch[aria-checked="true"]) {
+  border-color: color-mix(in oklab, var(--primary) 30%, transparent);
+  background: color-mix(in oklab, var(--primary) 5%, transparent);
+}
+.dark .doc-switch-field.is-card:has(.ui-switch[aria-checked="true"]) {
+  border-color: color-mix(in oklab, var(--primary) 20%, transparent);
+  background: color-mix(in oklab, var(--primary) 10%, transparent);
+}
 .doc-switch-field.is-invalid label, .doc-switch-field.is-invalid p { color: var(--destructive); }
 .doc-switch-field.is-invalid .ui-switch { border-color: var(--destructive); }
-.doc-switch-cards { display: grid; width: 384px; gap: 12px; }
+.doc-switch-cards { display: grid; width: 384px; gap: 20px; }
 .doc-switch-sizes { display: grid; width: 160px; gap: 24px; }
 .doc-switch-field[dir="rtl"] .ui-switch[data-checked="true"] span { transform: translateX(calc(-100% + 2px)); }
 .doc-rtl-preview.doc-switch-rtl-preview { box-sizing: border-box; height: 288px; align-items: center; padding: 40px; font-family: "Noto Sans Arabic Variable", sans-serif; }

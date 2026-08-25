@@ -5010,7 +5010,7 @@ function DocRadioGroupPreview(props: { name: string }) {
     const disabled = variant === "disabled" && index === 0
     const label = rtl ? text(item[1] ?? "", item[2] ?? "", item[3] ?? "") : item[1]
     const description = rtl ? text(item[4] ?? "", item[5] ?? "", item[6] ?? "") : item[4]
-    const input = <input type="radio" name={`radio-${variant}`} id={id} value={item[0]} checked={item[0] === selected} disabled={disabled} aria-invalid={variant === "invalid" ? "true" : undefined} />
+    const input = <input type="radio" name={`radio-${variant}`} id={id} value={item[0]} checked={item[0] === selected} data-checked={item[0] === selected ? "true" : "false"} disabled={disabled} aria-invalid={variant === "invalid" ? "true" : undefined} />
     return variant === "choice-card" ? <label class="doc-radio-card" for={id}><span class="doc-radio-copy"><strong>{label}</strong><small>{description}</small></span>{input}</label> : <div class={`doc-radio-field${disabled ? " is-disabled" : ""}${variant === "invalid" ? " is-invalid" : ""}`}>{input}<label for={id}><span>{label}</span>{descriptions ? <small>{description}</small> : null}</label></div>
   })}</div>
   const content = variant === "fieldset" || variant === "invalid" ? <fieldset class="doc-radio-fieldset"><legend>{variant === "invalid" ? "Notification Preferences" : "Subscription Plan"}</legend><p>{variant === "invalid" ? "Choose how you want to receive notifications." : "Yearly and lifetime plans offer significant savings."}</p>{group}</fieldset> : group
