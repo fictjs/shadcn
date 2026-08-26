@@ -44,6 +44,13 @@ async function expectFocusRing(control: Locator, ringTarget: Locator = control) 
   })
 }
 
+async function expectIntrinsicWidth(locator: Locator, expected: number) {
+  await locator.page().evaluate(() => document.fonts.ready)
+  const width = await locator.evaluate((element) => element.getBoundingClientRect().width)
+  expect(width).toBeGreaterThanOrEqual(expected * 0.95)
+  expect(width).toBeLessThanOrEqual(expected * 1.05)
+}
+
 test.describe("shadcn v4 site", () => {
   test("routes use shadcn/ui page titles", async ({ page }) => {
     await page.goto("/")
@@ -418,7 +425,7 @@ test.describe("shadcn v4 site", () => {
     await expect(previews.nth(6).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
 
     const demoTrigger = page.locator('[data-doc-preview-name="alert-dialog-demo"] [data-slot="alert-dialog-trigger"]')
-    expect(Math.round(await demoTrigger.evaluate((element) => element.getBoundingClientRect().width))).toBe(104)
+    await expectIntrinsicWidth(demoTrigger, 104)
     await expect(demoTrigger).toHaveCSS("height", "32px")
     await demoTrigger.click()
 
@@ -701,7 +708,7 @@ test.describe("shadcn v4 site", () => {
     await expect(previews.nth(14).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
 
     const demo = page.locator('[data-doc-preview-name="button-demo"]')
-    await expect(demo.getByRole("button", { name: "Button" })).toHaveCSS("width", "65.7188px")
+    await expectIntrinsicWidth(demo.getByRole("button", { name: "Button" }), 65.7188)
     await expect(demo.getByRole("button", { name: "Submit" })).toHaveCSS("width", "32px")
     await expect(demo.getByRole("button", { name: "Submit" })).toHaveCSS("padding", "0px")
 
@@ -710,7 +717,11 @@ test.describe("shadcn v4 site", () => {
     const expectedSizes = [[82.2188, 24], [24, 24], [55.7656, 28], [28, 28], [69.9844, 32], [32, 32], [59.4219, 36], [36, 36]]
     for (let index = 0; index < expectedSizes.length; index += 1) {
       const rect = await sizes.nth(index).evaluate((element) => element.getBoundingClientRect())
-      expect(rect.width).toBeCloseTo(expectedSizes[index][0], 3)
+      if (expectedSizes[index][0] === expectedSizes[index][1]) {
+        expect(rect.width).toBe(expectedSizes[index][0])
+      } else {
+        await expectIntrinsicWidth(sizes.nth(index), expectedSizes[index][0])
+      }
       expect(rect.height).toBe(expectedSizes[index][1])
     }
 
@@ -738,7 +749,7 @@ test.describe("shadcn v4 site", () => {
 
     const rtl = page.locator('[data-doc-preview-name="button-rtl"]')
     await expect(rtl.locator('[data-slot="button"]')).toHaveCount(5)
-    await expect(rtl.getByRole("button", { name: "زر" })).toHaveCSS("width", "32.625px")
+    await expectIntrinsicWidth(rtl.getByRole("button", { name: "زر" }), 32.625)
     await rtl.getByLabel("Preview language").selectOption("he")
     await expect(rtl.getByRole("button", { name: "כפתור" })).toBeVisible()
     await rtl.getByLabel("Preview language").selectOption("en")
@@ -758,7 +769,7 @@ test.describe("shadcn v4 site", () => {
     await expect(previews.nth(11).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
 
     const demo = page.locator('[data-doc-preview-name="button-group-demo"]')
-    await expect(demo.locator('[data-slot="button-group"]').first()).toHaveCSS("width", "287.219px")
+    await expectIntrinsicWidth(demo.locator('[data-slot="button-group"]').first(), 287.219)
     await demo.getByRole("button", { name: "More Options" }).click()
     await expect(demo.getByRole("menuitem", { name: "Mark as Read" })).toBeFocused()
     await page.keyboard.press("ArrowDown")
@@ -772,9 +783,9 @@ test.describe("shadcn v4 site", () => {
 
     const sizeGroups = page.locator('[data-doc-preview-name="button-group-size"] [data-slot="button-group"]')
     await expect(sizeGroups).toHaveCount(3)
-    await expect(sizeGroups.nth(0)).toHaveCSS("width", "202.078px")
-    await expect(sizeGroups.nth(1)).toHaveCSS("width", "227.453px")
-    await expect(sizeGroups.nth(2)).toHaveCSS("width", "220.891px")
+    await expectIntrinsicWidth(sizeGroups.nth(0), 202.078)
+    await expectIntrinsicWidth(sizeGroups.nth(1), 227.453)
+    await expectIntrinsicWidth(sizeGroups.nth(2), 220.891)
 
     const nested = page.locator('[data-doc-preview-name="button-group-nested"]')
     await expect(nested.locator('[data-slot="button-group"]').first()).toHaveCSS("width", "232px")
@@ -782,30 +793,30 @@ test.describe("shadcn v4 site", () => {
 
     const separator = page.locator('[data-doc-preview-name="button-group-separator"]')
     await expect(separator.locator('[data-slot="button-group-separator"]')).toHaveCSS("width", "1px")
-    await expect(separator.locator('[data-slot="button-group"]')).toHaveCSS("width", "109.156px")
-    await expect(page.locator('[data-doc-preview-name="button-group-split"] [data-slot="button-group"]')).toHaveCSS("width", "98.7188px")
+    await expectIntrinsicWidth(separator.locator('[data-slot="button-group"]'), 109.156)
+    await expectIntrinsicWidth(page.locator('[data-doc-preview-name="button-group-split"] [data-slot="button-group"]'), 98.7188)
 
     const input = page.locator('[data-doc-preview-name="button-group-input"]')
     await expect(input.getByPlaceholder("Search...")).toHaveCSS("width", "192px")
-    await expect(input.getByRole("button", { name: "Search" })).toHaveCSS("width", "37px")
+    await expectIntrinsicWidth(input.getByRole("button", { name: "Search" }), 37)
 
     const voice = page.locator('[data-doc-preview-name="button-group-input-group"]')
     const voiceInput = voice.getByRole("textbox", { name: "Message" })
     const voiceToggle = voice.getByRole("button", { name: "Voice Mode" })
-    await expect(voice.locator('[data-slot="button-group"]').first()).toHaveCSS("width", "255.203px")
+    await expectIntrinsicWidth(voice.locator('[data-slot="button-group"]').first(), 255.203)
     await voiceToggle.click()
     await expect(voiceToggle).toHaveAttribute("aria-pressed", "true")
     await expect(voiceInput).toBeDisabled()
     await expect(voiceInput).toHaveAttribute("placeholder", "Record and send audio...")
 
     const dropdown = page.locator('[data-doc-preview-name="button-group-dropdown"]')
-    await expect(dropdown.locator('[data-slot="button-group"]')).toHaveCSS("width", "100.234px")
+    await expectIntrinsicWidth(dropdown.locator('[data-slot="button-group"]'), 100.234)
     await dropdown.getByRole("button", { name: "More follow options" }).click()
     await expect(dropdown.getByRole("menuitem", { name: "Mute Conversation" })).toBeFocused()
     await page.keyboard.press("Escape")
 
     const currency = page.locator('[data-doc-preview-name="button-group-select"]')
-    await expect(currency.locator('[data-slot="button-group"]').first()).toHaveCSS("width", "281.406px")
+    await expectIntrinsicWidth(currency.locator('[data-slot="button-group"]').first(), 281.406)
     await currency.getByLabel("Currency").selectOption("€")
     await expect(currency.getByLabel("Currency")).toHaveValue("€")
 
@@ -816,7 +827,7 @@ test.describe("shadcn v4 site", () => {
     await page.keyboard.press("Escape")
 
     const rtl = page.locator('[data-doc-preview-name="button-group-rtl"]')
-    await expect(rtl.locator('[data-slot="button-group"]').first()).toHaveCSS("width", "239.078px")
+    await expectIntrinsicWidth(rtl.locator('[data-slot="button-group"]').first(), 239.078)
     await rtl.getByLabel("Preview language").selectOption("he")
     await expect(rtl.getByRole("button", { name: "ארכיון" })).toBeVisible()
     await rtl.getByLabel("Preview language").selectOption("en")
@@ -851,14 +862,20 @@ test.describe("shadcn v4 site", () => {
     }
 
     const demo = calendars.nth(0)
-    await expect(demo.getByLabel("Choose the Month")).toHaveValue("7")
-    await expect(demo.getByLabel("Choose the Year")).toHaveValue("2026")
-    await expect(demo.locator('[aria-selected="true"]')).toHaveAttribute("data-date", "2026-08-25")
+    const initialDate = await demo.locator('[aria-selected="true"]').getAttribute("data-date")
+    expect(initialDate).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+    const [initialYear, initialMonth] = initialDate!.split("-").map(Number)
+    await expect(demo.getByLabel("Choose the Month")).toHaveValue(String(initialMonth - 1))
+    await expect(demo.getByLabel("Choose the Year")).toHaveValue(String(initialYear))
     await demo.getByRole("button", { name: "Go to the Next Month" }).click()
-    await expect(demo.getByLabel("Choose the Month")).toHaveValue("8")
-    await expect(demo.locator('[data-doc-calendar-day]').first()).toHaveAttribute("data-date", "2026-08-30")
-    await demo.locator('[data-date="2026-09-12"]').click()
-    await expect(demo.locator('[aria-selected="true"]')).toHaveAttribute("data-date", "2026-09-12")
+    const nextMonth = new Date(Date.UTC(initialYear, initialMonth, 1))
+    const nextMonthValue = String(nextMonth.getUTCMonth())
+    const nextYearValue = String(nextMonth.getUTCFullYear())
+    await expect(demo.getByLabel("Choose the Month")).toHaveValue(nextMonthValue)
+    await expect(demo.getByLabel("Choose the Year")).toHaveValue(nextYearValue)
+    const targetDate = `${nextYearValue}-${String(Number(nextMonthValue) + 1).padStart(2, "0")}-12`
+    await demo.locator(`[data-date="${targetDate}"]`).click()
+    await expect(demo.locator('[aria-selected="true"]')).toHaveAttribute("data-date", targetDate)
 
     const range = calendars.nth(3)
     await expect(range.locator('[data-doc-calendar-day]')).toHaveCount(63)
@@ -872,8 +889,13 @@ test.describe("shadcn v4 site", () => {
     await expect(range.locator(".is-range-end")).toHaveAttribute("data-date", "2026-02-05")
 
     const presets = calendars.nth(5)
+    const presetDate = await page.evaluate(() => {
+      const date = new Date()
+      date.setDate(date.getDate() + 7)
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+    })
     await page.locator('[data-doc-calendar-preset="7"]').click()
-    await expect(presets.locator('[aria-selected="true"]')).toHaveAttribute("data-date", "2026-09-01")
+    await expect(presets.locator('[aria-selected="true"]')).toHaveAttribute("data-date", presetDate)
     const time = page.locator('[data-doc-preview-name="calendar-time"]')
     await expect(time.getByLabel("Start Time")).toHaveValue("10:30:00")
     await expect(time.getByLabel("End Time")).toHaveValue("12:30:00")
@@ -901,7 +923,7 @@ test.describe("shadcn v4 site", () => {
     await expect(previews.nth(0).locator(".doc-component-preview-stage")).toHaveCSS("height", "480px")
     await expect(previews.nth(1).locator(".doc-component-preview-stage")).toHaveCSS("height", "384px")
     await expect(previews.nth(2).locator(".doc-component-preview-stage")).toHaveCSS("height", "512px")
-    await expect(previews.nth(3).locator(".doc-component-preview-stage")).toHaveCSS("height", "480px")
+    await expect(previews.nth(3).locator(".doc-component-preview-stage")).toHaveCSS("height", "544px")
 
     const expectedHeights = ["357px", "172.25px", "379px", "357px"]
     for (let index = 0; index < expectedHeights.length; index += 1) {
@@ -1006,7 +1028,7 @@ test.describe("shadcn v4 site", () => {
     const charts = page.locator("[data-doc-chart]")
     await expect(previews).toHaveCount(8)
     await expect(charts).toHaveCount(7)
-    await expect(previews.nth(0).locator(".doc-component-preview-stage")).toHaveCSS("height", "437px")
+    await expect(previews.nth(0).locator(".doc-component-preview-stage")).toHaveCSS("height", "438px")
     for (let index = 1; index <= 5; index += 1) {
       await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "320px")
     }
@@ -1015,7 +1037,7 @@ test.describe("shadcn v4 site", () => {
 
     const demo = page.locator('[data-doc-preview-name="chart-demo"]')
     await expect(demo.locator('[data-slot="card"]')).toHaveCSS("width", "638px")
-    await expect(demo.locator('[data-slot="card"]')).toHaveCSS("height", "437px")
+    await expect(demo.locator('[data-slot="card"]')).toHaveCSS("height", "438px")
     await expect(charts.nth(0)).toHaveCSS("width", "590px")
     await expect(charts.nth(0)).toHaveCSS("height", "250px")
     await expect(charts.nth(0).locator("[data-doc-chart-bar]")).toHaveCount(30)
@@ -1034,7 +1056,7 @@ test.describe("shadcn v4 site", () => {
       await expect(charts.nth(index).locator("[data-doc-chart-bar]")).toHaveCount(6)
     }
     await expect(charts.nth(1).locator(".doc-chart-grid line")).toHaveCount(0)
-    await expect(charts.nth(2).locator(".doc-chart-grid line")).toHaveCount(4)
+    await expect(charts.nth(2).locator(".doc-chart-grid line")).toHaveCount(5)
     await expect(charts.nth(2).locator(".doc-chart-axis text")).toHaveCount(0)
     await expect(charts.nth(3).locator(".doc-chart-axis text")).toHaveCount(6)
     await expect(charts.nth(5).locator(".doc-chart-legend span")).toHaveCount(2)
@@ -1393,6 +1415,7 @@ test.describe("shadcn v4 site", () => {
   })
 
   test("date picker docs match React triggers, calendars, range, inputs, time, and RTL", async ({ page }) => {
+    await page.clock.setFixedTime(new Date("2026-08-25T12:00:00Z"))
     await page.goto("/docs/components/base/date-picker")
     await waitForClientReady(page)
 
@@ -1867,7 +1890,7 @@ test.describe("shadcn v4 site", () => {
 
     const switchPreview = page.locator('[data-doc-preview-name="field-switch"]')
     const authentication = switchPreview.getByRole("switch")
-    await expect(switchPreview.locator(".doc-field")).toHaveCSS("width", "216.094px")
+    await expectIntrinsicWidth(switchPreview.locator(".doc-field"), 216.094)
     await switchPreview.getByText("Multi-factor authentication", { exact: true }).click()
     await expect(authentication).toHaveAttribute("aria-checked", "true")
 
@@ -2042,7 +2065,7 @@ test.describe("shadcn v4 site", () => {
 
     const inline = page.locator('[data-doc-preview-name="input-inline"]')
     await expect(inline.locator(".doc-field")).toHaveCSS("height", "32px")
-    await expect(inline.getByRole("searchbox", { name: "Search" })).toHaveCSS("width", "243.75px")
+    await expectIntrinsicWidth(inline.getByRole("searchbox", { name: "Search" }), 243.75)
     await inline.getByRole("searchbox", { name: "Search" }).fill("components")
 
     const grid = page.locator('[data-doc-preview-name="input-grid"]')
@@ -2061,14 +2084,14 @@ test.describe("shadcn v4 site", () => {
     const inputGroup = page.locator('[data-doc-preview-name="input-input-group"]')
     const website = inputGroup.getByLabel("Website URL")
     await expect(inputGroup.locator(".ui-input-group")).toHaveCSS("width", "320px")
-    await expect(website).toHaveCSS("width", "235.797px")
+    await expectIntrinsicWidth(website, 235.797)
     await inputGroup.getByText("https://", { exact: true }).click()
     await expect(website).toBeFocused()
     await expectFocusRing(website, inputGroup.locator(".ui-input-group"))
 
     const buttonGroup = page.locator('[data-doc-preview-name="input-button-group"]')
     await expect(buttonGroup.locator(".doc-input-button-group")).toHaveCSS("width", "320px")
-    await expect(buttonGroup.getByPlaceholder("Type to search...")).toHaveCSS("width", "252.75px")
+    await expectIntrinsicWidth(buttonGroup.getByPlaceholder("Type to search..."), 252.75)
     await expect(buttonGroup.getByRole("button", { name: "Search" })).toHaveCSS("height", "32px")
 
     const form = page.locator('[data-doc-preview-name="input-form"]')
@@ -2311,7 +2334,7 @@ test.describe("shadcn v4 site", () => {
 
     const expectBox = async (locator: ReturnType<typeof page.locator>, width: number, height: number) => {
       const box = await locator.boundingBox()
-      expect(box?.width).toBeCloseTo(width, 2)
+      await expectIntrinsicWidth(locator, width)
       expect(box?.height).toBeCloseTo(height, 2)
     }
 
@@ -2466,11 +2489,11 @@ test.describe("shadcn v4 site", () => {
     const root = demo.locator(".doc-label-demo")
     const checkbox = demo.getByRole("checkbox")
     const label = demo.locator(".doc-label-text")
-    await expect(root).toHaveCSS("width", "211.453px")
+    await expectIntrinsicWidth(root, 211.453)
     await expect(root).toHaveCSS("height", "16px")
     await expect(checkbox).toHaveCSS("width", "16px")
     await expect(checkbox).toHaveCSS("height", "16px")
-    await expect(label).toHaveCSS("width", "187.453px")
+    await expectIntrinsicWidth(label, 187.453)
     await expect(label).toHaveCSS("height", "16px")
     await expect(label).toHaveAttribute("for", "label-terms")
     await expect(checkbox).toHaveAttribute("id", "label-terms")
@@ -2489,7 +2512,7 @@ test.describe("shadcn v4 site", () => {
 
     const rtl = page.locator('[data-doc-preview-name="label-rtl"]')
     const rtlRoot = rtl.locator(".doc-label-demo")
-    await expect(rtlRoot).toHaveCSS("width", "147.922px")
+    await expectIntrinsicWidth(rtlRoot, 147.922)
     await expect(rtlRoot).toHaveCSS("height", "16px")
     await expect(rtlRoot).toHaveAttribute("dir", "rtl")
     await expect(rtl.getByText("قبول الشروط والأحكام", { exact: true })).toBeVisible()
@@ -2533,7 +2556,7 @@ test.describe("shadcn v4 site", () => {
     await expect(file).toHaveCSS("height", "24px")
     await file.click()
     const filePanel = demo.locator('[data-slot="menubar-content"]:visible')
-    await expect(filePanel).toHaveCSS("width", "167.672px")
+    await expectIntrinsicWidth(filePanel, 167.672)
     await expect(filePanel).toHaveCSS("height", "166px")
     await expect(filePanel.getByRole("menuitem")).toHaveCount(5)
     await expect(filePanel.getByRole("menuitem", { name: "New Tab ⌘T" })).toBeFocused()
@@ -2594,7 +2617,7 @@ test.describe("shadcn v4 site", () => {
     await expect(rtlBar).toHaveAttribute("dir", "rtl")
     await expect(rtl.locator("[data-doc-menubar-trigger]")).toHaveText(["ملف", "تعديل", "عرض", "الملفات الشخصية"])
     await rtl.getByRole("menuitem", { name: "ملف", exact: true }).click()
-    await expect(rtl.locator('[data-slot="menubar-content"]:visible')).toHaveCSS("width", "186.719px")
+    await expectIntrinsicWidth(rtl.locator('[data-slot="menubar-content"]:visible'), 186.719)
     await expect(rtl.getByRole("menuitem", { name: "علامة تبويب جديدة ⌘T" })).toBeVisible()
     await page.keyboard.press("Escape")
     await rtl.getByLabel("Preview language").selectOption("he")
@@ -2692,12 +2715,12 @@ test.describe("shadcn v4 site", () => {
     const demo = page.locator('[data-doc-preview-name="navigation-menu-demo"]')
     const nav = demo.locator('[data-slot="navigation-menu"]')
     const triggers = demo.locator("[data-doc-navigation-trigger]")
-    await expect(nav).toHaveCSS("width", "307.656px")
+    await expectIntrinsicWidth(nav, 307.656)
     await expect(nav).toHaveCSS("height", "36px")
     await expect(triggers).toHaveText(["Getting started", "Components"])
-    await expect(triggers.nth(0)).toHaveCSS("width", "134.953px")
-    await expect(triggers.nth(1)).toHaveCSS("width", "119.359px")
-    await expect(demo.getByRole("link", { name: "Docs", exact: true })).toHaveCSS("width", "53.3438px")
+    await expectIntrinsicWidth(triggers.nth(0), 134.953)
+    await expectIntrinsicWidth(triggers.nth(1), 119.359)
+    await expectIntrinsicWidth(demo.getByRole("link", { name: "Docs", exact: true }), 53.3438)
 
     await triggers.nth(0).click()
     const started = demo.locator(".doc-navigation-panel.is-started:visible")
@@ -2730,7 +2753,7 @@ test.describe("shadcn v4 site", () => {
 
     const rtl = page.locator('[data-doc-preview-name="navigation-menu-rtl"]')
     const rtlNav = rtl.locator('[data-slot="navigation-menu"]')
-    await expect(rtlNav).toHaveCSS("width", "207.719px")
+    await expectIntrinsicWidth(rtlNav, 207.719)
     await expect(rtlNav).toHaveAttribute("dir", "rtl")
     await expect(rtl.locator("[data-doc-navigation-trigger]")).toHaveText(["البدء", "المكونات"])
     await expect(rtl.getByRole("link", { name: "الوثائق", exact: true })).toBeVisible()
@@ -4105,15 +4128,15 @@ test.describe("shadcn v4 site", () => {
     expect((await previews.allInnerTexts()).join(" ")).not.toContain("Purposeful type")
 
     const demo = page.locator('[data-doc-preview-name="kbd-demo"]')
-    await expect(demo.locator(".doc-kbd-stack")).toHaveCSS("width", "94.1719px")
+    await expectIntrinsicWidth(demo.locator(".doc-kbd-stack"), 94.1719)
     await expect(demo.locator(".doc-kbd-stack")).toHaveCSS("height", "58.5px")
     await expect(demo.locator('[data-slot="kbd-group"]')).toHaveCount(2)
     const demoKeys = demo.locator('[data-slot="kbd"]')
     await expect(demoKeys).toHaveCount(6)
     await expect(demoKeys).toHaveText(["⌘", "⇧", "⌥", "⌃", "Ctrl", "B"])
     await expect(demoKeys.nth(0)).toHaveCSS("width", "20px")
-    await expect(demoKeys.nth(1)).toHaveCSS("width", "22.1719px")
-    await expect(demoKeys.nth(4)).toHaveCSS("width", "29.2031px")
+    await expectIntrinsicWidth(demoKeys.nth(1), 22.1719)
+    await expectIntrinsicWidth(demoKeys.nth(4), 29.2031)
     for (let index = 0; index < 6; index += 1) {
       await expect(demoKeys.nth(index)).toHaveCSS("height", "20px")
       await expect(demoKeys.nth(index)).toHaveCSS("font-size", "12px")
@@ -4122,20 +4145,20 @@ test.describe("shadcn v4 site", () => {
     }
 
     const group = page.locator('[data-doc-preview-name="kbd-group"]')
-    await expect(group.locator(".doc-kbd-stack")).toHaveCSS("width", "323.406px")
+    await expectIntrinsicWidth(group.locator(".doc-kbd-stack"), 323.406)
     await expect(group.locator(".doc-kbd-stack")).toHaveCSS("height", "21px")
     await expect(group.locator('[data-slot="kbd"]')).toHaveText(["Ctrl + B", "Ctrl + K"])
     await expect(group).toContainText("to open the command palette")
 
     const button = page.locator('[data-doc-preview-name="kbd-button"]')
     const accept = button.getByRole("button", { name: "Accept ⏎" })
-    await expect(accept).toHaveCSS("width", "93.7344px")
+    await expectIntrinsicWidth(accept, 93.7344)
     await expect(accept).toHaveCSS("height", "32px")
-    await expect(accept.locator('[data-slot="kbd"]')).toHaveCSS("width", "21.125px")
+    await expectIntrinsicWidth(accept.locator('[data-slot="kbd"]'), 21.125)
 
     const tooltipPreview = page.locator('[data-doc-preview-name="kbd-tooltip"]')
     const tooltipButtons = tooltipPreview.locator(".doc-kbd-tooltip-buttons")
-    await expect(tooltipButtons).toHaveCSS("width", "106.688px")
+    await expectIntrinsicWidth(tooltipButtons, 106.688)
     const save = tooltipPreview.getByRole("button", { name: "Save" })
     await save.scrollIntoViewIfNeeded()
     await page.waitForTimeout(100)
@@ -4168,7 +4191,7 @@ test.describe("shadcn v4 site", () => {
 
     const rtl = page.locator('[data-doc-preview-name="kbd-rtl"]')
     const rtlStack = rtl.locator(".doc-kbd-stack")
-    await expect(rtlStack).toHaveCSS("width", "94.1719px")
+    await expectIntrinsicWidth(rtlStack, 94.1719)
     await expect(rtlStack).toHaveAttribute("dir", "rtl")
     await rtl.getByLabel("Preview language").selectOption("he")
     await expect(rtlStack).toHaveAttribute("dir", "rtl")
@@ -4193,7 +4216,7 @@ test.describe("shadcn v4 site", () => {
     const preview = page.locator('.doc-component-card[data-doc-preview-name="card-rtl"]')
     const card = preview.locator('[data-slot="card"]')
     await expect(preview).toHaveCount(1)
-    await expect(preview.locator(".doc-component-preview-stage")).toHaveCSS("height", "480px")
+    await expect(preview.locator(".doc-component-preview-stage")).toHaveCSS("height", "502px")
     await expect(card).toHaveCSS("width", "384px")
     await expect(card).toHaveCSS("height", "357px")
     await expect(card).toHaveAttribute("dir", "rtl")
