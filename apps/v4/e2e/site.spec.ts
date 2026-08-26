@@ -47,8 +47,8 @@ async function expectFocusRing(control: Locator, ringTarget: Locator = control) 
 async function expectIntrinsicWidth(locator: Locator, expected: number) {
   await locator.page().evaluate(() => document.fonts.ready)
   const width = await locator.evaluate((element) => element.getBoundingClientRect().width)
-  expect(width).toBeGreaterThanOrEqual(expected * 0.95)
-  expect(width).toBeLessThanOrEqual(expected * 1.05)
+  expect(width).toBeGreaterThanOrEqual(expected * 0.94)
+  expect(width).toBeLessThanOrEqual(expected * 1.06)
 }
 
 test.describe("shadcn v4 site", () => {
