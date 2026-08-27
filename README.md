@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/fictjs/shadcn/actions/workflows/ci.yml/badge.svg)](https://github.com/fictjs/shadcn/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@fictjs/shadcn.svg)](https://www.npmjs.com/package/@fictjs/shadcn)
+[![Storybook](https://img.shields.io/badge/Storybook-live-ff4785?logo=storybook&logoColor=white)](https://fictjs.github.io/shadcn/)
 ![license](https://img.shields.io/npm/l/@fictjs/shadcn)
 
 The official [shadcn/ui](https://ui.shadcn.com)-style code distribution system for [Fict](https://github.com/fictjs/fict) — a reactive UI library with compiler-driven fine-grained reactivity.
