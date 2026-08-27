@@ -1,8 +1,12 @@
-name: Node.js Package
+name: Publish npm package
 
 on:
   release:
     types: [published]
+
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
 
 jobs:
   publish-npm:
@@ -11,21 +15,61 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
         with:
-          node-version: '22.x'
+          ref: ${{ github.event.release.tag_name }}
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+      - name: Use Node.js 24
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org'
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm lint
-      - run: pnpm typecheck
-      - run: pnpm test
-      - run: pnpm build
-      - run: npm publish --provenance --access public
+          package-manager-cache: false
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Verify release metadata
+        id: release
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_IS_PRERELEASE: ${{ github.event.release.prerelease }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { appendFileSync, readFileSync } from 'node:fs'
+          import semver from 'semver'
+
+          const { version } = JSON.parse(readFileSync('package.json', 'utf8'))
+          if (!semver.valid(version)) {
+            throw new Error(`Invalid package version: ${version}`)
+          }
+
+          const expectedTag = `v${version}`
+          if (process.env.RELEASE_TAG !== expectedTag) {
+            throw new Error(`Release tag ${process.env.RELEASE_TAG} must match ${expectedTag}`)
+          }
+
+          const prereleaseParts = semver.prerelease(version)
+          const releaseIsPrerelease = process.env.RELEASE_IS_PRERELEASE === 'true'
+          if (Boolean(prereleaseParts) !== releaseIsPrerelease) {
+            throw new Error(
+              `GitHub prerelease=${releaseIsPrerelease} does not match package version ${version}`,
+            )
+          }
+
+          const prereleaseTag = prereleaseParts?.find(part => typeof part === 'string')
+          appendFileSync(process.env.GITHUB_OUTPUT, `npm-tag=${prereleaseTag ?? (prereleaseParts ? 'next' : 'latest')}\n`)
+          NODE
+      - name: Lint
+        run: pnpm lint
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Test
+        run: pnpm test
+      - name: Build
+        run: pnpm build
+      - name: Inspect package contents
+        run: npm pack --dry-run
+      - name: Publish to npm
+        run: npm publish --tag "${{ steps.release.outputs.npm-tag }}"
+        env:
           CI: true
