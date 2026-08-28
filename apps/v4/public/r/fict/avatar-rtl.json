@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/avatar-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/avatar'\n\nexport default function AvatarRtlExample() {\n  return <UI.Avatar />\n}\n",
+      "content": "import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\n\nexport default function AvatarRtlExample() {\n  return (\n    <Avatar dir=\"rtl\"><AvatarImage src=\"https://github.com/shadcn.png\" alt=\"Avatar\" /><AvatarFallback>CN</AvatarFallback></Avatar>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

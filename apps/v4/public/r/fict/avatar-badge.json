@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/avatar-badge.tsx",
-      "content": "import * as UI from '@/components/ui/avatar'\n\nexport default function AvatarBadgeExample() {\n  return <UI.Avatar />\n}\n",
+      "content": "import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\n\nexport default function AvatarBadgeExample() {\n  return (\n    <Avatar><AvatarImage src=\"https://github.com/shadcn.png\" alt=\"Avatar\" /><AvatarFallback>CN</AvatarFallback></Avatar>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
