@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/sidebar-demo.tsx",
-      "content": "import * as UI from '@/components/ui/sidebar'\n\nexport default function SidebarDemoExample() {\n  return <UI.Sidebar />\n}\n",
+      "content": "import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarItem, SidebarSection, SidebarSectionTitle } from '@/components/ui/sidebar'\n\nexport default function SidebarDemoExample() {\n  return (\n    <Sidebar><SidebarHeader>Fict App</SidebarHeader><SidebarContent><SidebarSection><SidebarSectionTitle>Navigation</SidebarSectionTitle><SidebarItem>Dashboard</SidebarItem><SidebarItem>Components</SidebarItem></SidebarSection></SidebarContent><SidebarFooter>Account</SidebarFooter></Sidebar>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
