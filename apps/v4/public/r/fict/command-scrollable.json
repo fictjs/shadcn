@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/command-scrollable.tsx",
-      "content": "import * as UI from '@/components/ui/command'\n\nexport default function CommandScrollableExample() {\n  return <UI.Command />\n}\n",
+      "content": "import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from '@/components/ui/command'\n\nexport default function CommandScrollableExample() {\n  return (\n    <Command><CommandInput placeholder=\"Type a command...\" /><CommandList><CommandEmpty>No results found.</CommandEmpty><CommandGroup heading=\"Suggestions\"><CommandItem value=\"calendar\">Calendar</CommandItem><CommandItem value=\"settings\">Scrollable</CommandItem></CommandGroup><CommandSeparator /></CommandList></Command>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
