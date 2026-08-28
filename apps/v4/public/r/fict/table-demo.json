@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/table-demo.tsx",
-      "content": "import * as UI from '@/components/ui/table'\n\nexport default function TableDemoExample() {\n  return <UI.Table />\n}\n",
+      "content": "import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\n\nexport default function TableDemoExample() {\n  return (\n    <Table><TableCaption>Demo</TableCaption><TableHeader><TableRow><TableHead>Invoice</TableHead><TableHead>Status</TableHead><TableHead>Amount</TableHead></TableRow></TableHeader><TableBody><TableRow><TableCell>INV001</TableCell><TableCell>Paid</TableCell><TableCell>$250.00</TableCell></TableRow></TableBody></Table>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
