@@ -43,16 +43,20 @@ for (const fileName of fs.readdirSync(outputRoot)) {
 
 for (const entry of components) {
   const title = humanize(entry.name)
-  const previews = previewCatalog[entry.name]?.length
-    ? previewCatalog[entry.name]
-    : [`${entry.name}-demo`]
+  const previews = Array.from(new Set(
+    previewCatalog[entry.name]?.length
+      ? previewCatalog[entry.name]
+      : [`${entry.name}-demo`],
+  ))
   const dependencies = entry.payload.dependencies ?? []
   const dependencyStep = dependencies.length
     ? `\n<Step>Install the runtime dependencies:</Step>\n\n\`\`\`bash\nnpm install ${dependencies.join(' ')}\n\`\`\`\n`
     : ''
   const examples = previews
-    .map((name, index) => `### ${index === 0 ? 'Preview' : humanize(name.replace(new RegExp(`^${escapeRegExp(entry.name)}-?`), ''))}\n\n<ComponentPreview name="${name}" />`)
+    .slice(1)
+    .map(name => `### ${humanize(name.replace(new RegExp(`^${escapeRegExp(entry.name)}-?`), ''))}\n\n<ComponentPreview name="${name}" />`)
     .join('\n\n')
+  const examplesSection = examples ? `## Examples\n\n${examples}` : ''
 
   const source = `---
 title: ${title}
@@ -96,11 +100,9 @@ ${dependencyStep}
 import * as ${toIdentifier(title)} from "@/components/ui/${entry.name}"
 \`\`\`
 
-## Examples
-
-${examples}
+${examplesSection}
 `
-  fs.writeFileSync(path.join(outputRoot, `${entry.name}.mdx`), source, 'utf8')
+  fs.writeFileSync(path.join(outputRoot, `${entry.name}.mdx`), source.replace(/\n{2,}$/, '\n'), 'utf8')
 }
 
 fs.writeFileSync(
