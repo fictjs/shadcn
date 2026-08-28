@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/button-ghost.tsx",
-      "content": "import * as UI from '@/components/ui/button'\n\nexport default function ButtonGhostExample() {\n  return <UI.Button variant='ghost'>Button</UI.Button>\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\n\nexport default function ButtonGhostExample() {\n  return <Button variant=\"ghost\">Ghost</Button>\n}\n",
       "type": "registry:page"
     }
   ]

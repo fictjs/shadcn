@@ -74,4 +74,19 @@ describe('builtin registry render completeness', () => {
       }
     }
   })
+
+  it('supports every Button API used by the website examples', () => {
+    const entry = getBuiltinComponent('button')
+    expect(entry?.dependencies).toContain('@fictjs/radix-ui')
+
+    const source = renderRegistryEntryFiles(entry!, DEFAULT_CONFIG)
+      .map(file => file.content)
+      .join('\n')
+    for (const size of ['xs', 'sm', 'lg', 'icon', 'icon-xs', 'icon-sm', 'icon-lg']) {
+      expect(source).toContain(`${size.includes('-') ? `'${size}'` : size}:`)
+    }
+    expect(source).toContain('asChild?: boolean')
+    expect(source).toContain('<Slot.Root')
+    expect(source).toContain("data-slot='button'")
+  })
 })

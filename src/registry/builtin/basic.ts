@@ -6,12 +6,13 @@ export const basicComponentRegistry: RegistryEntry[] = [
     version: '0.1.0',
     type: 'ui-component',
     description: 'Accessible button with variants',
-    dependencies: ['class-variance-authority'],
+    dependencies: ['@fictjs/radix-ui', 'class-variance-authority'],
     registryDependencies: [],
     files: [
       {
         path: '{{componentsDir}}/button.tsx',
-        content: context => `import { cva, type VariantProps } from 'class-variance-authority'
+        content: context => `import { Slot } from '@fictjs/radix-ui'
+import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '${context.imports.cn}'
 
@@ -29,9 +30,13 @@ const buttonVariants = cva(
       },
       size: {
         default: 'h-9 px-4 py-2',
+        xs: 'h-6 rounded-md px-2 text-xs',
         sm: 'h-8 rounded-md px-3 text-xs',
         lg: 'h-10 rounded-md px-8',
         icon: 'h-9 w-9',
+        'icon-xs': 'h-6 w-6 rounded-md',
+        'icon-sm': 'h-8 w-8 rounded-md',
+        'icon-lg': 'h-10 w-10 rounded-md',
       },
     },
     defaultVariants: {
@@ -41,11 +46,19 @@ const buttonVariants = cva(
   },
 )
 
-type ButtonProps = JSX.IntrinsicElements['button'] & VariantProps<typeof buttonVariants>
+type ButtonProps = JSX.IntrinsicElements['button'] & VariantProps<typeof buttonVariants> & {
+  asChild?: boolean
+}
 
 export function Button(props: ButtonProps) {
-  const { class: className, variant, size, ...rest } = props
-  return <button class={cn(buttonVariants({ variant, size }), className)} {...rest} />
+  const { asChild, class: className, variant, size, ...rest } = props
+  const classValue = cn(buttonVariants({ variant, size }), className)
+
+  if (asChild) {
+    return <Slot.Root class={classValue} data-slot='button' data-variant={variant} data-size={size} {...rest} />
+  }
+
+  return <button class={classValue} data-slot='button' data-variant={variant} data-size={size} {...rest} />
 }
 
 export { buttonVariants }

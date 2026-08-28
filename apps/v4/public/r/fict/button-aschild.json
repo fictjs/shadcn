@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/button-aschild.tsx",
-      "content": "import * as UI from '@/components/ui/button'\n\nexport default function ButtonAschildExample() {\n  return <UI.Button>Button</UI.Button>\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\n\nexport default function ButtonAsChildExample() {\n  return <Button asChild><a href=\"/login\">Login</a></Button>\n}\n",
       "type": "registry:page"
     }
   ]

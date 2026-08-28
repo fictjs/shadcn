@@ -5,12 +5,13 @@
   "description": "Accessible button with variants example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "button"
+    "button",
+    "spinner"
   ],
   "files": [
     {
       "path": "src/examples/button-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/button'\n\nexport default function ButtonRtlExample() {\n  return <UI.Button>Button</UI.Button>\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Spinner } from '@/components/ui/spinner'\n\nconst translations = {\n  ar: { button: 'زر', delete: 'حذف', submit: 'إرسال', loading: 'جاري التحميل' },\n  he: { button: 'כפתור', delete: 'מחק', submit: 'שלח', loading: 'טוען' },\n  en: { button: 'Button', delete: 'Delete', submit: 'Submit', loading: 'Loading' },\n} as const\n\nexport default function ButtonRtlExample() {\n  let language = $state<keyof typeof translations>('ar')\n  const text = () => translations[language]\n  const direction = () => language === 'en' ? 'ltr' : 'rtl'\n\n  return (\n    <div class=\"grid gap-4\">\n      <select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof translations }}>\n        <option value=\"ar\">Arabic (العربية)</option>\n        <option value=\"he\">Hebrew (עברית)</option>\n        <option value=\"en\">English</option>\n      </select>\n      <div class=\"flex flex-wrap items-center gap-2\" dir={direction()}>\n        <Button variant=\"outline\">{text().button}</Button>\n        <Button variant=\"destructive\">{text().delete}</Button>\n        <Button variant=\"outline\">{text().submit} →</Button>\n        <Button variant=\"outline\" size=\"icon\" aria-label=\"Add\">+</Button>\n        <Button variant=\"secondary\" disabled><Spinner />{text().loading}</Button>\n      </div>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

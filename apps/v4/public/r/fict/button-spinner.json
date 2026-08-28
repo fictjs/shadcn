@@ -5,12 +5,13 @@
   "description": "Accessible button with variants example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "button"
+    "button",
+    "spinner"
   ],
   "files": [
     {
       "path": "src/examples/button-spinner.tsx",
-      "content": "import * as UI from '@/components/ui/button'\n\nexport default function ButtonSpinnerExample() {\n  return <UI.Button>Button</UI.Button>\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Spinner } from '@/components/ui/spinner'\n\nexport default function ButtonSpinnerExample() {\n  return (\n    <div class=\"flex gap-2\">\n      <Button variant=\"outline\" disabled><Spinner />Generating</Button>\n      <Button variant=\"secondary\" disabled>Downloading<Spinner /></Button>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

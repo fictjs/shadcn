@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/button-rounded.tsx",
-      "content": "import * as UI from '@/components/ui/button'\n\nexport default function ButtonRoundedExample() {\n  return <UI.Button>Button</UI.Button>\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\n\nfunction ArrowUpIcon() {\n  return <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m5 12 7-7 7 7M12 19V5\" /></svg>\n}\n\nexport default function ButtonRoundedExample() {\n  return <Button variant=\"outline\" size=\"icon\" class=\"rounded-full\" aria-label=\"Submit\"><ArrowUpIcon /></Button>\n}\n",
       "type": "registry:page"
     }
   ]

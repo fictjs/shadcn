@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/button-destructive.tsx",
-      "content": "import * as UI from '@/components/ui/button'\n\nexport default function ButtonDestructiveExample() {\n  return <UI.Button variant='destructive'>Button</UI.Button>\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\n\nexport default function ButtonDestructiveExample() {\n  return <Button variant=\"destructive\">Destructive</Button>\n}\n",
       "type": "registry:page"
     }
   ]

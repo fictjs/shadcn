@@ -789,6 +789,13 @@ test.describe("Fict shadcn website", () => {
       }
       expect(rect.height).toBe(expectedSizes[index][1])
     }
+    const sizeCard = page.locator('[data-doc-preview-name="button-size"]')
+    await sizeCard.getByRole("button", { name: "View Code" }).click()
+    const sizeCode = sizeCard.locator("[data-doc-preview-full-code]")
+    await expect(sizeCode).toContainText('size="xs"')
+    await expect(sizeCode).toContainText('size="icon-xs"')
+    await expect(sizeCode).toContainText('size="icon-lg"')
+    await expect(sizeCode).not.toContainText("import * as UI")
 
     await expect(page.locator('[data-doc-preview-name="button-rounded"] [data-slot="button"]')).toHaveCSS("border-radius", "9999px")
     const spinnerButtons = page.locator('[data-doc-preview-name="button-spinner"] [data-slot="button"]')
@@ -811,6 +818,9 @@ test.describe("Fict shadcn website", () => {
     await expect(asChild).toHaveJSProperty("tagName", "A")
     await expect(asChild).toHaveAttribute("href", "/login")
     await expect(asChild).toHaveCSS("color", "oklch(0.985 0 0)")
+    const asChildCard = page.locator('[data-doc-preview-name="button-aschild"]')
+    await asChildCard.getByRole("button", { name: "View Code" }).click()
+    await expect(asChildCard.locator("[data-doc-preview-full-code]")).toContainText('<Button asChild><a href="/login">Login</a></Button>')
 
     const rtl = page.locator('[data-doc-preview-name="button-rtl"]')
     await expect(rtl.locator('[data-slot="button"]')).toHaveCount(5)

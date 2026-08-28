@@ -5,12 +5,14 @@
   "description": "Button grouping container with orientation support example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "button-group"
+    "button",
+    "button-group",
+    "dropdown-menu"
   ],
   "files": [
     {
       "path": "src/examples/button-group-demo.tsx",
-      "content": "import * as UI from '@/components/ui/button-group'\n\nexport default function ButtonGroupDemoExample() {\n  return <UI.ButtonGroup />\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { ButtonGroup } from '@/components/ui/button-group'\nimport {\n  DropdownMenu,\n  DropdownMenuContent,\n  DropdownMenuItem,\n  DropdownMenuRadio,\n  DropdownMenuRadioItem,\n  DropdownMenuSeparator,\n  DropdownMenuSub,\n  DropdownMenuSubContent,\n  DropdownMenuSubTrigger,\n  DropdownMenuTrigger,\n} from '@/components/ui/dropdown-menu'\n\nfunction MoreIcon() {\n  return <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"5\" cy=\"12\" r=\"1\" /><circle cx=\"12\" cy=\"12\" r=\"1\" /><circle cx=\"19\" cy=\"12\" r=\"1\" /></svg>\n}\n\nexport default function ButtonGroupDemoExample() {\n  let label = $state('personal')\n\n  return (\n    <div class=\"flex flex-wrap gap-2\">\n      <ButtonGroup><Button variant=\"outline\" size=\"icon\" aria-label=\"Go back\">←</Button></ButtonGroup>\n      <ButtonGroup><Button variant=\"outline\">Archive</Button><Button variant=\"outline\">Report</Button></ButtonGroup>\n      <ButtonGroup>\n        <Button variant=\"outline\">Snooze</Button>\n        <DropdownMenu>\n          <DropdownMenuTrigger asChild><Button variant=\"outline\" size=\"icon\" aria-label=\"More options\"><MoreIcon /></Button></DropdownMenuTrigger>\n          <DropdownMenuContent align=\"end\">\n            <DropdownMenuItem>Mark as Read</DropdownMenuItem>\n            <DropdownMenuItem>Archive</DropdownMenuItem>\n            <DropdownMenuSeparator />\n            <DropdownMenuItem>Snooze</DropdownMenuItem>\n            <DropdownMenuItem>Add to Calendar</DropdownMenuItem>\n            <DropdownMenuItem>Add to List</DropdownMenuItem>\n            <DropdownMenuSub>\n              <DropdownMenuSubTrigger>Label As...</DropdownMenuSubTrigger>\n              <DropdownMenuSubContent>\n                <DropdownMenuRadio value={label} onValueChange={value => { label = String(value) }}>\n                  <DropdownMenuRadioItem value=\"personal\">Personal</DropdownMenuRadioItem>\n                  <DropdownMenuRadioItem value=\"work\">Work</DropdownMenuRadioItem>\n                  <DropdownMenuRadioItem value=\"other\">Other</DropdownMenuRadioItem>\n                </DropdownMenuRadio>\n              </DropdownMenuSubContent>\n            </DropdownMenuSub>\n            <DropdownMenuSeparator />\n            <DropdownMenuItem>Trash</DropdownMenuItem>\n          </DropdownMenuContent>\n        </DropdownMenu>\n      </ButtonGroup>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

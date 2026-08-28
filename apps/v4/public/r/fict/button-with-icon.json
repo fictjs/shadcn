@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/button-with-icon.tsx",
-      "content": "import * as UI from '@/components/ui/button'\n\nexport default function ButtonWithIconExample() {\n  return <UI.Button size='icon'>Button</UI.Button>\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\n\nfunction BranchIcon() {\n  return <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"6\" cy=\"5\" r=\"2\" /><circle cx=\"18\" cy=\"6\" r=\"2\" /><circle cx=\"6\" cy=\"19\" r=\"2\" /><path d=\"M6 7v10M8 7c4 0 4 5 8 5\" /></svg>\n}\n\nexport default function ButtonWithIconExample() {\n  return <Button variant=\"outline\" size=\"sm\"><BranchIcon />New Branch</Button>\n}\n",
       "type": "registry:page"
     }
   ]

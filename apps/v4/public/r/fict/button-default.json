@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/button-default.tsx",
-      "content": "import * as UI from '@/components/ui/button'\n\nexport default function ButtonDefaultExample() {\n  return <UI.Button>Button</UI.Button>\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\n\nexport default function ButtonDefaultExample() {\n  return <Button>Button</Button>\n}\n",
       "type": "registry:page"
     }
   ]

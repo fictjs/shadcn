@@ -49,6 +49,40 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(extractFictRegistryDependencies(source)).toEqual(['button', 'button-group'])
   })
 
+  it('provides curated Fict source for every Button preview', () => {
+    const root = path.join(process.cwd(), 'apps/v4/content/examples/fict')
+    const catalog = JSON.parse(fs.readFileSync(
+      path.join(process.cwd(), 'apps/v4/content/docs/components/fict/preview-catalog.json'),
+      'utf8'
+    )) as Record<string, string[]>
+
+    for (const previewName of catalog.button) {
+      const source = loadFictExampleSource({
+        exampleRoot: root,
+        componentName: 'button',
+        previewName,
+      })
+      expect(source, previewName).not.toBeNull()
+      expect(source, previewName).not.toContain('import * as UI')
+    }
+
+    const sizeSource = loadFictExampleSource({
+      exampleRoot: root,
+      componentName: 'button',
+      previewName: 'button-size',
+    })
+    expect(sizeSource).toContain('size="xs"')
+    expect(sizeSource).toContain('size="icon-xs"')
+    expect(sizeSource).toContain('size="icon-lg"')
+
+    const asChildSource = loadFictExampleSource({
+      exampleRoot: root,
+      componentName: 'button',
+      previewName: 'button-aschild',
+    })
+    expect(asChildSource).toContain('<Button asChild><a href="/login">Login</a></Button>')
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],
