@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/checkbox-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/checkbox'\n\nexport default function CheckboxRtlExample() {\n  return <UI.Checkbox />\n}\n",
+      "content": "import { Checkbox } from '@/components/ui/checkbox'\n\nexport default function CheckboxRtlExample() {\n  return (\n    <label dir=\"rtl\" class=\"flex items-center gap-2\"><Checkbox defaultChecked /> Rtl</label>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

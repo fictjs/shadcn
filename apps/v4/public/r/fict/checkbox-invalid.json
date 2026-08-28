@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/checkbox-invalid.tsx",
-      "content": "import * as UI from '@/components/ui/checkbox'\n\nexport default function CheckboxInvalidExample() {\n  return <UI.Checkbox />\n}\n",
+      "content": "import { Checkbox } from '@/components/ui/checkbox'\n\nexport default function CheckboxInvalidExample() {\n  return (\n    <label class=\"flex items-center gap-2\"><Checkbox defaultChecked /> Invalid</label>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
