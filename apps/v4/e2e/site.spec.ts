@@ -52,14 +52,27 @@ async function expectIntrinsicWidth(locator: Locator, expected: number) {
 }
 
 async function expectCodeLinesStackVertically(codeBlock: Locator, minimumLineCount = 2) {
+  await expect(codeBlock.locator("code")).toHaveAttribute("data-line-numbers", "")
   const lines = codeBlock.locator(".shiki-line")
   await expect.poll(() => lines.count()).toBeGreaterThanOrEqual(minimumLineCount)
 
-  const lineTops = await lines.evaluateAll(elements =>
-    elements.map(element => Math.round(element.getBoundingClientRect().top))
+  const renderedLines = await lines.evaluateAll(elements =>
+    elements.map(element => ({
+      number: element.getAttribute("data-line-number"),
+      renderedNumber: getComputedStyle(element, "::before").content.replaceAll('"', ""),
+      numberDisplay: getComputedStyle(element, "::before").display,
+      numberWidth: getComputedStyle(element, "::before").width,
+      top: Math.round(element.getBoundingClientRect().top),
+    }))
   )
-  for (let index = 1; index < lineTops.length; index += 1) {
-    expect(lineTops[index]).toBeGreaterThan(lineTops[index - 1])
+  for (let index = 0; index < renderedLines.length; index += 1) {
+    expect(renderedLines[index].number).toBe(String(index + 1))
+    expect(renderedLines[index].renderedNumber).toBe(String(index + 1))
+    expect(renderedLines[index].numberDisplay).toBe("inline-block")
+    expect(renderedLines[index].numberWidth).toBe("48px")
+    if (index > 0) {
+      expect(renderedLines[index].top).toBeGreaterThan(renderedLines[index - 1].top)
+    }
   }
 }
 
@@ -288,6 +301,7 @@ test.describe("Fict shadcn website", () => {
     await expect(page.locator(".doc-body")).not.toContainText("<Callout")
     const shellCode = page.locator('pre[data-shiki="true"][data-language="bash"]').first()
     await expect(shellCode).toBeVisible()
+    await expectCodeLinesStackVertically(shellCode, 1)
     await expect(page.locator('pre[data-language="bash"] .shiki-token').first()).toHaveAttribute("style", /--shiki-dark:/)
 
     await page.goto("/docs/blocks")
@@ -310,6 +324,17 @@ test.describe("Fict shadcn website", () => {
   })
 
   test("component previews match the compact Fict code card interaction", async ({ page }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, "clipboard", {
+        configurable: true,
+        value: {
+          writeText(value: string) {
+            ;(globalThis as typeof globalThis & { __copiedCode?: string }).__copiedCode = value
+            return Promise.resolve()
+          },
+        },
+      })
+    })
     await page.goto("/docs/components/fict/button")
     await waitForClientReady(page)
 
@@ -345,6 +370,11 @@ test.describe("Fict shadcn website", () => {
     await expect(fullCode).toHaveAttribute("data-shiki", "true")
     await expect(copy).toBeVisible()
     await expectCodeLinesStackVertically(fullCode, 4)
+    await expect(fullCode.locator("code")).toHaveText(/^import/)
+    await copy.click()
+    await expect(copy).toHaveText("Copied")
+    expect(await page.evaluate(() => (globalThis as typeof globalThis & { __copiedCode?: string }).__copiedCode))
+      .toBe(await fullCode.locator("code").textContent())
     expect(await card.evaluate((element) => element.getBoundingClientRect().height)).toBeGreaterThan(collapsedHeight)
 
     const firstToken = fullCode.locator(".shiki-token").first()

@@ -4306,10 +4306,15 @@ function HighlightedCodeBlock(props: {
       data-doc-preview-full-code={props.fullPreview ? "" : undefined}
       hidden={props.hidden}
     >
-      <code>
+      <code data-line-numbers={highlightedCode ? "" : undefined}>
         {highlightedCode
           ? highlightedCode.lines.map((line, lineIndex) => (
-              <span class="shiki-line" data-line key={`line-${lineIndex}`}>
+              <span
+                class="shiki-line"
+                data-line
+                data-line-number={String(lineIndex + 1)}
+                key={`line-${lineIndex}`}
+              >
                 {line.tokens.map((token, tokenIndex) => (
                   <span class="shiki-token" style={token.style} key={`token-${lineIndex}-${tokenIndex}`}>
                     {token.content}
