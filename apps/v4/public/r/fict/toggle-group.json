@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toggle-group",
+  "type": "registry:ui",
+  "description": "Toggle group wrappers",
+  "dependencies": [
+    "@fictjs/radix-ui"
+  ],
+  "registryDependencies": [
+    "toggle"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/toggle-group.tsx",
+      "content": "import { ToggleGroup as ToggleGroupPrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\nimport { toggleVariants } from '@/components/ui/toggle'\n\ntype GroupProps = {\n  class?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\ntype ItemProps = {\n  class?: string\n  variant?: 'default' | 'outline'\n  size?: 'default' | 'sm' | 'lg'\n  children?: unknown\n  [key: string]: unknown\n}\n\nexport function ToggleGroup(props: GroupProps) {\n  const { class: className, children, ...rest } = props\n  return (\n    <ToggleGroupPrimitive.Root class={cn('inline-flex items-center justify-center gap-1', className)} {...rest}>\n      {children}\n    </ToggleGroupPrimitive.Root>\n  )\n}\n\nexport function ToggleGroupItem(props: ItemProps) {\n  const { class: className, variant, size, children, ...rest } = props\n  return (\n    <ToggleGroupPrimitive.Item class={cn(toggleVariants({ variant, size }), className)} {...rest}>\n      {children}\n    </ToggleGroupPrimitive.Item>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

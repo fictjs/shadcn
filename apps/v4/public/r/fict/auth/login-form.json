@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "auth/login-form",
+  "type": "registry:block",
+  "description": "Authentication login form block",
+  "dependencies": [],
+  "registryDependencies": [
+    "button",
+    "card",
+    "input",
+    "label"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/auth/login-form.tsx",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Label } from '@/components/ui/label'\n\nexport function LoginForm() {\n  return (\n    <Card class='mx-auto w-full max-w-md'>\n      <CardHeader>\n        <CardTitle>Welcome back</CardTitle>\n        <CardDescription>Sign in with your email and password.</CardDescription>\n      </CardHeader>\n      <CardContent class='grid gap-4'>\n        <div class='grid gap-2'>\n          <Label htmlFor='email'>Email</Label>\n          <Input id='email' type='email' placeholder='you@example.com' required />\n        </div>\n        <div class='grid gap-2'>\n          <Label htmlFor='password'>Password</Label>\n          <Input id='password' type='password' required />\n        </div>\n      </CardContent>\n      <CardFooter>\n        <Button class='w-full'>Sign in</Button>\n      </CardFooter>\n    </Card>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

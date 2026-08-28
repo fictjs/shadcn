@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "range-calendar",
+  "type": "registry:ui",
+  "description": "Two-month range calendar composition",
+  "dependencies": [],
+  "registryDependencies": [
+    "calendar"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/range-calendar.tsx",
+      "content": "import { cn } from '@/lib/cn'\nimport { Calendar } from '@/components/ui/calendar'\n\ntype RangeCalendarProps = {\n  class?: string\n  startMonth?: Date | string\n  endMonth?: Date | string\n  [key: string]: unknown\n}\n\nfunction normalizeMonth(value: Date | string | undefined, fallback: Date): Date {\n  if (!value) return fallback\n  const date = value instanceof Date ? value : new Date(value)\n  if (Number.isNaN(date.getTime())) return fallback\n  return new Date(date.getFullYear(), date.getMonth(), 1)\n}\n\nfunction addMonth(value: Date): Date {\n  return new Date(value.getFullYear(), value.getMonth() + 1, 1)\n}\n\nexport function RangeCalendar(props: RangeCalendarProps) {\n  const baseMonth = normalizeMonth(props.startMonth, new Date())\n  const nextMonth = normalizeMonth(props.endMonth, addMonth(baseMonth))\n  const { class: className, startMonth, endMonth, ...rest } = props\n\n  return (\n    <div class={cn('grid gap-4 md:grid-cols-2', className)} {...rest}>\n      <Calendar month={baseMonth} />\n      <Calendar month={nextMonth} />\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

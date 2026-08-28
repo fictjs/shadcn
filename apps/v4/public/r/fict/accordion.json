@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion",
+  "type": "registry:ui",
+  "description": "Accordion wrappers",
+  "dependencies": [
+    "@fictjs/radix-ui"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/accordion.tsx",
+      "content": "import { Accordion as AccordionPrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\n\nexport const Accordion = AccordionPrimitive.Root\n\ntype GenericProps = {\n  class?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\nexport function AccordionItem(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <AccordionPrimitive.Item class={cn('border-b', className)} {...rest} />\n}\n\nexport function AccordionTrigger(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return (\n    <AccordionPrimitive.Trigger\n      class={cn('flex flex-1 items-center justify-between py-4 font-medium transition-all hover:underline', className)}\n      {...rest}\n    />\n  )\n}\n\nexport function AccordionContent(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <AccordionPrimitive.Content class={cn('overflow-hidden text-sm', className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

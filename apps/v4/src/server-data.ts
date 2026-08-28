@@ -39,7 +39,7 @@ const examplesRoot = path.join(appRoot, "registry", "new-york-v4", "examples")
 const chartsRoot = path.join(appRoot, "registry", "new-york-v4", "charts")
 const blocksFile = path.join(appRoot, "registry", "__blocks__.json")
 const themesFile = path.join(appRoot, "registry", "themes.ts")
-const registryStylesRoot = path.join(appRoot, "public", "r", "styles")
+const fictRegistryRoot = path.join(appRoot, "public", "r", "fict")
 const featuredExamplePages: ExampleShowcase[] = [
   {
     slug: "dashboard",
@@ -1176,15 +1176,15 @@ function readDocMarkerAttribute(line: string, attributeName: string): string {
   return readMdxAttribute(line.replace(/^:::[a-z-]+\s*/, ""), attributeName)
 }
 
-function loadRegistryItem(styleName: string, name: string): { path: string; content: string } | null {
-  const cacheKey = `${styleName}:${name}`
+function loadRegistryItem(_styleName: string, name: string): { path: string; content: string } | null {
+  const cacheKey = name
   const cached = registryItemCache.get(cacheKey)
   if (cached !== undefined) {
     return cached
   }
 
   for (const candidate of getRegistryLookupCandidates(name)) {
-    const jsonPath = path.join(registryStylesRoot, styleName, `${candidate}.json`)
+    const jsonPath = path.join(fictRegistryRoot, `${candidate}.json`)
     if (fs.existsSync(jsonPath)) {
       try {
         const raw = fs.readFileSync(jsonPath, "utf8")
@@ -1197,30 +1197,6 @@ function loadRegistryItem(styleName: string, name: string): { path: string; cont
         }
       } catch {
       }
-    }
-  }
-
-  for (const candidate of getRegistryLookupCandidates(name)) {
-    const examplePath = path.join(examplesRoot, `${candidate}.tsx`)
-    if (fs.existsSync(examplePath)) {
-      const content = fs.readFileSync(examplePath, "utf8")
-      const resolved = {
-        path: path.relative(appRoot, examplePath).replace(/\\/g, "/"),
-        content,
-      }
-      registryItemCache.set(cacheKey, resolved)
-      return resolved
-    }
-
-    const componentPath = path.join(componentsRoot, `${candidate}.tsx`)
-    if (fs.existsSync(componentPath)) {
-      const content = fs.readFileSync(componentPath, "utf8")
-      const resolved = {
-        path: path.relative(appRoot, componentPath).replace(/\\/g, "/"),
-        content,
-      }
-      registryItemCache.set(cacheKey, resolved)
-      return resolved
     }
   }
 

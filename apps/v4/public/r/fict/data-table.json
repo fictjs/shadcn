@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "data-table",
+  "type": "registry:ui",
+  "description": "Headless data table renderer over table primitives",
+  "dependencies": [],
+  "registryDependencies": [
+    "table"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/data-table.tsx",
+      "content": "import { cn } from '@/lib/cn'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\n\nexport interface DataTableColumn<Row extends Record<string, unknown>> {\n  key: keyof Row | string\n  header: string\n  class?: string\n  cell?: (row: Row) => unknown\n}\n\nexport interface DataTableProps<Row extends Record<string, unknown>> {\n  data: Row[]\n  columns: DataTableColumn<Row>[]\n  emptyText?: string\n  class?: string\n}\n\nfunction readCellValue<Row extends Record<string, unknown>>(row: Row, key: keyof Row | string): unknown {\n  if (typeof key === 'string' && key in row) {\n    return row[key as keyof Row]\n  }\n  return undefined\n}\n\nexport function DataTable<Row extends Record<string, unknown>>(props: DataTableProps<Row>) {\n  const { data, columns, emptyText = 'No rows found.', class: className } = props\n\n  return (\n    <div class={cn('w-full overflow-x-auto rounded-lg border', className)}>\n      <Table>\n        <TableHeader>\n          <TableRow>\n            {columns.map(column => (\n              <TableHead class={column.class}>{column.header}</TableHead>\n            ))}\n          </TableRow>\n        </TableHeader>\n        <TableBody>\n          {data.length > 0 ? (\n            data.map(row => (\n              <TableRow>\n                {columns.map(column => (\n                  <TableCell class={column.class}>{column.cell ? column.cell(row) : readCellValue(row, column.key)}</TableCell>\n                ))}\n              </TableRow>\n            ))\n          ) : (\n            <TableRow>\n              <TableCell colSpan={columns.length} class='h-24 text-center text-muted-foreground'>\n                {emptyText}\n              </TableCell>\n            </TableRow>\n          )}\n        </TableBody>\n      </Table>\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

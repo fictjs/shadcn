@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-stone",
+  "type": "registry:style",
+  "description": "Stone color palette",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/styles/themes/theme-stone.css",
+      "content": ".theme-stone {\n  --primary: 24 9.8% 10%;\n  --primary-foreground: 60 9.1% 97.8%;\n  --secondary: 20 5.9% 90%;\n  --secondary-foreground: 24 9.8% 10%;\n  --accent: 12 6.5% 15.1%;\n  --accent-foreground: 60 9.1% 97.8%;\n  --ring: 24 5.4% 63.9%;\n}\n\n.dark.theme-stone {\n  --primary: 60 9.1% 97.8%;\n  --primary-foreground: 24 9.8% 10%;\n  --secondary: 12 6.5% 15.1%;\n  --secondary-foreground: 60 9.1% 97.8%;\n  --accent: 20 5.9% 90%;\n  --accent-foreground: 24 9.8% 10%;\n  --ring: 24 5.4% 63.9%;\n}\n",
+      "type": "registry:style"
+    }
+  ]
+}

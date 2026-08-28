@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "settings/profile",
+  "type": "registry:block",
+  "description": "Profile settings block",
+  "dependencies": [],
+  "registryDependencies": [
+    "button",
+    "card",
+    "input",
+    "label",
+    "textarea",
+    "switch"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/settings/profile.tsx",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Label } from '@/components/ui/label'\nimport { Switch } from '@/components/ui/switch'\nimport { Textarea } from '@/components/ui/textarea'\n\nexport function ProfileSettingsBlock() {\n  return (\n    <Card class='w-full max-w-2xl'>\n      <CardHeader>\n        <CardTitle>Profile Settings</CardTitle>\n        <CardDescription>Manage your public profile and notification preferences.</CardDescription>\n      </CardHeader>\n      <CardContent class='grid gap-6'>\n        <div class='grid gap-2'>\n          <Label htmlFor='display-name'>Display name</Label>\n          <Input id='display-name' placeholder='Jane Doe' />\n        </div>\n        <div class='grid gap-2'>\n          <Label htmlFor='bio'>Bio</Label>\n          <Textarea id='bio' placeholder='Tell people what you are building...' />\n        </div>\n        <div class='flex items-center justify-between rounded-md border p-4'>\n          <div class='space-y-0.5'>\n            <Label htmlFor='marketing-emails'>Marketing emails</Label>\n            <p class='text-sm text-muted-foreground'>Receive occasional feature updates.</p>\n          </div>\n          <Switch id='marketing-emails' />\n        </div>\n      </CardContent>\n      <CardFooter>\n        <Button>Save profile</Button>\n      </CardFooter>\n    </Card>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

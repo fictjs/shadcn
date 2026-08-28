@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "otp-03",
+  "type": "registry:block",
+  "description": "Expanded otp block template for otp-03",
+  "dependencies": [],
+  "registryDependencies": [
+    "button",
+    "card",
+    "input-otp",
+    "label"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/otp-03.tsx",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from '@/components/ui/input-otp'\nimport { Label } from '@/components/ui/label'\n\nexport function Otp03Block() {\n  return (\n    <Card class='mx-auto w-full max-w-md'>\n      <CardHeader>\n        <CardTitle>Otp 03</CardTitle>\n        <CardDescription>Enter the one-time passcode sent to your device.</CardDescription>\n      </CardHeader>\n      <CardContent class='grid gap-4'>\n        <Label>Verification code</Label>\n        <InputOTP>\n          <InputOTPGroup>\n            <InputOTPSlot index={0} total={6} />\n            <InputOTPSlot index={1} total={6} />\n            <InputOTPSlot index={2} total={6} />\n          </InputOTPGroup>\n          <InputOTPSeparator />\n          <InputOTPGroup>\n            <InputOTPSlot index={3} total={6} />\n            <InputOTPSlot index={4} total={6} />\n            <InputOTPSlot index={5} total={6} />\n          </InputOTPGroup>\n        </InputOTP>\n      </CardContent>\n      <CardFooter>\n        <Button class='w-full'>Verify</Button>\n      </CardFooter>\n    </Card>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

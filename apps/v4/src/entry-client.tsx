@@ -5690,7 +5690,7 @@ function wireBlockViewer(): void {
 
     if (!cache.has(name)) {
       try {
-        const response = await fetch(withSiteBasePath(`/r/styles/new-york-v4/${name}.json`))
+        const response = await fetch(withSiteBasePath(`/r/fict/${name}.json`))
         if (!response.ok) {
           throw new Error(String(response.status))
         }
@@ -5816,7 +5816,7 @@ function wireChartViewer(): void {
 
     if (!cache.has(name)) {
       try {
-        const response = await fetch(withSiteBasePath(`/r/styles/new-york-v4/${name}.json`))
+        const response = await fetch(withSiteBasePath(`/r/fict/${name}.json`))
         if (!response.ok) {
           throw new Error(String(response.status))
         }

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "item",
+  "type": "registry:ui",
+  "description": "List item layout primitives for rich rows",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/item.tsx",
+      "content": "import { cn } from '@/lib/cn'\n\ntype DivProps = JSX.IntrinsicElements['div']\ntype HeadingProps = JSX.IntrinsicElements['h4']\ntype ParagraphProps = JSX.IntrinsicElements['p']\n\nexport function Item(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('flex items-start gap-3 rounded-lg border p-4', className)} {...rest} />\n}\n\nexport function ItemLeading(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('mt-0.5 shrink-0 text-muted-foreground', className)} {...rest} />\n}\n\nexport function ItemContent(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('grid min-w-0 gap-1', className)} {...rest} />\n}\n\nexport function ItemTitle(props: HeadingProps) {\n  const { class: className, ...rest } = props\n  return <h4 class={cn('truncate text-sm font-medium', className)} {...rest} />\n}\n\nexport function ItemDescription(props: ParagraphProps) {\n  const { class: className, ...rest } = props\n  return <p class={cn('text-sm text-muted-foreground', className)} {...rest} />\n}\n\nexport function ItemTrailing(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('ml-auto shrink-0', className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

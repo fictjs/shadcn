@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "drawer",
+  "type": "registry:ui",
+  "description": "Drawer aliases powered by sheet components",
+  "dependencies": [],
+  "registryDependencies": [
+    "sheet"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/drawer.tsx",
+      "content": "export {\n  Sheet as Drawer,\n  SheetClose as DrawerClose,\n  SheetContent as DrawerContent,\n  SheetDescription as DrawerDescription,\n  SheetFooter as DrawerFooter,\n  SheetHeader as DrawerHeader,\n  SheetTitle as DrawerTitle,\n  SheetTrigger as DrawerTrigger,\n} from '@/components/ui/sheet'\n",
+      "type": "registry:ui"
+    }
+  ]
+}

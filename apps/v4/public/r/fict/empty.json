@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "empty",
+  "type": "registry:ui",
+  "description": "Empty-state layout primitives",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/empty.tsx",
+      "content": "import { cn } from '@/lib/cn'\n\ntype DivProps = JSX.IntrinsicElements['div']\ntype HeadingProps = JSX.IntrinsicElements['h3']\ntype ParagraphProps = JSX.IntrinsicElements['p']\n\nexport function Empty(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('flex min-h-40 flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center', className)} {...rest} />\n}\n\nexport function EmptyTitle(props: HeadingProps) {\n  const { class: className, ...rest } = props\n  return <h3 class={cn('mt-4 text-lg font-semibold', className)} {...rest} />\n}\n\nexport function EmptyDescription(props: ParagraphProps) {\n  const { class: className, ...rest } = props\n  return <p class={cn('mt-2 max-w-prose text-sm text-muted-foreground', className)} {...rest} />\n}\n\nexport function EmptyAction(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('mt-6 flex items-center justify-center gap-2', className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

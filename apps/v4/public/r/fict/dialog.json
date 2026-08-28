@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dialog",
+  "type": "registry:ui",
+  "description": "Dialog primitives with styled wrappers",
+  "dependencies": [
+    "@fictjs/radix-ui"
+  ],
+  "registryDependencies": [
+    "button"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/dialog.tsx",
+      "content": "import { Dialog as DialogPrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\n\nexport const Dialog = DialogPrimitive.Root\nexport const DialogPortal = DialogPrimitive.Portal\nexport const DialogTrigger = DialogPrimitive.Trigger\n\ntype GenericProps = {\n  class?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\nexport function DialogOverlay(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <DialogPrimitive.Overlay class={cn('fixed inset-0 z-50 bg-background/80 backdrop-blur-sm', className)} {...rest} />\n}\n\nexport function DialogContent(props: GenericProps) {\n  const { class: className, children, ...rest } = props\n  return (\n    <>\n      <DialogOverlay />\n      <DialogPrimitive.Content\n        class={cn(\n          'fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg',\n          className,\n        )}\n        {...rest}\n      >\n        {children}\n        <DialogPrimitive.Close class='absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'>\n          <span aria-hidden='true'>×</span>\n        </DialogPrimitive.Close>\n      </DialogPrimitive.Content>\n    </>\n  )\n}\n\nexport function DialogHeader(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('flex flex-col space-y-1.5 text-center sm:text-left', className)} {...rest} />\n}\n\nexport function DialogFooter(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)} {...rest} />\n}\n\nexport function DialogTitle(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <DialogPrimitive.Title class={cn('text-lg font-semibold leading-none tracking-tight', className)} {...rest} />\n}\n\nexport function DialogDescription(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <DialogPrimitive.Description class={cn('text-sm text-muted-foreground', className)} {...rest} />\n}\n\nexport const DialogClose = DialogPrimitive.Close\n",
+      "type": "registry:ui"
+    }
+  ]
+}

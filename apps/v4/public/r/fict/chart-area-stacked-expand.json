@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chart-area-stacked-expand",
+  "type": "registry:block",
+  "description": "Expanded chart block template for chart-area-stacked-expand",
+  "dependencies": [],
+  "registryDependencies": [
+    "card",
+    "chart"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/chart-area-stacked-expand.tsx",
+      "content": "import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'\nimport { BarSparkline, ChartContainer, ChartLegend } from '@/components/ui/chart'\n\nconst data = [\n  { label: 'Mon', value: 24 },\n  { label: 'Tue', value: 32 },\n  { label: 'Wed', value: 18 },\n  { label: 'Thu', value: 41 },\n  { label: 'Fri', value: 36 },\n]\n\nexport function ChartAreaStackedExpandBlock() {\n  return (\n    <Card class='w-full'>\n      <CardHeader>\n        <CardTitle>Chart Area Stacked Expand</CardTitle>\n        <CardDescription>Chart variation scaffold for rapid customization.</CardDescription>\n      </CardHeader>\n      <CardContent>\n        <ChartContainer>\n          <BarSparkline data={data} />\n          <ChartLegend items={[{ label: 'Visitors' }]} />\n        </ChartContainer>\n      </CardContent>\n    </Card>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

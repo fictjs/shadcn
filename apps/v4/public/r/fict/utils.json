@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "utils",
+  "type": "registry:ui",
+  "description": "Shared utility helpers for classes and formatting",
+  "dependencies": [
+    "clsx",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/lib/utils.ts",
+      "content": "import { clsx, type ClassValue } from 'clsx'\nimport { twMerge } from 'tailwind-merge'\n\nexport function cn(...inputs: ClassValue[]): string {\n  return twMerge(clsx(inputs))\n}\n\nexport function clamp(value: number, min: number, max: number): number {\n  return Math.min(max, Math.max(min, value))\n}\n\nexport function formatNumber(value: number, locale = 'en-US'): string {\n  return new Intl.NumberFormat(locale).format(value)\n}\n",
+      "type": "registry:lib"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "input-otp",
+  "type": "registry:ui",
+  "description": "OTP input slots with keyboard-aware focus behavior",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/input-otp.tsx",
+      "content": "import { cn } from '@/lib/cn'\n\ntype DivProps = JSX.IntrinsicElements['div']\n\ntype SlotProps = JSX.IntrinsicElements['input'] & {\n  index: number\n  total: number\n}\n\nfunction clamp(value: number, min: number, max: number): number {\n  return Math.min(max, Math.max(min, value))\n}\n\nfunction focusSibling(target: HTMLInputElement, index: number, total: number): void {\n  const nextIndex = clamp(index, 0, total - 1)\n  const root = target.closest('[data-slot=\"input-otp\"]')\n  if (!root) return\n  const next = root.querySelector('[data-otp-index=\"' + nextIndex + '\"]') as HTMLInputElement | null\n  next?.focus()\n  next?.select()\n}\n\nexport function InputOTP(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div data-slot='input-otp' class={cn('flex items-center gap-2', className)} {...rest} />\n}\n\nexport function InputOTPGroup(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div data-slot='input-otp-group' class={cn('flex items-center gap-2', className)} {...rest} />\n}\n\nexport function InputOTPSlot(props: SlotProps) {\n  const { class: className, index, total, onInput, onKeyDown, ...rest } = props\n\n  return (\n    <input\n      inputMode='numeric'\n      maxLength={1}\n      autoComplete='one-time-code'\n      data-otp-index={index}\n      class={cn('h-10 w-10 rounded-md border border-input bg-background text-center text-sm font-semibold shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring', className)}\n      onInput={(event: Event) => {\n        onInput?.(event)\n        const target = event.currentTarget as HTMLInputElement | null\n        if (!target) return\n        if (target.value.length >= 1) {\n          focusSibling(target, index + 1, total)\n        }\n      }}\n      onKeyDown={(event: KeyboardEvent) => {\n        onKeyDown?.(event)\n        if (event.defaultPrevented) return\n\n        const target = event.currentTarget as HTMLInputElement | null\n        if (!target) return\n\n        if (event.key === 'Backspace' && target.value.length === 0) {\n          focusSibling(target, index - 1, total)\n        }\n      }}\n      {...rest}\n    />\n  )\n}\n\nexport function InputOTPSeparator(props: DivProps) {\n  const { class: className, children, ...rest } = props\n  return (\n    <div data-slot='input-otp-separator' class={cn('text-muted-foreground', className)} {...rest}>\n      {children ?? '-'}\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

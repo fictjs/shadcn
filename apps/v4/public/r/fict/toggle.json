@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toggle",
+  "type": "registry:ui",
+  "description": "Toggle primitive wrapper",
+  "dependencies": [
+    "@fictjs/radix-ui",
+    "class-variance-authority"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/toggle.tsx",
+      "content": "import { Toggle as TogglePrimitive } from '@fictjs/radix-ui'\nimport { cva, type VariantProps } from 'class-variance-authority'\n\nimport { cn } from '@/lib/cn'\n\nconst toggleVariants = cva(\n  'inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-muted hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground',\n  {\n    variants: {\n      variant: {\n        default: 'bg-transparent',\n        outline: 'border border-input bg-transparent shadow-sm hover:bg-accent hover:text-accent-foreground',\n      },\n      size: {\n        default: 'h-9 px-3',\n        sm: 'h-8 px-2.5',\n        lg: 'h-10 px-3.5',\n      },\n    },\n    defaultVariants: {\n      variant: 'default',\n      size: 'default',\n    },\n  },\n)\n\ntype ToggleProps = VariantProps<typeof toggleVariants> & {\n  class?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\nexport function Toggle(props: ToggleProps) {\n  const { class: className, variant, size, children, ...rest } = props\n  return (\n    <TogglePrimitive.Root class={cn(toggleVariants({ variant, size }), className)} {...rest}>\n      {children}\n    </TogglePrimitive.Root>\n  )\n}\n\nexport { toggleVariants }\n",
+      "type": "registry:ui"
+    }
+  ]
+}

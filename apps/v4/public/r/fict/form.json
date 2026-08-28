@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "form",
+  "type": "registry:ui",
+  "description": "Form field structure wrappers",
+  "dependencies": [
+    "@fictjs/radix-ui"
+  ],
+  "registryDependencies": [
+    "label"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/form.tsx",
+      "content": "import { Form as FormPrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\n\nexport const Form = FormPrimitive.Root\nexport const FormField = FormPrimitive.Field\n\ntype GenericProps = {\n  class?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\nexport function FormLabel(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <FormPrimitive.Label class={cn('text-sm font-medium leading-none', className)} {...rest} />\n}\n\nexport function FormControl(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <FormPrimitive.Control class={cn('w-full', className)} {...rest} />\n}\n\nexport function FormDescription(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <p class={cn('text-[0.8rem] text-muted-foreground', className)} {...rest} />\n}\n\nexport function FormMessage(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <FormPrimitive.Message class={cn('text-[0.8rem] font-medium text-destructive', className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

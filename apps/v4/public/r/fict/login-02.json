@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "login-02",
+  "type": "registry:block",
+  "description": "Expanded login block template for login-02",
+  "dependencies": [],
+  "registryDependencies": [
+    "button",
+    "card",
+    "input",
+    "label"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/login-02.tsx",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Label } from '@/components/ui/label'\n\nexport function Login02Block() {\n  return (\n    <Card class='mx-auto w-full max-w-md'>\n      <CardHeader>\n        <CardTitle>Login 02</CardTitle>\n        <CardDescription>Authentication block scaffold from expanded catalog.</CardDescription>\n      </CardHeader>\n      <CardContent class='grid gap-4'>\n        <div class='grid gap-2'>\n          <Label htmlFor='email'>Email</Label>\n          <Input id='email' type='email' placeholder='you@example.com' required />\n        </div>\n        <div class='grid gap-2'>\n          <Label htmlFor='password'>Password</Label>\n          <Input id='password' type='password' required />\n        </div>\n      </CardContent>\n      <CardFooter>\n        <Button class='w-full'>Continue</Button>\n      </CardFooter>\n    </Card>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

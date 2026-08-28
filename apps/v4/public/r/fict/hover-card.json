@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "hover-card",
+  "type": "registry:ui",
+  "description": "Hover card primitive wrappers",
+  "dependencies": [
+    "@fictjs/radix-ui"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/hover-card.tsx",
+      "content": "import { HoverCard as HoverCardPrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\n\nexport const HoverCard = HoverCardPrimitive.Root\nexport const HoverCardTriggerEl = HoverCardPrimitive.Trigger\n\ntype HoverCardContentProps = {\n  class?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\nexport function HoverCardContent(props: HoverCardContentProps) {\n  const { class: className, align = 'center', sideOffset = 4, ...rest } = props\n  return (\n    <HoverCardPrimitive.Content\n      align={align}\n      sideOffset={sideOffset}\n      class={cn('z-50 w-64 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none', className)}\n      {...rest}\n    />\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

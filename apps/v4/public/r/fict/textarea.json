@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "textarea",
+  "type": "registry:ui",
+  "description": "Styled textarea",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/textarea.tsx",
+      "content": "import { cn } from '@/lib/cn'\n\ntype TextareaProps = JSX.IntrinsicElements['textarea']\n\nexport function Textarea(props: TextareaProps) {\n  const { class: className, ...rest } = props\n  return (\n    <textarea\n      class={cn(\n        'min-h-20 flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',\n        className,\n      )}\n      {...rest}\n    />\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

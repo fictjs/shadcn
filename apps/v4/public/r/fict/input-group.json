@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "input-group",
+  "type": "registry:ui",
+  "description": "Input groups with addons and embedded controls",
+  "dependencies": [],
+  "registryDependencies": [
+    "input"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/input-group.tsx",
+      "content": "import { cn } from '@/lib/cn'\nimport { Input } from '@/components/ui/input'\n\ntype DivProps = JSX.IntrinsicElements['div']\ntype SpanProps = JSX.IntrinsicElements['span']\n\ntype InputGroupInputProps = {\n  class?: string\n  [key: string]: unknown\n}\n\nexport function InputGroup(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('flex w-full items-stretch rounded-md border border-input bg-background', className)} {...rest} />\n}\n\nexport function InputGroupAddon(props: SpanProps) {\n  const { class: className, ...rest } = props\n  return <span class={cn('inline-flex items-center border-r px-3 text-sm text-muted-foreground last:border-r-0', className)} {...rest} />\n}\n\nexport function InputGroupInput(props: InputGroupInputProps) {\n  const { class: className, ...rest } = props\n  return <Input class={cn('rounded-none border-0 shadow-none focus-visible:ring-0', className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

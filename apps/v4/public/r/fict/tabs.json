@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tabs",
+  "type": "registry:ui",
+  "description": "Tabs wrappers",
+  "dependencies": [
+    "@fictjs/radix-ui"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/tabs.tsx",
+      "content": "import { Tabs as TabsPrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\n\nexport const Tabs = TabsPrimitive.Root\n\ntype GenericProps = {\n  class?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\nexport function TabsList(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <TabsPrimitive.List class={cn('inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground', className)} {...rest} />\n}\n\nexport function TabsTrigger(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return (\n    <TabsPrimitive.Trigger\n      class={cn('inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm', className)}\n      {...rest}\n    />\n  )\n}\n\nexport function TabsContent(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <TabsPrimitive.Content class={cn('mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2', className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

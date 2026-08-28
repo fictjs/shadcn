@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "popover",
+  "type": "registry:ui",
+  "description": "Popover primitive wrappers",
+  "dependencies": [
+    "@fictjs/radix-ui"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/popover.tsx",
+      "content": "import { Popover as PopoverPrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\n\nexport const Popover = PopoverPrimitive.Root\nexport const PopoverTrigger = PopoverPrimitive.Trigger\nexport const PopoverClose = PopoverPrimitive.Close\n\ntype PopoverContentProps = {\n  class?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\nexport function PopoverContent(props: PopoverContentProps) {\n  const { class: className, sideOffset = 4, ...rest } = props\n  return (\n    <PopoverPrimitive.Content\n      sideOffset={sideOffset}\n      class={cn('z-50 w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none', className)}\n      {...rest}\n    />\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

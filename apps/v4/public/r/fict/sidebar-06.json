@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sidebar-06",
+  "type": "registry:block",
+  "description": "Expanded sidebar block template for sidebar-06",
+  "dependencies": [],
+  "registryDependencies": [
+    "button",
+    "sidebar"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/sidebar-06.tsx",
+      "content": "import { Button } from '@/components/ui/button'\nimport {\n  Sidebar,\n  SidebarContent,\n  SidebarFooter,\n  SidebarHeader,\n  SidebarSection,\n  SidebarSectionTitle,\n  SidebarItem,\n} from '@/components/ui/sidebar'\n\nexport function Sidebar06Block() {\n  return (\n    <Sidebar class='max-h-[560px] rounded-lg border'>\n      <SidebarHeader>\n        <h3 class='text-sm font-semibold'>Sidebar 06</h3>\n        <p class='text-xs text-muted-foreground'>Sidebar pattern scaffold</p>\n      </SidebarHeader>\n      <SidebarContent>\n        <SidebarSection>\n          <SidebarSectionTitle>Main</SidebarSectionTitle>\n          <SidebarItem>Home</SidebarItem>\n          <SidebarItem>Projects</SidebarItem>\n          <SidebarItem>Settings</SidebarItem>\n        </SidebarSection>\n      </SidebarContent>\n      <SidebarFooter>\n        <Button variant='outline' class='w-full'>\n          Sign out\n        </Button>\n      </SidebarFooter>\n    </Sidebar>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

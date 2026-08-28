@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "table",
+  "type": "registry:ui",
+  "description": "Table composition primitives",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/table.tsx",
+      "content": "import { cn } from '@/lib/cn'\n\ntype DivProps = JSX.IntrinsicElements['div']\ntype TableProps = JSX.IntrinsicElements['table']\ntype SectionProps = JSX.IntrinsicElements['thead']\ntype BodyProps = JSX.IntrinsicElements['tbody']\ntype RowProps = JSX.IntrinsicElements['tr']\ntype HeadProps = JSX.IntrinsicElements['th']\ntype CellProps = JSX.IntrinsicElements['td']\ntype CaptionProps = JSX.IntrinsicElements['caption']\n\nexport function Table(props: TableProps) {\n  const { class: className, ...rest } = props\n  return (\n    <div class='relative w-full overflow-auto'>\n      <table class={cn('w-full caption-bottom text-sm', className)} {...rest} />\n    </div>\n  )\n}\n\nexport function TableHeader(props: SectionProps) {\n  const { class: className, ...rest } = props\n  return <thead class={cn('[&_tr]:border-b', className)} {...rest} />\n}\n\nexport function TableBody(props: BodyProps) {\n  const { class: className, ...rest } = props\n  return <tbody class={cn('[&_tr:last-child]:border-0', className)} {...rest} />\n}\n\nexport function TableFooter(props: SectionProps) {\n  const { class: className, ...rest } = props\n  return <tfoot class={cn('border-t bg-muted/50 font-medium [&>tr]:last:border-b-0', className)} {...rest} />\n}\n\nexport function TableRow(props: RowProps) {\n  const { class: className, ...rest } = props\n  return <tr class={cn('border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted', className)} {...rest} />\n}\n\nexport function TableHead(props: HeadProps) {\n  const { class: className, ...rest } = props\n  return <th class={cn('h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0', className)} {...rest} />\n}\n\nexport function TableCell(props: CellProps) {\n  const { class: className, ...rest } = props\n  return <td class={cn('p-2 align-middle [&:has([role=checkbox])]:pr-0', className)} {...rest} />\n}\n\nexport function TableCaption(props: CaptionProps) {\n  const { class: className, ...rest } = props\n  return <caption class={cn('mt-4 text-sm text-muted-foreground', className)} {...rest} />\n}\n\nexport function TableContainer(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('w-full rounded-md border', className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aspect-ratio",
+  "type": "registry:ui",
+  "description": "Aspect ratio primitive wrapper",
+  "dependencies": [
+    "@fictjs/radix-ui"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/aspect-ratio.tsx",
+      "content": "import { AspectRatio as AspectRatioPrimitive } from '@fictjs/radix-ui'\n\nexport const AspectRatio = AspectRatioPrimitive.Root\n",
+      "type": "registry:ui"
+    }
+  ]
+}

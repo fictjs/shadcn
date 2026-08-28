@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "calendar-18",
+  "type": "registry:block",
+  "description": "Expanded calendar block template for calendar-18",
+  "dependencies": [],
+  "registryDependencies": [
+    "calendar",
+    "card"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/calendar-18.tsx",
+      "content": "import { Calendar } from '@/components/ui/calendar'\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'\n\nexport function Calendar18Block() {\n  return (\n    <Card class='w-full max-w-md'>\n      <CardHeader>\n        <CardTitle>Calendar 18</CardTitle>\n        <CardDescription>Calendar showcase block generated from the expanded built-in catalog.</CardDescription>\n      </CardHeader>\n      <CardContent>\n        <Calendar />\n      </CardContent>\n    </Card>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

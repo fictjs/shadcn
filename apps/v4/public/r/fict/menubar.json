@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "menubar",
+  "type": "registry:ui",
+  "description": "Menubar wrappers",
+  "dependencies": [
+    "@fictjs/radix-ui"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/menubar.tsx",
+      "content": "import { Menubar as MenubarPrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\n\nexport const Menubar = MenubarPrimitive.Root\nexport const MenubarMenu = MenubarPrimitive.Menu\n\ntype GenericProps = {\n  class?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\nexport function MenubarTrigger(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return (\n    <MenubarPrimitive.Trigger\n      class={cn('flex cursor-default select-none items-center rounded-sm px-3 py-1.5 text-sm font-medium outline-none hover:bg-accent hover:text-accent-foreground', className)}\n      {...rest}\n    />\n  )\n}\n\nexport function MenubarContent(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return (\n    <MenubarPrimitive.Content\n      class={cn('z-50 min-w-32 overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md', className)}\n      {...rest}\n    />\n  )\n}\n\nexport function MenubarItem(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return (\n    <MenubarPrimitive.Item\n      class={cn('relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground', className)}\n      {...rest}\n    />\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

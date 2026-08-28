@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pagination",
+  "type": "registry:ui",
+  "description": "Pagination primitives aligned with button variants",
+  "dependencies": [],
+  "registryDependencies": [
+    "button"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/pagination.tsx",
+      "content": "import { cn } from '@/lib/cn'\nimport { buttonVariants } from '@/components/ui/button'\n\ntype NavProps = JSX.IntrinsicElements['nav']\ntype UlProps = JSX.IntrinsicElements['ul']\ntype LiProps = JSX.IntrinsicElements['li']\ntype AnchorProps = JSX.IntrinsicElements['a']\ntype SpanProps = JSX.IntrinsicElements['span']\n\nexport function Pagination(props: NavProps) {\n  const { class: className, ...rest } = props\n  return <nav role='navigation' aria-label='pagination' class={cn('mx-auto flex w-full justify-center', className)} {...rest} />\n}\n\nexport function PaginationContent(props: UlProps) {\n  const { class: className, ...rest } = props\n  return <ul class={cn('flex flex-row items-center gap-1', className)} {...rest} />\n}\n\nexport function PaginationItem(props: LiProps) {\n  return <li {...props} />\n}\n\nexport function PaginationLink(props: AnchorProps & { isActive?: boolean }) {\n  const { class: className, isActive, ...rest } = props\n  return (\n    <a\n      aria-current={isActive ? 'page' : undefined}\n      class={cn(\n        buttonVariants({ variant: isActive ? 'outline' : 'ghost', size: 'icon' }),\n        'h-9 w-9',\n        className,\n      )}\n      {...rest}\n    />\n  )\n}\n\nexport function PaginationPrevious(props: AnchorProps) {\n  const { class: className, ...rest } = props\n  return <PaginationLink aria-label='Go to previous page' class={cn('w-auto px-3', className)} {...rest}>Previous</PaginationLink>\n}\n\nexport function PaginationNext(props: AnchorProps) {\n  const { class: className, ...rest } = props\n  return <PaginationLink aria-label='Go to next page' class={cn('w-auto px-3', className)} {...rest}>Next</PaginationLink>\n}\n\nexport function PaginationEllipsis(props: SpanProps) {\n  const { class: className, ...rest } = props\n  return <span aria-hidden='true' class={cn('flex h-9 w-9 items-center justify-center text-muted-foreground', className)} {...rest}>…</span>\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-slate",
+  "type": "registry:style",
+  "description": "Slate color palette",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/styles/themes/theme-slate.css",
+      "content": ".theme-slate {\n  --primary: 215 28% 17%;\n  --primary-foreground: 210 40% 98%;\n  --secondary: 215 25% 27%;\n  --secondary-foreground: 210 40% 98%;\n  --accent: 217 33% 17%;\n  --accent-foreground: 210 40% 98%;\n  --ring: 215 20% 65%;\n}\n\n.dark.theme-slate {\n  --primary: 210 40% 98%;\n  --primary-foreground: 215 28% 17%;\n  --secondary: 217 33% 17%;\n  --secondary-foreground: 210 40% 98%;\n  --accent: 215 25% 27%;\n  --accent-foreground: 210 40% 98%;\n  --ring: 215 20% 65%;\n}\n",
+      "type": "registry:style"
+    }
+  ]
+}

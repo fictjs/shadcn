@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "checkbox",
+  "type": "registry:ui",
+  "description": "Checkbox primitive wrapper",
+  "dependencies": [
+    "@fictjs/radix-ui"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/checkbox.tsx",
+      "content": "import { Checkbox as CheckboxPrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\n\ntype CheckboxProps = {\n  class?: string\n  indicatorClass?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\nexport function Checkbox(props: CheckboxProps) {\n  const { class: className, indicatorClass, children, ...rest } = props\n\n  return (\n    <CheckboxPrimitive.Root\n      class={cn(\n        'peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',\n        className,\n      )}\n      {...rest}\n    >\n      <CheckboxPrimitive.Indicator class={cn('flex items-center justify-center text-[10px]', indicatorClass)}>\n        {children ?? '✓'}\n      </CheckboxPrimitive.Indicator>\n    </CheckboxPrimitive.Root>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

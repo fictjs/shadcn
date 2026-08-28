@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "field",
+  "type": "registry:ui",
+  "description": "Field composition primitives for labels and messages",
+  "dependencies": [],
+  "registryDependencies": [
+    "label"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/field.tsx",
+      "content": "import { cn } from '@/lib/cn'\nimport { Label } from '@/components/ui/label'\n\ntype DivProps = JSX.IntrinsicElements['div']\ntype ParagraphProps = JSX.IntrinsicElements['p']\n\nexport function Field(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('grid gap-2', className)} {...rest} />\n}\n\nexport function FieldLabel(props: JSX.IntrinsicElements['label']) {\n  return <Label {...props} />\n}\n\nexport function FieldControl(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('grid gap-1', className)} {...rest} />\n}\n\nexport function FieldDescription(props: ParagraphProps) {\n  const { class: className, ...rest } = props\n  return <p class={cn('text-xs text-muted-foreground', className)} {...rest} />\n}\n\nexport function FieldError(props: ParagraphProps) {\n  const { class: className, ...rest } = props\n  return <p class={cn('text-xs font-medium text-destructive', className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

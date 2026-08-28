@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "breadcrumb",
+  "type": "registry:ui",
+  "description": "Composable breadcrumb navigation primitives",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/breadcrumb.tsx",
+      "content": "import { cn } from '@/lib/cn'\n\ntype NavProps = JSX.IntrinsicElements['nav']\ntype OlProps = JSX.IntrinsicElements['ol']\ntype LiProps = JSX.IntrinsicElements['li']\ntype AnchorProps = JSX.IntrinsicElements['a']\ntype SpanProps = JSX.IntrinsicElements['span']\n\nexport function Breadcrumb(props: NavProps) {\n  const { class: className, ...rest } = props\n  return <nav aria-label='breadcrumb' class={cn(className)} {...rest} />\n}\n\nexport function BreadcrumbList(props: OlProps) {\n  const { class: className, ...rest } = props\n  return <ol class={cn('flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground sm:gap-2.5', className)} {...rest} />\n}\n\nexport function BreadcrumbItem(props: LiProps) {\n  const { class: className, ...rest } = props\n  return <li class={cn('inline-flex items-center gap-1.5', className)} {...rest} />\n}\n\nexport function BreadcrumbLink(props: AnchorProps) {\n  const { class: className, ...rest } = props\n  return <a class={cn('transition-colors hover:text-foreground', className)} {...rest} />\n}\n\nexport function BreadcrumbPage(props: SpanProps) {\n  const { class: className, ...rest } = props\n  return <span aria-current='page' class={cn('font-normal text-foreground', className)} {...rest} />\n}\n\nexport function BreadcrumbSeparator(props: SpanProps) {\n  const { class: className, children, ...rest } = props\n  return (\n    <span role='presentation' aria-hidden='true' class={cn('text-muted-foreground', className)} {...rest}>\n      {children ?? '/'}\n    </span>\n  )\n}\n\nexport function BreadcrumbEllipsis(props: SpanProps) {\n  const { class: className, ...rest } = props\n  return (\n    <span role='presentation' aria-hidden='true' class={cn('flex h-9 w-9 items-center justify-center', className)} {...rest}>\n      ...\n    </span>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

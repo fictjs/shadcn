@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar",
+  "type": "registry:ui",
+  "description": "Simple avatar wrapper",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/avatar.tsx",
+      "content": "import { cn } from '@/lib/cn'\n\ntype DivProps = JSX.IntrinsicElements['div']\ntype ImgProps = JSX.IntrinsicElements['img']\n\nexport function Avatar(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full', className)} {...rest} />\n}\n\nexport function AvatarImage(props: ImgProps) {\n  const { class: className, ...rest } = props\n  return <img class={cn('aspect-square h-full w-full', className)} {...rest} />\n}\n\nexport function AvatarFallback(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('flex h-full w-full items-center justify-center rounded-full bg-muted', className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

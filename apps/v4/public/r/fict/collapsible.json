@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "collapsible",
+  "type": "registry:ui",
+  "description": "Collapsible wrappers",
+  "dependencies": [
+    "@fictjs/radix-ui"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/collapsible.tsx",
+      "content": "import { Collapsible as CollapsiblePrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\n\nexport const Collapsible = CollapsiblePrimitive.Root\n\ntype GenericProps = {\n  class?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\nexport function CollapsibleTrigger(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <CollapsiblePrimitive.Trigger class={cn('inline-flex items-center justify-center text-sm font-medium', className)} {...rest} />\n}\n\nexport function CollapsibleContent(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <CollapsiblePrimitive.Content class={cn('overflow-hidden text-sm', className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

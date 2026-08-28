@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sidebar",
+  "type": "registry:ui",
+  "description": "Sidebar layout primitives for app navigation",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/sidebar.tsx",
+      "content": "import { cn } from '@/lib/cn'\n\ntype DivProps = JSX.IntrinsicElements['div']\ntype NavProps = JSX.IntrinsicElements['nav']\ntype ButtonProps = JSX.IntrinsicElements['button']\ntype AnchorProps = JSX.IntrinsicElements['a']\n\nexport function Sidebar(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <aside class={cn('flex h-full w-72 flex-col border-r bg-background', className)} {...rest} />\n}\n\nexport function SidebarHeader(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('border-b px-4 py-3', className)} {...rest} />\n}\n\nexport function SidebarContent(props: NavProps) {\n  const { class: className, ...rest } = props\n  return <nav class={cn('flex-1 space-y-1 overflow-auto p-3', className)} {...rest} />\n}\n\nexport function SidebarFooter(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('border-t p-3', className)} {...rest} />\n}\n\nexport function SidebarSection(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <section class={cn('space-y-1', className)} {...rest} />\n}\n\nexport function SidebarSectionTitle(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('px-2 py-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground', className)} {...rest} />\n}\n\nexport function SidebarItem(props: ButtonProps) {\n  const { class: className, ...rest } = props\n  return (\n    <button\n      type='button'\n      class={cn('flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-left transition-colors hover:bg-accent hover:text-accent-foreground', className)}\n      {...rest}\n    />\n  )\n}\n\nexport function SidebarLink(props: AnchorProps) {\n  const { class: className, ...rest } = props\n  return <a class={cn('flex items-center gap-2 rounded-md px-2 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground', className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

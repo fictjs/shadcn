@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "radio-group",
+  "type": "registry:ui",
+  "description": "Radio group primitives with style wrappers",
+  "dependencies": [
+    "@fictjs/radix-ui"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/radio-group.tsx",
+      "content": "import { RadioGroup as RadioGroupPrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\n\ntype GroupProps = {\n  class?: string\n  [key: string]: unknown\n}\n\ntype ItemProps = {\n  class?: string\n  indicatorClass?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\nexport function RadioGroup(props: GroupProps) {\n  const { class: className, ...rest } = props\n  return <RadioGroupPrimitive.Root class={cn('grid gap-2', className)} {...rest} />\n}\n\nexport function RadioGroupItem(props: ItemProps) {\n  const { class: className, indicatorClass, children, ...rest } = props\n  return (\n    <RadioGroupPrimitive.Item\n      class={cn(\n        'aspect-square h-4 w-4 rounded-full border border-primary text-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',\n        className,\n      )}\n      {...rest}\n    >\n      <RadioGroupPrimitive.Indicator class={cn('flex items-center justify-center', indicatorClass)}>\n        {children ?? <span class='block h-2.5 w-2.5 rounded-full bg-current' />}\n      </RadioGroupPrimitive.Indicator>\n    </RadioGroupPrimitive.Item>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

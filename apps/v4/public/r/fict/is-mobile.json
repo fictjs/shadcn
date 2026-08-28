@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "is-mobile",
+  "type": "registry:ui",
+  "description": "Viewport mobile helpers and subscription utility",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/lib/hooks/is-mobile.ts",
+      "content": "const MOBILE_MEDIA_QUERY = '(max-width: 768px)'\n\nexport function isMobile(mediaQuery = MOBILE_MEDIA_QUERY): boolean {\n  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {\n    return false\n  }\n\n  return window.matchMedia(mediaQuery).matches\n}\n\nexport function subscribeIsMobile(\n  callback: (matches: boolean) => void,\n  mediaQuery = MOBILE_MEDIA_QUERY,\n): () => void {\n  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {\n    callback(false)\n    return () => {}\n  }\n\n  const mql = window.matchMedia(mediaQuery)\n  const listener = (event: MediaQueryListEvent) => callback(event.matches)\n\n  callback(mql.matches)\n  mql.addEventListener('change', listener)\n\n  return () => {\n    mql.removeEventListener('change', listener)\n  }\n}\n",
+      "type": "registry:lib"
+    }
+  ]
+}

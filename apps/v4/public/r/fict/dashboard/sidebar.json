@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dashboard/sidebar",
+  "type": "registry:block",
+  "description": "Dashboard sidebar navigation",
+  "dependencies": [],
+  "registryDependencies": [
+    "button",
+    "separator"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/dashboard/sidebar.tsx",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Separator } from '@/components/ui/separator'\n\nconst items = ['Overview', 'Analytics', 'Billing', 'Settings']\n\nexport function DashboardSidebarBlock() {\n  return (\n    <aside class='w-full max-w-xs rounded-lg border bg-card p-3'>\n      <div class='px-2 py-3'>\n        <h2 class='text-sm font-semibold'>Workspace</h2>\n        <p class='text-xs text-muted-foreground'>Project navigation</p>\n      </div>\n      <Separator class='my-2' />\n      <nav class='grid gap-1'>\n        {items.map(item => (\n          <Button variant='ghost' class='justify-start'>\n            {item}\n          </Button>\n        ))}\n      </nav>\n    </aside>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

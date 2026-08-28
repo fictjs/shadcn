@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tables/users-table",
+  "type": "registry:block",
+  "description": "Users table with filter and row actions",
+  "dependencies": [],
+  "registryDependencies": [
+    "badge",
+    "button",
+    "input",
+    "table"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/tables/users-table.tsx",
+      "content": "import { Badge } from '@/components/ui/badge'\nimport { Button } from '@/components/ui/button'\nimport { Input } from '@/components/ui/input'\nimport { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'\n\nconst rows = [\n  { id: 'u_001', name: 'Jane Doe', email: 'jane@example.com', role: 'Admin', status: 'Active' },\n  { id: 'u_002', name: 'Sam Park', email: 'sam@example.com', role: 'Editor', status: 'Pending' },\n  { id: 'u_003', name: 'Iris Chen', email: 'iris@example.com', role: 'Viewer', status: 'Active' },\n]\n\nexport function UsersTableBlock() {\n  return (\n    <div class='space-y-4'>\n      <div class='flex items-center justify-between gap-4'>\n        <Input placeholder='Search users...' class='max-w-sm' />\n        <Button>Add user</Button>\n      </div>\n      <Table>\n        <TableHeader>\n          <TableRow>\n            <TableHead>Name</TableHead>\n            <TableHead>Email</TableHead>\n            <TableHead>Role</TableHead>\n            <TableHead>Status</TableHead>\n            <TableHead class='text-right'>Action</TableHead>\n          </TableRow>\n        </TableHeader>\n        <TableBody>\n          {rows.map(row => (\n            <TableRow>\n              <TableCell class='font-medium'>{row.name}</TableCell>\n              <TableCell>{row.email}</TableCell>\n              <TableCell>{row.role}</TableCell>\n              <TableCell>\n                <Badge variant={row.status === 'Active' ? 'default' : 'secondary'}>{row.status}</Badge>\n              </TableCell>\n              <TableCell class='text-right'>\n                <Button variant='ghost' size='sm'>\n                  View\n                </Button>\n              </TableCell>\n            </TableRow>\n          ))}\n        </TableBody>\n      </Table>\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

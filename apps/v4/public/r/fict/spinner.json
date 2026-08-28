@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "spinner",
+  "type": "registry:ui",
+  "description": "Animated spinner indicator with size variants",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/spinner.tsx",
+      "content": "import { cva, type VariantProps } from 'class-variance-authority'\n\nimport { cn } from '@/lib/cn'\n\nconst spinnerVariants = cva('inline-block animate-spin rounded-full border-2 border-current border-r-transparent', {\n  variants: {\n    size: {\n      sm: 'h-3 w-3',\n      default: 'h-4 w-4',\n      lg: 'h-6 w-6',\n    },\n  },\n  defaultVariants: {\n    size: 'default',\n  },\n})\n\ntype SpinnerProps = JSX.IntrinsicElements['span'] & VariantProps<typeof spinnerVariants>\n\nexport function Spinner(props: SpinnerProps) {\n  const { class: className, size, ...rest } = props\n  return <span role='status' aria-label='Loading' class={cn(spinnerVariants({ size }), className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

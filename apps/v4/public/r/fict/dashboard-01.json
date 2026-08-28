@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dashboard-01",
+  "type": "registry:block",
+  "description": "Expanded dashboard block template for dashboard-01",
+  "dependencies": [],
+  "registryDependencies": [
+    "badge",
+    "card",
+    "chart",
+    "sidebar"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/dashboard-01.tsx",
+      "content": "import { Badge } from '@/components/ui/badge'\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'\nimport { BarSparkline, ChartContainer } from '@/components/ui/chart'\nimport { Sidebar, SidebarContent, SidebarHeader, SidebarItem } from '@/components/ui/sidebar'\n\nconst trend = [\n  { label: 'M', value: 12 },\n  { label: 'T', value: 16 },\n  { label: 'W', value: 14 },\n  { label: 'T', value: 18 },\n  { label: 'F', value: 22 },\n]\n\nexport function Dashboard01Block() {\n  return (\n    <div class='grid gap-4 lg:grid-cols-[260px_1fr]'>\n      <Sidebar>\n        <SidebarHeader>\n          <h2 class='text-sm font-semibold'>Dashboard</h2>\n          <p class='text-xs text-muted-foreground'>Expanded catalog preview</p>\n        </SidebarHeader>\n        <SidebarContent>\n          <SidebarItem>Overview</SidebarItem>\n          <SidebarItem>Analytics</SidebarItem>\n          <SidebarItem>Billing</SidebarItem>\n        </SidebarContent>\n      </Sidebar>\n      <div class='space-y-4'>\n        <header class='flex items-center gap-2'>\n          <h1 class='text-xl font-semibold'>Performance</h1>\n          <Badge>Live</Badge>\n        </header>\n        <div class='grid gap-4 md:grid-cols-3'>\n          <Card>\n            <CardHeader>\n              <CardTitle>Revenue</CardTitle>\n            </CardHeader>\n            <CardContent class='text-2xl font-semibold'>$21,430</CardContent>\n          </Card>\n          <Card>\n            <CardHeader>\n              <CardTitle>Conversion</CardTitle>\n            </CardHeader>\n            <CardContent class='text-2xl font-semibold'>4.7%</CardContent>\n          </Card>\n          <Card>\n            <CardHeader>\n              <CardTitle>Tickets</CardTitle>\n            </CardHeader>\n            <CardContent class='text-2xl font-semibold'>16</CardContent>\n          </Card>\n        </div>\n        <ChartContainer>\n          <BarSparkline data={trend} />\n        </ChartContainer>\n      </div>\n    </div>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

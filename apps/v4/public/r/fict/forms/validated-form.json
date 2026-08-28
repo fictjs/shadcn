@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "forms/validated-form",
+  "type": "registry:block",
+  "description": "Validated profile form block",
+  "dependencies": [],
+  "registryDependencies": [
+    "button",
+    "form",
+    "input"
+  ],
+  "files": [
+    {
+      "path": "src/components/blocks/forms/validated-form.tsx",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Form, FormControl, FormDescription, FormField, FormLabel, FormMessage } from '@/components/ui/form'\n\nexport function ValidatedFormBlock() {\n  const onSubmit = (event: SubmitEvent) => {\n    event.preventDefault()\n    const form = event.currentTarget as HTMLFormElement | null\n    if (!form) return\n\n    const emailInput = form.elements.namedItem('email') as HTMLInputElement | null\n    const message = form.querySelector('[data-form-message]') as HTMLElement | null\n    if (!emailInput || !message) return\n\n    const value = emailInput.value.trim()\n    if (value.length === 0 || !value.includes('@')) {\n      message.textContent = 'Please enter a valid email address.'\n      return\n    }\n    message.textContent = 'Saved successfully.'\n  }\n\n  return (\n    <Form class='grid gap-4 max-w-md' onSubmit={onSubmit}>\n      <FormField name='email'>\n        <FormLabel>Email</FormLabel>\n        <FormControl\n          as='input'\n          name='email'\n          type='email'\n          placeholder='you@example.com'\n          required\n        />\n        <FormDescription>We will only use this for account notifications.</FormDescription>\n        <FormMessage data-form-message>Enter an email and submit to validate.</FormMessage>\n      </FormField>\n      <Button type='submit'>Save changes</Button>\n    </Form>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

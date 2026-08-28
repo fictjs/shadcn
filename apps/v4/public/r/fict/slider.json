@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "slider",
+  "type": "registry:ui",
+  "description": "Slider primitive wrapper",
+  "dependencies": [
+    "@fictjs/radix-ui"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/slider.tsx",
+      "content": "import { Slider as SliderPrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\n\ntype SliderProps = {\n  class?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\nexport function Slider(props: SliderProps) {\n  const { class: className, children, ...rest } = props\n  return (\n    <SliderPrimitive.Root\n      class={cn('relative flex w-full touch-none select-none items-center', className)}\n      {...rest}\n    >\n      {children ?? (\n        <>\n          <SliderPrimitive.Track class='relative h-1.5 w-full grow overflow-hidden rounded-full bg-primary/20'>\n            <SliderPrimitive.Range class='absolute h-full bg-primary' />\n          </SliderPrimitive.Track>\n          <SliderPrimitive.Thumb class='block h-4 w-4 rounded-full border border-primary/50 bg-background shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50' />\n        </>\n      )}\n    </SliderPrimitive.Root>\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

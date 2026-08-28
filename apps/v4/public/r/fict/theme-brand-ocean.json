@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-brand-ocean",
+  "type": "registry:style",
+  "description": "Brand-oriented ocean palette",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/styles/themes/theme-brand-ocean.css",
+      "content": ".theme-brand-ocean {\n  --primary: 199 89% 48%;\n  --primary-foreground: 0 0% 100%;\n  --secondary: 204 94% 94%;\n  --secondary-foreground: 199 89% 28%;\n  --accent: 210 40% 96.1%;\n  --accent-foreground: 199 89% 28%;\n  --ring: 199 89% 48%;\n}\n\n.dark.theme-brand-ocean {\n  --primary: 199 89% 56%;\n  --primary-foreground: 210 40% 8%;\n  --secondary: 199 70% 22%;\n  --secondary-foreground: 210 40% 98%;\n  --accent: 199 70% 22%;\n  --accent-foreground: 210 40% 98%;\n  --ring: 199 89% 56%;\n}\n",
+      "type": "registry:style"
+    }
+  ]
+}

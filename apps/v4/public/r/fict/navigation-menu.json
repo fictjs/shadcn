@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "navigation-menu",
+  "type": "registry:ui",
+  "description": "Navigation menu wrappers",
+  "dependencies": [
+    "@fictjs/radix-ui"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/navigation-menu.tsx",
+      "content": "import { NavigationMenu as NavigationMenuPrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\n\nexport const NavigationMenu = NavigationMenuPrimitive.Root\nexport const NavigationMenuItem = NavigationMenuPrimitive.Item\n\ntype GenericProps = {\n  class?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\nexport function NavigationMenuList(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <NavigationMenuPrimitive.List class={cn('group flex flex-1 list-none items-center justify-center space-x-1', className)} {...rest} />\n}\n\nexport function NavigationMenuTrigger(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <NavigationMenuPrimitive.Trigger class={cn('group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground', className)} {...rest} />\n}\n\nexport function NavigationMenuContent(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <NavigationMenuPrimitive.Content class={cn('left-0 top-0 w-full md:absolute md:w-auto', className)} {...rest} />\n}\n\nexport function NavigationMenuLink(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <NavigationMenuPrimitive.Link class={cn('block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground', className)} {...rest} />\n}\n\nexport function NavigationMenuIndicator(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <NavigationMenuPrimitive.Indicator class={cn('top-full z-[1] flex h-1.5 items-end justify-center overflow-hidden', className)} {...rest} />\n}\n\nexport function NavigationMenuViewport(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <NavigationMenuPrimitive.Viewport class={cn('origin-top-center relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md border bg-popover text-popover-foreground shadow', className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

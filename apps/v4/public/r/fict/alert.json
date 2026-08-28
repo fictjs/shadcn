@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "alert",
+  "type": "registry:ui",
+  "description": "Alert component with semantic variants",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/alert.tsx",
+      "content": "import { cva, type VariantProps } from 'class-variance-authority'\n\nimport { cn } from '@/lib/cn'\n\nconst alertVariants = cva('relative w-full rounded-lg border p-4 text-sm [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-2px]', {\n  variants: {\n    variant: {\n      default: 'bg-background text-foreground',\n      destructive: 'border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive',\n      success: 'border-emerald-500/40 text-emerald-700 dark:text-emerald-300 [&>svg]:text-emerald-600',\n    },\n  },\n  defaultVariants: {\n    variant: 'default',\n  },\n})\n\ntype AlertProps = JSX.IntrinsicElements['div'] & VariantProps<typeof alertVariants>\ntype AlertTitleProps = JSX.IntrinsicElements['h5']\ntype AlertDescriptionProps = JSX.IntrinsicElements['div']\n\nexport function Alert(props: AlertProps) {\n  const { class: className, variant, ...rest } = props\n  return <div role='alert' class={cn(alertVariants({ variant }), className)} {...rest} />\n}\n\nexport function AlertTitle(props: AlertTitleProps) {\n  const { class: className, ...rest } = props\n  return <h5 class={cn('mb-1 font-medium leading-none tracking-tight', className)} {...rest} />\n}\n\nexport function AlertDescription(props: AlertDescriptionProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('text-sm [&_p]:leading-relaxed', className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

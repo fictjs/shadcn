@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "separator",
+  "type": "registry:ui",
+  "description": "Visual separator based on primitives",
+  "dependencies": [
+    "@fictjs/radix-ui"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/separator.tsx",
+      "content": "import { Separator as SeparatorPrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\n\ntype SeparatorProps = {\n  class?: string\n  orientation?: 'horizontal' | 'vertical'\n  decorative?: boolean\n  [key: string]: unknown\n}\n\nexport function Separator(props: SeparatorProps) {\n  const { class: className, orientation = 'horizontal', decorative = true, ...rest } = props\n  return (\n    <SeparatorPrimitive.Root\n      decorative={decorative}\n      orientation={orientation}\n      class={cn('shrink-0 bg-border', orientation === 'horizontal' ? 'h-px w-full' : 'h-full w-px', className)}\n      {...rest}\n    />\n  )\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sonner",
+  "type": "registry:ui",
+  "description": "Sonner-style aliases on top of toast primitives",
+  "dependencies": [],
+  "registryDependencies": [
+    "toast"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/sonner.tsx",
+      "content": "export {\n  Toast as Sonner,\n  ToastAction as SonnerAction,\n  ToastClose as SonnerClose,\n  ToastDescription as SonnerDescription,\n  ToastTitle as SonnerTitle,\n  ToastViewport as SonnerViewport,\n  ToastProvider as SonnerProvider,\n  useToast as useSonner,\n} from '@/components/ui/toast'\n",
+      "type": "registry:ui"
+    }
+  ]
+}

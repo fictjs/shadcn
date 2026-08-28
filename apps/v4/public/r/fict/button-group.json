@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-group",
+  "type": "registry:ui",
+  "description": "Button grouping container with orientation support",
+  "dependencies": [
+    "class-variance-authority"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/button-group.tsx",
+      "content": "import { cva, type VariantProps } from 'class-variance-authority'\n\nimport { cn } from '@/lib/cn'\n\nconst buttonGroupVariants = cva('inline-flex', {\n  variants: {\n    orientation: {\n      horizontal: 'flex-row',\n      vertical: 'flex-col',\n    },\n    attached: {\n      true: '[&>*]:rounded-none [&>*:first-child]:rounded-l-md [&>*:last-child]:rounded-r-md [&>*:not(:first-child)]:-ml-px',\n      false: 'gap-2',\n    },\n  },\n  defaultVariants: {\n    orientation: 'horizontal',\n    attached: true,\n  },\n})\n\ntype ButtonGroupProps = JSX.IntrinsicElements['div'] & VariantProps<typeof buttonGroupVariants>\n\nexport function ButtonGroup(props: ButtonGroupProps) {\n  const { class: className, orientation, attached, ...rest } = props\n  return <div role='group' class={cn(buttonGroupVariants({ orientation, attached }), className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

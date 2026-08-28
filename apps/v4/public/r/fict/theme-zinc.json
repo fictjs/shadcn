@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme-zinc",
+  "type": "registry:style",
+  "description": "Zinc color palette",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/styles/themes/theme-zinc.css",
+      "content": ".theme-zinc {\n  --primary: 240 5.9% 10%;\n  --primary-foreground: 0 0% 98%;\n  --secondary: 240 3.7% 15.9%;\n  --secondary-foreground: 0 0% 98%;\n  --accent: 240 4.8% 95.9%;\n  --accent-foreground: 240 5.9% 10%;\n  --ring: 240 5% 64.9%;\n}\n\n.dark.theme-zinc {\n  --primary: 0 0% 98%;\n  --primary-foreground: 240 5.9% 10%;\n  --secondary: 240 3.7% 15.9%;\n  --secondary-foreground: 0 0% 98%;\n  --accent: 240 3.7% 15.9%;\n  --accent-foreground: 0 0% 98%;\n  --ring: 240 4.9% 83.9%;\n}\n",
+      "type": "registry:style"
+    }
+  ]
+}

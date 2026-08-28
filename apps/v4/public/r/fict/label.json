@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "label",
+  "type": "registry:ui",
+  "description": "Form label wrapper",
+  "dependencies": [
+    "@fictjs/radix-ui"
+  ],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/ui/label.tsx",
+      "content": "import { Label as LabelPrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\n\ntype LabelProps = {\n  class?: string\n  [key: string]: unknown\n}\n\nexport function Label(props: LabelProps) {\n  const { class: className, ...rest } = props\n  return <LabelPrimitive.Root class={cn('text-sm font-medium leading-none', className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

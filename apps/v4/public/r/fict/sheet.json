@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sheet",
+  "type": "registry:ui",
+  "description": "Drawer-style sheet based on dialog primitives",
+  "dependencies": [
+    "@fictjs/radix-ui",
+    "class-variance-authority"
+  ],
+  "registryDependencies": [
+    "dialog"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/sheet.tsx",
+      "content": "import { Dialog as DialogPrimitive } from '@fictjs/radix-ui'\nimport { cva, type VariantProps } from 'class-variance-authority'\n\nimport { cn } from '@/lib/cn'\n\nconst sheetVariants = cva(\n  'fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500',\n  {\n    variants: {\n      side: {\n        top: 'inset-x-0 top-0 border-b',\n        bottom: 'inset-x-0 bottom-0 border-t',\n        left: 'inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-sm',\n        right: 'inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-sm',\n      },\n    },\n    defaultVariants: {\n      side: 'right',\n    },\n  },\n)\n\nexport const Sheet = DialogPrimitive.Root\nexport const SheetTrigger = DialogPrimitive.Trigger\nexport const SheetClose = DialogPrimitive.Close\n\ntype GenericProps = {\n  class?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\ntype SheetContentProps = GenericProps & VariantProps<typeof sheetVariants>\n\nexport function SheetOverlay(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <DialogPrimitive.Overlay class={cn('fixed inset-0 z-50 bg-black/80', className)} {...rest} />\n}\n\nexport function SheetContent(props: SheetContentProps) {\n  const { class: className, children, side, ...rest } = props\n  return (\n    <>\n      <SheetOverlay />\n      <DialogPrimitive.Content class={cn(sheetVariants({ side }), className)} {...rest}>\n        {children}\n      </DialogPrimitive.Content>\n    </>\n  )\n}\n\nexport function SheetHeader(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('flex flex-col space-y-2 text-center sm:text-left', className)} {...rest} />\n}\n\nexport function SheetFooter(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('mt-auto flex flex-col gap-2 sm:flex-row sm:justify-end', className)} {...rest} />\n}\n\nexport function SheetTitle(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <DialogPrimitive.Title class={cn('text-lg font-semibold text-foreground', className)} {...rest} />\n}\n\nexport function SheetDescription(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <DialogPrimitive.Description class={cn('text-sm text-muted-foreground', className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}

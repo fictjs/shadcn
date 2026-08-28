@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "alert-dialog",
+  "type": "registry:ui",
+  "description": "Alert dialog wrappers",
+  "dependencies": [
+    "@fictjs/radix-ui"
+  ],
+  "registryDependencies": [
+    "button"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/alert-dialog.tsx",
+      "content": "import { AlertDialog as AlertDialogPrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\nimport { buttonVariants } from '@/components/ui/button'\n\nexport const AlertDialog = AlertDialogPrimitive.Root\nexport const AlertDialogPortal = AlertDialogPrimitive.Portal\nexport const AlertDialogTrigger = AlertDialogPrimitive.Trigger\n\ntype GenericProps = {\n  class?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\nexport function AlertDialogOverlay(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <AlertDialogPrimitive.Overlay class={cn('fixed inset-0 z-50 bg-background/80 backdrop-blur-sm', className)} {...rest} />\n}\n\nexport function AlertDialogContent(props: GenericProps) {\n  const { class: className, children, ...rest } = props\n  return (\n    <>\n      <AlertDialogOverlay />\n      <AlertDialogPrimitive.Content\n        class={cn(\n          'fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg',\n          className,\n        )}\n        {...rest}\n      >\n        {children}\n      </AlertDialogPrimitive.Content>\n    </>\n  )\n}\n\nexport function AlertDialogHeader(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('flex flex-col space-y-2 text-center sm:text-left', className)} {...rest} />\n}\n\nexport function AlertDialogFooter(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)} {...rest} />\n}\n\nexport function AlertDialogTitle(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <AlertDialogPrimitive.Title class={cn('text-lg font-semibold', className)} {...rest} />\n}\n\nexport function AlertDialogDescription(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <AlertDialogPrimitive.Description class={cn('text-sm text-muted-foreground', className)} {...rest} />\n}\n\nexport function AlertDialogAction(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <AlertDialogPrimitive.Action class={cn(buttonVariants(), className)} {...rest} />\n}\n\nexport function AlertDialogCancel(props: GenericProps) {\n  const { class: className, ...rest } = props\n  return <AlertDialogPrimitive.Cancel class={cn(buttonVariants({ variant: 'outline' }), className)} {...rest} />\n}\n",
+      "type": "registry:ui"
+    }
+  ]
+}
