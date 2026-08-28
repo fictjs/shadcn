@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/carousel-spacing.tsx",
-      "content": "import * as UI from '@/components/ui/carousel'\n\nexport default function CarouselSpacingExample() {\n  return <UI.Carousel />\n}\n",
+      "content": "import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'\n\nexport default function CarouselSpacingExample() {\n  return (\n    <Carousel><CarouselContent>{[1, 2, 3].map(item => <CarouselItem><div class=\"rounded-md border p-8\">Slide {item}</div></CarouselItem>)}</CarouselContent><CarouselPrevious /><CarouselNext /></Carousel>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
