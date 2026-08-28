@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/kbd-tooltip.tsx",
-      "content": "import * as UI from '@/components/ui/kbd'\n\nexport default function KbdTooltipExample() {\n  return <UI.Kbd />\n}\n",
+      "content": "import { Kbd } from '@/components/ui/kbd'\n\nexport default function KbdTooltipExample() {\n  return (\n    <div class=\"flex items-center gap-2\"><Kbd>⌘</Kbd><Kbd>Tooltip</Kbd></div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

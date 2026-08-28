@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/kbd-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/kbd'\n\nexport default function KbdRtlExample() {\n  return <UI.Kbd />\n}\n",
+      "content": "import { Kbd } from '@/components/ui/kbd'\n\nexport default function KbdRtlExample() {\n  return (\n    <div dir=\"rtl\" class=\"flex items-center gap-2\"><Kbd>⌘</Kbd><Kbd>Rtl</Kbd></div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

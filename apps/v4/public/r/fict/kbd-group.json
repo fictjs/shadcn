@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/kbd-group.tsx",
-      "content": "import * as UI from '@/components/ui/kbd'\n\nexport default function KbdGroupExample() {\n  return <UI.Kbd />\n}\n",
+      "content": "import { Kbd } from '@/components/ui/kbd'\n\nexport default function KbdGroupExample() {\n  return (\n    <div class=\"flex items-center gap-2\"><Kbd>⌘</Kbd><Kbd>Group</Kbd></div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
