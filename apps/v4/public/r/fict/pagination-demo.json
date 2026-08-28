@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/pagination-demo.tsx",
-      "content": "import * as UI from '@/components/ui/pagination'\n\nexport default function PaginationDemoExample() {\n  return <UI.Pagination />\n}\n",
+      "content": "import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'\n\nexport default function PaginationDemoExample() {\n  return (\n    <Pagination><PaginationContent><PaginationItem><PaginationPrevious href=\"#\" /></PaginationItem><PaginationItem><PaginationLink href=\"#\" isActive>1</PaginationLink></PaginationItem><PaginationItem><PaginationEllipsis /></PaginationItem><PaginationItem><PaginationNext href=\"#\" /></PaginationItem></PaginationContent></Pagination>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
