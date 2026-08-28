@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/separator-list.tsx",
-      "content": "import * as UI from '@/components/ui/separator'\n\nexport default function SeparatorListExample() {\n  return <UI.Separator />\n}\n",
+      "content": "import { Separator } from '@/components/ui/separator'\n\nexport default function SeparatorListExample() {\n  return (\n    <div class=\"space-y-3\"><div>List</div><Separator /><div>Content</div></div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
