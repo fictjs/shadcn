@@ -34,12 +34,10 @@ const __dirname = path.dirname(__filename)
 const runtimeRoot = (globalThis as Record<string, unknown>).__FICT_SSR_BASE__
 const appRoot = typeof runtimeRoot === "string" ? runtimeRoot : path.resolve(__dirname, "..")
 const docsRoot = path.join(appRoot, "content", "docs")
-const componentsRoot = path.join(appRoot, "registry", "new-york-v4", "ui")
-const examplesRoot = path.join(appRoot, "registry", "new-york-v4", "examples")
-const chartsRoot = path.join(appRoot, "registry", "new-york-v4", "charts")
 const blocksFile = path.join(appRoot, "registry", "__blocks__.json")
 const themesFile = path.join(appRoot, "registry", "themes.ts")
 const fictRegistryRoot = path.join(appRoot, "public", "r", "fict")
+const fictRegistryIndexFile = path.join(fictRegistryRoot, "index.json")
 const featuredExamplePages: ExampleShowcase[] = [
   {
     slug: "dashboard",
@@ -78,7 +76,7 @@ const featuredExamplePages: ExampleShowcase[] = [
   },
 ]
 const chartTypeOrder = ["area", "bar", "line", "pie", "radar", "radial", "tooltip"]
-const featuredBlockNames = ["dashboard-01", "sidebar-07", "sidebar-03", "login-03", "login-04"]
+const featuredBlockNames = ["dashboard-01", "sidebar-03", "sidebar-01", "login-03", "login-04"]
 
 function withSiteTitle(title: string): string {
   return `${title} - shadcn/ui`
@@ -394,7 +392,7 @@ function getSiteCatalog(): SiteCatalog {
     docNavigation,
     docOrder,
     components: loadComponents(),
-    examples: loadExamples(),
+    examples: loadExamples(docs),
     charts: loadCharts(),
     blocks: loadBlocks(),
     themes: loadThemes(),
@@ -838,15 +836,49 @@ function loadDocs(): DocPage[] {
 }
 
 function loadComponents(): string[] {
-  return listTsxFileBaseNames(componentsRoot)
+  return loadFictRegistryIndex()
+    .filter((entry) => entry.type === "ui-component")
+    .map((entry) => entry.name)
+    .sort((a, b) => a.localeCompare(b))
 }
 
-function loadExamples(): string[] {
-  return listTsxFileBaseNames(examplesRoot)
+function loadExamples(docs: DocPage[]): string[] {
+  const examples = new Set<string>()
+  const visit = (blocks: DocContentBlock[]): void => {
+    for (const block of blocks) {
+      if (block.kind === "component-preview" && block.name) {
+        examples.add(block.name)
+      }
+      if (block.children) {
+        visit(block.children)
+      }
+      for (const panel of block.panels ?? []) {
+        visit(panel.blocks)
+      }
+    }
+  }
+  for (const doc of docs) {
+    visit(doc.blocks)
+  }
+  return Array.from(examples).sort((a, b) => a.localeCompare(b))
 }
 
 function loadCharts(): string[] {
-  return listTsxFileBaseNames(chartsRoot)
+  return loadFictRegistryIndex()
+    .filter((entry) => entry.type === "block" && entry.name.startsWith("chart-"))
+    .map((entry) => entry.name)
+    .sort((a, b) => a.localeCompare(b))
+}
+
+function loadFictRegistryIndex(): Array<{ name: string; type: "ui-component" | "block" | "theme" }> {
+  if (!fs.existsSync(fictRegistryIndexFile)) {
+    return []
+  }
+  try {
+    return JSON.parse(fs.readFileSync(fictRegistryIndexFile, "utf8"))
+  } catch {
+    return []
+  }
 }
 
 function loadThemes(): ThemeEntry[] {
@@ -884,6 +916,12 @@ function loadBlocks(): BlockEntry[] {
     categories?: string[]
   }>
 
+  const supported = new Set(
+    loadFictRegistryIndex()
+      .filter((entry) => entry.type === "block")
+      .map((entry) => entry.name),
+  )
+
   return parsed
     .filter((entry) => typeof entry.name === "string")
     .map((entry) => ({
@@ -891,18 +929,7 @@ function loadBlocks(): BlockEntry[] {
       description: entry.description || "",
       categories: Array.isArray(entry.categories) ? entry.categories : [],
     }))
-}
-
-function listTsxFileBaseNames(directoryPath: string): string[] {
-  if (!fs.existsSync(directoryPath)) {
-    return []
-  }
-
-  return fs
-    .readdirSync(directoryPath)
-    .filter((fileName) => fileName.endsWith(".tsx"))
-    .map((fileName) => fileName.slice(0, -4))
-    .sort((a, b) => a.localeCompare(b))
+    .filter((entry) => supported.has(entry.name))
 }
 
 function walkDirectory(currentPath: string, files: string[]): void {

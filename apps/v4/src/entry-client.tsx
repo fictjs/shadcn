@@ -5886,9 +5886,9 @@ interface CreateCatalogItem {
 
 const createCatalogItems: Record<CreateCatalogKind, CreateCatalogItem[]> = {
   component: [
-    { id: "button", title: "Button", description: "registry/new-york-v4/ui/button.tsx", kind: "component" },
-    { id: "input", title: "Input", description: "registry/new-york-v4/ui/input.tsx", kind: "component" },
-    { id: "dialog", title: "Dialog", description: "registry/new-york-v4/ui/dialog.tsx", kind: "component" },
+    { id: "button", title: "Button", description: "Fict shadcn button component", kind: "component" },
+    { id: "input", title: "Input", description: "Fict shadcn input component", kind: "component" },
+    { id: "dialog", title: "Dialog", description: "Fict shadcn dialog component", kind: "component" },
   ],
   example: [
     { id: "dashboard", title: "Dashboard Example", description: "Admin dashboard example using cards, charts, tables, and sidebar layouts.", kind: "example" },
@@ -5897,7 +5897,7 @@ const createCatalogItems: Record<CreateCatalogKind, CreateCatalogItem[]> = {
   ],
   block: [
     { id: "dashboard-01", title: "Dashboard 01", description: "Dense dashboard block with sidebar chrome and analytics surfaces.", kind: "block" },
-    { id: "sidebar-07", title: "Sidebar 07", description: "A navigational shell with projects, teams, and user rails.", kind: "block" },
+    { id: "sidebar-03", title: "Sidebar 03", description: "A navigational shell with projects, teams, and user rails.", kind: "block" },
     { id: "login-03", title: "Login 03", description: "Authentication block with split-brand layout and simple form framing.", kind: "block" },
   ],
   chart: [
@@ -6305,8 +6305,15 @@ function buildCreateInstallCommand(
   state: { kind: CreateCatalogKind; itemId: string; base: string; theme: string; font: string; template: string },
   activeItem: CreateCatalogItem,
 ): string {
-  const target = activeItem.kind === "example" ? `registry/new-york-v4/examples/${activeItem.id}` : activeItem.id
-  return `pnpm dlx @fictjs/shadcn@latest init --template ${state.template} --base ${state.base}\npnpm dlx @fictjs/shadcn@latest theme apply ${state.theme}\npnpm dlx @fictjs/shadcn@latest add ${target} --font ${state.font}`
+  const examples: Record<string, string> = {
+    dashboard: "dashboard-01",
+    tasks: "tables/users-table",
+    playground: "new-components-01",
+  }
+  const install = activeItem.kind === "component"
+    ? `add ${activeItem.id}`
+    : `blocks add ${examples[activeItem.id] || activeItem.id}`
+  return `pnpm dlx @fictjs/shadcn@latest init --template ${state.template} --base ${state.base}\npnpm dlx @fictjs/shadcn@latest theme apply ${state.theme}\npnpm dlx @fictjs/shadcn@latest ${install} --font ${state.font}`
 }
 
 function escapeHtml(value: string): string {

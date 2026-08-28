@@ -282,21 +282,21 @@ const createComponentItems: CreateCatalogItem[] = [
     key: "component:button",
     id: "button",
     title: "Button",
-    description: "registry/new-york-v4/ui/button.tsx",
+    description: "Fict shadcn button component",
     kind: "component",
   },
   {
     key: "component:input",
     id: "input",
     title: "Input",
-    description: "registry/new-york-v4/ui/input.tsx",
+    description: "Fict shadcn input component",
     kind: "component",
   },
   {
     key: "component:dialog",
     id: "dialog",
     title: "Dialog",
-    description: "registry/new-york-v4/ui/dialog.tsx",
+    description: "Fict shadcn dialog component",
     kind: "component",
   },
 ]
@@ -334,9 +334,9 @@ const createBlockItems: CreateCatalogItem[] = [
     kind: "block",
   },
   {
-    key: "block:sidebar-07",
-    id: "sidebar-07",
-    title: "Sidebar 07",
+    key: "block:sidebar-03",
+    id: "sidebar-03",
+    title: "Sidebar 03",
     description: "A navigational shell with projects, teams, and user rails.",
     kind: "block",
   },
@@ -388,7 +388,7 @@ const createItemLookup: Record<string, CreateCatalogItem> = {
   "example:tasks": createExampleItems[1],
   "example:playground": createExampleItems[2],
   "block:dashboard-01": createBlockItems[0],
-  "block:sidebar-07": createBlockItems[1],
+  "block:sidebar-03": createBlockItems[1],
   "block:login-03": createBlockItems[2],
   "chart:chart-area-interactive": createChartItems[0],
   "chart:chart-bar-interactive": createChartItems[1],
@@ -1285,11 +1285,20 @@ function CreatePage() {
           ? createBlockItems
           : createChartItems
   const activeItem = createItemLookup[`${activeKind}:${activeId}`] || activeItems[0] || createComponentItems[0]
+  const activeInstallId =
+    activeItem.kind !== "example"
+      ? activeItem.id
+      : activeItem.id === "dashboard"
+        ? "dashboard-01"
+        : activeItem.id === "tasks"
+          ? "tables/users-table"
+          : "new-components-01"
+  const activeInstallArgs = activeItem.kind === "component" ? `add ${activeInstallId}` : `blocks add ${activeInstallId}`
 
   const createInstallCommand =
     `pnpm dlx @fictjs/shadcn@latest init --template ${starterTemplate} --base ${base}` +
     `\npnpm dlx @fictjs/shadcn@latest theme apply ${theme}` +
-    `\npnpm dlx @fictjs/shadcn@latest add ${activeItem.kind === "example" ? `registry/new-york-v4/examples/${activeItem.id}` : activeItem.id} --font ${font}`
+    `\npnpm dlx @fictjs/shadcn@latest ${activeInstallArgs} --font ${font}`
 
   const resetCreatePage = () => {
     activeKind = "component"
@@ -7914,7 +7923,7 @@ function ExamplesPage(props: { route: ResolvedRoute; activeThemeName: string; on
               <li key={example}>
                 <div class="card pill-item">
                   <p class="pill-name">{example}</p>
-                  <p class="slug">registry/new-york-v4/examples/{example}.tsx</p>
+                  <p class="slug">Fict example · {getDocPreviewFamily(example)}</p>
                 </div>
               </li>
             ))}
@@ -8258,7 +8267,7 @@ function ChartsPage(props: { route: ResolvedRoute; activeThemeName: string; onTh
                       return
                     }
 
-                    writeClipboardText(`registry/new-york-v4/charts/${chartId}.tsx`, target)
+                    writeClipboardText(`npx @fictjs/shadcn@latest blocks add ${chartId}`, target)
                   }}
                 >
                   <CopyIcon class="copy-icon-idle" />
