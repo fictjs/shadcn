@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/button-group-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/button-group'\n\nexport default function ButtonGroupRtlExample() {\n  return <UI.ButtonGroup />\n}\n",
+      "content": "import { ButtonGroup } from '@/components/ui/button-group'\n\nexport default function ButtonGroupRtlExample() {\n  return (\n    <ButtonGroup dir=\"rtl\"><button type=\"button\">Previous</button><button type=\"button\">Group Rtl</button><button type=\"button\">Next</button></ButtonGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
