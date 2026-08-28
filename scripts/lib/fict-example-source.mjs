@@ -45,6 +45,9 @@ export function validateFictExampleSource(content, sourcePath = 'Fict example so
     [/\bfrom\s+["']react["']/, 'React import'],
     [/\bfrom\s+["'](?:lucide-react|@tabler\/icons-react)["']/, 'React icon import'],
     [/\bfrom\s+["']next(?:\/[^"']*)?["']/, 'Next.js import'],
+    [/\bfrom\s+["'](?:recharts|react-day-picker(?:\/[^"']*)?|input-otp|@tanstack\/react-table|react-textarea-autosize)["']/, 'React-only package import'],
+    [/\bfrom\s+["']@\/(?:examples|registry)\//, 'upstream website import'],
+    [/\bfrom\s+["']@\/components\/(?!ui\/)/, 'website-internal component import'],
     [/\bclassName=/, 'React className attribute'],
     [/\b(?:useState|useEffect|useMemo|useCallback)\s*\(/, 'React hook'],
   ]

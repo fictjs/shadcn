@@ -88,6 +88,9 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],
     ['React hook', 'export default function Demo() { const value = useState(0); return value }'],
     ['Next.js import', "import Link from 'next/link'\nexport default function Demo() { return <Link /> }"],
+    ['React-only package import', "import { AreaChart } from 'recharts'\nexport default function Demo() { return <AreaChart /> }"],
+    ['upstream website import', "import { Button } from '@/examples/radix/ui/button'\nexport default function Demo() { return <Button /> }"],
+    ['website-internal component import', "import { LanguageSelector } from '@/components/language-selector'\nexport default function Demo() { return <LanguageSelector /> }"],
   ])('rejects %s', (_label, source) => {
     expect(() => validateFictExampleSource(source)).toThrow(/must use Fict syntax/)
   })
