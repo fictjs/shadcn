@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/tooltip-disabled.tsx",
-      "content": "import * as UI from '@/components/ui/tooltip'\n\nexport default function TooltipDisabledExample() {\n  return <UI.Tooltip disabled />\n}\n",
+      "content": "import { Tooltip, TooltipContent, TooltipProvider, TooltipTriggerEl } from '@/components/ui/tooltip'\n\nexport default function TooltipDisabledExample() {\n  return (\n    <TooltipProvider><Tooltip><TooltipTriggerEl asChild><button type=\"button\">Hover</button></TooltipTriggerEl><TooltipContent>Disabled</TooltipContent></Tooltip></TooltipProvider>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
