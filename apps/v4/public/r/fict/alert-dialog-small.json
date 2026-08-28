@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/alert-dialog-small.tsx",
-      "content": "import * as UI from '@/components/ui/alert-dialog'\n\nexport default function AlertDialogSmallExample() {\n  return <UI.AlertDialog />\n}\n",
+      "content": "import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'\n\nexport default function AlertDialogSmallExample() {\n  return (\n    <AlertDialog><AlertDialogTrigger>Open Dialog Small</AlertDialogTrigger><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription>This action cannot be undone.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction>Continue</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
