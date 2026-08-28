@@ -51,6 +51,18 @@ async function expectIntrinsicWidth(locator: Locator, expected: number) {
   expect(width).toBeLessThanOrEqual(expected * 1.06)
 }
 
+async function expectCodeLinesStackVertically(codeBlock: Locator, minimumLineCount = 2) {
+  const lines = codeBlock.locator(".shiki-line")
+  await expect.poll(() => lines.count()).toBeGreaterThanOrEqual(minimumLineCount)
+
+  const lineTops = await lines.evaluateAll(elements =>
+    elements.map(element => Math.round(element.getBoundingClientRect().top))
+  )
+  for (let index = 1; index < lineTops.length; index += 1) {
+    expect(lineTops[index]).toBeGreaterThan(lineTops[index - 1])
+  }
+}
+
 test.describe("Fict shadcn website", () => {
   test("routes use Fict shadcn page titles", async ({ page }) => {
     await page.goto("/")
@@ -274,8 +286,12 @@ test.describe("Fict shadcn website", () => {
     await expect(page.locator(".doc-body")).toContainText("@fictjs/shadcn")
     await expect(page.locator(".doc-body")).not.toContainText("<TabsContent")
     await expect(page.locator(".doc-body")).not.toContainText("<Callout")
-    await expect(page.locator('pre[data-shiki="true"][data-language="bash"]').first()).toBeVisible()
+    const shellCode = page.locator('pre[data-shiki="true"][data-language="bash"]').first()
+    await expect(shellCode).toBeVisible()
     await expect(page.locator('pre[data-language="bash"] .shiki-token').first()).toHaveAttribute("style", /--shiki-dark:/)
+
+    await page.goto("/docs/blocks")
+    await expectCodeLinesStackVertically(page.locator('pre[data-shiki="true"][data-language="bash"]').first())
   })
 
   test("docs pages render structured tabs and registry cards", async ({ page }) => {
@@ -290,6 +306,7 @@ test.describe("Fict shadcn website", () => {
     await expect(source).toContainText("Avatar")
     await expect(source).toHaveAttribute("data-shiki", "true")
     await expect(source).toHaveAttribute("data-language", "tsx")
+    await expectCodeLinesStackVertically(source)
   })
 
   test("component previews match the compact Fict code card interaction", async ({ page }) => {
@@ -311,6 +328,7 @@ test.describe("Fict shadcn website", () => {
     await expect(snippet).toHaveAttribute("data-shiki", "true")
     await expect(snippet).toHaveAttribute("data-language", "tsx")
     await expect(snippet.locator(".shiki-token").first()).toHaveAttribute("style", /--shiki-dark:/)
+    await expectCodeLinesStackVertically(snippet)
     await expect(fullCode).toBeHidden()
     await expect(copy).toBeHidden()
     await expect(code).toHaveAttribute("data-doc-preview-code-expanded", "false")
@@ -326,6 +344,7 @@ test.describe("Fict shadcn website", () => {
     await expect(fullCode).toContainText("Button")
     await expect(fullCode).toHaveAttribute("data-shiki", "true")
     await expect(copy).toBeVisible()
+    await expectCodeLinesStackVertically(fullCode, 4)
     expect(await card.evaluate((element) => element.getBoundingClientRect().height)).toBeGreaterThan(collapsedHeight)
 
     const firstToken = fullCode.locator(".shiki-token").first()
