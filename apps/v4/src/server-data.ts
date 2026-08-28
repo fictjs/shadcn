@@ -15,6 +15,7 @@ import type {
   ResolvedRoute,
   ThemeEntry,
 } from "./types"
+import { stripSiteBasePath } from "./site-path"
 
 interface SiteCatalog {
   docs: DocSummary[]
@@ -1712,7 +1713,7 @@ function toHeadingId(value: string): string {
 
 function normalizePathname(rawUrl: string): string {
   const parsed = new URL(rawUrl, "http://localhost")
-  const decoded = decodeURIComponent(parsed.pathname)
+  const decoded = stripSiteBasePath(decodeURIComponent(parsed.pathname))
   if (decoded === "/") {
     return "/"
   }

@@ -3,6 +3,7 @@ import { installResumableLoader } from "@fictjs/runtime/experimental/loader"
 import "./App"
 import "./styles.css"
 import { localizeRtlGallery, translateRtlValue, type RtlLanguage } from "./rtl-localization"
+import { withSiteBasePath } from "./site-path"
 
 async function loadManifest(): Promise<void> {
   if (!import.meta.env.PROD) {
@@ -10,7 +11,7 @@ async function loadManifest(): Promise<void> {
   }
 
   try {
-    const response = await fetch("/fict.manifest.json")
+    const response = await fetch(withSiteBasePath("/fict.manifest.json"))
     if (!response.ok) {
       return
     }
@@ -5689,7 +5690,7 @@ function wireBlockViewer(): void {
 
     if (!cache.has(name)) {
       try {
-        const response = await fetch(`/r/styles/new-york-v4/${name}.json`)
+        const response = await fetch(withSiteBasePath(`/r/styles/new-york-v4/${name}.json`))
         if (!response.ok) {
           throw new Error(String(response.status))
         }
@@ -5815,7 +5816,7 @@ function wireChartViewer(): void {
 
     if (!cache.has(name)) {
       try {
-        const response = await fetch(`/r/styles/new-york-v4/${name}.json`)
+        const response = await fetch(withSiteBasePath(`/r/styles/new-york-v4/${name}.json`))
         if (!response.ok) {
           throw new Error(String(response.status))
         }
@@ -6148,7 +6149,7 @@ function wireCreateRoute(): void {
       }
 
       try {
-        const response = await fetch(`/examples/${state.itemId}`)
+        const response = await fetch(withSiteBasePath(`/examples/${state.itemId}`))
         if (!response.ok) {
           throw new Error(`Failed to load example ${state.itemId}`)
         }

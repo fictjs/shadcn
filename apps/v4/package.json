@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node server.js",
     "build": "pnpm build:client && pnpm build:server && pnpm verify:build",
+    "build:pages": "SITE_BASE_PATH=/shadcn/ pnpm build && node scripts/export-static.mjs",
     "build:client": "vite build --outDir dist/client",
     "build:server": "vite build --outDir dist/server --ssr src/entry-server.tsx",
     "start": "NODE_ENV=production node server.js",

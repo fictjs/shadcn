@@ -8,6 +8,7 @@ const clientRoot = path.join(appRoot, 'dist', 'client')
 const serverEntry = path.join(appRoot, 'dist', 'server', 'entry-server.js')
 const clientEntry = path.join(clientRoot, 'index.html')
 const manifestPath = path.join(clientRoot, 'fict.manifest.json')
+const siteBasePath = normalizeBasePath(process.env.SITE_BASE_PATH)
 
 for (const outputPath of [clientEntry, serverEntry, manifestPath]) {
   assert.ok(existsSync(outputPath), `Missing build output: ${path.relative(appRoot, outputPath)}`)
@@ -31,9 +32,13 @@ assert.ok(
 
 for (const [key, assetPath] of manifestEntries) {
   assert.equal(typeof assetPath, 'string', `Manifest entry ${key} must point to a string path`)
-  assert.ok(assetPath.startsWith('/'), `Manifest entry ${key} must use a root-relative path`)
+  assert.ok(
+    assetPath.startsWith(`${siteBasePath}/`),
+    `Manifest entry ${key} must use the configured site base path`,
+  )
 
-  const outputPath = path.resolve(clientRoot, `.${assetPath}`)
+  const relativeAssetPath = assetPath.slice(siteBasePath.length)
+  const outputPath = path.resolve(clientRoot, `.${relativeAssetPath}`)
   assert.ok(isWithin(clientRoot, outputPath), `Manifest entry ${key} escapes dist/client`)
   assert.ok(existsSync(outputPath), `Manifest entry ${key} points to missing output ${assetPath}`)
   assert.ok(
@@ -52,4 +57,12 @@ function isWithin(parentDirectory, candidatePath) {
       relativePath !== '..' &&
       !path.isAbsolute(relativePath))
   )
+}
+
+function normalizeBasePath(value) {
+  if (!value || value === '/') {
+    return ''
+  }
+
+  return `/${value.replace(/^\/+|\/+$/g, '')}`
 }

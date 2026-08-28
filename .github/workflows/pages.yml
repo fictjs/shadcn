@@ -1,4 +1,4 @@
-name: Deploy Storybook to GitHub Pages
+name: Deploy Website to GitHub Pages
 
 on:
   workflow_run:
@@ -33,17 +33,15 @@ jobs:
         with:
           node-version: '24'
           cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
+          cache-dependency-path: apps/v4/pnpm-lock.yaml
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      - name: Build Storybook
-        run: pnpm storybook:build
-      - name: Disable Jekyll processing
-        run: touch storybook-static/.nojekyll
+        run: pnpm --dir apps/v4 install --frozen-lockfile
+      - name: Build static website
+        run: pnpm --dir apps/v4 build:pages
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: storybook-static
+          path: apps/v4/dist/static
           include-hidden-files: true
 
   deploy:
