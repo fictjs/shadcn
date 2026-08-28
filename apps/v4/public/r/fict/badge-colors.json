@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/badge-colors.tsx",
-      "content": "import * as UI from '@/components/ui/badge'\n\nexport default function BadgeColorsExample() {\n  return <UI.Badge />\n}\n",
+      "content": "import { Badge } from '@/components/ui/badge'\n\nexport default function BadgeColorsExample() {\n  return (\n    <Badge>Colors</Badge>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
