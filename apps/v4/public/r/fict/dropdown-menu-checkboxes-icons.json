@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/dropdown-menu-checkboxes-icons.tsx",
-      "content": "import * as UI from '@/components/ui/dropdown-menu'\n\nexport default function DropdownMenuCheckboxesIconsExample() {\n  return <UI.DropdownMenu />\n}\n",
+      "content": "import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'\n\nexport default function DropdownMenuCheckboxesIconsExample() {\n  return (\n    <DropdownMenu><DropdownMenuTrigger>Open Menu Checkboxes Icons</DropdownMenuTrigger><DropdownMenuContent><DropdownMenuLabel>My Account</DropdownMenuLabel><DropdownMenuSeparator /><DropdownMenuItem>Profile</DropdownMenuItem><DropdownMenuCheckboxItem checked>Notifications</DropdownMenuCheckboxItem><DropdownMenuItem>Log out</DropdownMenuItem></DropdownMenuContent></DropdownMenu>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
