@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/navigation-menu-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/navigation-menu'\n\nexport default function NavigationMenuRtlExample() {\n  return <UI.NavigationMenu />\n}\n",
+      "content": "import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu'\n\nexport default function NavigationMenuRtlExample() {\n  return (\n    <NavigationMenu dir=\"rtl\"><NavigationMenuList><NavigationMenuItem><NavigationMenuTrigger>Getting started</NavigationMenuTrigger><NavigationMenuContent><NavigationMenuLink href=\"/docs\">Menu Rtl</NavigationMenuLink></NavigationMenuContent></NavigationMenuItem></NavigationMenuList></NavigationMenu>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
