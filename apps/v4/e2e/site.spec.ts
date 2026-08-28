@@ -51,22 +51,22 @@ async function expectIntrinsicWidth(locator: Locator, expected: number) {
   expect(width).toBeLessThanOrEqual(expected * 1.06)
 }
 
-test.describe("shadcn v4 site", () => {
-  test("routes use shadcn/ui page titles", async ({ page }) => {
+test.describe("Fict shadcn website", () => {
+  test("routes use Fict shadcn page titles", async ({ page }) => {
     await page.goto("/")
-    await expect(page).toHaveTitle("The Foundation for your Design System - shadcn/ui")
+    await expect(page).toHaveTitle("The Foundation for your Design System - Fict shadcn")
 
     await page.goto("/docs")
-    await expect(page).toHaveTitle("Introduction - shadcn/ui")
+    await expect(page).toHaveTitle("Introduction - Fict shadcn")
 
     await page.goto("/blocks")
-    await expect(page).toHaveTitle("Building Blocks for the Web - shadcn/ui")
+    await expect(page).toHaveTitle("Building Blocks for the Web - Fict shadcn")
 
     await page.goto("/themes")
-    await expect(page).toHaveTitle("Pick a Color. Make it yours. - shadcn/ui")
+    await expect(page).toHaveTitle("Pick a Color. Make it yours. - Fict shadcn")
 
     await page.goto("/create")
-    await expect(page).toHaveTitle("New Project - shadcn/ui")
+    await expect(page).toHaveTitle("New Project - Fict shadcn")
   })
 
   test("examples root keeps catalog controls while detail routes stay focused", async ({ page }) => {
@@ -91,9 +91,9 @@ test.describe("shadcn v4 site", () => {
 
     await expect(page.getByRole("heading", { name: "The Foundation for your Design System" })).toBeVisible()
     await expect(page.getByRole("navigation", { name: "Primary" })).toContainText("Docs")
-    await expect(page.getByRole("link", { name: "shadcn/skills, presets and more" })).toHaveAttribute(
+    await expect(page.getByRole("link", { name: "Fict components, blocks, themes and more" })).toHaveAttribute(
       "href",
-      "/docs/changelog/2026-03-cli-v4"
+      "/docs/installation"
     )
     await expect(page.getByRole("main").getByRole("link", { name: "Get Started" })).toHaveAttribute(
       "href",
@@ -115,9 +115,9 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".home-examples-root")).toContainText("Compute Environment")
     await expect(page.locator(".home-examples-root")).toContainText("How did you hear about us?")
     await expect(page.locator(".home-examples-root")).toContainText("Processing your request")
-    await expect(page.getByRole("contentinfo").getByRole("link", { name: "shadcn" })).toHaveAttribute(
+    await expect(page.getByRole("contentinfo").getByRole("link", { name: "GitHub" })).toHaveAttribute(
       "href",
-      "https://twitter.com/shadcn",
+      "https://github.com/fictjs/shadcn",
     )
 
     await page.goto("/docs")
@@ -126,7 +126,7 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByRole("button", { name: "Copy Page" })).toBeVisible()
   })
 
-  test("desktop header matches upstream shadcn chrome", async ({ page }) => {
+  test("desktop header exposes Fict shadcn navigation", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 960 })
     await page.goto("/")
 
@@ -137,12 +137,12 @@ test.describe("shadcn v4 site", () => {
       "Components",
       "Blocks",
       "Charts",
-      "Directory",
+      "Registry",
       "Create",
     ])
 
     await expect(page.getByRole("button", { name: "Search documentation..." })).toBeVisible()
-    await expect(page.getByRole("link", { name: "108k" })).toHaveAttribute("href", "https://github.com/shadcn-ui/ui")
+    await expect(page.getByRole("banner").getByRole("link", { name: "GitHub" })).toHaveAttribute("href", "https://github.com/fictjs/shadcn")
     await expect(page.getByRole("button", { name: "Toggle layout" })).toHaveCount(0)
     await expect(page.getByRole("button", { name: "Toggle theme" })).toBeVisible()
     await expect(page.getByRole("banner").getByRole("link", { name: "New Project" })).toHaveAttribute("href", "/create")
@@ -204,7 +204,7 @@ test.describe("shadcn v4 site", () => {
 
   test("docs layout stays single-column until the desktop sidebar appears", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
-    await page.goto("/docs/components/base/item")
+    await page.goto("/docs/components/fict/item")
 
     const layout = page.locator(".docs-layout")
     const main = page.locator(".doc-main")
@@ -267,28 +267,28 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator("html")).not.toHaveClass(/dark/)
   })
 
-  test("docs pages normalize mdx component blocks into readable content", async ({ page }) => {
-    await page.goto("/docs/mcp")
+  test("docs pages normalize Fict MDX blocks into readable content", async ({ page }) => {
+    await page.goto("/docs/installation")
 
-    await expect(page.getByRole("heading", { name: "MCP Server" })).toBeVisible()
-    await expect(page.locator(".doc-body")).toContainText("Claude Code")
+    await expect(page.getByRole("heading", { name: "Installation" })).toBeVisible()
+    await expect(page.locator(".doc-body")).toContainText("@fictjs/shadcn")
     await expect(page.locator(".doc-body")).not.toContainText("<TabsContent")
     await expect(page.locator(".doc-body")).not.toContainText("<Callout")
   })
 
   test("docs pages render structured tabs and registry cards", async ({ page }) => {
-    await page.goto("/docs/components/base/avatar")
+    await page.goto("/docs/components/fict/avatar")
 
     await expect(page.locator(".doc-tabs")).toBeVisible()
     await expect(page.locator(".doc-component-card").first()).toBeVisible()
     await expect(page.locator(".doc-component-preview-stage").first()).toBeVisible()
     await page.getByRole("button", { name: "Manual" }).click()
-    await expect(page.locator(".doc-tabs-panel")).toContainText("Install the following dependencies")
+    await expect(page.locator(".doc-tabs-panel")).toContainText("Copy the Fict shadcn component")
     await expect(page.locator(".doc-component-card-source .doc-component-source-code").first()).toContainText("Avatar")
   })
 
-  test("component previews match the compact React code card interaction", async ({ page }) => {
-    await page.goto("/docs/components/radix/button")
+  test("component previews match the compact Fict code card interaction", async ({ page }) => {
+    await page.goto("/docs/components/fict/button")
 
     const card = page.locator(".doc-component-card:not(.doc-component-card-source)").first()
     const stage = card.locator(".doc-component-preview-stage")
@@ -319,8 +319,8 @@ test.describe("shadcn v4 site", () => {
     expect(await card.evaluate((element) => element.getBoundingClientRect().height)).toBeGreaterThan(collapsedHeight)
   })
 
-  test("accordion docs match every React preview and interaction", async ({ page }) => {
-    await page.goto("/docs/components/radix/accordion")
+  test("accordion docs match every Fict preview and interaction", async ({ page }) => {
+    await page.goto("/docs/components/fict/accordion")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -373,8 +373,8 @@ test.describe("shadcn v4 site", () => {
     await expect(previews.nth(5).locator(".doc-component-preview-stage")).toHaveCSS("height", "512px")
   })
 
-  test("alert docs match every React preview and RTL content", async ({ page }) => {
-    await page.goto("/docs/components/radix/alert")
+  test("alert docs match every Fict preview and RTL content", async ({ page }) => {
+    await page.goto("/docs/components/fict/alert")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -413,8 +413,8 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator(".doc-alert-title").first()).toHaveText("Payment successful")
   })
 
-  test("alert dialog docs match React modal sizes and focus behavior", async ({ page }) => {
-    await page.goto("/docs/components/radix/alert-dialog")
+  test("alert dialog docs match Fict modal sizes and focus behavior", async ({ page }) => {
+    await page.goto("/docs/components/fict/alert-dialog")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -481,8 +481,8 @@ test.describe("shadcn v4 site", () => {
     await dialog.getByRole("button", { name: "ביטול" }).click()
   })
 
-  test("aspect ratio docs match React image geometry and RTL caption", async ({ page }) => {
-    await page.goto("/docs/components/radix/aspect-ratio")
+  test("aspect ratio docs match Fict image geometry and RTL caption", async ({ page }) => {
+    await page.goto("/docs/components/fict/aspect-ratio")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -528,8 +528,8 @@ test.describe("shadcn v4 site", () => {
     )
   })
 
-  test("avatar docs match React geometry, grouping, menu, and RTL behavior", async ({ page }) => {
-    await page.goto("/docs/components/radix/avatar")
+  test("avatar docs match Fict geometry, grouping, menu, and RTL behavior", async ({ page }) => {
+    await page.goto("/docs/components/fict/avatar")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -579,8 +579,8 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator(".doc-avatar-demo-layout")).toHaveAttribute("dir", "ltr")
   })
 
-  test("badge docs match React variants, icons, colors, link, and RTL behavior", async ({ page }) => {
-    await page.goto("/docs/components/radix/badge")
+  test("badge docs match Fict variants, icons, colors, link, and RTL behavior", async ({ page }) => {
+    await page.goto("/docs/components/fict/badge")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -635,8 +635,8 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator(".doc-badge-row")).toHaveAttribute("dir", "ltr")
   })
 
-  test("breadcrumb docs match React trails, menus, separators, links, and RTL behavior", async ({ page }) => {
-    await page.goto("/docs/components/radix/breadcrumb")
+  test("breadcrumb docs match Fict trails, menus, separators, links, and RTL behavior", async ({ page }) => {
+    await page.goto("/docs/components/fict/breadcrumb")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -696,8 +696,8 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.getByRole("button", { name: "Components" })).toBeVisible()
   })
 
-  test("button docs match React variants, sizes, icons, groups, links, and RTL behavior", async ({ page }) => {
-    await page.goto("/docs/components/radix/button")
+  test("button docs match Fict variants, sizes, icons, groups, links, and RTL behavior", async ({ page }) => {
+    await page.goto("/docs/components/fict/button")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -757,8 +757,8 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.getByRole("button", { name: "Submit" }).locator(".doc-button-rtl-arrow")).toHaveCSS("transform", "none")
   })
 
-  test("button group docs match React geometry and composite interactions", async ({ page }) => {
-    await page.goto("/docs/components/radix/button-group")
+  test("button group docs match Fict geometry and composite interactions", async ({ page }) => {
+    await page.goto("/docs/components/fict/button-group")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -834,8 +834,8 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator('[data-slot="button-group"]').first()).toHaveAttribute("dir", "ltr")
   })
 
-  test("calendar docs match React geometry and date interactions", async ({ page }) => {
-    await page.goto("/docs/components/base/calendar")
+  test("calendar docs match Fict geometry and date interactions", async ({ page }) => {
+    await page.goto("/docs/components/fict/calendar")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -912,8 +912,8 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator(".doc-calendar-weekday").first()).toHaveText("Su")
   })
 
-  test("card docs match React layouts, fields, image, sizes, and RTL content", async ({ page }) => {
-    await page.goto("/docs/components/base/card")
+  test("card docs match Fict layouts, fields, image, sizes, and RTL content", async ({ page }) => {
+    await page.goto("/docs/components/fict/card")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -961,8 +961,8 @@ test.describe("shadcn v4 site", () => {
     await expect(cards.nth(3)).toHaveAttribute("dir", "ltr")
   })
 
-  test("carousel docs match React geometry, controls, API, autoplay, and RTL", async ({ page }) => {
-    await page.goto("/docs/components/base/carousel")
+  test("carousel docs match Fict geometry, controls, API, autoplay, and RTL", async ({ page }) => {
+    await page.goto("/docs/components/fict/carousel")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -1020,8 +1020,8 @@ test.describe("shadcn v4 site", () => {
     await expect(carousels.nth(6).locator(".doc-carousel-card-content strong").first()).toHaveText("1")
   })
 
-  test("chart docs match React stages, progressive examples, tooltips, series, and RTL", async ({ page }) => {
-    await page.goto("/docs/components/base/chart")
+  test("chart docs match Fict stages, progressive examples, tooltips, series, and RTL", async ({ page }) => {
+    await page.goto("/docs/components/fict/chart")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -1071,8 +1071,8 @@ test.describe("shadcn v4 site", () => {
     await expect(charts.nth(6).locator(".doc-chart-axis text").first()).toHaveText("Jun")
   })
 
-  test("combobox docs match React controls, filtering, selection, keyboard, popup, and RTL", async ({ page }) => {
-    await page.goto("/docs/components/base/combobox")
+  test("combobox docs match Fict controls, filtering, selection, keyboard, popup, and RTL", async ({ page }) => {
+    await page.goto("/docs/components/fict/combobox")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -1177,8 +1177,8 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator("[data-doc-combobox-chip]")).toContainText("Technology")
   })
 
-  test("command docs match React geometry, filtering, dialogs, keyboard, scrolling, and RTL", async ({ page }) => {
-    await page.goto("/docs/components/base/command")
+  test("command docs match Fict geometry, filtering, dialogs, keyboard, scrolling, and RTL", async ({ page }) => {
+    await page.goto("/docs/components/fict/command")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -1250,10 +1250,10 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator("[data-doc-command-item]").first()).toContainText("Calendar")
   })
 
-  test("context menu docs match React triggers, items, state, submenus, placement, keyboard, and RTL", async ({ page }) => {
+  test("context menu docs match Fict triggers, items, state, submenus, placement, keyboard, and RTL", async ({ page }) => {
     const pageErrors: string[] = []
     page.on("pageerror", (error) => pageErrors.push(error.message))
-    await page.goto("/docs/components/base/context-menu")
+    await page.goto("/docs/components/fict/context-menu")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -1344,8 +1344,8 @@ test.describe("shadcn v4 site", () => {
     await expect(rtlTrigger).toContainText("Right click here")
   })
 
-  test("data table docs match React filtering, sorting, selection, visibility, menus, and RTL", async ({ page }) => {
-    await page.goto("/docs/components/base/data-table")
+  test("data table docs match Fict filtering, sorting, selection, visibility, menus, and RTL", async ({ page }) => {
+    await page.goto("/docs/components/fict/data-table")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -1414,89 +1414,9 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator('th[data-doc-data-col="status"]')).toContainText("Status")
   })
 
-  test("date picker docs match React triggers, calendars, range, inputs, time, and RTL", async ({ page }) => {
-    await page.clock.setFixedTime(new Date("2026-08-25T12:00:00Z"))
-    await page.goto("/docs/components/base/date-picker")
-    await waitForClientReady(page)
 
-    const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
-    await expect(previews).toHaveCount(8)
-    for (let index = 0; index < 7; index += 1) {
-      await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "288px")
-    }
-    await expect(previews.nth(7).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
-
-    const demo = page.locator('[data-doc-preview-name="date-picker-demo"]')
-    const demoTrigger = demo.locator("[data-doc-date-trigger]")
-    await expect(demoTrigger).toHaveCSS("width", "212px")
-    await expect(demoTrigger).toContainText("Pick a date")
-    await demoTrigger.click()
-    let panel = page.locator("[data-doc-date-popover]:visible")
-    await expect(panel.locator("[data-doc-calendar]")).toHaveCSS("width", "214px")
-    await expect(panel.locator("[data-doc-calendar]")).toHaveCSS("height", "297.188px")
-    await panel.locator('[data-date="2026-08-12"]').click()
-    await expect(demoTrigger).toContainText("August 12, 2026")
-    await expect(panel).toBeHidden()
-    await expect(demoTrigger).toBeFocused()
-
-    const basic = page.locator('[data-doc-preview-name="date-picker-basic"]')
-    await expect(basic).toContainText("Date")
-    await expect(basic.locator("[data-doc-date-trigger]")).toHaveCSS("width", "176px")
-
-    const range = page.locator('[data-doc-preview-name="date-picker-range"]')
-    const rangeTrigger = range.locator("[data-doc-date-trigger]")
-    await expect(rangeTrigger).toContainText("Jan 20, 2026 - Feb 09, 2026")
-    await rangeTrigger.click()
-    panel = page.locator("[data-doc-date-popover]:visible")
-    await expect(panel.locator(".doc-calendar-month")).toHaveCount(2)
-    await expect(panel.locator("[data-doc-calendar]")).toHaveCSS("width", "424px")
-    await panel.locator('[data-date="2026-01-25"]').click()
-    await expect(panel).toBeVisible()
-    await panel.locator('[data-date="2026-02-05"]').click()
-    await expect(rangeTrigger).toContainText("Jan 25, 2026 - Feb 05, 2026")
-    await expect(panel).toBeHidden()
-
-    const dob = page.locator('[data-doc-preview-name="date-picker-dob"]')
-    await dob.locator("[data-doc-date-trigger]").click()
-    panel = page.locator("[data-doc-date-popover]:visible")
-    await expect(panel.getByLabel("Choose the Month")).toBeVisible()
-    await expect(panel.getByLabel("Choose the Year")).toBeVisible()
-    await page.keyboard.press("Escape")
-
-    const input = page.locator('[data-doc-preview-name="date-picker-input"]')
-    const inputControl = input.locator("[data-doc-date-input]")
-    await expect(inputControl).toHaveValue("June 01, 2025")
-    await inputControl.press("ArrowDown")
-    panel = page.locator("[data-doc-date-popover]:visible")
-    await expect(panel).toBeVisible()
-    await panel.locator('[data-date="2025-06-15"]').click()
-    await expect(inputControl).toHaveValue("June 15, 2025")
-
-    const natural = page.locator('[data-doc-preview-name="date-picker-natural-language"]')
-    const naturalInput = natural.locator("[data-doc-date-input]")
-    await expect(naturalInput).toHaveValue("In 2 days")
-    await expect(natural.locator("[data-doc-date-natural-output]")).toHaveText("August 27, 2026")
-    await naturalInput.fill("Tomorrow")
-    await expect(natural.locator("[data-doc-date-natural-output]")).toHaveText("August 26, 2026")
-
-    const time = page.locator('[data-doc-preview-name="date-picker-time"]')
-    await expect(time.locator('input[type="time"]')).toHaveValue("10:30:00")
-    await expect(time.locator(".doc-date-time-picker")).toHaveCSS("width", "272px")
-
-    const rtl = page.locator('[data-doc-preview-name="date-picker-rtl"]')
-    const rtlRoot = rtl.locator("[data-doc-date-picker]")
-    const rtlTrigger = rtl.locator("[data-doc-date-trigger]")
-    await expect(rtlRoot).toHaveAttribute("dir", "rtl")
-    await expect(rtlTrigger).toContainText("اختر تاريخًا")
-    await rtl.getByLabel("Preview language").selectOption("he")
-    await expect(rtlTrigger).toContainText("בחר תאריך")
-    await rtl.getByLabel("Preview language").selectOption("en")
-    await expect(rtlRoot).toHaveAttribute("dir", "ltr")
-    await expect(rtlTrigger).toContainText("Pick a date")
-  })
-
-  test("dialog docs match React sizes, focus, close controls, scrolling, footer, and RTL", async ({ page }) => {
-    await page.goto("/docs/components/base/dialog")
+  test("dialog docs match Fict sizes, focus, close controls, scrolling, footer, and RTL", async ({ page }) => {
+    await page.goto("/docs/components/fict/dialog")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -1563,9 +1483,9 @@ test.describe("shadcn v4 site", () => {
     await expect(rtlTrigger).toContainText("Open Dialog")
   })
 
-  test("drawer docs match React content, sides, drag, responsive dialog, and RTL behavior", async ({ page }) => {
+  test("drawer docs match Fict content, sides, drag, responsive dialog, and RTL behavior", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 })
-    await page.goto("/docs/components/base/drawer")
+    await page.goto("/docs/components/fict/drawer")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -1668,8 +1588,8 @@ test.describe("shadcn v4 site", () => {
     await drawer.getByRole("button", { name: "Cancel" }).click()
   })
 
-  test("dropdown menu docs match React geometry, state, submenus, keyboard, avatar, complex, and RTL behavior", async ({ page }) => {
-    await page.goto("/docs/components/base/dropdown-menu")
+  test("dropdown menu docs match Fict geometry, state, submenus, keyboard, avatar, complex, and RTL behavior", async ({ page }) => {
+    await page.goto("/docs/components/fict/dropdown-menu")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -1763,8 +1683,8 @@ test.describe("shadcn v4 site", () => {
     await page.keyboard.press("Escape")
   })
 
-  test("empty docs match React layouts, media, actions, search, backgrounds, and RTL content", async ({ page }) => {
-    await page.goto("/docs/components/base/empty")
+  test("empty docs match Fict layouts, media, actions, search, backgrounds, and RTL content", async ({ page }) => {
+    await page.goto("/docs/components/fict/empty")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -1826,9 +1746,9 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.getByRole("button", { name: "Create Project" })).toBeVisible()
   })
 
-  test("field docs match all React layouts, control states, responsive behavior, and RTL content", async ({ page }) => {
+  test("field docs match all Fict layouts, control states, responsive behavior, and RTL content", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/field")
+    await page.goto("/docs/components/fict/field")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -1931,23 +1851,23 @@ test.describe("shadcn v4 site", () => {
     expect(responsiveInputBox?.width).toBe(responsiveFieldBox?.width)
   })
 
-  test("hover card docs match React delays, geometry, sides, pointer transit, focus, and RTL", async ({ page }) => {
+  test("hover card docs match Fict delays, geometry, sides, pointer transit, focus, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/hover-card")
+    await page.goto("/docs/components/fict/hover-card")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
-    await expect(previews).toHaveCount(4)
-    for (const index of [0, 1]) await expect(previews.nth(index).locator(".doc-component-preview-stage")).toHaveCSS("height", "320px")
-    await expect(previews.nth(2).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
-    await expect(previews.nth(3).locator(".doc-component-preview-stage")).toHaveCSS("height", "384px")
+    await expect(previews).toHaveCount(3)
+    await expect(previews.nth(0).locator(".doc-component-preview-stage")).toHaveCSS("height", "320px")
+    await expect(previews.nth(1).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
+    await expect(previews.nth(2).locator(".doc-component-preview-stage")).toHaveCSS("height", "384px")
     expect((await previews.allInnerTexts()).join(" ")).not.toContain("Registry preview surface")
 
     const demo = page.locator('[data-doc-preview-name="hover-card-demo"]').first()
     const trigger = demo.getByRole("button", { name: "Hover Here" })
     await trigger.hover()
     let popup = page.locator("[data-doc-hover-content]:visible")
-    await expect(popup).toContainText("@nextjs")
+    await expect(popup).toContainText("@fictjs")
     await expect(popup).toHaveCSS("width", "256px")
     await expect(popup).toHaveCSS("height", "104px")
     await page.waitForTimeout(120)
@@ -2014,9 +1934,9 @@ test.describe("shadcn v4 site", () => {
     expect((popupBox?.x ?? 0) + (popupBox?.width ?? 0)).toBeCloseTo((logicalTriggerBox?.x ?? 0) - 4, 3)
   })
 
-  test("input docs match all React layouts, states, groups, form controls, focus, and RTL", async ({ page }) => {
+  test("input docs match all Fict layouts, states, groups, form controls, focus, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/input")
+    await page.goto("/docs/components/fict/input")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -2102,7 +2022,7 @@ test.describe("shadcn v4 site", () => {
     await expect(form.locator("[data-select-value]")).toHaveText("Canada")
     await form.getByLabel("Name").fill("Evil Rabbit")
     await form.getByRole("button", { name: "Submit" }).click()
-    await expect(page).toHaveURL(/\/docs\/components\/base\/input$/)
+    await expect(page).toHaveURL(/\/docs\/components\/fict\/input$/)
 
     const rtl = page.locator('[data-doc-preview-name="input-rtl"]')
     const rtlField = rtl.locator(".doc-field")
@@ -2122,9 +2042,9 @@ test.describe("shadcn v4 site", () => {
     await expect(invalidInput).toHaveAttribute("aria-invalid", "true")
   })
 
-  test("input group docs match React alignment, content, controls, focus, and RTL", async ({ page }) => {
+  test("input group docs match Fict alignment, content, controls, focus, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/input-group")
+    await page.goto("/docs/components/fict/input-group")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -2223,9 +2143,9 @@ test.describe("shadcn v4 site", () => {
     await expect(spinner.locator("input:disabled")).toHaveCount(4)
   })
 
-  test("input otp docs match React slots, patterns, states, form, keyboard input, and RTL", async ({ page }) => {
+  test("input otp docs match Fict slots, patterns, states, form, keyboard input, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/input-otp")
+    await page.goto("/docs/components/fict/input-otp")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -2296,7 +2216,7 @@ test.describe("shadcn v4 site", () => {
     await expect(form.locator('[data-slot="input-otp-slot"]').first()).toHaveCSS("height", "48px")
     await form.getByLabel("Verification code").fill("438921")
     await form.getByRole("button", { name: "Verify" }).click()
-    await expect(page).toHaveURL(/\/docs\/components\/base\/input-otp$/)
+    await expect(page).toHaveURL(/\/docs\/components\/fict\/input-otp$/)
 
     const rtl = page.locator('[data-doc-preview-name="input-otp-rtl"]')
     await expect(rtl.locator(".doc-input-otp-rtl-field")).toHaveCSS("width", "320px")
@@ -2316,9 +2236,9 @@ test.describe("shadcn v4 site", () => {
     await expect(invalid.locator('[data-slot="input-otp-group"]').first()).toHaveCSS("box-shadow", /3px/)
   })
 
-  test("item docs match React layouts, variants, media, links, dropdown, and RTL", async ({ page }) => {
+  test("item docs match Fict layouts, variants, media, links, dropdown, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/item")
+    await page.goto("/docs/components/fict/item")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -2439,9 +2359,9 @@ test.describe("shadcn v4 site", () => {
     await expect(demoItems.nth(0)).toHaveCSS("border-top-width", "1px")
   })
 
-  test("item docs preserve React wrapping and media at mobile widths", async ({ page }) => {
+  test("item docs preserve Fict wrapping and media at mobile widths", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
-    await page.goto("/docs/components/base/item")
+    await page.goto("/docs/components/fict/item")
     await waitForClientReady(page)
 
     const demo = page.locator('[data-doc-preview-name="item-demo"]')
@@ -2474,9 +2394,9 @@ test.describe("shadcn v4 site", () => {
     }
   })
 
-  test("label docs match React geometry, association, checkbox interaction, field reuse, and RTL", async ({ page }) => {
+  test("label docs match Fict geometry, association, checkbox interaction, field reuse, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/label")
+    await page.goto("/docs/components/fict/label")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -2532,9 +2452,9 @@ test.describe("shadcn v4 site", () => {
     await expect(checkbox).toHaveCSS("box-shadow", /3px/)
   })
 
-  test("menubar docs match React menus, state, submenus, keyboard navigation, icons, and RTL", async ({ page }) => {
+  test("menubar docs match Fict menus, state, submenus, keyboard navigation, icons, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/menubar")
+    await page.goto("/docs/components/fict/menubar")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -2632,9 +2552,9 @@ test.describe("shadcn v4 site", () => {
     await expect(demo.locator('[data-slot="menubar-content"]:visible')).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
-  test("native select docs match React sizing, options, groups, states, focus, and RTL", async ({ page }) => {
+  test("native select docs match Fict sizing, options, groups, states, focus, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/native-select")
+    await page.goto("/docs/components/fict/native-select")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -2702,9 +2622,9 @@ test.describe("shadcn v4 site", () => {
     await expect(invalid).toHaveCSS("box-shadow", /3px/)
   })
 
-  test("navigation menu docs match React geometry, links, hover, keyboard, and RTL", async ({ page }) => {
+  test("navigation menu docs match Fict geometry, links, hover, keyboard, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/navigation-menu")
+    await page.goto("/docs/components/fict/navigation-menu")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -2773,9 +2693,9 @@ test.describe("shadcn v4 site", () => {
     await expect(started).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
-  test("pagination docs match React layouts, links, selector, focus, and RTL", async ({ page }) => {
+  test("pagination docs match Fict layouts, links, selector, focus, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/pagination")
+    await page.goto("/docs/components/fict/pagination")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -2833,9 +2753,9 @@ test.describe("shadcn v4 site", () => {
     await expect(demo.locator('[aria-current="page"]')).not.toHaveCSS("border-color", "rgba(0, 0, 0, 0)")
   })
 
-  test("popover docs match React content, alignment, form focus, dismissal, and RTL", async ({ page }) => {
+  test("popover docs match Fict content, alignment, form focus, dismissal, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/popover")
+    await page.goto("/docs/components/fict/popover")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -2915,9 +2835,9 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.getByRole("dialog")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
-  test("progress docs match React values, labels, controlled slider, animation, and RTL", async ({ page }) => {
+  test("progress docs match Fict values, labels, controlled slider, animation, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/progress")
+    await page.goto("/docs/components/fict/progress")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -2969,9 +2889,9 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator(".doc-progress-indicator")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
-  test("radio group docs match React selection, cards, states, keyboard, and RTL", async ({ page }) => {
+  test("radio group docs match Fict selection, cards, states, keyboard, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/radio-group")
+    await page.goto("/docs/components/fict/radio-group")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -3038,9 +2958,9 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.getByRole("radio", { name: /^Comfortable/ })).toBeChecked()
   })
 
-  test("resizable docs match React layouts, handles, pointer, keyboard, and RTL", async ({ page }) => {
+  test("resizable docs match Fict layouts, handles, pointer, keyboard, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/resizable")
+    await page.goto("/docs/components/fict/resizable")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -3104,9 +3024,9 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator("strong")).toHaveText(["One", "Two", "Three"])
   })
 
-  test("scroll area docs match React dimensions, content, scrolling, bars, and RTL", async ({ page }) => {
+  test("scroll area docs match Fict dimensions, content, scrolling, bars, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/scroll-area")
+    await page.goto("/docs/components/fict/scroll-area")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -3156,9 +3076,9 @@ test.describe("shadcn v4 site", () => {
     await expect(demoArea).not.toHaveCSS("border-color", "rgba(0, 0, 0, 0)")
   })
 
-  test("select docs match React options, groups, scrolling, states, keyboard, and RTL", async ({ page }) => {
+  test("select docs match Fict options, groups, scrolling, states, keyboard, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/select")
+    await page.goto("/docs/components/fict/select")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -3233,9 +3153,9 @@ test.describe("shadcn v4 site", () => {
     await expect(demoTrigger).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
-  test("separator docs match React horizontal, vertical, menu, list, and RTL layouts", async ({ page }) => {
+  test("separator docs match Fict horizontal, vertical, menu, list, and RTL layouts", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/separator")
+    await page.goto("/docs/components/fict/separator")
     await waitForClientReady(page)
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
     await expect(previews).toHaveCount(5)
@@ -3275,9 +3195,9 @@ test.describe("shadcn v4 site", () => {
     await expect(rtlDemo).toContainText("The Foundation for your Design System")
   })
 
-  test("sheet docs match React sides, forms, focus, dismissal, close controls, and RTL", async ({ page }) => {
+  test("sheet docs match Fict sides, forms, focus, dismissal, close controls, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/sheet")
+    await page.goto("/docs/components/fict/sheet")
     await waitForClientReady(page)
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
     await expect(previews).toHaveCount(4)
@@ -3340,9 +3260,9 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByRole("dialog", { name: "Edit profile" })).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
-  test("sidebar docs match React layout, navigation, collapse, shortcut, and dark theme", async ({ page }) => {
+  test("sidebar docs match Fict layout, navigation, collapse, shortcut, and dark theme", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/radix/sidebar")
+    await page.goto("/docs/components/fict/sidebar")
     await waitForClientReady(page)
 
     const preview = page.locator('[data-doc-preview-name="sidebar-demo"]')
@@ -3381,9 +3301,9 @@ test.describe("shadcn v4 site", () => {
     await expect(panel).toHaveCSS("width", "220px")
   })
 
-  test("skeleton docs match React profile, card, text, form, table, animation, and RTL", async ({ page }) => {
+  test("skeleton docs match Fict profile, card, text, form, table, animation, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/radix/skeleton")
+    await page.goto("/docs/components/fict/skeleton")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -3431,9 +3351,9 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator(".doc-skeleton").first()).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
-  test("slider docs match React values, ranges, vertical controls, disabled state, and RTL", async ({ page }) => {
+  test("slider docs match Fict values, ranges, vertical controls, disabled state, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/radix/slider")
+    await page.goto("/docs/components/fict/slider")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -3504,9 +3424,9 @@ test.describe("shadcn v4 site", () => {
     await expect(rtlThumb).toHaveCSS("background-color", "rgb(255, 255, 255)")
   })
 
-  test("sonner docs match React toast content, types, actions, promise, positions, and theme", async ({ page }) => {
+  test("sonner docs match Fict toast content, types, actions, promise, positions, and theme", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/radix/sonner")
+    await page.goto("/docs/components/fict/sonner")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -3570,9 +3490,9 @@ test.describe("shadcn v4 site", () => {
     await expect(topLeft.locator("[data-sonner-toast]")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
-  test("spinner docs match React item, custom, sizes, buttons, badges, inputs, empty, and RTL", async ({ page }) => {
+  test("spinner docs match Fict item, custom, sizes, buttons, badges, inputs, empty, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/radix/spinner")
+    await page.goto("/docs/components/fict/spinner")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -3635,9 +3555,9 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator(".doc-spinner-item")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
-  test("switch docs match React fields, cards, disabled, invalid, sizes, keyboard, and RTL", async ({ page }) => {
+  test("switch docs match Fict fields, cards, disabled, invalid, sizes, keyboard, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/radix/switch")
+    await page.goto("/docs/components/fict/switch")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -3707,9 +3627,9 @@ test.describe("shadcn v4 site", () => {
     await expect(rtlSwitch).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
-  test("table docs match React invoices, footer, action menus, row geometry, and RTL", async ({ page }) => {
+  test("table docs match Fict invoices, footer, action menus, row geometry, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/radix/table")
+    await page.goto("/docs/components/fict/table")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -3763,9 +3683,9 @@ test.describe("shadcn v4 site", () => {
     await expect(rtlTable.locator("tfoot")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
-  test("tabs docs match React cards, line, vertical, disabled, icons, keyboard, and RTL", async ({ page }) => {
+  test("tabs docs match Fict cards, line, vertical, disabled, icons, keyboard, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/radix/tabs")
+    await page.goto("/docs/components/fict/tabs")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -3834,9 +3754,9 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.locator(".doc-preview-tabs-card").first()).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
-  test("textarea docs match React base, field, disabled, invalid, button, focus, and RTL", async ({ page }) => {
+  test("textarea docs match Fict base, field, disabled, invalid, button, focus, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/radix/textarea")
+    await page.goto("/docs/components/fict/textarea")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -3891,9 +3811,9 @@ test.describe("shadcn v4 site", () => {
     await expectFocusRing(rtlTextarea)
   })
 
-  test("toggle docs match React variants, text, sizes, disabled, pressed state, focus, and RTL", async ({ page }) => {
+  test("toggle docs match Fict variants, text, sizes, disabled, pressed state, focus, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/radix/toggle")
+    await page.goto("/docs/components/fict/toggle")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -3951,9 +3871,9 @@ test.describe("shadcn v4 site", () => {
     await expect(rtlToggle).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
-  test("toggle group docs match React single, multiple, sizes, spacing, vertical, font, keyboard, and RTL", async ({ page }) => {
+  test("toggle group docs match Fict single, multiple, sizes, spacing, vertical, font, keyboard, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/radix/toggle-group")
+    await page.goto("/docs/components/fict/toggle-group")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -4034,9 +3954,9 @@ test.describe("shadcn v4 site", () => {
     await expect(rtl.getByRole("button", { name: "Grid" })).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
   })
 
-  test("tooltip docs match React sides, keyboard, disabled triggers, dismissal, and RTL", async ({ page }) => {
+  test("tooltip docs match Fict sides, keyboard, disabled triggers, dismissal, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/radix/tooltip")
+    await page.goto("/docs/components/fict/tooltip")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -4108,9 +4028,9 @@ test.describe("shadcn v4 site", () => {
     await expect(tooltip).toHaveCSS("background-color", "oklch(0.922 0 0)")
   })
 
-  test("kbd docs match React keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
+  test("kbd docs match Fict keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
-    await page.goto("/docs/components/base/kbd")
+    await page.goto("/docs/components/fict/kbd")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -4209,28 +4129,9 @@ test.describe("shadcn v4 site", () => {
     )
   })
 
-  test("direction docs reuse the complete RTL card preview instead of a placeholder", async ({ page }) => {
-    await page.goto("/docs/components/base/direction")
-    await waitForClientReady(page)
 
-    const preview = page.locator('.doc-component-card[data-doc-preview-name="card-rtl"]')
-    const card = preview.locator('[data-slot="card"]')
-    await expect(preview).toHaveCount(1)
-    await expect(preview.locator(".doc-component-preview-stage")).toHaveCSS("height", "502px")
-    await expect(card).toHaveCSS("width", "384px")
-    await expect(card).toHaveCSS("height", "357px")
-    await expect(card).toHaveAttribute("dir", "rtl")
-    await expect(preview.getByRole("button", { name: "تسجيل الدخول", exact: true })).toBeVisible()
-    await preview.getByLabel("Preview language").selectOption("he")
-    await expect(preview.getByRole("heading", { name: "התחבר לחשבון שלך" })).toBeVisible()
-    await preview.getByLabel("Preview language").selectOption("en")
-    await expect(card).toHaveAttribute("dir", "ltr")
-    await expect(preview.getByRole("heading", { name: "Login to your account" })).toBeVisible()
-    await expect(preview).not.toContainText("Registry preview surface")
-  })
-
-  test("collapsible docs match React geometry, state, keyboard, settings, file tabs, and RTL", async ({ page }) => {
-    await page.goto("/docs/components/base/collapsible")
+  test("collapsible docs match Fict geometry, state, keyboard, settings, file tabs, and RTL", async ({ page }) => {
+    await page.goto("/docs/components/fict/collapsible")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -4295,8 +4196,8 @@ test.describe("shadcn v4 site", () => {
     await expect(rtlRoot).toContainText("Shipping address")
   })
 
-  test("checkbox docs match React states, groups, table selection, keyboard, and RTL", async ({ page }) => {
-    await page.goto("/docs/components/base/checkbox")
+  test("checkbox docs match Fict states, groups, table selection, keyboard, and RTL", async ({ page }) => {
+    await page.goto("/docs/components/fict/checkbox")
     await waitForClientReady(page)
 
     const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
@@ -4368,7 +4269,7 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".dashboard-table-footer")).toContainText("0 of 68 row(s) selected.")
   })
 
-  test("tasks example mirrors the shadcn data table", async ({ page }) => {
+  test("tasks example renders the Fict data table", async ({ page }) => {
     await page.goto("/examples/tasks")
 
     await expect(page.locator(".example-live-stage .tasks-example")).toBeVisible()
@@ -4504,7 +4405,7 @@ test.describe("shadcn v4 site", () => {
     }
   })
 
-  test("dashboard compact layout uses the React responsive controls", async ({ page }) => {
+  test("dashboard compact layout uses the Fict responsive controls", async ({ page }) => {
     await page.setViewportSize({ width: 1000, height: 900 })
     await page.goto("/examples/dashboard")
 
@@ -4527,7 +4428,7 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator('.dashboard-outline-placeholder[aria-label="key personnel"]')).toBeVisible()
   })
 
-  test("dashboard table selection and pagination match the React example", async ({ page }) => {
+  test("dashboard table selection and pagination match the Fict example", async ({ page }) => {
     await page.goto("/examples/dashboard")
     await waitForClientReady(page)
 
@@ -4606,7 +4507,7 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator('th[data-dashboard-column="reviewer"]')).toBeVisible()
   })
 
-  test("dashboard document, user, and row action menus match React", async ({ page }) => {
+  test("dashboard document, user, and row action menus match Fict", async ({ page }) => {
     await page.goto("/examples/dashboard")
     await waitForClientReady(page)
 
@@ -4642,7 +4543,7 @@ test.describe("shadcn v4 site", () => {
     await expect(rowMenu).toBeHidden()
   })
 
-  test("dashboard reviewer cells expose the React select control", async ({ page }) => {
+  test("dashboard reviewer cells expose the Fict select control", async ({ page }) => {
     await page.goto("/examples/dashboard")
 
     const reviewer = page.getByLabel("Reviewer for Innovation and Advantages")
@@ -4794,7 +4695,7 @@ test.describe("shadcn v4 site", () => {
     await expect(firstRow.locator(".tasks-meta-cell").last()).toContainText("Medium")
   })
 
-  test("tasks title and faceted filters match the React table", async ({ page }) => {
+  test("tasks title and faceted filters match the Fict table", async ({ page }) => {
     await page.goto("/examples/tasks")
     await waitForClientReady(page)
 
@@ -4832,7 +4733,7 @@ test.describe("shadcn v4 site", () => {
     await expect(reset).toBeHidden()
   })
 
-  test("tasks selection and pagination match the React table", async ({ page }) => {
+  test("tasks selection and pagination match the Fict table", async ({ page }) => {
     await page.goto("/examples/tasks")
     await waitForClientReady(page)
 
@@ -4946,7 +4847,7 @@ test.describe("shadcn v4 site", () => {
     await expect(labels.getByRole("menuitemradio", { name: "Bug" })).toHaveAttribute("aria-checked", "true")
   })
 
-  test("tasks user menu matches the React account controls", async ({ page }) => {
+  test("tasks user menu matches the Fict account controls", async ({ page }) => {
     await page.goto("/examples/tasks")
     await waitForClientReady(page)
 
@@ -4968,7 +4869,7 @@ test.describe("shadcn v4 site", () => {
     await expect(trigger).toHaveAttribute("aria-expanded", "false")
   })
 
-  test("tasks responsive controls match the React breakpoints", async ({ page }) => {
+  test("tasks responsive controls match the Fict breakpoints", async ({ page }) => {
     await page.setViewportSize({ width: 767, height: 1100 })
     await page.goto("/examples/tasks")
     await expect(page.locator(".example-mobile-gallery")).toBeVisible()
@@ -5036,7 +4937,7 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".playground-edit-stack")).toContainText("Instructions")
   })
 
-  test("playground example matches the React responsive layout", async ({ page }) => {
+  test("playground example matches the Fict responsive layout", async ({ page }) => {
     await page.setViewportSize({ width: 767, height: 1100 })
     await page.goto("/examples/playground")
 
@@ -5119,7 +5020,7 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByRole("slider", { name: "Temperature" })).toHaveAttribute("aria-valuenow", "0.7")
   })
 
-  test("playground save dialog matches the React preset form", async ({ page }) => {
+  test("playground save dialog matches the Fict preset form", async ({ page }) => {
     await page.goto("/examples/playground")
     await waitForClientReady(page)
 
@@ -5141,7 +5042,7 @@ test.describe("shadcn v4 site", () => {
     await expect(dialog).toBeHidden()
   })
 
-  test("playground code dialog matches the React integration example", async ({ page }) => {
+  test("playground code dialog matches the Fict integration example", async ({ page }) => {
     await page.goto("/examples/playground")
     await waitForClientReady(page)
 
@@ -5159,7 +5060,7 @@ test.describe("shadcn v4 site", () => {
     await expect(trigger).toBeFocused()
   })
 
-  test("playground share popover exposes and copies the React preset link", async ({ page }) => {
+  test("playground share popover exposes and copies the Fict preset link", async ({ page }) => {
     await page.goto("/examples/playground")
     await waitForClientReady(page)
 
@@ -5224,7 +5125,7 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator(".theme-preview-stage")).toHaveAttribute("data-theme-name", "blue")
   })
 
-  test("theme copy controls open the upstream code dialog", async ({ page }) => {
+  test("theme copy controls open the Fict code dialog", async ({ page }) => {
     await page.goto("/themes")
     await waitForClientReady(page)
 
@@ -5337,7 +5238,7 @@ test.describe("shadcn v4 site", () => {
     expect(visibleWidths.every((width) => width === 0)).toBe(true)
   })
 
-  test("home price slider thumbs match React in light and dark themes", async ({ page }) => {
+  test("home price slider thumbs match Fict in light and dark themes", async ({ page }) => {
     await page.goto("/")
     await waitForClientReady(page)
 
@@ -5360,7 +5261,7 @@ test.describe("shadcn v4 site", () => {
     }
   })
 
-  test("home form controls use the React focus ring", async ({ page }) => {
+  test("home form controls use the Fict focus ring", async ({ page }) => {
     await page.goto("/")
     await waitForClientReady(page)
 
@@ -5473,7 +5374,7 @@ test.describe("shadcn v4 site", () => {
     await expect(page.locator("[data-select-trigger]").nth(1)).toContainText("hsl")
   })
 
-  test("authentication submission mirrors the React loading state", async ({ page }) => {
+  test("authentication submission mirrors the Fict loading state", async ({ page }) => {
     await page.goto("/examples/authentication")
     await waitForClientReady(page)
 
@@ -5498,7 +5399,7 @@ test.describe("shadcn v4 site", () => {
     await expect(email).toHaveValue("person@example.com")
   })
 
-  test("authentication example matches the React responsive layout", async ({ page }) => {
+  test("authentication example matches the Fict responsive layout", async ({ page }) => {
     await page.setViewportSize({ width: 767, height: 1200 })
     await page.goto("/examples/authentication")
 
@@ -5548,7 +5449,7 @@ test.describe("shadcn v4 site", () => {
     await expect(page.getByRole("button", { name: "Sign In with Email" })).toBeVisible()
   })
 
-  test("rtl example matches the React component gallery breakpoints", async ({ page }) => {
+  test("rtl example matches the Fict component gallery breakpoints", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 1200 })
     await page.goto("/examples/rtl")
     await waitForClientReady(page)
@@ -5666,7 +5567,7 @@ test.describe("shadcn v4 site", () => {
     await expect(voiceInput).toHaveAttribute("placeholder", "הקלט ושלח אודיו...")
   })
 
-  test("rtl buttons match the React primitive details", async ({ page }) => {
+  test("rtl buttons match the Fict primitive details", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 1200 })
     await page.goto("/examples/rtl")
     await waitForClientReady(page)
@@ -5701,7 +5602,7 @@ test.describe("shadcn v4 site", () => {
     ))).toBeGreaterThan(0)
   })
 
-  test("rtl verified item matches the React presentation", async ({ page }) => {
+  test("rtl verified item matches the Fict presentation", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 1200 })
     await page.goto("/examples/rtl")
     await waitForClientReady(page)
@@ -5787,7 +5688,7 @@ test.describe("shadcn v4 site", () => {
     expect(promptAddBox!.x).toBeGreaterThan(promptUsageBox!.x + promptUsageBox!.width)
   })
 
-  test("rtl payment form matches the localized React controls", async ({ page }) => {
+  test("rtl payment form matches the localized Fict controls", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 1200 })
     await page.goto("/examples/rtl")
     await waitForClientReady(page)
@@ -5817,7 +5718,7 @@ test.describe("shadcn v4 site", () => {
     await expect(payment.getByRole("button", { name: "إرسال" })).toHaveAttribute("type", "submit")
   })
 
-  test("rtl empty states match the React component dimensions", async ({ page }) => {
+  test("rtl empty states match the Fict component dimensions", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 1200 })
     await page.goto("/examples/rtl")
     await waitForClientReady(page)
@@ -5839,7 +5740,7 @@ test.describe("shadcn v4 site", () => {
     expect(avatarBoxes[1] - avatarBoxes[2]).toBe(24)
   })
 
-  test("rtl price slider matches React geometry and direction", async ({ page }) => {
+  test("rtl price slider matches Fict geometry and direction", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 1200 })
     await page.goto("/examples/rtl")
     await waitForClientReady(page)
@@ -5873,7 +5774,7 @@ test.describe("shadcn v4 site", () => {
     await expect(sliderField.locator('[data-slider-output="0"]')).toHaveText("٢٥٠")
   })
 
-  test("rtl appearance settings match React controls", async ({ page }) => {
+  test("rtl appearance settings match Fict controls", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 1200 })
     await page.goto("/examples/rtl")
     await waitForClientReady(page)
@@ -5917,7 +5818,7 @@ test.describe("shadcn v4 site", () => {
     await expect(tinting).toHaveAttribute("aria-checked", "false")
   })
 
-  test("rtl prompt matches the localized React controls", async ({ page }) => {
+  test("rtl prompt matches the localized Fict controls", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 1200 })
     await page.goto("/examples/rtl")
     await waitForClientReady(page)
@@ -5943,7 +5844,7 @@ test.describe("shadcn v4 site", () => {
     await expect(prompt.locator("[data-mention-chip]")).toContainText("لوحة المشروع")
   })
 
-  test("rtl terms field matches the React checkbox", async ({ page }) => {
+  test("rtl terms field matches the Fict checkbox", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 1200 })
     await page.goto("/examples/rtl")
     await waitForClientReady(page)
@@ -5957,7 +5858,7 @@ test.describe("shadcn v4 site", () => {
     await expect(checkbox).toHaveAttribute("aria-checked", "false")
   })
 
-  test("rtl referral field matches the React checkbox cards", async ({ page }) => {
+  test("rtl referral field matches the Fict checkbox cards", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 1200 })
     await page.goto("/examples/rtl")
     await waitForClientReady(page)
@@ -5993,9 +5894,8 @@ test.describe("shadcn v4 site", () => {
     await page.locator(".create-explorer-list").getByRole("button", { name: /Tasks/ }).click()
     await expect(page.locator(".create-preview-stage .tasks-example")).toBeVisible()
 
-    await page.getByRole("button", { name: "Base UI" }).click()
     await page.getByRole("button", { name: "Vite" }).click()
     await expect(page.locator(".create-command-code")).toContainText("--template vite")
-    await expect(page.locator(".create-command-code")).toContainText("--base base")
+    await expect(page.locator(".create-command-code")).toContainText("--base radix")
   })
 })
