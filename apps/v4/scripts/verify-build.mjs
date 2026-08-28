@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { existsSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -46,6 +46,21 @@ for (const [key, assetPath] of manifestEntries) {
     `Manifest entry ${key} points to empty output ${assetPath}`,
   )
 }
+
+const clientJavaScript = readdirSync(path.join(clientRoot, 'assets'))
+  .filter(fileName => fileName.endsWith('.js'))
+  .map(fileName => readFileSync(path.join(clientRoot, 'assets', fileName), 'utf8'))
+  .join('\n')
+assert.ok(
+  !clientJavaScript.includes('createHighlighter'),
+  'Shiki highlighter runtime must stay out of client assets',
+)
+
+const serverJavaScript = readFileSync(serverEntry, 'utf8')
+assert.ok(
+  serverJavaScript.includes('createHighlighter'),
+  'Server build does not contain the Shiki highlighter',
+)
 
 console.log(`Verified ${manifestEntries.length} generated Fict manifest entries`)
 

@@ -274,6 +274,8 @@ test.describe("Fict shadcn website", () => {
     await expect(page.locator(".doc-body")).toContainText("@fictjs/shadcn")
     await expect(page.locator(".doc-body")).not.toContainText("<TabsContent")
     await expect(page.locator(".doc-body")).not.toContainText("<Callout")
+    await expect(page.locator('pre[data-shiki="true"][data-language="bash"]').first()).toBeVisible()
+    await expect(page.locator('pre[data-language="bash"] .shiki-token').first()).toHaveAttribute("style", /--shiki-dark:/)
   })
 
   test("docs pages render structured tabs and registry cards", async ({ page }) => {
@@ -284,11 +286,15 @@ test.describe("Fict shadcn website", () => {
     await expect(page.locator(".doc-component-preview-stage").first()).toBeVisible()
     await page.getByRole("button", { name: "Manual" }).click()
     await expect(page.locator(".doc-tabs-panel")).toContainText("Copy the Fict shadcn component")
-    await expect(page.locator(".doc-component-card-source .doc-component-source-code").first()).toContainText("Avatar")
+    const source = page.locator(".doc-component-card-source .doc-component-source-code").first()
+    await expect(source).toContainText("Avatar")
+    await expect(source).toHaveAttribute("data-shiki", "true")
+    await expect(source).toHaveAttribute("data-language", "tsx")
   })
 
   test("component previews match the compact Fict code card interaction", async ({ page }) => {
     await page.goto("/docs/components/fict/button")
+    await waitForClientReady(page)
 
     const card = page.locator(".doc-component-card:not(.doc-component-card-source)").first()
     const stage = card.locator(".doc-component-preview-stage")
@@ -302,6 +308,9 @@ test.describe("Fict shadcn website", () => {
     await expect(stage).toHaveCSS("height", "288px")
     await expect(code).toHaveCSS("height", "104px")
     await expect(snippet).toContainText("import")
+    await expect(snippet).toHaveAttribute("data-shiki", "true")
+    await expect(snippet).toHaveAttribute("data-language", "tsx")
+    await expect(snippet.locator(".shiki-token").first()).toHaveAttribute("style", /--shiki-dark:/)
     await expect(fullCode).toBeHidden()
     await expect(copy).toBeHidden()
     await expect(code).toHaveAttribute("data-doc-preview-code-expanded", "false")
@@ -315,8 +324,15 @@ test.describe("Fict shadcn website", () => {
     await expect(snippet).toBeHidden()
     await expect(fullCode).toBeVisible()
     await expect(fullCode).toContainText("Button")
+    await expect(fullCode).toHaveAttribute("data-shiki", "true")
     await expect(copy).toBeVisible()
     expect(await card.evaluate((element) => element.getBoundingClientRect().height)).toBeGreaterThan(collapsedHeight)
+
+    const firstToken = fullCode.locator(".shiki-token").first()
+    const lightColor = await firstToken.evaluate((element) => getComputedStyle(element).color)
+    await page.getByRole("button", { name: "Toggle theme" }).click()
+    await expect(page.locator("html")).toHaveClass(/dark/)
+    await expect.poll(() => firstToken.evaluate((element) => getComputedStyle(element).color)).not.toBe(lightColor)
   })
 
   test("accordion docs match every Fict preview and interaction", async ({ page }) => {
