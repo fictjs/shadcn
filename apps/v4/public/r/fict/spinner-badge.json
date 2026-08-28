@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/spinner-badge.tsx",
-      "content": "import * as UI from '@/components/ui/spinner'\n\nexport default function SpinnerBadgeExample() {\n  return <UI.Spinner />\n}\n",
+      "content": "import { Spinner } from '@/components/ui/spinner'\n\nexport default function SpinnerBadgeExample() {\n  return (\n    <div class=\"flex items-center gap-2\"><Spinner /><span>Badge</span></div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

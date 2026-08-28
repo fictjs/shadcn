@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/spinner-empty.tsx",
-      "content": "import * as UI from '@/components/ui/spinner'\n\nexport default function SpinnerEmptyExample() {\n  return <UI.Spinner />\n}\n",
+      "content": "import { Spinner } from '@/components/ui/spinner'\n\nexport default function SpinnerEmptyExample() {\n  return (\n    <div class=\"flex items-center gap-2\"><Spinner /><span>Empty</span></div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
