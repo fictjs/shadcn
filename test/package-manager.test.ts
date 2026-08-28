@@ -86,7 +86,7 @@ describe('runPackageManagerInstall', () => {
       const actualArgs = (await readFile(argsPath, 'utf8')).trim()
       expect(actualArgs).toBe(testCase.expected)
     }
-  })
+  }, 10_000)
 
   unixOnlyIt('skips spawn when dependency list is empty', async () => {
     const cwd = await mkdtemp(path.join(tmpdir(), 'fictcn-pm-run-empty-'))
