@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/select-align-item.tsx",
-      "content": "import * as UI from '@/components/ui/select'\n\nexport default function SelectAlignItemExample() {\n  return <UI.Select />\n}\n",
+      "content": "import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\n\nexport default function SelectAlignItemExample() {\n  return (\n    <Select defaultValue=\"fict\"><SelectTrigger><SelectValue placeholder=\"Align Item\" /></SelectTrigger><SelectContent><SelectItem value=\"fict\">Fict</SelectItem><SelectItem value=\"typescript\">TypeScript</SelectItem></SelectContent></Select>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

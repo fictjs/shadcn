@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/select-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/select'\n\nexport default function SelectRtlExample() {\n  return <UI.Select />\n}\n",
+      "content": "import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\n\nexport default function SelectRtlExample() {\n  return (\n    <Select dir=\"rtl\" defaultValue=\"fict\"><SelectTrigger><SelectValue placeholder=\"Rtl\" /></SelectTrigger><SelectContent><SelectItem value=\"fict\">Fict</SelectItem><SelectItem value=\"typescript\">TypeScript</SelectItem></SelectContent></Select>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

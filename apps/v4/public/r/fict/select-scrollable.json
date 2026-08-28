@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/select-scrollable.tsx",
-      "content": "import * as UI from '@/components/ui/select'\n\nexport default function SelectScrollableExample() {\n  return <UI.Select />\n}\n",
+      "content": "import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\n\nexport default function SelectScrollableExample() {\n  return (\n    <Select defaultValue=\"fict\"><SelectTrigger><SelectValue placeholder=\"Scrollable\" /></SelectTrigger><SelectContent><SelectItem value=\"fict\">Fict</SelectItem><SelectItem value=\"typescript\">TypeScript</SelectItem></SelectContent></Select>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
