@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/radio-group-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/radio-group'\n\nexport default function RadioGroupRtlExample() {\n  return <UI.RadioGroup />\n}\n",
+      "content": "import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'\n\nexport default function RadioGroupRtlExample() {\n  return (\n    <RadioGroup dir=\"rtl\" defaultValue=\"comfortable\"><label><RadioGroupItem value=\"default\" /> Default</label><label><RadioGroupItem value=\"comfortable\" /> Group Rtl</label></RadioGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
