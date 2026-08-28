@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/form-demo.tsx",
-      "content": "import * as UI from '@/components/ui/form'\n\nexport default function FormDemoExample() {\n  return <UI.Form />\n}\n",
+      "content": "import {\n  Form,\n  FormControl,\n  FormDescription,\n  FormField,\n  FormLabel,\n  FormMessage,\n} from '@/components/ui/form'\n\nexport default function FormDemoExample() {\n  return (\n    <Form>\n      <FormField name=\"username\">\n        <FormLabel>Username</FormLabel>\n        <FormControl><input name=\"username\" placeholder=\"fict-user\" /></FormControl>\n        <FormDescription>This is your public display name.</FormDescription>\n        <FormMessage />\n      </FormField>\n    </Form>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

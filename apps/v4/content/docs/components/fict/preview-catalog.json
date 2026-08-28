@@ -253,6 +253,9 @@
     "field-rtl",
     "field-responsive"
   ],
+  "form": [
+    "form-demo"
+  ],
   "hover-card": [
     "hover-card-demo",
     "hover-card-demo",
