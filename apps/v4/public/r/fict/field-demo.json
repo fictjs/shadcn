@@ -5,12 +5,12 @@
   "description": "Form label wrapper example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "label"
+    "field"
   ],
   "files": [
     {
       "path": "src/examples/field-demo.tsx",
-      "content": "import * as UI from '@/components/ui/label'\n\nexport default function FieldDemoExample() {\n  return <UI.Label />\n}\n",
+      "content": "import { Field, FieldControl, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'\n\nexport default function FieldDemoExample() {\n  return (\n    <Field><FieldLabel for=\"example\">Demo</FieldLabel><FieldControl><input id=\"example\" placeholder=\"Enter a value\" /></FieldControl><FieldDescription>Fict field composition.</FieldDescription></Field>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

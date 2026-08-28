@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/field-slider.tsx",
-      "content": "import * as UI from '@/components/ui/field'\n\nexport default function FieldSliderExample() {\n  return <UI.Field />\n}\n",
+      "content": "import { Field, FieldControl, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'\n\nexport default function FieldSliderExample() {\n  return (\n    <Field><FieldLabel for=\"example\">Slider</FieldLabel><FieldControl><input id=\"example\" placeholder=\"Enter a value\" /></FieldControl><FieldDescription>Fict field composition.</FieldDescription></Field>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
