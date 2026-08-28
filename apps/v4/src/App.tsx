@@ -8,6 +8,7 @@ import type {
   DocInlineNode,
   DocPage,
   DocSummary,
+  HighlightedCode,
   ResolvedRoute,
   ThemeEntry,
 } from "./types"
@@ -4099,9 +4100,12 @@ function renderDocBlock(block: DocContentBlock, key: string) {
       </h3>
     )
   ) : block.kind === "code" ? (
-    <pre class="doc-code" key={key}>
-      <code>{block.text}</code>
-    </pre>
+    <HighlightedCodeBlock
+      className="doc-code"
+      code={block.text}
+      highlightedCode={block.highlightedCode}
+      key={key}
+    />
   ) : block.kind === "list" ? (
     block.ordered ? (
       <ol key={key}>
@@ -4210,10 +4214,12 @@ function DocComponentBlock(props: { block: DocContentBlock }) {
       direction: block.direction || "ltr",
       filePath: block.filePath || "",
       code: block.code || "",
+      highlightedCode: block.highlightedCode,
       headingText: block.title || block.filePath || block.text,
       name: block.name || block.text,
       family: getDocPreviewFamily(block.name || block.text),
       previewCode: block.code ? truncateDocCode(block.code, 2) : "",
+      previewHighlightedCode: block.highlightedCode ? truncateHighlightedCode(block.highlightedCode, 2) : undefined,
     }
   })
 
@@ -4229,9 +4235,11 @@ function DocComponentBlock(props: { block: DocContentBlock }) {
           </div>
           {data.previewCode ? (
             <div class="doc-component-code" data-doc-preview-code-expanded="false">
-              <pre class="doc-component-snippet">
-                <code>{data.previewCode}</code>
-              </pre>
+              <HighlightedCodeBlock
+                className="doc-component-snippet"
+                code={data.previewCode}
+                highlightedCode={data.previewHighlightedCode}
+              />
               <button
                 type="button"
                 class="doc-preview-code-toggle"
@@ -4243,9 +4251,13 @@ function DocComponentBlock(props: { block: DocContentBlock }) {
               <button type="button" class="doc-preview-code-copy" data-doc-preview-code-copy hidden>
                 Copy
               </button>
-              <pre class="doc-component-full-code" data-doc-preview-full-code hidden>
-                <code>{data.code}</code>
-              </pre>
+              <HighlightedCodeBlock
+                className="doc-component-full-code"
+                code={data.code}
+                highlightedCode={data.highlightedCode}
+                fullPreview
+                hidden
+              />
             </div>
           ) : null}
         </>
@@ -4259,15 +4271,56 @@ function DocComponentBlock(props: { block: DocContentBlock }) {
             {data.filePath ? <p class="slug">{data.filePath}</p> : null}
           </div>
           {data.code ? (
-            <pre class="doc-code doc-component-source-code">
-              <code>{data.code}</code>
-            </pre>
+            <HighlightedCodeBlock
+              className="doc-code doc-component-source-code"
+              code={data.code}
+              highlightedCode={data.highlightedCode}
+            />
           ) : (
             <p>Source is not available for this registry entry yet.</p>
           )}
         </>
       )}
     </section>
+  )
+}
+
+function HighlightedCodeBlock(props: {
+  className: string
+  code: string
+  highlightedCode?: HighlightedCode
+  fullPreview?: boolean
+  hidden?: boolean
+  key?: string
+}) {
+  const highlightedCode = untrack(() => props.highlightedCode)
+  const className = highlightedCode
+    ? `${props.className} shiki shiki-themes github-light-default github-dark`
+    : props.className
+
+  return (
+    <pre
+      class={className}
+      data-language={highlightedCode?.language}
+      data-shiki={highlightedCode ? "true" : undefined}
+      data-doc-preview-full-code={props.fullPreview ? "" : undefined}
+      hidden={props.hidden}
+    >
+      <code>
+        {highlightedCode
+          ? highlightedCode.lines.map((line, lineIndex) => (
+              <span class="shiki-line" data-line key={`line-${lineIndex}`}>
+                {line.tokens.map((token, tokenIndex) => (
+                  <span class="shiki-token" style={token.style} key={`token-${lineIndex}-${tokenIndex}`}>
+                    {token.content}
+                  </span>
+                ))}
+                {lineIndex < highlightedCode.lines.length - 1 ? "\n" : null}
+              </span>
+            ))
+          : props.code}
+      </code>
+    </pre>
   )
 }
 
@@ -7720,6 +7773,18 @@ function getDocPreviewFamily(name: string): string {
 function truncateDocCode(value: string, lineLimit: number): string {
   const lines = value.split("\n")
   return lines.length <= lineLimit ? value : `${lines.slice(0, lineLimit).join("\n")}\n...`
+}
+
+function truncateHighlightedCode(value: HighlightedCode, lineLimit: number): HighlightedCode {
+  if (value.lines.length <= lineLimit) return value
+
+  return {
+    ...value,
+    lines: [
+      ...value.lines.slice(0, lineLimit),
+      { tokens: [{ content: "...", style: "" }] },
+    ],
+  }
 }
 
 function ComponentsPage(props: { components: string[] }) {
