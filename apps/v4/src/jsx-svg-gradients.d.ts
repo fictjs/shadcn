@@ -3,7 +3,7 @@
  * gradient ones, even though its DOM layer already case-normalizes
  * `linearGradient` / `radialGradient` and its attribute types cover
  * `stopColor` / `stopOpacity`. Declare them here so the dashboard area chart can
- * render the same gradient fills the React example uses.
+ * render the same gradient fills across Fict examples.
  */
 
 import type { FictNode } from "@fictjs/runtime"

@@ -1,5 +1,5 @@
 /**
- * Example datasets mirrored from the React shadcn/ui v4 site.
+ * Example datasets used by the Fict shadcn website.
  *
  * dashboardTableRows matches app/(app)/examples/dashboard/data.json,
  * taskRows matches app/(app)/examples/tasks/data/tasks.json, and

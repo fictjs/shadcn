@@ -79,7 +79,7 @@ const chartTypeOrder = ["area", "bar", "line", "pie", "radar", "radial", "toolti
 const featuredBlockNames = ["dashboard-01", "sidebar-03", "sidebar-01", "login-03", "login-04"]
 
 function withSiteTitle(title: string): string {
-  return `${title} - shadcn/ui`
+  return `${title} - Fict shadcn`
 }
 
 let cachedCatalog: SiteCatalog | null = null
@@ -1385,7 +1385,7 @@ function parseDocBody(body: string): {
 
       const raw = stepLines.join(" ").trim()
       // Step titles render as headings but are deliberately kept out of the
-      // table of contents, matching the React docs.
+      // table of contents used by the Fict documentation layout.
       blocks.push({
         kind: "step",
         text: cleanInlineMarkdown(raw),

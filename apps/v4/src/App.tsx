@@ -194,18 +194,13 @@ interface CreateOption {
 const createBaseOptions: CreateOption[] = [
   {
     name: "radix",
-    title: "Radix UI",
-    description: "Optimized for fast development, easy maintenance, and accessibility.",
-  },
-  {
-    name: "base",
-    title: "Base UI",
-    description: "Components for building accessible web apps and design systems.",
+    title: "Fict Radix UI",
+    description: "Accessible Fict primitives from @fictjs/radix-ui.",
   },
 ]
 
 const createStyleOptions: CreateOption[] = [
-  { name: "vega", title: "Vega", description: "Classic shadcn/ui spacing and balance." },
+  { name: "vega", title: "Vega", description: "Classic Fict shadcn spacing and balance." },
   { name: "nova", title: "Nova", description: "Compact spacing for denser workspaces." },
   { name: "maia", title: "Maia", description: "Soft corners and generous breathing room." },
   { name: "lyra", title: "Lyra", description: "Sharper framing paired with mono-forward rhythm." },
@@ -220,7 +215,7 @@ const createBaseColorOptions: CreateOption[] = [
 ]
 
 const createIconOptions: CreateOption[] = [
-  { name: "lucide", title: "Lucide", description: "The default shadcn/ui icon library." },
+  { name: "lucide", title: "Lucide", description: "The default Fict shadcn icon library." },
   { name: "hugeicons", title: "Hugeicons", description: "Rounded and expressive UI iconography." },
   { name: "tabler", title: "Tabler", description: "Technical outlines with steady stroke weight." },
   { name: "phosphor", title: "Phosphor", description: "Friendly shapes with broader personality." },
@@ -820,8 +815,8 @@ function isPrimaryNavActive(pathname: string, href: string): boolean {
     return pathname === "/charts" || pathname.startsWith("/charts/")
   }
 
-  if (href === "/docs/directory") {
-    return pathname === "/docs/directory" || pathname.startsWith("/docs/directory/")
+  if (href === "/docs/registry") {
+    return pathname === "/docs/registry" || pathname.startsWith("/docs/registry/")
   }
 
   return pathname === href
@@ -831,12 +826,9 @@ const mobileDocLinks: SiteNavLink[] = [
   { href: "/docs", label: "Introduction" },
   { href: "/docs/components", label: "Components" },
   { href: "/docs/installation", label: "Installation" },
-  { href: "/docs/directory", label: "Directory" },
   { href: "/docs/rtl", label: "RTL" },
-  { href: "/docs/mcp", label: "MCP Server" },
   { href: "/docs/registry", label: "Registry" },
-  { href: "/docs/forms", label: "Forms" },
-  { href: "/docs/changelog", label: "Changelog" },
+  { href: "/docs/cli", label: "CLI" },
 ]
 
 function buildSiteSearchEntries(route: ResolvedRoute): SiteSearchEntry[] {
@@ -983,7 +975,7 @@ export function App(props: AppProps) {
     { href: "/docs/components", label: "Components" },
     { href: "/blocks", label: "Blocks" },
     { href: "/charts/area", label: "Charts" },
-    { href: "/docs/directory", label: "Directory" },
+    { href: "/docs/registry", label: "Registry" },
     { href: "/create", label: "Create" },
   ]
   let isMobileNavOpen = $state(false)
@@ -1049,9 +1041,9 @@ export function App(props: AppProps) {
                 </span>
                 <span>Menu</span>
               </button>
-              <a href="/" class="brand-link desktop-brand-link" aria-label="shadcn/ui home">
+              <a href="/" class="brand-link desktop-brand-link" aria-label="Fict shadcn home">
                 <SiteLogoIcon />
-                <span class="sr-only">shadcn/ui</span>
+                <span class="sr-only">Fict shadcn</span>
               </a>
               <nav class="site-nav" aria-label="Primary">
                 {primaryNavLinks.map((link) => (
@@ -1082,9 +1074,9 @@ export function App(props: AppProps) {
                 <span class="header-search-short">Search...</span>
               </button>
               <span class="header-divider header-divider-search" aria-hidden="true"></span>
-              <a class="header-icon-link header-github-link" href="https://github.com/shadcn-ui/ui" target="_blank" rel="noreferrer">
+              <a class="header-icon-link header-github-link" href="https://github.com/fictjs/shadcn" target="_blank" rel="noreferrer">
                 <GitHubIcon />
-                <span class="header-github-count">108k</span>
+                <span class="header-github-count">GitHub</span>
               </a>
               <span class="header-divider header-divider-wide" aria-hidden="true"></span>
               <button
@@ -1251,12 +1243,8 @@ export function App(props: AppProps) {
         >
           <div class="container footer-row">
             <p>
-      Built by <a href="https://twitter.com/shadcn">shadcn</a> at{" "}
-              <a href="https://vercel.com/new?utm_source=shadcn_site&utm_medium=web&utm_campaign=docs_cta_deploy_now_callout">
-                Vercel
-              </a>
-              . The source code is available on{" "}
-              <a href="https://github.com/shadcn-ui/ui">GitHub</a>.
+              Built for Fict. Source and issues are available on{" "}
+              <a href="https://github.com/fictjs/shadcn">GitHub</a>.
             </p>
           </div>
         </footer>
@@ -1346,9 +1334,9 @@ function CreatePage() {
       <header class="create-header">
         <div class="create-header-bar">
           <div class="create-header-main">
-            <a href="/" class="brand-link" aria-label="shadcn/ui home">
+            <a href="/" class="brand-link" aria-label="Fict shadcn home">
               <SiteLogoIcon />
-              <span class="sr-only">shadcn/ui</span>
+              <span class="sr-only">Fict shadcn</span>
             </a>
             <nav class="site-nav create-nav" aria-label="Create navigation">
               <a href="/docs">Docs</a>
@@ -1406,7 +1394,7 @@ function CreatePage() {
               <h1>Customize everything.</h1>
               <p class="lead create-lead">
                 Pick your component library, base color, theme, fonts, icons, and starter item to shape your own
-                version of shadcn/ui.
+                Fict shadcn setup.
               </p>
             </div>
 
@@ -1702,9 +1690,9 @@ function CreateHeader(props: { copiedLabel: string; onReset: () => void; onShare
     <header class="create-header">
       <div class="create-header-bar">
         <div class="create-header-main">
-          <a href="/" class="brand-link" aria-label="shadcn/ui home">
+          <a href="/" class="brand-link" aria-label="Fict shadcn home">
             <SiteLogoIcon />
-            <span class="sr-only">shadcn/ui</span>
+            <span class="sr-only">Fict shadcn</span>
           </a>
           <nav class="site-nav create-nav" aria-label="Create navigation">
             <a href="/docs">Docs</a>
@@ -1750,7 +1738,7 @@ function CreateExplorerPanel(props: {
         <h1>Customize everything.</h1>
         <p class="lead create-lead">
           Pick your component library, base color, theme, fonts, icons, and starter item to shape your own
-          version of shadcn/ui.
+          Fict shadcn setup.
         </p>
       </div>
 
@@ -3854,8 +3842,8 @@ function ThemeCodeSource(props: { themeName: string; format: ThemeCodeFormat }) 
 
 function AnnouncementBadge() {
   return (
-    <a class="announcement-chip" href="/docs/changelog/2026-03-cli-v4">
-      <span>shadcn/skills, presets and more</span>
+    <a class="announcement-chip" href="/docs/installation">
+      <span>Fict components, blocks, themes and more</span>
       <svg
         class="announcement-chip-arrow"
         xmlns="http://www.w3.org/2000/svg"
@@ -4052,16 +4040,13 @@ function DocDetailPage(props: { route: ResolvedRoute }) {
           </ul>
         ) : null}
         <section class="docs-cta-card">
-          <p class="docs-cta-title">Deploy your shadcn/ui app on Vercel</p>
-          <p class="docs-cta-copy">Trusted by OpenAI, Sonos, Adobe, and more.</p>
-          <p class="docs-cta-copy">
-            Vercel provides tools and infrastructure to deploy apps and features at scale.
-          </p>
+          <p class="docs-cta-title">Build with Fict shadcn</p>
+          <p class="docs-cta-copy">Own the Fict source for every component you install.</p>
           <a
             class="button docs-cta-button"
-            href="https://vercel.com/new?utm_source=shadcn_site&utm_medium=web&utm_campaign=docs_cta_deploy_now_callout"
+            href="/docs/installation"
           >
-            Deploy Now
+            Get Started
           </a>
         </section>
       </aside>
@@ -4625,7 +4610,7 @@ function DocHoverCardItem(props: { trigger: string; triggerHe?: string; triggerE
         {rtl ? <DocFieldText ar={props.trigger} he={props.triggerHe || props.trigger} en={props.triggerEn || props.trigger} /> : props.trigger}
       </button>
       <div class={`doc-hover-content${props.demo ? " is-demo" : rtl ? " is-product" : " is-side"}`} data-doc-hover-content data-doc-hover-side={side} data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"} hidden>
-        {props.demo ? <><strong>@nextjs</strong><p>The React Framework – created and maintained by @vercel.</p><small>Joined December 2021</small></> : rtl ? <><strong><DocFieldText ar="سماعات لاسلكية" he="אוזניות אלחוטיות" en="Wireless Headphones" /></strong><p><DocFieldText ar="٩٩.٩٩ $" he="99.99 $" en="$99.99" /></p></> : <><strong>Hover Card</strong><p>This hover card appears on the {side} side of the trigger.</p></>}
+        {props.demo ? <><strong>@fictjs</strong><p>Fine-grained reactivity with a compiler-first runtime.</p><small>Fict ecosystem</small></> : rtl ? <><strong><DocFieldText ar="سماعات لاسلكية" he="אוזניות אלחוטיות" en="Wireless Headphones" /></strong><p><DocFieldText ar="٩٩.٩٩ $" he="99.99 $" en="$99.99" /></p></> : <><strong>Hover Card</strong><p>This hover card appears on the {side} side of the trigger.</p></>}
       </div>
     </span>
   )
@@ -5074,7 +5059,7 @@ function DocSeparatorPreview(props: { name: string }) {
   const name = untrack(() => props.name)
   const rtl = name === "separator-rtl"
   const text = (ar: string, he: string, en: string) => rtl ? <span data-doc-rtl-text data-text-ar={ar} data-text-he={he} data-text-en={en}>{ar}</span> : en
-  const demo = <div class="doc-separator-demo" data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}><div><strong>shadcn/ui</strong><span>{text("الأساس لنظام التصميم الخاص بك", "הבסיס למערכת העיצוב שלך", "The Foundation for your Design System")}</span></div><span class="doc-separator is-horizontal" role="separator" aria-orientation="horizontal"></span><p>{text("مجموعة من المكونات المصممة بشكل جميل يمكنك تخصيصها وتوسيعها والبناء عليها.", "סט של רכיבים מעוצבים בצורה יפה שאתה יכול להתאים אישית, להרחיב ולבנות עליהם.", "A set of beautifully designed components that you can customize, extend, and build on.")}</p></div>
+  const demo = <div class="doc-separator-demo" data-doc-rtl-direction={rtl ? "true" : undefined} dir={rtl ? "rtl" : "ltr"}><div><strong>Fict shadcn</strong><span>{text("الأساس لنظام التصميم الخاص بك", "הבסיס למערכת העיצוב שלך", "The Foundation for your Design System")}</span></div><span class="doc-separator is-horizontal" role="separator" aria-orientation="horizontal"></span><p>{text("مجموعة من المكونات المصممة بشكل جميل يمكنك تخصيصها وتوسيعها والبناء عليها.", "סט של רכיבים מעוצבים בצורה יפה שאתה יכול להתאים אישית, להרחיב ולבנות עליהם.", "A set of beautifully designed Fict components that you can customize, extend, and build on.")}</p></div>
   let content
   if (name === "separator-demo" || rtl) content = demo
   else if (name === "separator-vertical") content = <div class="doc-separator-vertical"><span>Blog</span><span class="doc-separator is-vertical" role="separator" aria-orientation="vertical"></span><span>Docs</span><span class="doc-separator is-vertical" role="separator" aria-orientation="vertical"></span><span>Source</span></div>
@@ -8206,14 +8191,14 @@ function ChartsPage(props: { route: ResolvedRoute; activeThemeName: string; onTh
         <AnnouncementBadge />
         <h1>Beautiful Charts &amp; Graphs</h1>
         <p class="lead">
-          A collection of ready-to-use chart components built with Recharts. From basic charts to
-          rich data displays, copy and paste into your apps.
+          A collection of ready-to-use chart blocks built for Fict. From basic charts to rich data
+          displays, copy and paste the source into your apps.
         </p>
         <div class="cta-row">
           <a class="button" href="#charts">
             Browse Charts
           </a>
-          <a class="button button-ghost" href="/docs/components/chart">
+          <a class="button button-ghost" href="/docs/components/fict/chart">
             Documentation
           </a>
         </div>
@@ -8357,8 +8342,8 @@ function BlocksPage(props: { route: ResolvedRoute }) {
         <AnnouncementBadge />
         <h1>Building Blocks for the Web</h1>
         <p class="lead">
-          Clean, modern building blocks. Copy and paste into your apps. Works with all React
-          frameworks. Open Source. Free forever.
+          Clean, modern Fict building blocks. Copy and paste the source into your apps. Open source
+          and framework-native.
         </p>
         <div class="cta-row">
           <a class="button" href="#blocks">

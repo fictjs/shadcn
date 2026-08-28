@@ -1,5 +1,5 @@
 /**
- * Icon set mirrored from the React shadcn/ui v4 site.
+ * Icon set adapted for the Fict shadcn website.
  *
  * Tabler icons back the dashboard example; lucide icons back the tasks example.
  * Path data is copied verbatim from @tabler/icons-react and lucide-react so the
