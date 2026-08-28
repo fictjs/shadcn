@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/hover-card-demo.tsx",
-      "content": "import * as UI from '@/components/ui/hover-card'\n\nexport default function HoverCardDemoExample() {\n  return <UI.HoverCard />\n}\n",
+      "content": "import { HoverCard, HoverCardContent, HoverCardTriggerEl } from '@/components/ui/hover-card'\n\nexport default function HoverCardDemoExample() {\n  return (\n    <HoverCard openDelay={100}><HoverCardTriggerEl asChild><a href=\"https://fict.dev\">@fict</a></HoverCardTriggerEl><HoverCardContent><strong>Fict</strong><p class=\"text-sm text-muted-foreground\">Fine-grained TypeScript UI.</p></HoverCardContent></HoverCard>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
