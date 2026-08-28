@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/sonner-types.tsx",
-      "content": "import * as UI from '@/components/ui/sonner'\n\nexport default function SonnerTypesExample() {\n  return <UI.Sonner />\n}\n",
+      "content": "import { Sonner, SonnerDescription, SonnerProvider, SonnerTitle, SonnerViewport } from '@/components/ui/sonner'\n\nexport default function SonnerTypesExample() {\n  return (\n    <SonnerProvider><SonnerViewport><Sonner><SonnerTitle>Types</SonnerTitle><SonnerDescription>Event has been created.</SonnerDescription></Sonner></SonnerViewport></SonnerProvider>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
