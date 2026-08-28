@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/data-table-demo.tsx",
-      "content": "import * as UI from '@/components/ui/data-table'\n\nexport default function DataTableDemoExample() {\n  return <UI.DataTable />\n}\n",
+      "content": "import { DataTable, type DataTableColumn } from '@/components/ui/data-table'\n\ntype Payment = { status: string; email: string; amount: number }\n\nconst columns: DataTableColumn<Payment>[] = [\n  { key: \"status\", header: \"Status\" },\n  { key: \"email\", header: \"Email\" },\n  { key: \"amount\", header: \"Amount\", cell: row => \"$\" + row.amount.toFixed(2) },\n]\n\nconst payments: Payment[] = [\n  { status: \"Success\", email: \"m@example.com\", amount: 316 },\n  { status: \"Processing\", email: \"a@example.com\", amount: 242 },\n]\n\nexport default function DataTableDemoExample() {\n  return (\n    <DataTable columns={columns} data={payments} />\n  )\n}\n",
       "type": "registry:page"
     }
   ]
