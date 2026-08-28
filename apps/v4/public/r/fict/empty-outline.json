@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/empty-outline.tsx",
-      "content": "import * as UI from '@/components/ui/empty'\n\nexport default function EmptyOutlineExample() {\n  return <UI.Empty />\n}\n",
+      "content": "import { Empty, EmptyAction, EmptyDescription, EmptyTitle } from '@/components/ui/empty'\n\nexport default function EmptyOutlineExample() {\n  return (\n    <Empty><EmptyTitle>Outline</EmptyTitle><EmptyDescription>No items were found.</EmptyDescription><EmptyAction><button type=\"button\">Create item</button></EmptyAction></Empty>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
