@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pagination-rtl",
+  "type": "registry:example",
+  "description": "Pagination primitives aligned with button variants example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "pagination"
+  ],
+  "files": [
+    {
+      "path": "src/examples/pagination-rtl.tsx",
+      "content": "import * as UI from '@/components/ui/pagination'\n\nexport default function PaginationRtlExample() {\n  return <UI.Pagination />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "switch-disabled",
+  "type": "registry:example",
+  "description": "Switch primitive wrapper example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "switch"
+  ],
+  "files": [
+    {
+      "path": "src/examples/switch-disabled.tsx",
+      "content": "import * as UI from '@/components/ui/switch'\n\nexport default function SwitchDisabledExample() {\n  return <UI.Switch disabled />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

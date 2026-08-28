@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "empty-input-group",
+  "type": "registry:example",
+  "description": "Empty-state layout primitives example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "empty"
+  ],
+  "files": [
+    {
+      "path": "src/examples/empty-input-group.tsx",
+      "content": "import * as UI from '@/components/ui/empty'\n\nexport default function EmptyInputGroupExample() {\n  return <UI.Empty />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scroll-area-rtl",
+  "type": "registry:example",
+  "description": "Scroll area wrappers with themed scrollbar example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "scroll-area"
+  ],
+  "files": [
+    {
+      "path": "src/examples/scroll-area-rtl.tsx",
+      "content": "import * as UI from '@/components/ui/scroll-area'\n\nexport default function ScrollAreaRtlExample() {\n  return <UI.ScrollArea />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

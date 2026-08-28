@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "native-select-demo",
+  "type": "registry:example",
+  "description": "Styled native select control example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "native-select"
+  ],
+  "files": [
+    {
+      "path": "src/examples/native-select-demo.tsx",
+      "content": "import * as UI from '@/components/ui/native-select'\n\nexport default function NativeSelectDemoExample() {\n  return <UI.NativeSelect />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

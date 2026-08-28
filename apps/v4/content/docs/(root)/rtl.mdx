@@ -1,0 +1,14 @@
+---
+title: RTL
+description: Build right-to-left interfaces with Fict shadcn.
+---
+
+Set `dir="rtl"` on the application container and prefer logical Tailwind properties such as `ms-*`, `me-*`, `ps-*`, and `pe-*` in custom components.
+
+```tsx
+export function ArabicLayout(props: { children?: unknown }) {
+  return <div dir="rtl" lang="ar">{props.children}</div>
+}
+```
+
+Fict shadcn previews marked RTL exercise the same component source under right-to-left layout.

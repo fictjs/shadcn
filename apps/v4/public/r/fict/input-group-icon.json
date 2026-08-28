@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "input-group-icon",
+  "type": "registry:example",
+  "description": "Input groups with addons and embedded controls example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "input-group"
+  ],
+  "files": [
+    {
+      "path": "src/examples/input-group-icon.tsx",
+      "content": "import * as UI from '@/components/ui/input-group'\n\nexport default function InputGroupIconExample() {\n  return <UI.InputGroup />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

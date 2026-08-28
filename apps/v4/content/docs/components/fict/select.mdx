@@ -1,0 +1,77 @@
+---
+title: Select
+description: Select primitive wrappers
+component: true
+---
+
+<ComponentPreview name="select-demo" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx @fictjs/shadcn@latest add select
+```
+
+</TabsContent>
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the runtime dependencies:</Step>
+
+```bash
+npm install @fictjs/radix-ui
+```
+
+<Step>Copy the Fict shadcn component into your project.</Step>
+
+<ComponentSource name="select" title="components/ui/select.tsx" />
+
+</Steps>
+
+</TabsContent>
+</CodeTabs>
+
+## Usage
+
+```tsx
+import * as Select from "@/components/ui/select"
+```
+
+## Examples
+
+### Preview
+
+<ComponentPreview name="select-demo" />
+
+### Align Item
+
+<ComponentPreview name="select-align-item" />
+
+### Groups
+
+<ComponentPreview name="select-groups" />
+
+### Scrollable
+
+<ComponentPreview name="select-scrollable" />
+
+### Disabled
+
+<ComponentPreview name="select-disabled" />
+
+### Invalid
+
+<ComponentPreview name="select-invalid" />
+
+### Rtl
+
+<ComponentPreview name="select-rtl" />

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "textarea-invalid",
+  "type": "registry:example",
+  "description": "Styled textarea example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "textarea"
+  ],
+  "files": [
+    {
+      "path": "src/examples/textarea-invalid.tsx",
+      "content": "import * as UI from '@/components/ui/textarea'\n\nexport default function TextareaInvalidExample() {\n  return <UI.Textarea />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

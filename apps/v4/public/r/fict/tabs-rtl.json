@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tabs-rtl",
+  "type": "registry:example",
+  "description": "Tabs wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "tabs"
+  ],
+  "files": [
+    {
+      "path": "src/examples/tabs-rtl.tsx",
+      "content": "import * as UI from '@/components/ui/tabs'\n\nexport default function TabsRtlExample() {\n  return <UI.Tabs />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

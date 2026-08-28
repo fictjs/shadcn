@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "table-actions",
+  "type": "registry:example",
+  "description": "Table composition primitives example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "table"
+  ],
+  "files": [
+    {
+      "path": "src/examples/table-actions.tsx",
+      "content": "import * as UI from '@/components/ui/table'\n\nexport default function TableActionsExample() {\n  return <UI.Table />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

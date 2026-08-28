@@ -1,0 +1,69 @@
+---
+title: Tooltip
+description: Tooltip primitive wrappers
+component: true
+---
+
+<ComponentPreview name="tooltip-demo" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx @fictjs/shadcn@latest add tooltip
+```
+
+</TabsContent>
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the runtime dependencies:</Step>
+
+```bash
+npm install @fictjs/radix-ui
+```
+
+<Step>Copy the Fict shadcn component into your project.</Step>
+
+<ComponentSource name="tooltip" title="components/ui/tooltip.tsx" />
+
+</Steps>
+
+</TabsContent>
+</CodeTabs>
+
+## Usage
+
+```tsx
+import * as Tooltip from "@/components/ui/tooltip"
+```
+
+## Examples
+
+### Preview
+
+<ComponentPreview name="tooltip-demo" />
+
+### Sides
+
+<ComponentPreview name="tooltip-sides" />
+
+### Keyboard
+
+<ComponentPreview name="tooltip-keyboard" />
+
+### Disabled
+
+<ComponentPreview name="tooltip-disabled" />
+
+### Rtl
+
+<ComponentPreview name="tooltip-rtl" />

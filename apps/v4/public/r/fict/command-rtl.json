@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "command-rtl",
+  "type": "registry:example",
+  "description": "Filterable command palette with controlled selection example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "command"
+  ],
+  "files": [
+    {
+      "path": "src/examples/command-rtl.tsx",
+      "content": "import * as UI from '@/components/ui/command'\n\nexport default function CommandRtlExample() {\n  return <UI.Command />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

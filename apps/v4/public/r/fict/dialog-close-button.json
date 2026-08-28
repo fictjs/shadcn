@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dialog-close-button",
+  "type": "registry:example",
+  "description": "Dialog primitives with styled wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "dialog"
+  ],
+  "files": [
+    {
+      "path": "src/examples/dialog-close-button.tsx",
+      "content": "import * as UI from '@/components/ui/dialog'\n\nexport default function DialogCloseButtonExample() {\n  return <UI.Dialog />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

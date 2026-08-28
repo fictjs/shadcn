@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sonner-demo",
+  "type": "registry:example",
+  "description": "Sonner-style aliases on top of toast primitives example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "sonner"
+  ],
+  "files": [
+    {
+      "path": "src/examples/sonner-demo.tsx",
+      "content": "import * as UI from '@/components/ui/sonner'\n\nexport default function SonnerDemoExample() {\n  return <UI.Sonner />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

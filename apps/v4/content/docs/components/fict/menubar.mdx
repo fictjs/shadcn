@@ -1,0 +1,73 @@
+---
+title: Menubar
+description: Menubar wrappers
+component: true
+---
+
+<ComponentPreview name="menubar-demo" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx @fictjs/shadcn@latest add menubar
+```
+
+</TabsContent>
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the runtime dependencies:</Step>
+
+```bash
+npm install @fictjs/radix-ui
+```
+
+<Step>Copy the Fict shadcn component into your project.</Step>
+
+<ComponentSource name="menubar" title="components/ui/menubar.tsx" />
+
+</Steps>
+
+</TabsContent>
+</CodeTabs>
+
+## Usage
+
+```tsx
+import * as Menubar from "@/components/ui/menubar"
+```
+
+## Examples
+
+### Preview
+
+<ComponentPreview name="menubar-demo" />
+
+### Checkbox
+
+<ComponentPreview name="menubar-checkbox" />
+
+### Radio
+
+<ComponentPreview name="menubar-radio" />
+
+### Submenu
+
+<ComponentPreview name="menubar-submenu" />
+
+### Icons
+
+<ComponentPreview name="menubar-icons" />
+
+### Rtl
+
+<ComponentPreview name="menubar-rtl" />

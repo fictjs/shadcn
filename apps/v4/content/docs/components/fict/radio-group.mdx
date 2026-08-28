@@ -1,0 +1,77 @@
+---
+title: Radio Group
+description: Radio group primitives with style wrappers
+component: true
+---
+
+<ComponentPreview name="radio-group-demo" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx @fictjs/shadcn@latest add radio-group
+```
+
+</TabsContent>
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the runtime dependencies:</Step>
+
+```bash
+npm install @fictjs/radix-ui
+```
+
+<Step>Copy the Fict shadcn component into your project.</Step>
+
+<ComponentSource name="radio-group" title="components/ui/radio-group.tsx" />
+
+</Steps>
+
+</TabsContent>
+</CodeTabs>
+
+## Usage
+
+```tsx
+import * as RadioGroup from "@/components/ui/radio-group"
+```
+
+## Examples
+
+### Preview
+
+<ComponentPreview name="radio-group-demo" />
+
+### Description
+
+<ComponentPreview name="radio-group-description" />
+
+### Choice Card
+
+<ComponentPreview name="radio-group-choice-card" />
+
+### Fieldset
+
+<ComponentPreview name="radio-group-fieldset" />
+
+### Disabled
+
+<ComponentPreview name="radio-group-disabled" />
+
+### Invalid
+
+<ComponentPreview name="radio-group-invalid" />
+
+### Rtl
+
+<ComponentPreview name="radio-group-rtl" />

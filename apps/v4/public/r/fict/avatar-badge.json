@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar-badge",
+  "type": "registry:example",
+  "description": "Simple avatar wrapper example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "avatar"
+  ],
+  "files": [
+    {
+      "path": "src/examples/avatar-badge.tsx",
+      "content": "import * as UI from '@/components/ui/avatar'\n\nexport default function AvatarBadgeExample() {\n  return <UI.Avatar />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

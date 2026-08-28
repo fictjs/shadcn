@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dropdown-menu-submenu",
+  "type": "registry:example",
+  "description": "Dropdown menu wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "dropdown-menu"
+  ],
+  "files": [
+    {
+      "path": "src/examples/dropdown-menu-submenu.tsx",
+      "content": "import * as UI from '@/components/ui/dropdown-menu'\n\nexport default function DropdownMenuSubmenuExample() {\n  return <UI.DropdownMenu />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

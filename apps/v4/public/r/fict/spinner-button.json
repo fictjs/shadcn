@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "spinner-button",
+  "type": "registry:example",
+  "description": "Animated spinner indicator with size variants example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "spinner"
+  ],
+  "files": [
+    {
+      "path": "src/examples/spinner-button.tsx",
+      "content": "import * as UI from '@/components/ui/spinner'\n\nexport default function SpinnerButtonExample() {\n  return <UI.Spinner />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

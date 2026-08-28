@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "combobox-popup",
+  "type": "registry:example",
+  "description": "Filterable combobox with controlled value and open state example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "combobox"
+  ],
+  "files": [
+    {
+      "path": "src/examples/combobox-popup.tsx",
+      "content": "import * as UI from '@/components/ui/combobox'\n\nexport default function ComboboxPopupExample() {\n  return <UI.Combobox />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

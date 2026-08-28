@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "label-rtl",
+  "type": "registry:example",
+  "description": "Form label wrapper example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "label"
+  ],
+  "files": [
+    {
+      "path": "src/examples/label-rtl.tsx",
+      "content": "import * as UI from '@/components/ui/label'\n\nexport default function LabelRtlExample() {\n  return <UI.Label />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

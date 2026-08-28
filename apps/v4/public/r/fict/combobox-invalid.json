@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "combobox-invalid",
+  "type": "registry:example",
+  "description": "Filterable combobox with controlled value and open state example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "combobox"
+  ],
+  "files": [
+    {
+      "path": "src/examples/combobox-invalid.tsx",
+      "content": "import * as UI from '@/components/ui/combobox'\n\nexport default function ComboboxInvalidExample() {\n  return <UI.Combobox />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

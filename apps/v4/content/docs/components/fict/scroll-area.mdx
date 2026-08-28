@@ -1,0 +1,61 @@
+---
+title: Scroll Area
+description: Scroll area wrappers with themed scrollbar
+component: true
+---
+
+<ComponentPreview name="scroll-area-demo" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx @fictjs/shadcn@latest add scroll-area
+```
+
+</TabsContent>
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the runtime dependencies:</Step>
+
+```bash
+npm install @fictjs/radix-ui
+```
+
+<Step>Copy the Fict shadcn component into your project.</Step>
+
+<ComponentSource name="scroll-area" title="components/ui/scroll-area.tsx" />
+
+</Steps>
+
+</TabsContent>
+</CodeTabs>
+
+## Usage
+
+```tsx
+import * as ScrollArea from "@/components/ui/scroll-area"
+```
+
+## Examples
+
+### Preview
+
+<ComponentPreview name="scroll-area-demo" />
+
+### Horizontal Demo
+
+<ComponentPreview name="scroll-area-horizontal-demo" />
+
+### Rtl
+
+<ComponentPreview name="scroll-area-rtl" />

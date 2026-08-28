@@ -1,0 +1,59 @@
+---
+title: Pagination
+description: Pagination primitives aligned with button variants
+component: true
+---
+
+<ComponentPreview name="pagination-demo" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx @fictjs/shadcn@latest add pagination
+```
+
+</TabsContent>
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Copy the Fict shadcn component into your project.</Step>
+
+<ComponentSource name="pagination" title="components/ui/pagination.tsx" />
+
+</Steps>
+
+</TabsContent>
+</CodeTabs>
+
+## Usage
+
+```tsx
+import * as Pagination from "@/components/ui/pagination"
+```
+
+## Examples
+
+### Preview
+
+<ComponentPreview name="pagination-demo" />
+
+### Simple
+
+<ComponentPreview name="pagination-simple" />
+
+### Icons Only
+
+<ComponentPreview name="pagination-icons-only" />
+
+### Rtl
+
+<ComponentPreview name="pagination-rtl" />

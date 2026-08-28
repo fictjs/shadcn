@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aspect-ratio-demo",
+  "type": "registry:example",
+  "description": "Aspect ratio primitive wrapper example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "aspect-ratio"
+  ],
+  "files": [
+    {
+      "path": "src/examples/aspect-ratio-demo.tsx",
+      "content": "import * as UI from '@/components/ui/aspect-ratio'\n\nexport default function AspectRatioDemoExample() {\n  return <UI.AspectRatio />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "command-shortcuts",
+  "type": "registry:example",
+  "description": "Filterable command palette with controlled selection example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "command"
+  ],
+  "files": [
+    {
+      "path": "src/examples/command-shortcuts.tsx",
+      "content": "import * as UI from '@/components/ui/command'\n\nexport default function CommandShortcutsExample() {\n  return <UI.Command />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

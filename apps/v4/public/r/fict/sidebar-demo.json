@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sidebar-demo",
+  "type": "registry:example",
+  "description": "Sidebar layout primitives for app navigation example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "sidebar"
+  ],
+  "files": [
+    {
+      "path": "src/examples/sidebar-demo.tsx",
+      "content": "import * as UI from '@/components/ui/sidebar'\n\nexport default function SidebarDemoExample() {\n  return <UI.Sidebar />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

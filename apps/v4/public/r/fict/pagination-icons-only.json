@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pagination-icons-only",
+  "type": "registry:example",
+  "description": "Pagination primitives aligned with button variants example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "pagination"
+  ],
+  "files": [
+    {
+      "path": "src/examples/pagination-icons-only.tsx",
+      "content": "import * as UI from '@/components/ui/pagination'\n\nexport default function PaginationIconsOnlyExample() {\n  return <UI.Pagination />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

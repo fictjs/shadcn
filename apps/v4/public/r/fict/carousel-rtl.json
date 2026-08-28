@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "carousel-rtl",
+  "type": "registry:example",
+  "description": "Scroll-snap carousel building blocks example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "carousel"
+  ],
+  "files": [
+    {
+      "path": "src/examples/carousel-rtl.tsx",
+      "content": "import * as UI from '@/components/ui/carousel'\n\nexport default function CarouselRtlExample() {\n  return <UI.Carousel />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

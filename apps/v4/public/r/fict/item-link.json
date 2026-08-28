@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "item-link",
+  "type": "registry:example",
+  "description": "List item layout primitives for rich rows example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "item"
+  ],
+  "files": [
+    {
+      "path": "src/examples/item-link.tsx",
+      "content": "import * as UI from '@/components/ui/item'\n\nexport default function ItemLinkExample() {\n  return <UI.Item />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

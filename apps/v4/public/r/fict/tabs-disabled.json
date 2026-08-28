@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tabs-disabled",
+  "type": "registry:example",
+  "description": "Tabs wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "tabs"
+  ],
+  "files": [
+    {
+      "path": "src/examples/tabs-disabled.tsx",
+      "content": "import * as UI from '@/components/ui/tabs'\n\nexport default function TabsDisabledExample() {\n  return <UI.Tabs disabled />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

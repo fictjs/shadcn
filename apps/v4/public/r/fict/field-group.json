@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "field-group",
+  "type": "registry:example",
+  "description": "Field composition primitives for labels and messages example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "field"
+  ],
+  "files": [
+    {
+      "path": "src/examples/field-group.tsx",
+      "content": "import * as UI from '@/components/ui/field'\n\nexport default function FieldGroupExample() {\n  return <UI.Field />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

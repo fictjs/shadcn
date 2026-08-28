@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "empty-background",
+  "type": "registry:example",
+  "description": "Empty-state layout primitives example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "empty"
+  ],
+  "files": [
+    {
+      "path": "src/examples/empty-background.tsx",
+      "content": "import * as UI from '@/components/ui/empty'\n\nexport default function EmptyBackgroundExample() {\n  return <UI.Empty />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

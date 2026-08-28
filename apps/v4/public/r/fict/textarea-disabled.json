@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "textarea-disabled",
+  "type": "registry:example",
+  "description": "Styled textarea example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "textarea"
+  ],
+  "files": [
+    {
+      "path": "src/examples/textarea-disabled.tsx",
+      "content": "import * as UI from '@/components/ui/textarea'\n\nexport default function TextareaDisabledExample() {\n  return <UI.Textarea disabled />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

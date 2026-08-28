@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "resizable-vertical",
+  "type": "registry:example",
+  "description": "Pointer-resizable panel group with size constraints example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "resizable"
+  ],
+  "files": [
+    {
+      "path": "src/examples/resizable-vertical.tsx",
+      "content": "import * as UI from '@/components/ui/resizable'\n\nexport default function ResizableVerticalExample() {\n  return <UI.Resizable />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

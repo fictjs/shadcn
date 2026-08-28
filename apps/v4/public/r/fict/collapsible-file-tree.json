@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "collapsible-file-tree",
+  "type": "registry:example",
+  "description": "Collapsible wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "collapsible"
+  ],
+  "files": [
+    {
+      "path": "src/examples/collapsible-file-tree.tsx",
+      "content": "import * as UI from '@/components/ui/collapsible'\n\nexport default function CollapsibleFileTreeExample() {\n  return <UI.Collapsible />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

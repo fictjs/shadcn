@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "breadcrumb-dropdown",
+  "type": "registry:example",
+  "description": "Composable breadcrumb navigation primitives example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "breadcrumb"
+  ],
+  "files": [
+    {
+      "path": "src/examples/breadcrumb-dropdown.tsx",
+      "content": "import * as UI from '@/components/ui/breadcrumb'\n\nexport default function BreadcrumbDropdownExample() {\n  return <UI.Breadcrumb />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

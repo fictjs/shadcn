@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "select-demo",
+  "type": "registry:example",
+  "description": "Select primitive wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "select"
+  ],
+  "files": [
+    {
+      "path": "src/examples/select-demo.tsx",
+      "content": "import * as UI from '@/components/ui/select'\n\nexport default function SelectDemoExample() {\n  return <UI.Select />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

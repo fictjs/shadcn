@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "progress-demo",
+  "type": "registry:example",
+  "description": "Progress primitive wrapper example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "progress"
+  ],
+  "files": [
+    {
+      "path": "src/examples/progress-demo.tsx",
+      "content": "import * as UI from '@/components/ui/progress'\n\nexport default function ProgressDemoExample() {\n  return <UI.Progress />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

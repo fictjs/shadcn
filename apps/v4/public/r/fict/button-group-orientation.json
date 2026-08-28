@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-group-orientation",
+  "type": "registry:example",
+  "description": "Button grouping container with orientation support example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "button-group"
+  ],
+  "files": [
+    {
+      "path": "src/examples/button-group-orientation.tsx",
+      "content": "import * as UI from '@/components/ui/button-group'\n\nexport default function ButtonGroupOrientationExample() {\n  return <UI.ButtonGroup />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

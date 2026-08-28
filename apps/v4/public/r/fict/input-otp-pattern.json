@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "input-otp-pattern",
+  "type": "registry:example",
+  "description": "OTP input slots with keyboard-aware focus behavior example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "input-otp"
+  ],
+  "files": [
+    {
+      "path": "src/examples/input-otp-pattern.tsx",
+      "content": "import * as UI from '@/components/ui/input-otp'\n\nexport default function InputOTPPatternExample() {\n  return <UI.InputOTP />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

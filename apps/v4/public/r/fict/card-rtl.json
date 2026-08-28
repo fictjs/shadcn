@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "card-rtl",
+  "type": "registry:example",
+  "description": "Card layout primitives example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "card"
+  ],
+  "files": [
+    {
+      "path": "src/examples/card-rtl.tsx",
+      "content": "import * as UI from '@/components/ui/card'\n\nexport default function CardRtlExample() {\n  return <UI.Card />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

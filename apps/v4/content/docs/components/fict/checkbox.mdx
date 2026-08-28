@@ -1,0 +1,81 @@
+---
+title: Checkbox
+description: Checkbox primitive wrapper
+component: true
+---
+
+<ComponentPreview name="checkbox-demo" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx @fictjs/shadcn@latest add checkbox
+```
+
+</TabsContent>
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the runtime dependencies:</Step>
+
+```bash
+npm install @fictjs/radix-ui
+```
+
+<Step>Copy the Fict shadcn component into your project.</Step>
+
+<ComponentSource name="checkbox" title="components/ui/checkbox.tsx" />
+
+</Steps>
+
+</TabsContent>
+</CodeTabs>
+
+## Usage
+
+```tsx
+import * as Checkbox from "@/components/ui/checkbox"
+```
+
+## Examples
+
+### Preview
+
+<ComponentPreview name="checkbox-demo" />
+
+### Invalid
+
+<ComponentPreview name="checkbox-invalid" />
+
+### Basic
+
+<ComponentPreview name="checkbox-basic" />
+
+### Description
+
+<ComponentPreview name="checkbox-description" />
+
+### Disabled
+
+<ComponentPreview name="checkbox-disabled" />
+
+### Group
+
+<ComponentPreview name="checkbox-group" />
+
+### Table
+
+<ComponentPreview name="checkbox-table" />
+
+### Rtl
+
+<ComponentPreview name="checkbox-rtl" />

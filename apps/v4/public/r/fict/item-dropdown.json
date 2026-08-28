@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "item-dropdown",
+  "type": "registry:example",
+  "description": "List item layout primitives for rich rows example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "item"
+  ],
+  "files": [
+    {
+      "path": "src/examples/item-dropdown.tsx",
+      "content": "import * as UI from '@/components/ui/item'\n\nexport default function ItemDropdownExample() {\n  return <UI.Item />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

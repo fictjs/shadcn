@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "empty-avatar-group",
+  "type": "registry:example",
+  "description": "Empty-state layout primitives example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "empty"
+  ],
+  "files": [
+    {
+      "path": "src/examples/empty-avatar-group.tsx",
+      "content": "import * as UI from '@/components/ui/empty'\n\nexport default function EmptyAvatarGroupExample() {\n  return <UI.Empty />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "skeleton-text",
+  "type": "registry:example",
+  "description": "Skeleton placeholder example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "skeleton"
+  ],
+  "files": [
+    {
+      "path": "src/examples/skeleton-text.tsx",
+      "content": "import * as UI from '@/components/ui/skeleton'\n\nexport default function SkeletonTextExample() {\n  return <UI.Skeleton />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "dropdown-menu-checkboxes-icons",
+  "type": "registry:example",
+  "description": "Dropdown menu wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "dropdown-menu"
+  ],
+  "files": [
+    {
+      "path": "src/examples/dropdown-menu-checkboxes-icons.tsx",
+      "content": "import * as UI from '@/components/ui/dropdown-menu'\n\nexport default function DropdownMenuCheckboxesIconsExample() {\n  return <UI.DropdownMenu />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

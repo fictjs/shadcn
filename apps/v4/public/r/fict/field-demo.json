@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "field-demo",
+  "type": "registry:example",
+  "description": "Form label wrapper example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "label"
+  ],
+  "files": [
+    {
+      "path": "src/examples/field-demo.tsx",
+      "content": "import * as UI from '@/components/ui/label'\n\nexport default function FieldDemoExample() {\n  return <UI.Label />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

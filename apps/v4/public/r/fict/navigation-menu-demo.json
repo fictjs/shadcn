@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "navigation-menu-demo",
+  "type": "registry:example",
+  "description": "Navigation menu wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "navigation-menu"
+  ],
+  "files": [
+    {
+      "path": "src/examples/navigation-menu-demo.tsx",
+      "content": "import * as UI from '@/components/ui/navigation-menu'\n\nexport default function NavigationMenuDemoExample() {\n  return <UI.NavigationMenu />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

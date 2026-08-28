@@ -1,0 +1,22 @@
+---
+title: Installation
+description: Configure Fict shadcn and install your first component.
+---
+
+## Initialize a Fict project
+
+Run the CLI in an existing Fict application:
+
+```bash
+npx @fictjs/shadcn@latest init
+```
+
+The command creates `fictcn.json`, installs the shared styling dependencies, and prepares the configured component and utility directories.
+
+## Add components
+
+```bash
+npx @fictjs/shadcn@latest add button dialog input
+```
+
+Generated files use Fict JSX. Accessible primitives are imported from `@fictjs/radix-ui`, not the React `radix-ui` package.

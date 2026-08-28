@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "accordion-demo",
+  "type": "registry:example",
+  "description": "Accordion wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "accordion"
+  ],
+  "files": [
+    {
+      "path": "src/examples/accordion-demo.tsx",
+      "content": "import * as UI from '@/components/ui/accordion'\n\nexport default function AccordionDemoExample() {\n  return <UI.Accordion />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

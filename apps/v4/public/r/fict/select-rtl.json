@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "select-rtl",
+  "type": "registry:example",
+  "description": "Select primitive wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "select"
+  ],
+  "files": [
+    {
+      "path": "src/examples/select-rtl.tsx",
+      "content": "import * as UI from '@/components/ui/select'\n\nexport default function SelectRtlExample() {\n  return <UI.Select />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

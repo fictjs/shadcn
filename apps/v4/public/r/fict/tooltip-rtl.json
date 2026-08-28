@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tooltip-rtl",
+  "type": "registry:example",
+  "description": "Tooltip primitive wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "tooltip"
+  ],
+  "files": [
+    {
+      "path": "src/examples/tooltip-rtl.tsx",
+      "content": "import * as UI from '@/components/ui/tooltip'\n\nexport default function TooltipRtlExample() {\n  return <UI.Tooltip />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

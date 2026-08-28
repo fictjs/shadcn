@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "calendar-rtl",
+  "type": "registry:example",
+  "description": "Accessible date grid with controlled selection and month navigation example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "calendar"
+  ],
+  "files": [
+    {
+      "path": "src/examples/calendar-rtl.tsx",
+      "content": "import * as UI from '@/components/ui/calendar'\n\nexport default function CalendarRtlExample() {\n  return <UI.Calendar />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

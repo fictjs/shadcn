@@ -1,0 +1,65 @@
+---
+title: Aspect Ratio
+description: Aspect ratio primitive wrapper
+component: true
+---
+
+<ComponentPreview name="aspect-ratio-demo" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx @fictjs/shadcn@latest add aspect-ratio
+```
+
+</TabsContent>
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the runtime dependencies:</Step>
+
+```bash
+npm install @fictjs/radix-ui
+```
+
+<Step>Copy the Fict shadcn component into your project.</Step>
+
+<ComponentSource name="aspect-ratio" title="components/ui/aspect-ratio.tsx" />
+
+</Steps>
+
+</TabsContent>
+</CodeTabs>
+
+## Usage
+
+```tsx
+import * as AspectRatio from "@/components/ui/aspect-ratio"
+```
+
+## Examples
+
+### Preview
+
+<ComponentPreview name="aspect-ratio-demo" />
+
+### Square
+
+<ComponentPreview name="aspect-ratio-square" />
+
+### Portrait
+
+<ComponentPreview name="aspect-ratio-portrait" />
+
+### Rtl
+
+<ComponentPreview name="aspect-ratio-rtl" />

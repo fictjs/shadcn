@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "input-input-group",
+  "type": "registry:example",
+  "description": "Styled text input example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "input"
+  ],
+  "files": [
+    {
+      "path": "src/examples/input-input-group.tsx",
+      "content": "import * as UI from '@/components/ui/input'\n\nexport default function InputInputGroupExample() {\n  return <UI.Input />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

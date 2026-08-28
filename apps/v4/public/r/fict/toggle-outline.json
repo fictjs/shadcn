@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toggle-outline",
+  "type": "registry:example",
+  "description": "Toggle primitive wrapper example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "toggle"
+  ],
+  "files": [
+    {
+      "path": "src/examples/toggle-outline.tsx",
+      "content": "import * as UI from '@/components/ui/toggle'\n\nexport default function ToggleOutlineExample() {\n  return <UI.Toggle />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

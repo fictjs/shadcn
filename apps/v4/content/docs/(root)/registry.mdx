@@ -1,0 +1,13 @@
+---
+title: Registry
+description: Understand the Fict shadcn builtin and custom registries.
+---
+
+The default `builtin` registry is bundled with `@fictjs/shadcn`. It contains Fict JSX templates, dependency metadata, blocks, and themes.
+
+```bash
+npx @fictjs/shadcn@latest list
+npx @fictjs/shadcn@latest blocks list
+```
+
+Set `registry` in `fictcn.json` to an HTTP, HTTPS, or file URL to consume a compatible custom Fict registry. Remote entries use the same source ownership and lock-file checks as builtin entries.

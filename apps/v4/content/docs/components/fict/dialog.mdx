@@ -1,0 +1,73 @@
+---
+title: Dialog
+description: Dialog primitives with styled wrappers
+component: true
+---
+
+<ComponentPreview name="dialog-demo" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx @fictjs/shadcn@latest add dialog
+```
+
+</TabsContent>
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the runtime dependencies:</Step>
+
+```bash
+npm install @fictjs/radix-ui
+```
+
+<Step>Copy the Fict shadcn component into your project.</Step>
+
+<ComponentSource name="dialog" title="components/ui/dialog.tsx" />
+
+</Steps>
+
+</TabsContent>
+</CodeTabs>
+
+## Usage
+
+```tsx
+import * as Dialog from "@/components/ui/dialog"
+```
+
+## Examples
+
+### Preview
+
+<ComponentPreview name="dialog-demo" />
+
+### Close Button
+
+<ComponentPreview name="dialog-close-button" />
+
+### No Close Button
+
+<ComponentPreview name="dialog-no-close-button" />
+
+### Sticky Footer
+
+<ComponentPreview name="dialog-sticky-footer" />
+
+### Scrollable Content
+
+<ComponentPreview name="dialog-scrollable-content" />
+
+### Rtl
+
+<ComponentPreview name="dialog-rtl" />

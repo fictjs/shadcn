@@ -1,0 +1,77 @@
+---
+title: Slider
+description: Slider primitive wrapper
+component: true
+---
+
+<ComponentPreview name="slider-demo" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx @fictjs/shadcn@latest add slider
+```
+
+</TabsContent>
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the runtime dependencies:</Step>
+
+```bash
+npm install @fictjs/radix-ui
+```
+
+<Step>Copy the Fict shadcn component into your project.</Step>
+
+<ComponentSource name="slider" title="components/ui/slider.tsx" />
+
+</Steps>
+
+</TabsContent>
+</CodeTabs>
+
+## Usage
+
+```tsx
+import * as Slider from "@/components/ui/slider"
+```
+
+## Examples
+
+### Preview
+
+<ComponentPreview name="slider-demo" />
+
+### Range
+
+<ComponentPreview name="slider-range" />
+
+### Multiple
+
+<ComponentPreview name="slider-multiple" />
+
+### Vertical
+
+<ComponentPreview name="slider-vertical" />
+
+### Controlled
+
+<ComponentPreview name="slider-controlled" />
+
+### Disabled
+
+<ComponentPreview name="slider-disabled" />
+
+### Rtl
+
+<ComponentPreview name="slider-rtl" />

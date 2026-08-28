@@ -1,0 +1,24 @@
+---
+title: fictcn.json
+description: Configure component paths, styling, aliases, and registry sources.
+---
+
+`fictcn.json` is the project configuration used by the Fict shadcn CLI.
+
+```json
+{
+  "$schema": "https://fict.js.org/schemas/fictcn.schema.json",
+  "version": 1,
+  "style": "tailwind-css-vars",
+  "componentsDir": "src/components/ui",
+  "libDir": "src/lib",
+  "css": "src/styles/globals.css",
+  "tailwindConfig": "tailwind.config.ts",
+  "registry": "builtin",
+  "aliases": {
+    "base": "@"
+  }
+}
+```
+
+Use the builtin registry for the maintained Fict components. A custom HTTP or file registry can be configured when your project owns additional Fict templates.

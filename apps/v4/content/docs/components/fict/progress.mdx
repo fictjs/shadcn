@@ -1,0 +1,65 @@
+---
+title: Progress
+description: Progress primitive wrapper
+component: true
+---
+
+<ComponentPreview name="progress-demo" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx @fictjs/shadcn@latest add progress
+```
+
+</TabsContent>
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the runtime dependencies:</Step>
+
+```bash
+npm install @fictjs/radix-ui
+```
+
+<Step>Copy the Fict shadcn component into your project.</Step>
+
+<ComponentSource name="progress" title="components/ui/progress.tsx" />
+
+</Steps>
+
+</TabsContent>
+</CodeTabs>
+
+## Usage
+
+```tsx
+import * as Progress from "@/components/ui/progress"
+```
+
+## Examples
+
+### Preview
+
+<ComponentPreview name="progress-demo" />
+
+### Label
+
+<ComponentPreview name="progress-label" />
+
+### Controlled
+
+<ComponentPreview name="progress-controlled" />
+
+### Rtl
+
+<ComponentPreview name="progress-rtl" />

@@ -1,0 +1,57 @@
+---
+title: Navigation Menu
+description: Navigation menu wrappers
+component: true
+---
+
+<ComponentPreview name="navigation-menu-demo" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx @fictjs/shadcn@latest add navigation-menu
+```
+
+</TabsContent>
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the runtime dependencies:</Step>
+
+```bash
+npm install @fictjs/radix-ui
+```
+
+<Step>Copy the Fict shadcn component into your project.</Step>
+
+<ComponentSource name="navigation-menu" title="components/ui/navigation-menu.tsx" />
+
+</Steps>
+
+</TabsContent>
+</CodeTabs>
+
+## Usage
+
+```tsx
+import * as NavigationMenu from "@/components/ui/navigation-menu"
+```
+
+## Examples
+
+### Preview
+
+<ComponentPreview name="navigation-menu-demo" />
+
+### Rtl
+
+<ComponentPreview name="navigation-menu-rtl" />

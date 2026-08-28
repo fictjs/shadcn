@@ -1,0 +1,73 @@
+---
+title: Alert
+description: Alert component with semantic variants
+component: true
+---
+
+<ComponentPreview name="alert-demo" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx @fictjs/shadcn@latest add alert
+```
+
+</TabsContent>
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the runtime dependencies:</Step>
+
+```bash
+npm install class-variance-authority
+```
+
+<Step>Copy the Fict shadcn component into your project.</Step>
+
+<ComponentSource name="alert" title="components/ui/alert.tsx" />
+
+</Steps>
+
+</TabsContent>
+</CodeTabs>
+
+## Usage
+
+```tsx
+import * as Alert from "@/components/ui/alert"
+```
+
+## Examples
+
+### Preview
+
+<ComponentPreview name="alert-demo" />
+
+### Basic
+
+<ComponentPreview name="alert-basic" />
+
+### Destructive
+
+<ComponentPreview name="alert-destructive" />
+
+### Action
+
+<ComponentPreview name="alert-action" />
+
+### Colors
+
+<ComponentPreview name="alert-colors" />
+
+### Rtl
+
+<ComponentPreview name="alert-rtl" />

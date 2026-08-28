@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "popover-basic",
+  "type": "registry:example",
+  "description": "Popover primitive wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "popover"
+  ],
+  "files": [
+    {
+      "path": "src/examples/popover-basic.tsx",
+      "content": "import * as UI from '@/components/ui/popover'\n\nexport default function PopoverBasicExample() {\n  return <UI.Popover />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

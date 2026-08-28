@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "badge-icon",
+  "type": "registry:example",
+  "description": "Small status badge with variants example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "badge"
+  ],
+  "files": [
+    {
+      "path": "src/examples/badge-icon.tsx",
+      "content": "import * as UI from '@/components/ui/badge'\n\nexport default function BadgeIconExample() {\n  return <UI.Badge />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

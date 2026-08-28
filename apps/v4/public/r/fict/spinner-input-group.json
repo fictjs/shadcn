@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "spinner-input-group",
+  "type": "registry:example",
+  "description": "Animated spinner indicator with size variants example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "spinner"
+  ],
+  "files": [
+    {
+      "path": "src/examples/spinner-input-group.tsx",
+      "content": "import * as UI from '@/components/ui/spinner'\n\nexport default function SpinnerInputGroupExample() {\n  return <UI.Spinner />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

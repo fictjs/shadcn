@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "table-rtl",
+  "type": "registry:example",
+  "description": "Table composition primitives example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "table"
+  ],
+  "files": [
+    {
+      "path": "src/examples/table-rtl.tsx",
+      "content": "import * as UI from '@/components/ui/table'\n\nexport default function TableRtlExample() {\n  return <UI.Table />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

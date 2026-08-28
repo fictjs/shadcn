@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "alert-colors",
+  "type": "registry:example",
+  "description": "Alert component with semantic variants example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "alert"
+  ],
+  "files": [
+    {
+      "path": "src/examples/alert-colors.tsx",
+      "content": "import * as UI from '@/components/ui/alert'\n\nexport default function AlertColorsExample() {\n  return <UI.Alert />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

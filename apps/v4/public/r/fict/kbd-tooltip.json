@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "kbd-tooltip",
+  "type": "registry:example",
+  "description": "Keyboard keycap component example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "kbd"
+  ],
+  "files": [
+    {
+      "path": "src/examples/kbd-tooltip.tsx",
+      "content": "import * as UI from '@/components/ui/kbd'\n\nexport default function KbdTooltipExample() {\n  return <UI.Kbd />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+---
+title: Context Menu
+description: Context menu wrappers
+component: true
+---
+
+<ComponentPreview name="context-menu-demo" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx @fictjs/shadcn@latest add context-menu
+```
+
+</TabsContent>
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the runtime dependencies:</Step>
+
+```bash
+npm install @fictjs/radix-ui
+```
+
+<Step>Copy the Fict shadcn component into your project.</Step>
+
+<ComponentSource name="context-menu" title="components/ui/context-menu.tsx" />
+
+</Steps>
+
+</TabsContent>
+</CodeTabs>
+
+## Usage
+
+```tsx
+import * as ContextMenu from "@/components/ui/context-menu"
+```
+
+## Examples
+
+### Preview
+
+<ComponentPreview name="context-menu-demo" />
+
+### Basic
+
+<ComponentPreview name="context-menu-basic" />
+
+### Submenu
+
+<ComponentPreview name="context-menu-submenu" />
+
+### Shortcuts
+
+<ComponentPreview name="context-menu-shortcuts" />
+
+### Groups
+
+<ComponentPreview name="context-menu-groups" />
+
+### Icons
+
+<ComponentPreview name="context-menu-icons" />
+
+### Checkboxes
+
+<ComponentPreview name="context-menu-checkboxes" />
+
+### Radio
+
+<ComponentPreview name="context-menu-radio" />
+
+### Destructive
+
+<ComponentPreview name="context-menu-destructive" />
+
+### Rtl
+
+<ComponentPreview name="context-menu-rtl" />

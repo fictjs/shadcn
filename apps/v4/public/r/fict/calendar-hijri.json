@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "calendar-hijri",
+  "type": "registry:example",
+  "description": "Accessible date grid with controlled selection and month navigation example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "calendar"
+  ],
+  "files": [
+    {
+      "path": "src/examples/calendar-hijri.tsx",
+      "content": "import * as UI from '@/components/ui/calendar'\n\nexport default function CalendarHijriExample() {\n  return <UI.Calendar />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

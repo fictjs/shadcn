@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toggle-group-font-weight-selector",
+  "type": "registry:example",
+  "description": "Toggle group wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "toggle-group"
+  ],
+  "files": [
+    {
+      "path": "src/examples/toggle-group-font-weight-selector.tsx",
+      "content": "import * as UI from '@/components/ui/toggle-group'\n\nexport default function ToggleGroupFontWeightSelectorExample() {\n  return <UI.ToggleGroup />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "chart-example",
+  "type": "registry:example",
+  "description": "Chart container and lightweight sparkline helpers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "chart"
+  ],
+  "files": [
+    {
+      "path": "src/examples/chart-example.tsx",
+      "content": "import * as UI from '@/components/ui/chart'\n\nexport default function ChartExampleExample() {\n  return <UI.Chart />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

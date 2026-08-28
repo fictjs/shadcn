@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "switch-choice-card",
+  "type": "registry:example",
+  "description": "Switch primitive wrapper example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "switch"
+  ],
+  "files": [
+    {
+      "path": "src/examples/switch-choice-card.tsx",
+      "content": "import * as UI from '@/components/ui/switch'\n\nexport default function SwitchChoiceCardExample() {\n  return <UI.Switch />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "separator-menu",
+  "type": "registry:example",
+  "description": "Visual separator based on primitives example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "separator"
+  ],
+  "files": [
+    {
+      "path": "src/examples/separator-menu.tsx",
+      "content": "import * as UI from '@/components/ui/separator'\n\nexport default function SeparatorMenuExample() {\n  return <UI.Separator />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

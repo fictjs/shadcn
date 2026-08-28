@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toggle-group-rtl",
+  "type": "registry:example",
+  "description": "Toggle group wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "toggle-group"
+  ],
+  "files": [
+    {
+      "path": "src/examples/toggle-group-rtl.tsx",
+      "content": "import * as UI from '@/components/ui/toggle-group'\n\nexport default function ToggleGroupRtlExample() {\n  return <UI.ToggleGroup />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

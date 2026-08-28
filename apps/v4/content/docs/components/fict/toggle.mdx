@@ -1,0 +1,73 @@
+---
+title: Toggle
+description: Toggle primitive wrapper
+component: true
+---
+
+<ComponentPreview name="toggle-demo" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx @fictjs/shadcn@latest add toggle
+```
+
+</TabsContent>
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the runtime dependencies:</Step>
+
+```bash
+npm install @fictjs/radix-ui class-variance-authority
+```
+
+<Step>Copy the Fict shadcn component into your project.</Step>
+
+<ComponentSource name="toggle" title="components/ui/toggle.tsx" />
+
+</Steps>
+
+</TabsContent>
+</CodeTabs>
+
+## Usage
+
+```tsx
+import * as Toggle from "@/components/ui/toggle"
+```
+
+## Examples
+
+### Preview
+
+<ComponentPreview name="toggle-demo" />
+
+### Outline
+
+<ComponentPreview name="toggle-outline" />
+
+### Text
+
+<ComponentPreview name="toggle-text" />
+
+### Sizes
+
+<ComponentPreview name="toggle-sizes" />
+
+### Disabled
+
+<ComponentPreview name="toggle-disabled" />
+
+### Rtl
+
+<ComponentPreview name="toggle-rtl" />

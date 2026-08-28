@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "skeleton-card",
+  "type": "registry:example",
+  "description": "Skeleton placeholder example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "skeleton"
+  ],
+  "files": [
+    {
+      "path": "src/examples/skeleton-card.tsx",
+      "content": "import * as UI from '@/components/ui/skeleton'\n\nexport default function SkeletonCardExample() {\n  return <UI.Skeleton />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

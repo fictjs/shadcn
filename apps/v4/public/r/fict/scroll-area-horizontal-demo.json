@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scroll-area-horizontal-demo",
+  "type": "registry:example",
+  "description": "Scroll area wrappers with themed scrollbar example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "scroll-area"
+  ],
+  "files": [
+    {
+      "path": "src/examples/scroll-area-horizontal-demo.tsx",
+      "content": "import * as UI from '@/components/ui/scroll-area'\n\nexport default function ScrollAreaHorizontalDemoExample() {\n  return <UI.ScrollArea />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "drawer-sides",
+  "type": "registry:example",
+  "description": "Drawer aliases powered by sheet components example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "drawer"
+  ],
+  "files": [
+    {
+      "path": "src/examples/drawer-sides.tsx",
+      "content": "import * as UI from '@/components/ui/drawer'\n\nexport default function DrawerSidesExample() {\n  return <UI.Drawer />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

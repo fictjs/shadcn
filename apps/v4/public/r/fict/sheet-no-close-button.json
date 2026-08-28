@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sheet-no-close-button",
+  "type": "registry:example",
+  "description": "Drawer-style sheet based on dialog primitives example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "sheet"
+  ],
+  "files": [
+    {
+      "path": "src/examples/sheet-no-close-button.tsx",
+      "content": "import * as UI from '@/components/ui/sheet'\n\nexport default function SheetNoCloseButtonExample() {\n  return <UI.Sheet />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "kbd-input-group",
+  "type": "registry:example",
+  "description": "Keyboard keycap component example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "kbd"
+  ],
+  "files": [
+    {
+      "path": "src/examples/kbd-input-group.tsx",
+      "content": "import * as UI from '@/components/ui/kbd'\n\nexport default function KbdInputGroupExample() {\n  return <UI.Kbd />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

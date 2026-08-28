@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "data-table-demo",
+  "type": "registry:example",
+  "description": "Headless data table renderer over table primitives example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "data-table"
+  ],
+  "files": [
+    {
+      "path": "src/examples/data-table-demo.tsx",
+      "content": "import * as UI from '@/components/ui/data-table'\n\nexport default function DataTableDemoExample() {\n  return <UI.DataTable />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-outline",
+  "type": "registry:example",
+  "description": "Accessible button with variants example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "button"
+  ],
+  "files": [
+    {
+      "path": "src/examples/button-outline.tsx",
+      "content": "import * as UI from '@/components/ui/button'\n\nexport default function ButtonOutlineExample() {\n  return <UI.Button variant='outline'>Button</UI.Button>\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

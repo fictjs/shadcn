@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "menubar-checkbox",
+  "type": "registry:example",
+  "description": "Menubar wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "menubar"
+  ],
+  "files": [
+    {
+      "path": "src/examples/menubar-checkbox.tsx",
+      "content": "import * as UI from '@/components/ui/menubar'\n\nexport default function MenubarCheckboxExample() {\n  return <UI.Menubar />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

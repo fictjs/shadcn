@@ -1,0 +1,61 @@
+---
+title: Label
+description: Form label wrapper
+component: true
+---
+
+<ComponentPreview name="label-demo" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx @fictjs/shadcn@latest add label
+```
+
+</TabsContent>
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the runtime dependencies:</Step>
+
+```bash
+npm install @fictjs/radix-ui
+```
+
+<Step>Copy the Fict shadcn component into your project.</Step>
+
+<ComponentSource name="label" title="components/ui/label.tsx" />
+
+</Steps>
+
+</TabsContent>
+</CodeTabs>
+
+## Usage
+
+```tsx
+import * as Label from "@/components/ui/label"
+```
+
+## Examples
+
+### Preview
+
+<ComponentPreview name="label-demo" />
+
+### Field Demo
+
+<ComponentPreview name="field-demo" />
+
+### Rtl
+
+<ComponentPreview name="label-rtl" />

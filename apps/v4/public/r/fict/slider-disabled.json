@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "slider-disabled",
+  "type": "registry:example",
+  "description": "Slider primitive wrapper example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "slider"
+  ],
+  "files": [
+    {
+      "path": "src/examples/slider-disabled.tsx",
+      "content": "import * as UI from '@/components/ui/slider'\n\nexport default function SliderDisabledExample() {\n  return <UI.Slider disabled />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

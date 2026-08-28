@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "radio-group-disabled",
+  "type": "registry:example",
+  "description": "Radio group primitives with style wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "radio-group"
+  ],
+  "files": [
+    {
+      "path": "src/examples/radio-group-disabled.tsx",
+      "content": "import * as UI from '@/components/ui/radio-group'\n\nexport default function RadioGroupDisabledExample() {\n  return <UI.RadioGroup disabled />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

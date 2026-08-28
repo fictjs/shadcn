@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "checkbox-basic",
+  "type": "registry:example",
+  "description": "Checkbox primitive wrapper example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "checkbox"
+  ],
+  "files": [
+    {
+      "path": "src/examples/checkbox-basic.tsx",
+      "content": "import * as UI from '@/components/ui/checkbox'\n\nexport default function CheckboxBasicExample() {\n  return <UI.Checkbox />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

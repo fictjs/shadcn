@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "slider-range",
+  "type": "registry:example",
+  "description": "Slider primitive wrapper example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "slider"
+  ],
+  "files": [
+    {
+      "path": "src/examples/slider-range.tsx",
+      "content": "import * as UI from '@/components/ui/slider'\n\nexport default function SliderRangeExample() {\n  return <UI.Slider />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "context-menu-basic",
+  "type": "registry:example",
+  "description": "Context menu wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "context-menu"
+  ],
+  "files": [
+    {
+      "path": "src/examples/context-menu-basic.tsx",
+      "content": "import * as UI from '@/components/ui/context-menu'\n\nexport default function ContextMenuBasicExample() {\n  return <UI.ContextMenu />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

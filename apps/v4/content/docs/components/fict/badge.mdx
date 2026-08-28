@@ -1,0 +1,77 @@
+---
+title: Badge
+description: Small status badge with variants
+component: true
+---
+
+<ComponentPreview name="badge-demo" />
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+<TabsContent value="cli">
+
+```bash
+npx @fictjs/shadcn@latest add badge
+```
+
+</TabsContent>
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Install the runtime dependencies:</Step>
+
+```bash
+npm install class-variance-authority
+```
+
+<Step>Copy the Fict shadcn component into your project.</Step>
+
+<ComponentSource name="badge" title="components/ui/badge.tsx" />
+
+</Steps>
+
+</TabsContent>
+</CodeTabs>
+
+## Usage
+
+```tsx
+import * as Badge from "@/components/ui/badge"
+```
+
+## Examples
+
+### Preview
+
+<ComponentPreview name="badge-demo" />
+
+### Variants
+
+<ComponentPreview name="badge-variants" />
+
+### Icon
+
+<ComponentPreview name="badge-icon" />
+
+### Spinner
+
+<ComponentPreview name="badge-spinner" />
+
+### Link
+
+<ComponentPreview name="badge-link" />
+
+### Colors
+
+<ComponentPreview name="badge-colors" />
+
+### Rtl
+
+<ComponentPreview name="badge-rtl" />

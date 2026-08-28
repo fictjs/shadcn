@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "hover-card-rtl",
+  "type": "registry:example",
+  "description": "Hover card primitive wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "hover-card"
+  ],
+  "files": [
+    {
+      "path": "src/examples/hover-card-rtl.tsx",
+      "content": "import * as UI from '@/components/ui/hover-card'\n\nexport default function HoverCardRtlExample() {\n  return <UI.HoverCard />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}
