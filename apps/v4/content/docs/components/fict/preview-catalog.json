@@ -179,6 +179,7 @@
     "context-menu-checkboxes",
     "context-menu-radio",
     "context-menu-destructive",
+    "context-menu-sides",
     "context-menu-rtl"
   ],
   "data-table": [
