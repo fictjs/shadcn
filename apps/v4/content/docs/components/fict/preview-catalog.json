@@ -380,6 +380,9 @@
     "radio-group-invalid",
     "radio-group-rtl"
   ],
+  "range-calendar": [
+    "range-calendar-demo"
+  ],
   "resizable": [
     "resizable-demo",
     "resizable-vertical",
