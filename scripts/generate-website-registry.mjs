@@ -3,7 +3,7 @@ import path from 'node:path'
 import { stdout } from 'node:process'
 import { fileURLToPath } from 'node:url'
 
-import { loadFictExampleSource } from './lib/fict-example-source.mjs'
+import { extractFictRegistryDependencies, loadFictExampleSource } from './lib/fict-example-source.mjs'
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const distEntryPath = path.join(rootDir, 'dist/index.js')
@@ -68,11 +68,12 @@ for (const entry of entries.filter(candidate => candidate.type === 'ui-component
   for (const previewName of previews) {
     const componentName = toIdentifier(entry.name)
     const exampleName = `${toIdentifier(previewName)}Example`
-    const content = loadFictExampleSource({
+    const curatedContent = loadFictExampleSource({
       exampleRoot: exampleSourceRoot,
       componentName: entry.name,
       previewName,
-    }) ?? `import * as UI from '@/components/ui/${entry.name}'
+    })
+    const content = curatedContent ?? `import * as UI from '@/components/ui/${entry.name}'
 
 export default function ${exampleName}() {
   return ${getExampleMarkup(entry.name, previewName, componentName)}
@@ -84,7 +85,7 @@ export default function ${exampleName}() {
       type: 'registry:example',
       description: `${entry.description} example for Fict`,
       dependencies: [],
-      registryDependencies: [entry.name],
+      registryDependencies: curatedContent ? extractFictRegistryDependencies(content) : [entry.name],
       files: [{ path: `src/examples/${previewName}.tsx`, content, type: 'registry:page' }],
     }
     fs.writeFileSync(path.join(outputRoot, `${previewName}.json`), `${JSON.stringify(payload, null, 2)}\n`, 'utf8')

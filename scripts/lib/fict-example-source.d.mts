@@ -5,4 +5,5 @@ export interface FictExampleSourceOptions {
 }
 
 export function loadFictExampleSource(options: FictExampleSourceOptions): string | null
+export function extractFictRegistryDependencies(content: string): string[]
 export function validateFictExampleSource(content: string, sourcePath?: string): void

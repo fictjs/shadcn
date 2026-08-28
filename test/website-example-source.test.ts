@@ -3,7 +3,11 @@ import os from 'node:os'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 
-import { loadFictExampleSource, validateFictExampleSource } from '../scripts/lib/fict-example-source.mjs'
+import {
+  extractFictRegistryDependencies,
+  loadFictExampleSource,
+  validateFictExampleSource,
+} from '../scripts/lib/fict-example-source.mjs'
 
 describe('Fict website example sources', () => {
   it('loads a curated Fict source with a stable trailing newline', () => {
@@ -23,11 +27,26 @@ describe('Fict website example sources', () => {
     })).toMatch(/<Button size="sm">Small<\/Button>\n}\n$/)
     expect(loadFictExampleSource({
       exampleRoot: root,
+      componentName: 'button-group',
+      previewName: 'button-size',
+    })).toMatch(/<Button size="sm">Small<\/Button>/)
+    expect(loadFictExampleSource({
+      exampleRoot: root,
       componentName: 'button',
       previewName: 'button-demo',
     })).toBeNull()
 
     fs.rmSync(root, { recursive: true, force: true })
+  })
+
+  it('derives registry dependencies from curated UI imports', () => {
+    const source = `import { Button } from '@/components/ui/button'
+import { ButtonGroup } from "@/components/ui/button-group"
+import { format } from '@/lib/utils'
+
+export default function Demo() { return <ButtonGroup><Button>{format('Save')}</Button></ButtonGroup> }`
+
+    expect(extractFictRegistryDependencies(source)).toEqual(['button', 'button-group'])
   })
 
   it.each([
