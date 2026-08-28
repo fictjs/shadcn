@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/toggle-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/toggle'\n\nexport default function ToggleRtlExample() {\n  return <UI.Toggle />\n}\n",
+      "content": "import { Toggle } from '@/components/ui/toggle'\n\nexport default function ToggleRtlExample() {\n  return (\n    <Toggle dir=\"rtl\" aria-label=\"Toggle formatting\">★ Rtl</Toggle>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

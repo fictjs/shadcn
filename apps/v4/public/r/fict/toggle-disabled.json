@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/toggle-disabled.tsx",
-      "content": "import * as UI from '@/components/ui/toggle'\n\nexport default function ToggleDisabledExample() {\n  return <UI.Toggle disabled />\n}\n",
+      "content": "import { Toggle } from '@/components/ui/toggle'\n\nexport default function ToggleDisabledExample() {\n  return (\n    <Toggle disabled aria-label=\"Toggle formatting\">★ Disabled</Toggle>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
