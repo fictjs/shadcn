@@ -484,7 +484,9 @@
     "textarea-button",
     "textarea-rtl"
   ],
-  "toast": [],
+  "toast": [
+    "toast-demo"
+  ],
   "toggle-group": [
     "toggle-group-demo",
     "toggle-group-outline",

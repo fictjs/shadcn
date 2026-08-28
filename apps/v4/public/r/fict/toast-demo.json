@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/toast-demo.tsx",
-      "content": "import * as UI from '@/components/ui/toast'\n\nexport default function ToastDemoExample() {\n  return <UI.Toast />\n}\n",
+      "content": "import {\n  Toast,\n  ToastAction,\n  ToastDescription,\n  ToastProvider,\n  ToastTitle,\n  ToastViewport,\n} from '@/components/ui/toast'\n\nexport default function ToastDemoExample() {\n  return (\n    <ToastProvider>\n      <ToastViewport>\n        <Toast>\n          <ToastTitle>Event created</ToastTitle>\n          <ToastDescription>Sunday, August 29 at 9:00 AM</ToastDescription>\n          <ToastAction altText=\"Undo\">Undo</ToastAction>\n        </Toast>\n      </ToastViewport>\n    </ToastProvider>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
