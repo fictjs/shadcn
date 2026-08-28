@@ -32,6 +32,36 @@ export function extractFictRegistryDependencies(content) {
   return [...dependencies].sort()
 }
 
+export function extractFictRegistryExports(content) {
+  const exports = new Set()
+  for (const match of content.matchAll(/\bexport\s+(?:default\s+)?(?:function|const|class|interface|type)\s+([A-Za-z_$][\w$]*)|\bexport\s*\{([^}]+)\}/g)) {
+    if (match[1]) exports.add(match[1])
+    if (!match[2]) continue
+    for (const specifier of match[2].split(',')) {
+      const names = specifier.trim().replace(/^type\s+/, '').split(/\s+as\s+/)
+      const exportedName = names.at(-1)?.trim()
+      if (exportedName) exports.add(exportedName)
+    }
+  }
+  return exports
+}
+
+export function validateFictRegistryImports(content, registryExports, sourcePath = 'Fict example source') {
+  for (const match of content.matchAll(/\bimport\s*\{([^}]+)\}\s*from\s*["']@\/components\/ui\/([^"']+)["']/g)) {
+    const [, specifiers, componentName] = match
+    const availableExports = registryExports.get(componentName)
+    if (!availableExports) {
+      throw new Error(`${sourcePath} imports unknown registry component: ${componentName}`)
+    }
+    for (const specifier of specifiers.split(',')) {
+      const importedName = specifier.trim().replace(/^type\s+/, '').split(/\s+as\s+/)[0]?.trim()
+      if (importedName && !availableExports.has(importedName)) {
+        throw new Error(`${sourcePath} imports ${componentName}.${importedName}, which is not exported by the Fict registry.`)
+      }
+    }
+  }
+}
+
 export function validateFictExampleSource(content, sourcePath = 'Fict example source') {
   if (!content.trim()) {
     throw new Error(`${sourcePath} is empty.`)
@@ -48,6 +78,7 @@ export function validateFictExampleSource(content, sourcePath = 'Fict example so
     [/\bfrom\s+["'](?:recharts|react-day-picker(?:\/[^"']*)?|input-otp|@tanstack\/react-table|react-textarea-autosize)["']/, 'React-only package import'],
     [/\bfrom\s+["']@\/(?:examples|registry)\//, 'upstream website import'],
     [/\bfrom\s+["']@\/components\/(?!ui\/)/, 'website-internal component import'],
+    [/\bfrom\s+["'](?!@\/components\/ui\/|\.\.?\/)[^"']+["']/, 'non-registry package import'],
     [/\bclassName=/, 'React className attribute'],
     [/\b(?:useState|useEffect|useMemo|useCallback)\s*\(/, 'React hook'],
   ]

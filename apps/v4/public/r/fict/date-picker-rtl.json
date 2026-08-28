@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "date-picker-rtl",
+  "type": "registry:example",
+  "description": "date-picker example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "calendar"
+  ],
+  "files": [
+    {
+      "path": "src/examples/date-picker-rtl.tsx",
+      "content": "import { Calendar } from '@/components/ui/calendar'\n\nexport default function DatePickerRtlExample() {\n  return (\n    <div dir=\"rtl\"><label class=\"mb-2 block text-sm font-medium\">Picker Rtl</label><Calendar defaultValue={new Date(2026, 7, 29)} /></div>\n  )\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

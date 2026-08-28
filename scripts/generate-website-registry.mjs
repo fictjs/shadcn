@@ -3,7 +3,12 @@ import path from 'node:path'
 import { stdout } from 'node:process'
 import { fileURLToPath } from 'node:url'
 
-import { extractFictRegistryDependencies, loadFictExampleSource } from './lib/fict-example-source.mjs'
+import {
+  extractFictRegistryDependencies,
+  extractFictRegistryExports,
+  loadFictExampleSource,
+  validateFictRegistryImports,
+} from './lib/fict-example-source.mjs'
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const distEntryPath = path.join(rootDir, 'dist/index.js')
@@ -29,6 +34,17 @@ const entries = [
 const previewCatalog = fs.existsSync(previewCatalogPath)
   ? JSON.parse(fs.readFileSync(previewCatalogPath, 'utf8'))
   : {}
+const entriesByName = new Map(entries.map(entry => [entry.name, entry]))
+const registryExports = new Map(
+  entries
+    .filter(entry => entry.type === 'ui-component')
+    .map(entry => [
+      entry.name,
+      extractFictRegistryExports(
+        registry.renderRegistryEntryFiles(entry, config).map(file => file.content).join('\n'),
+      ),
+    ]),
+)
 
 fs.rmSync(outputRoot, { recursive: true, force: true })
 
@@ -61,35 +77,34 @@ for (const entry of entries) {
   fs.writeFileSync(outputPath, `${JSON.stringify(payload, null, 2)}\n`, 'utf8')
 }
 
-for (const entry of entries.filter(candidate => candidate.type === 'ui-component' && !['is-mobile', 'utils'].includes(candidate.name))) {
-  const previews = previewCatalog[entry.name]?.length
-    ? previewCatalog[entry.name]
-    : [`${entry.name}-demo`]
-  for (const previewName of previews) {
-    const componentName = toIdentifier(entry.name)
-    const exampleName = `${toIdentifier(previewName)}Example`
-    const curatedContent = loadFictExampleSource({
+const previews = new Map()
+for (const [componentName, previewNames] of Object.entries(previewCatalog)) {
+  for (const previewName of previewNames) {
+    if (!previews.has(previewName)) previews.set(previewName, componentName)
+  }
+}
+
+for (const [previewName, componentName] of previews) {
+    const content = loadFictExampleSource({
       exampleRoot: exampleSourceRoot,
-      componentName: entry.name,
+      componentName,
       previewName,
     })
-    const content = curatedContent ?? `import * as UI from '@/components/ui/${entry.name}'
-
-export default function ${exampleName}() {
-  return ${getExampleMarkup(entry.name, previewName, componentName)}
-}
-`
+    if (!content) {
+      throw new Error(`Missing curated Fict example source for ${componentName}/${previewName}.`)
+    }
+    validateFictRegistryImports(content, registryExports, `${componentName}/${previewName}`)
+    const entry = entriesByName.get(componentName)
     const payload = {
       $schema: 'https://ui.shadcn.com/schema/registry-item.json',
       name: previewName,
       type: 'registry:example',
-      description: `${entry.description} example for Fict`,
+      description: `${entry?.description ?? componentName} example for Fict`,
       dependencies: [],
-      registryDependencies: curatedContent ? extractFictRegistryDependencies(content) : [entry.name],
+      registryDependencies: extractFictRegistryDependencies(content),
       files: [{ path: `src/examples/${previewName}.tsx`, content, type: 'registry:page' }],
     }
     fs.writeFileSync(path.join(outputRoot, `${previewName}.json`), `${JSON.stringify(payload, null, 2)}\n`, 'utf8')
-  }
 }
 
 const index = entries.map(entry => ({
@@ -99,26 +114,4 @@ const index = entries.map(entry => ({
 }))
 fs.writeFileSync(path.join(outputRoot, 'index.json'), `${JSON.stringify(index, null, 2)}\n`, 'utf8')
 
-stdout.write(`Generated ${entries.length} Fict website registry entries in ${path.relative(rootDir, outputRoot)}\n`)
-
-function toIdentifier(value) {
-  return value
-    .split(/[^a-zA-Z0-9]+/)
-    .filter(Boolean)
-    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-    .join('')
-    .replace(/Otp/g, 'OTP')
-}
-
-function getExampleMarkup(componentName, previewName, exportName) {
-  if (componentName === 'button') {
-    const variant = ['destructive', 'outline', 'secondary', 'ghost', 'link'].find(value => previewName.includes(value))
-    const size = ['sm', 'lg', 'icon'].find(value => previewName.endsWith(`-${value}`) || previewName.includes(`-${value}-`))
-    const props = [variant ? `variant='${variant}'` : '', size ? `size='${size}'` : ''].filter(Boolean).join(' ')
-    return `<UI.${exportName}${props ? ` ${props}` : ''}>Button</UI.${exportName}>`
-  }
-  if (previewName.includes('disabled')) {
-    return `<UI.${exportName} disabled />`
-  }
-  return `<UI.${exportName} />`
-}
+stdout.write(`Generated ${entries.length} registry entries and ${previews.size} Fict examples in ${path.relative(rootDir, outputRoot)}\n`)

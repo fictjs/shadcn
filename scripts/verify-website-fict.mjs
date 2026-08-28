@@ -10,6 +10,7 @@ const registryRoot = path.join(rootDir, 'apps/v4/public/r/fict')
 const legacyPublicRoot = path.join(rootDir, 'apps/v4/public/r/styles')
 const siteSourceRoot = path.join(rootDir, 'apps/v4/src')
 const registrySourceRoot = path.join(rootDir, 'apps/v4/registry')
+const previewCatalogPath = path.join(docsRoot, 'components/fict/preview-catalog.json')
 
 const forbiddenCode = [
   /from\s+["']react["']/,
@@ -45,9 +46,19 @@ for (const filePath of walkFiles(registrySourceRoot)) {
 }
 
 const previewNames = new Set()
+const previewCatalog = JSON.parse(fs.readFileSync(previewCatalogPath, 'utf8'))
+for (const [family, familyPreviewNames] of Object.entries(previewCatalog)) {
+  assert.ok(Array.isArray(familyPreviewNames), `Invalid preview catalog entry for ${family}`)
+  for (const previewName of familyPreviewNames) {
+    previewNames.add(previewName)
+    const registryPath = path.join(registryRoot, `${previewName}.json`)
+    assert.ok(fs.existsSync(registryPath), `Missing generated Fict source for catalog preview ${family}/${previewName}`)
+  }
+}
 for (const filePath of walkFiles(docsRoot).filter(file => file.endsWith('.mdx'))) {
   const source = fs.readFileSync(filePath, 'utf8')
   for (const match of source.matchAll(/<ComponentPreview[\s\S]*?name="([^"]+)"[\s\S]*?\/>/g)) {
+    assert.ok(previewNames.has(match[1]), `Documentation preview ${match[1]} is missing from the Fict preview catalog.`)
     previewNames.add(match[1])
     const registryPath = path.join(registryRoot, `${match[1]}.json`)
     assert.ok(fs.existsSync(registryPath), `Missing Fict source for documentation preview ${match[1]}`)

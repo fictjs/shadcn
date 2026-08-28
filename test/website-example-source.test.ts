@@ -3,10 +3,15 @@ import os from 'node:os'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 
+import { DEFAULT_CONFIG } from '../src/core/constants'
+import { getBuiltinComponent, listBuiltinComponentNames } from '../src/registry'
+import { renderRegistryEntryFiles } from '../src/registry/render'
 import {
   extractFictRegistryDependencies,
+  extractFictRegistryExports,
   loadFictExampleSource,
   validateFictExampleSource,
+  validateFictRegistryImports,
 } from '../scripts/lib/fict-example-source.mjs'
 
 const repositoryExampleRoot = path.join(process.cwd(), 'apps/v4/content/examples/fict')
@@ -65,6 +70,36 @@ import { format } from '@/lib/utils'
 export default function Demo() { return <ButtonGroup><Button>{format('Save')}</Button></ButtonGroup> }`
 
     expect(extractFictRegistryDependencies(source)).toEqual(['button', 'button-group'])
+  })
+
+  it('provides explicit Fict source for every catalog preview', () => {
+    for (const family of Object.keys(previewCatalog)) {
+      expectCuratedFamily(family)
+    }
+  })
+
+  it('only imports symbols exported by the Fict registry', () => {
+    const registryExports = new Map(
+      listBuiltinComponentNames().map(componentName => {
+        const entry = getBuiltinComponent(componentName)
+        expect(entry, componentName).not.toBeNull()
+        const source = renderRegistryEntryFiles(entry!, DEFAULT_CONFIG)
+          .map(file => file.content)
+          .join('\n')
+        return [componentName, extractFictRegistryExports(source)]
+      }),
+    )
+
+    for (const [family, previewNames] of Object.entries(previewCatalog)) {
+      for (const previewName of new Set(previewNames)) {
+        const source = loadFictExampleSource({
+          exampleRoot: repositoryExampleRoot,
+          componentName: family,
+          previewName,
+        })
+        validateFictRegistryImports(source!, registryExports, `${family}/${previewName}`)
+      }
+    }
   })
 
   it('provides curated Fict source for every Button preview', () => {
@@ -142,7 +177,16 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     ['React-only package import', "import { AreaChart } from 'recharts'\nexport default function Demo() { return <AreaChart /> }"],
     ['upstream website import', "import { Button } from '@/examples/radix/ui/button'\nexport default function Demo() { return <Button /> }"],
     ['website-internal component import', "import { LanguageSelector } from '@/components/language-selector'\nexport default function Demo() { return <LanguageSelector /> }"],
+    ['non-registry package import', "import { toast } from 'sonner'\nexport default function Demo() { return null }"],
   ])('rejects %s', (_label, source) => {
     expect(() => validateFictExampleSource(source)).toThrow(/must use Fict syntax/)
+  })
+
+  it('rejects imports that do not exist in the Fict registry', () => {
+    const registryExports = new Map([['button', new Set(['Button'])]])
+    expect(() => validateFictRegistryImports(
+      "import { ButtonGroup } from '@/components/ui/button'\nexport default function Demo() { return null }",
+      registryExports,
+    )).toThrow('button.ButtonGroup')
   })
 })

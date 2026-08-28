@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "field-demo",
   "type": "registry:example",
-  "description": "Form label wrapper example for Fict",
+  "description": "Field composition primitives for labels and messages example for Fict",
   "dependencies": [],
   "registryDependencies": [
     "field"

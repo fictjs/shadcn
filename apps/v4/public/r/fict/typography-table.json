@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "typography-table",
+  "type": "registry:example",
+  "description": "typography example for Fict",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/examples/typography-table.tsx",
+      "content": "export default function TypographyTableExample() {\n  return (\n    <article><h1 class=\"text-4xl font-bold\">Table</h1><p class=\"mt-4 leading-7\">Semantic typography rendered by Fict.</p></article>\n  )\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

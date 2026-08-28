@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "date-picker-dob",
+  "type": "registry:example",
+  "description": "date-picker example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "calendar"
+  ],
+  "files": [
+    {
+      "path": "src/examples/date-picker-dob.tsx",
+      "content": "import { Calendar } from '@/components/ui/calendar'\n\nexport default function DatePickerDobExample() {\n  return (\n    <div><label class=\"mb-2 block text-sm font-medium\">Picker Dob</label><Calendar defaultValue={new Date(2026, 7, 29)} /></div>\n  )\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

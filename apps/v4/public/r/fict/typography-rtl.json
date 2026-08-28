@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "typography-rtl",
+  "type": "registry:example",
+  "description": "typography example for Fict",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/examples/typography-rtl.tsx",
+      "content": "export default function TypographyRtlExample() {\n  return (\n    <article dir=\"rtl\"><h1 class=\"text-4xl font-bold\">Rtl</h1><p class=\"mt-4 leading-7\">Semantic typography rendered by Fict.</p></article>\n  )\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}
