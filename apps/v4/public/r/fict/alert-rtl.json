@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/alert-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/alert'\n\nexport default function AlertRtlExample() {\n  return <UI.Alert />\n}\n",
+      "content": "import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'\n\nexport default function AlertRtlExample() {\n  return (\n    <Alert dir=\"rtl\"><AlertTitle>Rtl</AlertTitle><AlertDescription>This alert is rendered by Fict.</AlertDescription></Alert>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

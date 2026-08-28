@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/alert-destructive.tsx",
-      "content": "import * as UI from '@/components/ui/alert'\n\nexport default function AlertDestructiveExample() {\n  return <UI.Alert />\n}\n",
+      "content": "import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'\n\nexport default function AlertDestructiveExample() {\n  return (\n    <Alert variant=\"destructive\"><AlertTitle>Destructive</AlertTitle><AlertDescription>This alert is rendered by Fict.</AlertDescription></Alert>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
