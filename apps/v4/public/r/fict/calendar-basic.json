@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/calendar-basic.tsx",
-      "content": "import * as UI from '@/components/ui/calendar'\n\nexport default function CalendarBasicExample() {\n  return <UI.Calendar />\n}\n",
+      "content": "import { Calendar } from '@/components/ui/calendar'\n\nexport default function CalendarBasicExample() {\n  return (\n    <Calendar defaultValue={new Date(2026, 7, 29)} defaultMonth={new Date(2026, 7, 1)} />\n  )\n}\n",
       "type": "registry:page"
     }
   ]
