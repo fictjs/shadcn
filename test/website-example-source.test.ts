@@ -9,6 +9,24 @@ import {
   validateFictExampleSource,
 } from '../scripts/lib/fict-example-source.mjs'
 
+const repositoryExampleRoot = path.join(process.cwd(), 'apps/v4/content/examples/fict')
+const previewCatalog = JSON.parse(fs.readFileSync(
+  path.join(process.cwd(), 'apps/v4/content/docs/components/fict/preview-catalog.json'),
+  'utf8'
+)) as Record<string, string[]>
+
+function expectCuratedFamily(family: string) {
+  for (const previewName of previewCatalog[family]) {
+    const source = loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: family,
+      previewName,
+    })
+    expect(source, previewName).not.toBeNull()
+    expect(source, previewName).not.toContain('import * as UI')
+  }
+}
+
 describe('Fict website example sources', () => {
   it('loads a curated Fict source with a stable trailing newline', () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'fict-example-source-'))
@@ -50,24 +68,10 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
   })
 
   it('provides curated Fict source for every Button preview', () => {
-    const root = path.join(process.cwd(), 'apps/v4/content/examples/fict')
-    const catalog = JSON.parse(fs.readFileSync(
-      path.join(process.cwd(), 'apps/v4/content/docs/components/fict/preview-catalog.json'),
-      'utf8'
-    )) as Record<string, string[]>
-
-    for (const previewName of catalog.button) {
-      const source = loadFictExampleSource({
-        exampleRoot: root,
-        componentName: 'button',
-        previewName,
-      })
-      expect(source, previewName).not.toBeNull()
-      expect(source, previewName).not.toContain('import * as UI')
-    }
+    expectCuratedFamily('button')
 
     const sizeSource = loadFictExampleSource({
-      exampleRoot: root,
+      exampleRoot: repositoryExampleRoot,
       componentName: 'button',
       previewName: 'button-size',
     })
@@ -76,11 +80,38 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(sizeSource).toContain('size="icon-lg"')
 
     const asChildSource = loadFictExampleSource({
-      exampleRoot: root,
+      exampleRoot: repositoryExampleRoot,
       componentName: 'button',
       previewName: 'button-aschild',
     })
     expect(asChildSource).toContain('<Button asChild><a href="/login">Login</a></Button>')
+  })
+
+  it('provides curated Fict source for every Accordion preview', () => {
+    expectCuratedFamily('accordion')
+
+    const multipleSource = loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: 'accordion',
+      previewName: 'accordion-multiple',
+    })
+    expect(multipleSource).toContain('type="multiple"')
+    expect(multipleSource).toContain('defaultValue={["notifications"]}')
+
+    const disabledSource = loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: 'accordion',
+      previewName: 'accordion-disabled',
+    })
+    expect(disabledSource).toContain('<AccordionItem value="item-2" disabled>')
+
+    const rtlSource = loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: 'accordion',
+      previewName: 'accordion-rtl',
+    })
+    expect(rtlSource).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(rtlSource).not.toContain('language-selector')
   })
 
   it.each([

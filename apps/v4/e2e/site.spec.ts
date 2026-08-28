@@ -399,6 +399,13 @@ test.describe("Fict shadcn website", () => {
       )
     }
 
+    const multipleCard = page.locator('[data-doc-preview-name="accordion-multiple"]')
+    await multipleCard.getByRole("button", { name: "View Code" }).click()
+    const multipleCode = multipleCard.locator("[data-doc-preview-full-code]")
+    await expect(multipleCode).toContainText('type="multiple"')
+    await expect(multipleCode).toContainText('defaultValue={["notifications"]}')
+    await expect(multipleCode).not.toContainText("import * as UI")
+
     const demo = page.locator('[data-doc-preview-name="accordion-demo"]')
     const demoTriggers = demo.locator("[data-doc-accordion-trigger]")
     await expect(demoTriggers).toHaveCount(3)
