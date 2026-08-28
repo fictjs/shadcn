@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/breadcrumb-dropdown.tsx",
-      "content": "import * as UI from '@/components/ui/breadcrumb'\n\nexport default function BreadcrumbDropdownExample() {\n  return <UI.Breadcrumb />\n}\n",
+      "content": "import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'\n\nexport default function BreadcrumbDropdownExample() {\n  return (\n    <Breadcrumb><BreadcrumbList><BreadcrumbItem><BreadcrumbLink href=\"/\">Home</BreadcrumbLink></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem><BreadcrumbEllipsis /></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem><BreadcrumbPage>Dropdown</BreadcrumbPage></BreadcrumbItem></BreadcrumbList></Breadcrumb>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
