@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/slider-range.tsx",
-      "content": "import * as UI from '@/components/ui/slider'\n\nexport default function SliderRangeExample() {\n  return <UI.Slider />\n}\n",
+      "content": "import { Slider } from '@/components/ui/slider'\n\nexport default function SliderRangeExample() {\n  return (\n    <Slider defaultValue={[25, 75]} min={0} max={100} />\n  )\n}\n",
       "type": "registry:page"
     }
   ]
