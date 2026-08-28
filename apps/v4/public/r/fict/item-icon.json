@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/item-icon.tsx",
-      "content": "import * as UI from '@/components/ui/item'\n\nexport default function ItemIconExample() {\n  return <UI.Item />\n}\n",
+      "content": "import { Item, ItemContent, ItemDescription, ItemLeading, ItemTitle, ItemTrailing } from '@/components/ui/item'\n\nexport default function ItemIconExample() {\n  return (\n    <Item><ItemLeading>◆</ItemLeading><ItemContent><ItemTitle>Icon</ItemTitle><ItemDescription>A composable Fict list item.</ItemDescription></ItemContent><ItemTrailing>View</ItemTrailing></Item>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
