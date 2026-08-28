@@ -46,6 +46,7 @@
     "storybook:smoke": "pnpm storybook:prepare && pnpm exec storybook dev --ci --smoke-test",
     "website:registry": "pnpm build && node scripts/generate-website-registry.mjs",
     "website:docs": "node apps/v4/scripts/generate-fict-docs.mjs",
+    "verify:website": "pnpm website:registry && pnpm website:docs && node scripts/verify-website-fict.mjs",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:install": "playwright install --with-deps chromium",

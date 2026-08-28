@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "range-calendar-demo",
+  "type": "registry:example",
+  "description": "Two-month range calendar composition example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "range-calendar"
+  ],
+  "files": [
+    {
+      "path": "src/examples/range-calendar-demo.tsx",
+      "content": "import * as UI from '@/components/ui/range-calendar'\n\nexport default function RangeCalendarDemoExample() {\n  return <UI.RangeCalendar />\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}

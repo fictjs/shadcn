@@ -57,8 +57,10 @@ for (const entry of entries) {
   fs.writeFileSync(outputPath, `${JSON.stringify(payload, null, 2)}\n`, 'utf8')
 }
 
-for (const entry of entries.filter(candidate => candidate.type === 'ui-component')) {
-  const previews = previewCatalog[entry.name] ?? []
+for (const entry of entries.filter(candidate => candidate.type === 'ui-component' && !['is-mobile', 'utils'].includes(candidate.name))) {
+  const previews = previewCatalog[entry.name]?.length
+    ? previewCatalog[entry.name]
+    : [`${entry.name}-demo`]
   for (const previewName of previews) {
     const componentName = toIdentifier(entry.name)
     const exampleName = `${toIdentifier(previewName)}Example`

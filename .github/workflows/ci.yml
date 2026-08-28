@@ -72,6 +72,8 @@ jobs:
         run: pnpm typecheck
         env:
           CI: true
+      - name: Verify Fict website sources
+        run: pnpm verify:website
 
   test:
     runs-on: ubuntu-latest
