@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/chart-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/chart'\n\nexport default function ChartRtlExample() {\n  return <UI.Chart />\n}\n",
+      "content": "import { BarSparkline, ChartContainer, ChartLegend } from '@/components/ui/chart'\n\nexport default function ChartRtlExample() {\n  return (\n    <ChartContainer dir=\"rtl\"><h3>Rtl</h3><BarSparkline data={[{ label: \"Jan\", value: 42 }, { label: \"Feb\", value: 68 }, { label: \"Mar\", value: 51 }]} /><ChartLegend items={[{ label: \"Visitors\", colorClass: \"bg-blue-500\" }]} /></ChartContainer>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
