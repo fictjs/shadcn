@@ -54,6 +54,7 @@ export interface DocContentBlock {
   name?: string
   filePath?: string
   code?: string
+  language?: string
   styleName?: string
   variant?: string
   links?: { title: string; href: string }[]

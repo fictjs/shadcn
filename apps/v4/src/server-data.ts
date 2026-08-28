@@ -1481,12 +1481,14 @@ function parseDocBody(body: string): {
         direction,
         filePath: registryItem?.path,
         code: registryItem?.content,
+        language: inferCodeLanguage(title || registryItem?.path),
       })
       index += 1
       continue
     }
 
     if (trimmed.startsWith("```")) {
+      const language = trimmed.slice(3).trim().split(/\s+/, 1)[0] || "text"
       const codeLines: string[] = []
       index += 1
       while (index < lines.length) {
@@ -1502,6 +1504,7 @@ function parseDocBody(body: string): {
       blocks.push({
         kind: "code",
         text: codeLines.join("\n").trimEnd(),
+        language,
       })
       continue
     }
@@ -1651,6 +1654,17 @@ function parseDocBody(body: string): {
   }
 
   return { headings, blocks }
+}
+
+function inferCodeLanguage(filePath?: string): string {
+  const extension = filePath?.split(".").pop()?.toLowerCase()
+
+  if (!extension) return "text"
+  if (extension === "sh" || extension === "shell") return "bash"
+  if (extension === "yml") return "yaml"
+  if (extension === "mdx") return "md"
+
+  return extension
 }
 
 const inlineMarkdownPattern =
