@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import path from 'node:path'
+import { stdout } from 'node:process'
 import { fileURLToPath } from 'node:url'
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -71,7 +72,7 @@ const actualRegistryFiles = walkFiles(registryRoot)
   .map(file => path.relative(registryRoot, file).replaceAll('\\', '/'))
 assert.deepEqual(actualRegistryFiles.sort(), Array.from(expectedRegistryFiles).sort(), 'Generated Fict registry file set is stale.')
 
-console.log('Verified Fict-only website documentation and registry sources')
+stdout.write('Verified Fict-only website documentation and registry sources\n')
 
 function assertFictSource(filePath) {
   const source = fs.readFileSync(filePath, 'utf8')

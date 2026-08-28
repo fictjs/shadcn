@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { stdout } from 'node:process'
 import { fileURLToPath } from 'node:url'
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -90,7 +91,7 @@ const index = entries.map(entry => ({
 }))
 fs.writeFileSync(path.join(outputRoot, 'index.json'), `${JSON.stringify(index, null, 2)}\n`, 'utf8')
 
-console.log(`Generated ${entries.length} Fict website registry entries in ${path.relative(rootDir, outputRoot)}`)
+stdout.write(`Generated ${entries.length} Fict website registry entries in ${path.relative(rootDir, outputRoot)}\n`)
 
 function toIdentifier(value) {
   return value
