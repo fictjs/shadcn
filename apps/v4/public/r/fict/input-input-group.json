@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/input-input-group.tsx",
-      "content": "import * as UI from '@/components/ui/input'\n\nexport default function InputInputGroupExample() {\n  return <UI.Input />\n}\n",
+      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputInputGroupExample() {\n  return (\n    <Input placeholder=\"Input Group\" />\n  )\n}\n",
       "type": "registry:page"
     }
   ]

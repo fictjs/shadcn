@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/input-disabled.tsx",
-      "content": "import * as UI from '@/components/ui/input'\n\nexport default function InputDisabledExample() {\n  return <UI.Input disabled />\n}\n",
+      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputDisabledExample() {\n  return (\n    <Input disabled placeholder=\"Disabled\" />\n  )\n}\n",
       "type": "registry:page"
     }
   ]

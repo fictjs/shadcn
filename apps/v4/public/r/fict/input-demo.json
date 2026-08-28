@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/input-demo.tsx",
-      "content": "import * as UI from '@/components/ui/input'\n\nexport default function InputDemoExample() {\n  return <UI.Input />\n}\n",
+      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputDemoExample() {\n  return (\n    <Input placeholder=\"Demo\" />\n  )\n}\n",
       "type": "registry:page"
     }
   ]

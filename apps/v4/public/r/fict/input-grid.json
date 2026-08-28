@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/input-grid.tsx",
-      "content": "import * as UI from '@/components/ui/input'\n\nexport default function InputGridExample() {\n  return <UI.Input />\n}\n",
+      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputGridExample() {\n  return (\n    <Input placeholder=\"Grid\" />\n  )\n}\n",
       "type": "registry:page"
     }
   ]

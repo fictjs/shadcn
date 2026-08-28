@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/input-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/input'\n\nexport default function InputRtlExample() {\n  return <UI.Input />\n}\n",
+      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputRtlExample() {\n  return (\n    <Input dir=\"rtl\" placeholder=\"Rtl\" />\n  )\n}\n",
       "type": "registry:page"
     }
   ]

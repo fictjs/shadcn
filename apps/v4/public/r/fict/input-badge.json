@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/input-badge.tsx",
-      "content": "import * as UI from '@/components/ui/input'\n\nexport default function InputBadgeExample() {\n  return <UI.Input />\n}\n",
+      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputBadgeExample() {\n  return (\n    <Input placeholder=\"Badge\" />\n  )\n}\n",
       "type": "registry:page"
     }
   ]

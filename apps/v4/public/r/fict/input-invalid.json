@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/input-invalid.tsx",
-      "content": "import * as UI from '@/components/ui/input'\n\nexport default function InputInvalidExample() {\n  return <UI.Input />\n}\n",
+      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputInvalidExample() {\n  return (\n    <Input placeholder=\"Invalid\" />\n  )\n}\n",
       "type": "registry:page"
     }
   ]
