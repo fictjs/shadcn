@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/combobox-input-group.tsx",
-      "content": "import * as UI from '@/components/ui/combobox'\n\nexport default function ComboboxInputGroupExample() {\n  return <UI.Combobox />\n}\n",
+      "content": "import { Combobox, ComboboxInput, ComboboxItem, ComboboxList } from '@/components/ui/combobox'\n\nexport default function ComboboxInputGroupExample() {\n  return (\n    <Combobox defaultValue=\"Fict\"><ComboboxInput placeholder=\"Search framework...\" /><ComboboxList forceMount><ComboboxItem value=\"Fict\">Fict</ComboboxItem><ComboboxItem value=\"Vue\">Vue</ComboboxItem><ComboboxItem value=\"React\">React</ComboboxItem></ComboboxList></Combobox>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
