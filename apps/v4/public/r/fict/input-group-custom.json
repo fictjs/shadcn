@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/input-group-custom.tsx",
-      "content": "import * as UI from '@/components/ui/input-group'\n\nexport default function InputGroupCustomExample() {\n  return <UI.InputGroup />\n}\n",
+      "content": "import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\n\nexport default function InputGroupCustomExample() {\n  return (\n    <InputGroup><InputGroupAddon>@</InputGroupAddon><InputGroupInput placeholder=\"Group Custom\" /><InputGroupAddon>.com</InputGroupAddon></InputGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

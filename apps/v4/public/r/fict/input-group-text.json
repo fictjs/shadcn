@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/input-group-text.tsx",
-      "content": "import * as UI from '@/components/ui/input-group'\n\nexport default function InputGroupTextExample() {\n  return <UI.InputGroup />\n}\n",
+      "content": "import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\n\nexport default function InputGroupTextExample() {\n  return (\n    <InputGroup><InputGroupAddon>@</InputGroupAddon><InputGroupInput placeholder=\"Group Text\" /><InputGroupAddon>.com</InputGroupAddon></InputGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
