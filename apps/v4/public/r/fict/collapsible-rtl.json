@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/collapsible-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/collapsible'\n\nexport default function CollapsibleRtlExample() {\n  return <UI.Collapsible />\n}\n",
+      "content": "import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'\n\nexport default function CollapsibleRtlExample() {\n  return (\n    <Collapsible dir=\"rtl\" defaultOpen><CollapsibleTrigger>Rtl</CollapsibleTrigger><CollapsibleContent><div class=\"mt-2 rounded-md border p-3\">Collapsible content</div></CollapsibleContent></Collapsible>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
