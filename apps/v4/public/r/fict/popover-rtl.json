@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/popover-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/popover'\n\nexport default function PopoverRtlExample() {\n  return <UI.Popover />\n}\n",
+      "content": "import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from '@/components/ui/popover'\n\nexport default function PopoverRtlExample() {\n  return (\n    <Popover dir=\"rtl\"><PopoverTrigger>Open Rtl</PopoverTrigger><PopoverContent><p class=\"text-sm\">Configure your preferences.</p><PopoverClose>Close</PopoverClose></PopoverContent></Popover>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
