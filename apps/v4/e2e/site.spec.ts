@@ -1509,6 +1509,11 @@ test.describe("Fict shadcn website", () => {
     await expect(previews.nth(5).locator(".doc-component-preview-stage")).toHaveCSS("height", "352px")
 
     const demo = page.locator('[data-doc-preview-name="dialog-demo"]')
+    await demo.getByRole("button", { name: "View Code" }).click()
+    const demoCode = demo.locator("[data-doc-preview-full-code]")
+    await expect(demoCode).toContainText('<DialogContent class="sm:max-w-sm">')
+    await expect(demoCode).toContainText("<DialogTrigger asChild>")
+    await expect(demoCode).not.toContainText("import * as UI")
     const demoTrigger = demo.getByRole("button", { name: "Open Dialog" })
     await demoTrigger.click()
     let dialog = page.getByRole("dialog")

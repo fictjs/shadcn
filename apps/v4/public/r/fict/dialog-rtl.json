@@ -5,12 +5,16 @@
   "description": "Dialog primitives with styled wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "dialog"
+    "button",
+    "dialog",
+    "field",
+    "input",
+    "label"
   ],
   "files": [
     {
       "path": "src/examples/dialog-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/dialog'\n\nexport default function DialogRtlExample() {\n  return <UI.Dialog />\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport {\n  Dialog,\n  DialogClose,\n  DialogContent,\n  DialogDescription,\n  DialogFooter,\n  DialogHeader,\n  DialogTitle,\n  DialogTrigger,\n} from '@/components/ui/dialog'\nimport { Field } from '@/components/ui/field'\nimport { Input } from '@/components/ui/input'\nimport { Label } from '@/components/ui/label'\n\nconst translations = {\n  ar: { open: 'فتح الحوار', title: 'تعديل الملف الشخصي', description: 'قم بإجراء تغييرات على ملفك الشخصي هنا. انقر فوق حفظ عند الانتهاء.', name: 'الاسم', username: 'اسم المستخدم', cancel: 'إلغاء', save: 'حفظ التغييرات' },\n  he: { open: 'פתח דיאלוג', title: 'ערוך פרופיל', description: 'בצע שינויים בפרופיל שלך כאן. לחץ על שמור כשתסיים.', name: 'שם', username: 'שם משתמש', cancel: 'בטל', save: 'שמור שינויים' },\n  en: { open: 'Open Dialog', title: 'Edit profile', description: \"Make changes to your profile here. Click save when you're done.\", name: 'Name', username: 'Username', cancel: 'Cancel', save: 'Save changes' },\n} as const\n\nexport default function DialogRtlExample() {\n  let language = $state<keyof typeof translations>('ar')\n  const text = () => translations[language]\n  const direction = () => language === 'en' ? 'ltr' : 'rtl'\n\n  return (\n    <div class=\"grid gap-4\">\n      <select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof translations }}>\n        <option value=\"ar\">Arabic (العربية)</option><option value=\"he\">Hebrew (עברית)</option><option value=\"en\">English</option>\n      </select>\n      <Dialog>\n        <DialogTrigger asChild><Button variant=\"outline\">{text().open}</Button></DialogTrigger>\n        <DialogContent class=\"sm:max-w-sm\" dir={direction()}>\n          <DialogHeader><DialogTitle>{text().title}</DialogTitle><DialogDescription>{text().description}</DialogDescription></DialogHeader>\n          <div class=\"grid gap-4\">\n            <Field><Label for=\"name-rtl\">{text().name}</Label><Input id=\"name-rtl\" value=\"Pedro Duarte\" /></Field>\n            <Field><Label for=\"username-rtl\">{text().username}</Label><Input id=\"username-rtl\" value=\"@peduarte\" /></Field>\n          </div>\n          <DialogFooter>\n            <DialogClose asChild><Button variant=\"outline\">{text().cancel}</Button></DialogClose>\n            <DialogClose asChild><Button>{text().save}</Button></DialogClose>\n          </DialogFooter>\n        </DialogContent>\n      </Dialog>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

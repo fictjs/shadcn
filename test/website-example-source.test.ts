@@ -114,6 +114,26 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(rtlSource).not.toContain('language-selector')
   })
 
+  it('provides curated Fict source for every Dialog preview', () => {
+    expectCuratedFamily('dialog')
+
+    const demoSource = loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: 'dialog',
+      previewName: 'dialog-demo',
+    })
+    expect(demoSource).toContain('<DialogContent class="sm:max-w-sm">')
+    expect(demoSource).toContain('<DialogTrigger asChild>')
+
+    const rtlSource = loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: 'dialog',
+      previewName: 'dialog-rtl',
+    })
+    expect(rtlSource).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(rtlSource).not.toContain('language-selector')
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],
