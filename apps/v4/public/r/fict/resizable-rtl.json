@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/resizable-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/resizable'\n\nexport default function ResizableRtlExample() {\n  return <UI.Resizable />\n}\n",
+      "content": "import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable'\n\nexport default function ResizableRtlExample() {\n  return (\n    <ResizablePanelGroup dir=\"rtl\" direction=\"horizontal\"><ResizablePanel defaultSize={40}>One</ResizablePanel><ResizableHandle withHandle /><ResizablePanel defaultSize={60}>Two</ResizablePanel></ResizablePanelGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
