@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/scroll-area-horizontal-demo.tsx",
-      "content": "import * as UI from '@/components/ui/scroll-area'\n\nexport default function ScrollAreaHorizontalDemoExample() {\n  return <UI.ScrollArea />\n}\n",
+      "content": "import { ScrollArea, ScrollAreaViewport, ScrollBar } from '@/components/ui/scroll-area'\n\nexport default function ScrollAreaHorizontalDemoExample() {\n  return (\n    <ScrollArea class=\"w-72\"><ScrollAreaViewport><div class=\"space-y-2 p-4\">{Array.from({ length: 20 }, (_, index) => <div>Item {index + 1}</div>)}</div></ScrollAreaViewport><ScrollBar orientation=\"horizontal\" /></ScrollArea>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/scroll-area-demo.tsx",
-      "content": "import * as UI from '@/components/ui/scroll-area'\n\nexport default function ScrollAreaDemoExample() {\n  return <UI.ScrollArea />\n}\n",
+      "content": "import { ScrollArea, ScrollAreaViewport, ScrollBar } from '@/components/ui/scroll-area'\n\nexport default function ScrollAreaDemoExample() {\n  return (\n    <ScrollArea class=\"h-72 w-48\"><ScrollAreaViewport><div class=\"space-y-2 p-4\">{Array.from({ length: 20 }, (_, index) => <div>Item {index + 1}</div>)}</div></ScrollAreaViewport><ScrollBar /></ScrollArea>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
