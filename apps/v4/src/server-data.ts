@@ -15,6 +15,7 @@ import type {
   ResolvedRoute,
   ThemeEntry,
 } from "./types"
+import { highlightCode, normalizeCodeLanguage } from "./highlight-code"
 import { stripSiteBasePath } from "./site-path"
 
 interface SiteCatalog {
@@ -1471,6 +1472,7 @@ function parseDocBody(body: string): {
       const directionValue = readDocMarkerAttribute(trimmed, "direction")
       const direction = directionValue === "rtl" ? "rtl" : "ltr"
       const registryItem = loadRegistryItem(styleName, name)
+      const language = normalizeCodeLanguage(inferCodeLanguage(title || registryItem?.path))
 
       blocks.push({
         kind: isPreview ? "component-preview" : "component-source",
@@ -1481,14 +1483,15 @@ function parseDocBody(body: string): {
         direction,
         filePath: registryItem?.path,
         code: registryItem?.content,
-        language: inferCodeLanguage(title || registryItem?.path),
+        language,
+        highlightedCode: registryItem?.content ? highlightCode(registryItem.content, language) : undefined,
       })
       index += 1
       continue
     }
 
     if (trimmed.startsWith("```")) {
-      const language = trimmed.slice(3).trim().split(/\s+/, 1)[0] || "text"
+      const language = normalizeCodeLanguage(trimmed.slice(3).trim().split(/\s+/, 1)[0] || "text")
       const codeLines: string[] = []
       index += 1
       while (index < lines.length) {
@@ -1501,10 +1504,12 @@ function parseDocBody(body: string): {
         index += 1
       }
 
+      const code = codeLines.join("\n").trimEnd()
       blocks.push({
         kind: "code",
-        text: codeLines.join("\n").trimEnd(),
+        text: code,
         language,
+        highlightedCode: highlightCode(code, language),
       })
       continue
     }

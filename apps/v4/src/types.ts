@@ -17,6 +17,20 @@ export interface DocTabPanel {
   blocks: DocContentBlock[]
 }
 
+export interface HighlightedCodeToken {
+  content: string
+  style: string
+}
+
+export interface HighlightedCodeLine {
+  tokens: HighlightedCodeToken[]
+}
+
+export interface HighlightedCode {
+  language: string
+  lines: HighlightedCodeLine[]
+}
+
 export interface DocInlineNode {
   kind: "text" | "strong" | "em" | "code" | "link"
   text: string
@@ -55,6 +69,7 @@ export interface DocContentBlock {
   filePath?: string
   code?: string
   language?: string
+  highlightedCode?: HighlightedCode
   styleName?: string
   variant?: string
   links?: { title: string; href: string }[]
