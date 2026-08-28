@@ -3,10 +3,13 @@ import path from 'node:path'
 import { stdout } from 'node:process'
 import { fileURLToPath } from 'node:url'
 
+import { loadFictExampleSource } from './lib/fict-example-source.mjs'
+
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const distEntryPath = path.join(rootDir, 'dist/index.js')
 const outputRoot = path.join(rootDir, 'apps/v4/public/r/fict')
 const previewCatalogPath = path.join(rootDir, 'apps/v4/content/docs/components/fict/preview-catalog.json')
+const exampleSourceRoot = path.join(rootDir, 'apps/v4/content/examples/fict')
 
 if (!fs.existsSync(distEntryPath)) {
   throw new Error('dist/index.js not found. Run `pnpm build` before generating the website registry.')
@@ -65,7 +68,11 @@ for (const entry of entries.filter(candidate => candidate.type === 'ui-component
   for (const previewName of previews) {
     const componentName = toIdentifier(entry.name)
     const exampleName = `${toIdentifier(previewName)}Example`
-    const content = `import * as UI from '@/components/ui/${entry.name}'
+    const content = loadFictExampleSource({
+      exampleRoot: exampleSourceRoot,
+      componentName: entry.name,
+      previewName,
+    }) ?? `import * as UI from '@/components/ui/${entry.name}'
 
 export default function ${exampleName}() {
   return ${getExampleMarkup(entry.name, previewName, componentName)}
