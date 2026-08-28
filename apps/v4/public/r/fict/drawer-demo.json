@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/drawer-demo.tsx",
-      "content": "import * as UI from '@/components/ui/drawer'\n\nexport default function DrawerDemoExample() {\n  return <UI.Drawer />\n}\n",
+      "content": "import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'\n\nexport default function DrawerDemoExample() {\n  return (\n    <Drawer><DrawerTrigger>Open Demo</DrawerTrigger><DrawerContent><DrawerHeader><DrawerTitle>Demo</DrawerTitle><DrawerDescription>Adjust the value, then save.</DrawerDescription></DrawerHeader><div class=\"p-4\">Goal: 350</div><DrawerFooter><button type=\"button\">Save</button><DrawerClose>Cancel</DrawerClose></DrawerFooter></DrawerContent></Drawer>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

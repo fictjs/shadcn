@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/drawer-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/drawer'\n\nexport default function DrawerRtlExample() {\n  return <UI.Drawer />\n}\n",
+      "content": "import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'\n\nexport default function DrawerRtlExample() {\n  return (\n    <Drawer dir=\"rtl\"><DrawerTrigger>Open Rtl</DrawerTrigger><DrawerContent><DrawerHeader><DrawerTitle>Rtl</DrawerTitle><DrawerDescription>Adjust the value, then save.</DrawerDescription></DrawerHeader><div class=\"p-4\">Goal: 350</div><DrawerFooter><button type=\"button\">Save</button><DrawerClose>Cancel</DrawerClose></DrawerFooter></DrawerContent></Drawer>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
