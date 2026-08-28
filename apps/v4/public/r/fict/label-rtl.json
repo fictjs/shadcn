@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/label-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/label'\n\nexport default function LabelRtlExample() {\n  return <UI.Label />\n}\n",
+      "content": "import { Label } from '@/components/ui/label'\n\nexport default function LabelRtlExample() {\n  return (\n    <Label dir=\"rtl\" for=\"example\">Rtl<input id=\"example\" class=\"ml-2 rounded border\" /></Label>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
