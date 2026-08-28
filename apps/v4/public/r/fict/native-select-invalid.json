@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/native-select-invalid.tsx",
-      "content": "import * as UI from '@/components/ui/native-select'\n\nexport default function NativeSelectInvalidExample() {\n  return <UI.NativeSelect />\n}\n",
+      "content": "import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'\n\nexport default function NativeSelectInvalidExample() {\n  return (\n    <NativeSelect><NativeSelectOption value=\"\">Select Invalid</NativeSelectOption><NativeSelectOption value=\"fict\">Fict</NativeSelectOption><NativeSelectOption value=\"typescript\">TypeScript</NativeSelectOption></NativeSelect>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
