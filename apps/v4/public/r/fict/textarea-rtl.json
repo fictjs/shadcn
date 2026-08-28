@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/textarea-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/textarea'\n\nexport default function TextareaRtlExample() {\n  return <UI.Textarea />\n}\n",
+      "content": "import { Textarea } from '@/components/ui/textarea'\n\nexport default function TextareaRtlExample() {\n  return (\n    <Textarea dir=\"rtl\" placeholder=\"Rtl\" rows={4} />\n  )\n}\n",
       "type": "registry:page"
     }
   ]
