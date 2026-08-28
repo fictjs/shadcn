@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/tabs-vertical.tsx",
-      "content": "import * as UI from '@/components/ui/tabs'\n\nexport default function TabsVerticalExample() {\n  return <UI.Tabs />\n}\n",
+      "content": "import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\n\nexport default function TabsVerticalExample() {\n  return (\n    <Tabs orientation=\"vertical\" defaultValue=\"account\"><TabsList><TabsTrigger value=\"account\">Account</TabsTrigger><TabsTrigger value=\"password\">Password</TabsTrigger></TabsList><TabsContent value=\"account\">Vertical</TabsContent><TabsContent value=\"password\">Change your password.</TabsContent></Tabs>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/tabs-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/tabs'\n\nexport default function TabsRtlExample() {\n  return <UI.Tabs />\n}\n",
+      "content": "import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\n\nexport default function TabsRtlExample() {\n  return (\n    <Tabs dir=\"rtl\" defaultValue=\"account\"><TabsList><TabsTrigger value=\"account\">Account</TabsTrigger><TabsTrigger value=\"password\">Password</TabsTrigger></TabsList><TabsContent value=\"account\">Rtl</TabsContent><TabsContent value=\"password\">Change your password.</TabsContent></Tabs>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
