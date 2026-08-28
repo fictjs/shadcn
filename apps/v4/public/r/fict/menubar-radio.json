@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/menubar-radio.tsx",
-      "content": "import * as UI from '@/components/ui/menubar'\n\nexport default function MenubarRadioExample() {\n  return <UI.Menubar />\n}\n",
+      "content": "import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from '@/components/ui/menubar'\n\nexport default function MenubarRadioExample() {\n  return (\n    <Menubar><MenubarMenu><MenubarTrigger>File</MenubarTrigger><MenubarContent><MenubarItem>New Tab</MenubarItem><MenubarItem>Radio</MenubarItem><MenubarItem>Print</MenubarItem></MenubarContent></MenubarMenu></Menubar>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
