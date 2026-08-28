@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/progress-controlled.tsx",
-      "content": "import * as UI from '@/components/ui/progress'\n\nexport default function ProgressControlledExample() {\n  return <UI.Progress />\n}\n",
+      "content": "import { Progress } from '@/components/ui/progress'\n\nexport default function ProgressControlledExample() {\n  return (\n    <Progress value={72} max={100} />\n  )\n}\n",
       "type": "registry:page"
     }
   ]
