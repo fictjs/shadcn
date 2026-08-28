@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/context-menu-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/context-menu'\n\nexport default function ContextMenuRtlExample() {\n  return <UI.ContextMenu />\n}\n",
+      "content": "import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger } from '@/components/ui/context-menu'\n\nexport default function ContextMenuRtlExample() {\n  return (\n    <ContextMenu dir=\"rtl\"><ContextMenuTrigger class=\"flex h-36 w-64 items-center justify-center rounded-md border border-dashed\">Right click here</ContextMenuTrigger><ContextMenuContent><ContextMenuItem>Menu Rtl</ContextMenuItem><ContextMenuSub><ContextMenuSubTrigger>More</ContextMenuSubTrigger><ContextMenuSubContent><ContextMenuItem>Save</ContextMenuItem></ContextMenuSubContent></ContextMenuSub></ContextMenuContent></ContextMenu>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

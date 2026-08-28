@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "context-menu-sides",
+  "type": "registry:example",
+  "description": "Context menu wrappers example for Fict",
+  "dependencies": [],
+  "registryDependencies": [
+    "context-menu"
+  ],
+  "files": [
+    {
+      "path": "src/examples/context-menu-sides.tsx",
+      "content": "import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger } from '@/components/ui/context-menu'\n\nexport default function ContextMenuSidesExample() {\n  return (\n    <ContextMenu><ContextMenuTrigger class=\"flex h-36 w-64 items-center justify-center rounded-md border border-dashed\">Right click here</ContextMenuTrigger><ContextMenuContent><ContextMenuItem>Menu Sides</ContextMenuItem><ContextMenuSub><ContextMenuSubTrigger>More</ContextMenuSubTrigger><ContextMenuSubContent><ContextMenuItem>Save</ContextMenuItem></ContextMenuSubContent></ContextMenuSub></ContextMenuContent></ContextMenu>\n  )\n}\n",
+      "type": "registry:page"
+    }
+  ]
+}
