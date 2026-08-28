@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/switch-description.tsx",
-      "content": "import * as UI from '@/components/ui/switch'\n\nexport default function SwitchDescriptionExample() {\n  return <UI.Switch />\n}\n",
+      "content": "import { Switch } from '@/components/ui/switch'\n\nexport default function SwitchDescriptionExample() {\n  return (\n    <label class=\"flex items-center gap-2\"><Switch defaultChecked /> Description</label>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

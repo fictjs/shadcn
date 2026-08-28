@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/switch-rtl.tsx",
-      "content": "import * as UI from '@/components/ui/switch'\n\nexport default function SwitchRtlExample() {\n  return <UI.Switch />\n}\n",
+      "content": "import { Switch } from '@/components/ui/switch'\n\nexport default function SwitchRtlExample() {\n  return (\n    <label dir=\"rtl\" class=\"flex items-center gap-2\"><Switch defaultChecked /> Rtl</label>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
