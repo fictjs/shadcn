@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/sheet-no-close-button.tsx",
-      "content": "import * as UI from '@/components/ui/sheet'\n\nexport default function SheetNoCloseButtonExample() {\n  return <UI.Sheet />\n}\n",
+      "content": "import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'\n\nexport default function SheetNoCloseButtonExample() {\n  return (\n    <Sheet><SheetTrigger>Open No Close Button</SheetTrigger><SheetContent><SheetHeader><SheetTitle>No Close Button</SheetTitle><SheetDescription>Edit your settings.</SheetDescription></SheetHeader><SheetFooter><SheetClose>Close</SheetClose></SheetFooter></SheetContent></Sheet>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

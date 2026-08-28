@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/sheet-demo.tsx",
-      "content": "import * as UI from '@/components/ui/sheet'\n\nexport default function SheetDemoExample() {\n  return <UI.Sheet />\n}\n",
+      "content": "import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'\n\nexport default function SheetDemoExample() {\n  return (\n    <Sheet><SheetTrigger>Open Demo</SheetTrigger><SheetContent><SheetHeader><SheetTitle>Demo</SheetTitle><SheetDescription>Edit your settings.</SheetDescription></SheetHeader><SheetFooter><SheetClose>Close</SheetClose></SheetFooter></SheetContent></Sheet>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
