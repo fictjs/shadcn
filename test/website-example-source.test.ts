@@ -15,6 +15,7 @@ import {
 } from '../scripts/lib/fict-example-source.mjs'
 
 const repositoryExampleRoot = path.join(process.cwd(), 'apps/v4/content/examples/fict')
+const repositoryDocsRoot = path.join(process.cwd(), 'apps/v4/content/docs/components/fict')
 const previewCatalog = JSON.parse(fs.readFileSync(
   path.join(process.cwd(), 'apps/v4/content/docs/components/fict/preview-catalog.json'),
   'utf8'
@@ -99,6 +100,25 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
         })
         validateFictRegistryImports(source!, registryExports, `${family}/${previewName}`)
       }
+    }
+  })
+
+  it('uses valid named Fict registry imports in every component Usage section', () => {
+    const registryExports = new Map(
+      listBuiltinComponentNames().map(componentName => {
+        const entry = getBuiltinComponent(componentName)
+        const source = renderRegistryEntryFiles(entry!, DEFAULT_CONFIG)
+          .map(file => file.content)
+          .join('\n')
+        return [componentName, extractFictRegistryExports(source)]
+      }),
+    )
+
+    for (const fileName of fs.readdirSync(repositoryDocsRoot).filter(file => file.endsWith('.mdx'))) {
+      const sourcePath = path.join(repositoryDocsRoot, fileName)
+      const docs = fs.readFileSync(sourcePath, 'utf8')
+      expect(docs, fileName).not.toMatch(/^import \* as /m)
+      validateFictRegistryImports(docs, registryExports, sourcePath)
     }
   })
 
