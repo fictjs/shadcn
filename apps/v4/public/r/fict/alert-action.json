@@ -5,12 +5,13 @@
   "description": "Alert component with semantic variants example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "alert"
+    "alert",
+    "button"
   ],
   "files": [
     {
       "path": "src/examples/alert-action.tsx",
-      "content": "import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'\n\nexport default function AlertActionExample() {\n  return (\n    <Alert><AlertTitle>Action</AlertTitle><AlertDescription>This alert is rendered by Fict.</AlertDescription></Alert>\n  )\n}\n",
+      "content": "import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'\nimport { Button } from '@/components/ui/button'\n\nexport default function AlertActionExample() {\n  return (\n    <Alert class=\"grid grid-cols-[1fr_auto] items-center gap-x-4\">\n      <div>\n        <AlertTitle>Dark mode is now available</AlertTitle>\n        <AlertDescription>Enable it under your profile settings to get started.</AlertDescription>\n      </div>\n      <Button size=\"sm\" variant=\"outline\">\n        Enable\n      </Button>\n    </Alert>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

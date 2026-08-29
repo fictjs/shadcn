@@ -483,6 +483,23 @@ test.describe("Fict shadcn website", () => {
     await rtl.getByLabel("Preview language").selectOption("en")
     await expect(rtl.locator(".doc-alert-stack")).toHaveAttribute("dir", "ltr")
     await expect(rtl.locator(".doc-alert-title").first()).toHaveText("Payment successful")
+
+    const expectedSources = [
+      ["alert-demo", "Payment successful", "New feature available"],
+      ["alert-basic", "Account updated successfully"],
+      ["alert-destructive", 'variant="destructive"', "Payment failed"],
+      ["alert-action", '<Button size="sm" variant="outline">', "Enable"],
+      ["alert-colors", "border-amber-500/50"],
+      ["alert-rtl", "$state<keyof typeof translations>", "translations[language].map"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) {
+        await expect(source).toContainText(marker)
+      }
+    }
   })
 
   test("alert dialog docs match Fict modal sizes and focus behavior", async ({ page }) => {

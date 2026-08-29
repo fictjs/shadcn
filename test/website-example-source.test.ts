@@ -190,6 +190,26 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadBadge('badge-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
   })
 
+  it('keeps every Alert source aligned with its rendered preview', () => {
+    expectCuratedFamily('alert')
+
+    const loadAlert = (previewName: string) => loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: 'alert',
+      previewName,
+    })!
+
+    expect(loadAlert('alert-demo').match(/<Alert(?:\s|>)/g)).toHaveLength(2)
+    expect(loadAlert('alert-demo')).toContain('Payment successful')
+    expect(loadAlert('alert-basic')).toContain('Account updated successfully')
+    expect(loadAlert('alert-destructive')).toContain('<Alert variant="destructive">')
+    expect(loadAlert('alert-action')).toContain('<Button size="sm" variant="outline">')
+    expect(loadAlert('alert-action')).toContain('Enable')
+    expect(loadAlert('alert-colors')).toContain('border-amber-500/50')
+    expect(loadAlert('alert-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadAlert('alert-rtl')).toContain('translations[language].map')
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],
