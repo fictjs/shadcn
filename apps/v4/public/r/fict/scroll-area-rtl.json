@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/scroll-area-rtl.tsx",
-      "content": "import { ScrollArea, ScrollAreaViewport, ScrollBar } from '@/components/ui/scroll-area'\n\nexport default function ScrollAreaRtlExample() {\n  return (\n    <ScrollArea dir=\"rtl\" class=\"h-72 w-48\"><ScrollAreaViewport><div class=\"space-y-2 p-4\">{Array.from({ length: 20 }, (_, index) => <div>Item {index + 1}</div>)}</div></ScrollAreaViewport><ScrollBar /></ScrollArea>\n  )\n}\n",
+      "content": "import { ScrollArea, ScrollAreaViewport, ScrollBar } from '@/components/ui/scroll-area'\n\nconst translations = {\n  ar: { dir: 'rtl', tags: 'العلامات' },\n  he: { dir: 'rtl', tags: 'תגיות' },\n  en: { dir: 'ltr', tags: 'Tags' },\n} as const\n\nconst tags = Array.from({ length: 50 }, (_, index) => `v1.2.0-beta.${50 - index}`)\n\nexport default function ScrollAreaRtlExample() {\n  let language = $state<keyof typeof translations>('ar')\n  const text = () => translations[language]\n\n  return (\n    <div class=\"grid gap-4\">\n      <select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof translations }}>\n        <option value=\"ar\">Arabic (العربية)</option><option value=\"he\">Hebrew (עברית)</option><option value=\"en\">English</option>\n      </select>\n      <ScrollArea dir={text().dir} class=\"h-72 w-48\"><ScrollAreaViewport><div class=\"p-4\"><h4 class=\"mb-4 text-sm font-medium\">{text().tags}</h4>{tags.map(tag => <div class=\"border-b py-2 text-sm\">{tag}</div>)}</div></ScrollAreaViewport><ScrollBar /></ScrollArea>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

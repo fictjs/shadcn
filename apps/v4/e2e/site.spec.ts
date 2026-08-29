@@ -3676,6 +3676,18 @@ test.describe("Fict shadcn website", () => {
     await expect(rtl.locator(".doc-scroll-tags h4")).toHaveText("תגיות")
     await rtl.getByLabel("Preview language").selectOption("en")
     await expect(rtlArea).toHaveAttribute("dir", "ltr")
+
+    const expectedSources = [
+      ["scroll-area-demo", "v1.2.0-beta.${50 - index}", ">Tags</h4>"],
+      ["scroll-area-horizontal-demo", "Ornella Binni", '<ScrollBar orientation="horizontal" />'],
+      ["scroll-area-rtl", "$state<keyof typeof translations>", "תגיות"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const sourcePreview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await sourcePreview.getByRole("button", { name: "View Code" }).click()
+      const source = sourcePreview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
     await expect(rtl.locator(".doc-scroll-tags h4")).toHaveText("Tags")
 
     await page.getByRole("button", { name: "Toggle theme" }).click()

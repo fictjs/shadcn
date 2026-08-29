@@ -941,6 +941,17 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadResizable('resizable-rtl')).toContain('dir={text().dir}')
   })
 
+  it('keeps every Scroll Area source aligned with its rendered preview', () => {
+    expectCuratedFamily('scroll-area')
+    const loadScrollArea = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'scroll-area', previewName })!
+    expect(loadScrollArea('scroll-area-demo')).toContain('v1.2.0-beta.${50 - index}')
+    expect(loadScrollArea('scroll-area-demo')).toContain('>Tags</h4>')
+    expect(loadScrollArea('scroll-area-horizontal-demo')).toContain("artist: 'Ornella Binni'")
+    expect(loadScrollArea('scroll-area-horizontal-demo')).toContain('<ScrollBar orientation="horizontal" />')
+    expect(loadScrollArea('scroll-area-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadScrollArea('scroll-area-rtl')).toContain("he: { dir: 'rtl', tags: 'תגיות' }")
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!
