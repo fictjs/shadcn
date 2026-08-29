@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/tabs-line.tsx",
-      "content": "import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\n\nexport default function TabsLineExample() {\n  return (\n    <Tabs defaultValue=\"account\"><TabsList><TabsTrigger value=\"account\">Account</TabsTrigger><TabsTrigger value=\"password\">Password</TabsTrigger></TabsList><TabsContent value=\"account\">Line</TabsContent><TabsContent value=\"password\">Change your password.</TabsContent></Tabs>\n  )\n}\n",
+      "content": "import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'\n\nexport default function TabsLineExample() {\n  return (\n    <Tabs defaultValue=\"overview\">\n      <TabsList variant=\"line\">\n        <TabsTrigger value=\"overview\">Overview</TabsTrigger>\n        <TabsTrigger value=\"analytics\">Analytics</TabsTrigger>\n        <TabsTrigger value=\"reports\">Reports</TabsTrigger>\n      </TabsList>\n    </Tabs>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

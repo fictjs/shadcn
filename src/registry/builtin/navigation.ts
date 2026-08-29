@@ -234,7 +234,7 @@ export function MenubarItem(props: GenericProps) {
   },
   {
     name: 'tabs',
-    version: '0.2.0',
+    version: '0.3.0',
     type: 'ui-component',
     description: 'Tabs wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -254,16 +254,26 @@ type GenericProps = {
   [key: string]: unknown
 }
 
-export function TabsList(props: GenericProps) {
-  const { class: className, ...rest } = props
-  return <TabsPrimitive.List class={cn('inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground', className)} {...rest} />
+export function TabsList(props: GenericProps & { variant?: 'default' | 'line' }) {
+  const { class: className, variant = 'default', ...rest } = props
+  return (
+    <TabsPrimitive.List
+      data-variant={variant}
+      class={cn(
+        'inline-flex h-9 items-center justify-center text-muted-foreground',
+        variant === 'default' ? 'rounded-lg bg-muted p-1' : 'gap-4 border-b bg-transparent p-0',
+        className,
+      )}
+      {...rest}
+    />
+  )
 }
 
 export function TabsTrigger(props: GenericProps) {
   const { class: className, ...rest } = props
   return (
     <TabsPrimitive.Trigger
-      class={cn('inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm', className)}
+      class={cn('inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm [[data-variant=line]_&]:rounded-none [[data-variant=line]_&]:border-b-2 [[data-variant=line]_&]:border-transparent [[data-variant=line]_&]:px-0 [[data-variant=line]_&]:shadow-none [[data-variant=line]_&][data-state=active]:border-foreground', className)}
       {...rest}
     />
   )

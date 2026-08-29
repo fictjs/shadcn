@@ -401,6 +401,21 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     }
   })
 
+  it('keeps every Tabs source aligned with its rendered preview', () => {
+    expectCuratedFamily('tabs')
+    const loadTabs = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'tabs', previewName })!
+    expect(loadTabs('tabs-demo')).toContain('You have 12 active projects and 3 pending tasks.')
+    expect(loadTabs('tabs-demo')).toContain('<CardContent class="text-sm text-muted-foreground">')
+    expect(loadTabs('tabs-line')).toContain('<TabsList variant="line">')
+    expect(loadTabs('tabs-vertical')).toContain('orientation="vertical"')
+    expect(loadTabs('tabs-vertical')).toContain('value="notifications"')
+    expect(loadTabs('tabs-disabled')).toContain('<TabsTrigger value="settings" disabled>')
+    expect(loadTabs('tabs-icons')).toContain('<AppWindowIcon />Preview')
+    expect(loadTabs('tabs-icons')).toContain('<CodeIcon />Code')
+    expect(loadTabs('tabs-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadTabs('tabs-rtl')).toContain('צפיות בדף עלו ב-25%')
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],

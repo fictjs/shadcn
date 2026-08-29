@@ -4022,6 +4022,21 @@ test.describe("Fict shadcn website", () => {
     await expect(rtl.getByRole("tab")).toHaveText(["Overview", "Analytics", "Reports", "Settings"])
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(rtl.locator(".doc-preview-tabs-card").first()).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+
+    const expectedSources = [
+      ["tabs-demo", "You have 12 active projects and 3 pending tasks.", "<CardContent"],
+      ["tabs-line", 'variant="line"'],
+      ["tabs-vertical", 'orientation="vertical"', 'value="notifications"'],
+      ["tabs-disabled", 'value="settings" disabled'],
+      ["tabs-icons", "<AppWindowIcon />Preview", "<CodeIcon />Code"],
+      ["tabs-rtl", "$state<keyof typeof translations>", "צפיות בדף עלו ב-25%"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("textarea docs match Fict base, field, disabled, invalid, button, focus, and RTL", async ({ page }) => {

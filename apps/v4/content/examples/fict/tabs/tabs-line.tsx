@@ -1,7 +1,13 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export default function TabsLineExample() {
   return (
-    <Tabs defaultValue="account"><TabsList><TabsTrigger value="account">Account</TabsTrigger><TabsTrigger value="password">Password</TabsTrigger></TabsList><TabsContent value="account">Line</TabsContent><TabsContent value="password">Change your password.</TabsContent></Tabs>
+    <Tabs defaultValue="overview">
+      <TabsList variant="line">
+        <TabsTrigger value="overview">Overview</TabsTrigger>
+        <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        <TabsTrigger value="reports">Reports</TabsTrigger>
+      </TabsList>
+    </Tabs>
   )
 }

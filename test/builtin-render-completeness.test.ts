@@ -137,6 +137,14 @@ describe('builtin registry render completeness', () => {
     expect(sonnerSource).toContain('ToastPosition as SonnerPosition')
   })
 
+  it('renders the Tabs API used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('tabs')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain("variant?: 'default' | 'line'")
+    expect(source).toContain("data-variant={variant}")
+    expect(source).toContain("variant === 'default' ? 'rounded-lg bg-muted p-1'")
+    expect(source).toContain('[[data-variant=line]_&][data-state=active]:border-foreground')
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')

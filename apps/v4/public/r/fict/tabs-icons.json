@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/tabs-icons.tsx",
-      "content": "import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\n\nexport default function TabsIconsExample() {\n  return (\n    <Tabs defaultValue=\"account\"><TabsList><TabsTrigger value=\"account\">Account</TabsTrigger><TabsTrigger value=\"password\">Password</TabsTrigger></TabsList><TabsContent value=\"account\">Icons</TabsContent><TabsContent value=\"password\">Change your password.</TabsContent></Tabs>\n  )\n}\n",
+      "content": "import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'\n\nfunction AppWindowIcon() {\n  return <svg aria-hidden=\"true\" viewBox=\"0 0 24 24\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\" /><path d=\"M3 9h18\" /></svg>\n}\n\nfunction CodeIcon() {\n  return <svg aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path d=\"m8 9-3 3 3 3M16 9l3 3-3 3M14 5l-4 14\" /></svg>\n}\n\nexport default function TabsIconsExample() {\n  return (\n    <Tabs defaultValue=\"preview\">\n      <TabsList>\n        <TabsTrigger value=\"preview\"><AppWindowIcon />Preview</TabsTrigger>\n        <TabsTrigger value=\"code\"><CodeIcon />Code</TabsTrigger>\n      </TabsList>\n    </Tabs>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

@@ -5,12 +5,13 @@
   "description": "Tabs wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "card",
     "tabs"
   ],
   "files": [
     {
       "path": "src/examples/tabs-demo.tsx",
-      "content": "import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\n\nexport default function TabsDemoExample() {\n  return (\n    <Tabs defaultValue=\"account\"><TabsList><TabsTrigger value=\"account\">Account</TabsTrigger><TabsTrigger value=\"password\">Password</TabsTrigger></TabsList><TabsContent value=\"account\">Demo</TabsContent><TabsContent value=\"password\">Change your password.</TabsContent></Tabs>\n  )\n}\n",
+      "content": "import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'\n\nconst tabs = [\n  ['overview', 'Overview', 'View your key metrics and recent project activity. Track progress across all your active projects.', 'You have 12 active projects and 3 pending tasks.'],\n  ['analytics', 'Analytics', 'Track performance and user engagement metrics. Monitor trends and identify growth opportunities.', 'Page views are up 25% compared to last month.'],\n  ['reports', 'Reports', 'Generate and download your detailed reports. Export data in multiple formats for analysis.', 'You have 5 reports ready and available to export.'],\n  ['settings', 'Settings', 'Manage your account preferences and options. Customize your experience to fit your needs.', 'Configure notifications, security, and themes.'],\n] as const\n\nexport default function TabsDemoExample() {\n  return (\n    <Tabs defaultValue=\"overview\" class=\"w-[400px]\">\n      <TabsList>\n        {tabs.map(([value, label]) => <TabsTrigger value={value}>{label}</TabsTrigger>)}\n      </TabsList>\n      {tabs.map(([value, label, description, content]) => (\n        <TabsContent value={value}>\n          <Card>\n            <CardHeader><CardTitle>{label}</CardTitle><CardDescription>{description}</CardDescription></CardHeader>\n            <CardContent class=\"text-sm text-muted-foreground\">{content}</CardContent>\n          </Card>\n        </TabsContent>\n      ))}\n    </Tabs>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
