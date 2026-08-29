@@ -14,6 +14,7 @@ const translations = {
     results: '١٢ نتيجة',
     searching: 'جاري البحث...',
     saving: 'جاري حفظ التغييرات...',
+    savingStatus: 'جاري الحفظ...',
     textarea: 'منطقة النص',
     comment: 'اكتب تعليقًا...',
     post: 'نشر',
@@ -25,6 +26,7 @@ const translations = {
     results: '12 תוצאות',
     searching: 'מחפש...',
     saving: 'שומר שינויים...',
+    savingStatus: 'שומר...',
     textarea: 'אזור טקסט',
     comment: 'כתוב תגובה...',
     post: 'פרסם',
@@ -36,6 +38,7 @@ const translations = {
     results: '12 results',
     searching: 'Searching...',
     saving: 'Saving changes...',
+    savingStatus: 'Saving...',
     textarea: 'Textarea',
     comment: 'Write a comment...',
     post: 'Post',
@@ -73,7 +76,7 @@ export default function InputGroupRtlExample() {
           <InputGroupInput placeholder={text().saving} dir={text().dir} />
           <InputGroupAddon align="inline-end">
             <Spinner />
-            {text().saving}
+            {text().savingStatus}
           </InputGroupAddon>
         </InputGroup>
         <label class="grid gap-2">

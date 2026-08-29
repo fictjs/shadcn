@@ -4,6 +4,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from '@/components/ui/input-group'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 export default function InputGroupButtonExample() {
   let copied = $state(false)
@@ -24,6 +25,7 @@ export default function InputGroupButtonExample() {
         </InputGroupAddon>
       </InputGroup>
       <InputGroup>
+        <InputGroupAddon><Popover><PopoverTrigger asChild><InputGroupButton aria-label="Info">i</InputGroupButton></PopoverTrigger><PopoverContent><strong>Your connection is not secure.</strong><p>You should not enter any sensitive information on this site.</p></PopoverContent></Popover></InputGroupAddon>
         <InputGroupAddon>https://</InputGroupAddon>
         <InputGroupInput />
         <InputGroupAddon align="inline-end">

@@ -2644,12 +2644,12 @@ test.describe("Fict shadcn website", () => {
       ["input-group-block-start", 'align="block-start"'],
       ["input-group-block-end", 'align="block-end"'],
       ["input-group-text", "120 characters left"],
-      ["input-group-button", "let copied = $state(false)"],
+      ["input-group-button", "let copied = $state(false)", "Your connection is not secure."],
       ["input-group-kbd", "⌘K"],
       ["input-group-spinner", "<Spinner"],
       ["input-group-textarea", "script.js"],
       ["input-group-custom", 'placeholder="Autoresize textarea..."'],
-      ["input-group-rtl", "$state<keyof typeof translations>", "כותרת תחתונה ממוקמת"],
+      ["input-group-rtl", "$state<keyof typeof translations>", "כותרת תחתונה ממוקמת", "جاري الحفظ..."],
     ] as const
     for (const [previewName, ...markers] of expectedSources) {
       const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)

@@ -854,11 +854,13 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadInputGroup('input-group-block-end')).toContain('align="block-end"')
     expect(loadInputGroup('input-group-text')).toContain('120 characters left')
     expect(loadInputGroup('input-group-button')).toContain('let copied = $state(false)')
+    expect(loadInputGroup('input-group-button')).toContain('Your connection is not secure.')
     expect(loadInputGroup('input-group-kbd')).toContain('⌘K')
     expect(loadInputGroup('input-group-spinner')).toContain('<Spinner')
     expect(loadInputGroup('input-group-textarea')).toContain('script.js')
     expect(loadInputGroup('input-group-custom')).toContain('placeholder="Autoresize textarea..."')
     expect(loadInputGroup('input-group-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadInputGroup('input-group-rtl')).toContain("savingStatus: 'جاري الحفظ...'")
   })
 
   it('keeps every Button Group source aligned with its rendered preview', () => {
