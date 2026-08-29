@@ -79,6 +79,15 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     }
   })
 
+  it('keeps a semantic source contract for every preview family', () => {
+    const testSource = fs.readFileSync(path.join(process.cwd(), 'test/website-example-source.test.ts'), 'utf8')
+    const coveredFamilies = new Set(
+      [...testSource.matchAll(/expectCuratedFamily\('([^']+)'\)/g)].map(match => match[1]),
+    )
+
+    expect([...coveredFamilies].sort()).toEqual(Object.keys(previewCatalog).sort())
+  })
+
   it('only imports symbols exported by the Fict registry', () => {
     const registryExports = new Map(
       listBuiltinComponentNames().map(componentName => {
