@@ -5,12 +5,14 @@
   "description": "date-picker example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "calendar"
+    "button",
+    "calendar",
+    "popover"
   ],
   "files": [
     {
       "path": "src/examples/date-picker-dob.tsx",
-      "content": "import { Calendar } from '@/components/ui/calendar'\n\nexport default function DatePickerDobExample() {\n  return (\n    <div><label class=\"mb-2 block text-sm font-medium\">Picker Dob</label><Calendar defaultValue={new Date(2026, 7, 29)} /></div>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Calendar } from '@/components/ui/calendar'\nimport { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'\n\nexport default function DatePickerDobExample() {\n  let date = $state<Date | null>(null)\n  return (\n    <label class=\"grid gap-2\">\n      Date of birth\n      <Popover>\n        <PopoverTrigger asChild>\n          <Button variant=\"outline\">{date ? date.toLocaleDateString() : 'Select date'}</Button>\n        </PopoverTrigger>\n        <PopoverContent class=\"w-auto p-0\">\n          <Calendar\n            captionLayout=\"dropdown\"\n            fromYear={1900}\n            toYear={new Date().getFullYear()}\n            value={() => date}\n            onValueChange={value => {\n              date = value as Date\n            }}\n          />\n        </PopoverContent>\n      </Popover>\n    </label>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

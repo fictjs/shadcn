@@ -5,12 +5,15 @@
   "description": "date-picker example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "calendar"
+    "button",
+    "calendar",
+    "input",
+    "popover"
   ],
   "files": [
     {
       "path": "src/examples/date-picker-time.tsx",
-      "content": "import { Calendar } from '@/components/ui/calendar'\n\nexport default function DatePickerTimeExample() {\n  return (\n    <div><label class=\"mb-2 block text-sm font-medium\">Picker Time</label><Calendar defaultValue={new Date(2026, 7, 29)} /></div>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Calendar } from '@/components/ui/calendar'\nimport { Input } from '@/components/ui/input'\nimport { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'\n\nexport default function DatePickerTimeExample() {\n  return (\n    <div class=\"grid grid-cols-2 gap-4\">\n      <label class=\"grid gap-2\">\n        Date\n        <Popover>\n          <PopoverTrigger asChild>\n            <Button variant=\"outline\">Select date</Button>\n          </PopoverTrigger>\n          <PopoverContent class=\"w-auto p-0\">\n            <Calendar />\n          </PopoverContent>\n        </Popover>\n      </label>\n      <label class=\"grid gap-2\">\n        Time\n        <Input type=\"time\" step=\"1\" defaultValue=\"10:30:00\" />\n      </label>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

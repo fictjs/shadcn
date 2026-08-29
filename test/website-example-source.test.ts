@@ -884,6 +884,19 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadDropdownMenu('dropdown-menu-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
   })
 
+  it('keeps every Date Picker source aligned with its rendered preview', () => {
+    expectCuratedFamily('date-picker')
+    const loadDatePicker = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'date-picker', previewName })!
+    expect(loadDatePicker('date-picker-demo')).toContain("let date = $state<Date | null>(null)")
+    expect(loadDatePicker('date-picker-range')).toContain('mode="range"')
+    expect(loadDatePicker('date-picker-range')).toContain('numberOfMonths={2}')
+    expect(loadDatePicker('date-picker-dob')).toContain('captionLayout="dropdown"')
+    expect(loadDatePicker('date-picker-input')).toContain("let value = $state('June 01, 2025')")
+    expect(loadDatePicker('date-picker-time')).toContain('defaultValue="10:30:00"')
+    expect(loadDatePicker('date-picker-natural-language')).toContain("let value = $state('In 2 days')")
+    expect(loadDatePicker('date-picker-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

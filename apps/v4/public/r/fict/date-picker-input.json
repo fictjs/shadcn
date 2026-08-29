@@ -5,12 +5,14 @@
   "description": "date-picker example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "calendar"
+    "calendar",
+    "input",
+    "popover"
   ],
   "files": [
     {
       "path": "src/examples/date-picker-input.tsx",
-      "content": "import { Calendar } from '@/components/ui/calendar'\n\nexport default function DatePickerInputExample() {\n  return (\n    <div><label class=\"mb-2 block text-sm font-medium\">Picker Input</label><Calendar defaultValue={new Date(2026, 7, 29)} /></div>\n  )\n}\n",
+      "content": "import { Calendar } from '@/components/ui/calendar'\nimport { Input } from '@/components/ui/input'\nimport { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'\n\nexport default function DatePickerInputExample() {\n  let value = $state('June 01, 2025')\n  return (\n    <label class=\"grid gap-2\">\n      Subscription Date\n      <div class=\"flex\">\n        <Input\n          value={value}\n          onInput={event => {\n            value = event.currentTarget.value\n          }}\n          placeholder=\"June 01, 2025\"\n        />\n        <Popover>\n          <PopoverTrigger aria-label=\"Select date\">▣</PopoverTrigger>\n          <PopoverContent class=\"w-auto p-0\">\n            <Calendar defaultValue={new Date(2025, 5, 1)} />\n          </PopoverContent>\n        </Popover>\n      </div>\n    </label>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

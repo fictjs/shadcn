@@ -5,12 +5,14 @@
   "description": "date-picker example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "calendar"
+    "calendar",
+    "input",
+    "popover"
   ],
   "files": [
     {
       "path": "src/examples/date-picker-natural-language.tsx",
-      "content": "import { Calendar } from '@/components/ui/calendar'\n\nexport default function DatePickerNaturalLanguageExample() {\n  return (\n    <div><label class=\"mb-2 block text-sm font-medium\">Picker Natural Language</label><Calendar defaultValue={new Date(2026, 7, 29)} /></div>\n  )\n}\n",
+      "content": "import { Calendar } from '@/components/ui/calendar'\nimport { Input } from '@/components/ui/input'\nimport { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'\n\nexport default function DatePickerNaturalLanguageExample() {\n  let value = $state('In 2 days')\n  return (\n    <label class=\"grid gap-2\">\n      Schedule Date\n      <div class=\"flex\">\n        <Input\n          value={value}\n          onInput={event => {\n            value = event.currentTarget.value\n          }}\n          placeholder=\"Tomorrow or next week\"\n        />\n        <Popover>\n          <PopoverTrigger aria-label=\"Select date\">▣</PopoverTrigger>\n          <PopoverContent class=\"w-auto p-0\">\n            <Calendar captionLayout=\"dropdown\" />\n          </PopoverContent>\n        </Popover>\n      </div>\n      <small>\n        Your post will be published on <strong>August 27, 2026</strong>.\n      </small>\n    </label>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

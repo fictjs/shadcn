@@ -5,12 +5,14 @@
   "description": "date-picker example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "calendar"
+    "button",
+    "calendar",
+    "popover"
   ],
   "files": [
     {
       "path": "src/examples/date-picker-rtl.tsx",
-      "content": "import { Calendar } from '@/components/ui/calendar'\n\nexport default function DatePickerRtlExample() {\n  return (\n    <div dir=\"rtl\"><label class=\"mb-2 block text-sm font-medium\">Picker Rtl</label><Calendar defaultValue={new Date(2026, 7, 29)} /></div>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Calendar } from '@/components/ui/calendar'\nimport { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'\n\nconst translations = {\n  ar: { dir: 'rtl', pick: 'اختر تاريخًا' },\n  he: { dir: 'rtl', pick: 'בחר תאריך' },\n  en: { dir: 'ltr', pick: 'Pick a date' },\n} as const\n\nexport default function DatePickerRtlExample() {\n  let language = $state<keyof typeof translations>('ar')\n  const text = () => translations[language]\n  return (\n    <div class=\"grid gap-4\">\n      <select\n        value={language}\n        onChange={event => {\n          language = event.currentTarget.value as keyof typeof translations\n        }}\n      >\n        <option value=\"ar\">Arabic (العربية)</option>\n        <option value=\"he\">Hebrew (עברית)</option>\n        <option value=\"en\">English</option>\n      </select>\n      <Popover>\n        <PopoverTrigger asChild>\n          <Button variant=\"outline\" dir={text().dir}>\n            {text().pick}\n          </Button>\n        </PopoverTrigger>\n        <PopoverContent class=\"w-auto p-0\" dir={text().dir}>\n          <Calendar dir={text().dir} />\n        </PopoverContent>\n      </Popover>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

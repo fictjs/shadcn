@@ -5,12 +5,14 @@
   "description": "date-picker example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "calendar"
+    "button",
+    "calendar",
+    "popover"
   ],
   "files": [
     {
       "path": "src/examples/date-picker-range.tsx",
-      "content": "import { Calendar } from '@/components/ui/calendar'\n\nexport default function DatePickerRangeExample() {\n  return (\n    <div><label class=\"mb-2 block text-sm font-medium\">Picker Range</label><Calendar defaultValue={new Date(2026, 7, 29)} /></div>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Calendar, type CalendarDateRange } from '@/components/ui/calendar'\nimport { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'\n\nexport default function DatePickerRangeExample() {\n  const year = new Date().getFullYear()\n  let range = $state<CalendarDateRange>({ from: new Date(year, 0, 20), to: new Date(year, 1, 9) })\n  return (\n    <label class=\"grid gap-2\">\n      Date Picker Range\n      <Popover>\n        <PopoverTrigger asChild>\n          <Button variant=\"outline\">\n            Jan 20, {year} - Feb 09, {year}\n          </Button>\n        </PopoverTrigger>\n        <PopoverContent class=\"w-auto p-0\">\n          <Calendar\n            mode=\"range\"\n            numberOfMonths={2}\n            value={() => range}\n            onValueChange={value => {\n              range = value as CalendarDateRange\n            }}\n          />\n        </PopoverContent>\n      </Popover>\n    </label>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
