@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/switch-description.tsx",
-      "content": "import { Switch } from '@/components/ui/switch'\n\nexport default function SwitchDescriptionExample() {\n  return (\n    <label class=\"flex items-center gap-2\"><Switch defaultChecked /> Description</label>\n  )\n}\n",
+      "content": "import { Switch } from '@/components/ui/switch'\n\nexport default function SwitchDescriptionExample() {\n  return (\n    <div class=\"flex w-full max-w-sm items-center justify-between gap-4\">\n      <div>\n        <label for=\"switch-focus-mode\" class=\"font-medium\">\n          Share across devices\n        </label>\n        <p class=\"text-sm text-muted-foreground\">\n          Focus is shared across devices, and turns off when you leave the app.\n        </p>\n      </div>\n      <Switch id=\"switch-focus-mode\" />\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

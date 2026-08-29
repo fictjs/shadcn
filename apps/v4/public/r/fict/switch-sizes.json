@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/switch-sizes.tsx",
-      "content": "import { Switch } from '@/components/ui/switch'\n\nexport default function SwitchSizesExample() {\n  return (\n    <label class=\"flex items-center gap-2\"><Switch defaultChecked /> Sizes</label>\n  )\n}\n",
+      "content": "import { Switch } from '@/components/ui/switch'\n\nexport default function SwitchSizesExample() {\n  return (\n    <div class=\"grid gap-4\">\n      <label class=\"flex items-center gap-2\">\n        <Switch id=\"switch-size-sm\" size=\"sm\" /> Small\n      </label>\n      <label class=\"flex items-center gap-2\">\n        <Switch id=\"switch-size-default\" /> Default\n      </label>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

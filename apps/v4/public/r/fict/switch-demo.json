@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/switch-demo.tsx",
-      "content": "import { Switch } from '@/components/ui/switch'\n\nexport default function SwitchDemoExample() {\n  return (\n    <label class=\"flex items-center gap-2\"><Switch defaultChecked /> Demo</label>\n  )\n}\n",
+      "content": "import { Switch } from '@/components/ui/switch'\n\nexport default function SwitchDemoExample() {\n  return (\n    <label class=\"flex items-center gap-2\">\n      <Switch id=\"airplane-mode\" /> Airplane Mode\n    </label>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

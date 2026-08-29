@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/switch-choice-card.tsx",
-      "content": "import { Switch } from '@/components/ui/switch'\n\nexport default function SwitchChoiceCardExample() {\n  return (\n    <label class=\"flex items-center gap-2\"><Switch defaultChecked /> Choice Card</label>\n  )\n}\n",
+      "content": "import { Switch } from '@/components/ui/switch'\n\nexport default function SwitchChoiceCardExample() {\n  return (\n    <div class=\"grid w-full max-w-sm gap-4\">\n      <label\n        for=\"switch-share\"\n        class=\"flex items-center justify-between gap-4 rounded-lg border p-4\"\n      >\n        <span>\n          <strong class=\"block\">Share across devices</strong>\n          <small class=\"text-muted-foreground\">\n            Focus is shared across devices, and turns off when you leave the app.\n          </small>\n        </span>\n        <Switch id=\"switch-share\" />\n      </label>\n      <label\n        for=\"switch-notifications\"\n        class=\"flex items-center justify-between gap-4 rounded-lg border p-4\"\n      >\n        <span>\n          <strong class=\"block\">Enable notifications</strong>\n          <small class=\"text-muted-foreground\">\n            Receive notifications when focus mode is enabled or disabled.\n          </small>\n        </span>\n        <Switch id=\"switch-notifications\" defaultChecked />\n      </label>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

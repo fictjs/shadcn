@@ -4164,6 +4164,22 @@ test.describe("Fict shadcn website", () => {
     await expect(rtlSwitch.locator("span")).toHaveCSS("transform", "matrix(1, 0, 0, 1, 14, 0)")
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(rtlSwitch).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+
+    const expectedSources = [
+      ["switch-demo", '<Switch id="airplane-mode" /> Airplane Mode'],
+      ["switch-description", "Focus is shared across devices, and turns off when you leave the app."],
+      ["switch-choice-card", '<Switch id="switch-notifications" defaultChecked />'],
+      ["switch-disabled", '<Switch id="switch-disabled-unchecked" disabled />'],
+      ["switch-invalid", 'aria-invalid="true"'],
+      ["switch-sizes", 'size="sm"'],
+      ["switch-rtl", "$state<keyof typeof translations>", "המיקוד משותף בין מכשירים"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("table docs match Fict invoices, footer, action menus, row geometry, and RTL", async ({ page }) => {

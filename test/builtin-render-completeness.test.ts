@@ -69,6 +69,14 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain("return <span class={classValue} data-slot='badge'")
   })
 
+  it('renders the Switch sizes used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('switch')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain("size?: 'default' | 'sm'")
+    expect(source).toContain('data-size={size}')
+    expect(source).toContain("size === 'sm' ? 'h-4 w-7' : 'h-5 w-9'")
+    expect(source).toContain("'h-3 w-3 data-[state=checked]:translate-x-3'")
+  })
+
   it('renders the directional Drawer API used by website examples', () => {
     const entry = getBuiltinComponent('drawer')
     const source = renderRegistryEntryFiles(entry!, DEFAULT_CONFIG)

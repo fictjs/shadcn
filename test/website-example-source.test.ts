@@ -741,6 +741,19 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadTextarea('textarea-rtl')).toContain('placeholder={text().placeholder}')
   })
 
+  it('keeps every Switch source aligned with its rendered preview', () => {
+    expectCuratedFamily('switch')
+    const loadSwitch = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'switch', previewName })!
+    expect(loadSwitch('switch-demo')).toContain('<Switch id="airplane-mode" /> Airplane Mode')
+    expect(loadSwitch('switch-description')).toContain('Focus is shared across devices, and turns off when you leave the app.')
+    expect(loadSwitch('switch-choice-card')).toContain('<Switch id="switch-notifications" defaultChecked />')
+    expect(loadSwitch('switch-disabled')).toContain('<Switch id="switch-disabled-unchecked" disabled />')
+    expect(loadSwitch('switch-invalid')).toContain('aria-invalid="true"')
+    expect(loadSwitch('switch-sizes')).toContain('size="sm"')
+    expect(loadSwitch('switch-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadSwitch('switch-rtl')).toContain('dir={text().dir}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

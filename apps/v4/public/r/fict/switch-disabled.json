@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/switch-disabled.tsx",
-      "content": "import { Switch } from '@/components/ui/switch'\n\nexport default function SwitchDisabledExample() {\n  return (\n    <label class=\"flex items-center gap-2\"><Switch disabled defaultChecked /> Disabled</label>\n  )\n}\n",
+      "content": "import { Switch } from '@/components/ui/switch'\n\nexport default function SwitchDisabledExample() {\n  return (\n    <label class=\"flex items-center gap-2 opacity-50\">\n      <Switch id=\"switch-disabled-unchecked\" disabled /> Disabled\n    </label>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

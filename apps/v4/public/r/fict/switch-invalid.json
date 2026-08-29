@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/switch-invalid.tsx",
-      "content": "import { Switch } from '@/components/ui/switch'\n\nexport default function SwitchInvalidExample() {\n  return (\n    <label class=\"flex items-center gap-2\"><Switch defaultChecked /> Invalid</label>\n  )\n}\n",
+      "content": "import { Switch } from '@/components/ui/switch'\n\nexport default function SwitchInvalidExample() {\n  return (\n    <div class=\"flex w-full max-w-sm items-center justify-between gap-4\">\n      <div>\n        <label for=\"switch-terms\" class=\"font-medium\">\n          Accept terms and conditions\n        </label>\n        <p class=\"text-sm text-destructive\">\n          You must accept the terms and conditions to continue.\n        </p>\n      </div>\n      <Switch id=\"switch-terms\" aria-invalid=\"true\" />\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
