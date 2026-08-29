@@ -77,6 +77,14 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain("'h-3 w-3 data-[state=checked]:translate-x-3'")
   })
 
+  it('renders the Native Select API used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('native-select')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain("size?: 'default' | 'sm'")
+    expect(source).toContain("data-slot='native-select-wrapper'")
+    expect(source).toContain("data-slot='native-select-icon'")
+    expect(source).toContain('export function NativeSelectOptGroup')
+  })
+
   it('renders the directional Drawer API used by website examples', () => {
     const entry = getBuiltinComponent('drawer')
     const source = renderRegistryEntryFiles(entry!, DEFAULT_CONFIG)

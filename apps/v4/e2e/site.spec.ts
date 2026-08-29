@@ -3042,6 +3042,20 @@ test.describe("Fict shadcn website", () => {
     await expect(page.locator("html")).toHaveClass(/dark/)
     await expect(demoSelect).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
     await expect(invalid).toHaveCSS("box-shadow", /3px/)
+
+    const expectedSources = [
+      ["native-select-demo", "Select status", "In Progress", "Cancelled"],
+      ["native-select-groups", '<NativeSelectOptGroup label="Operations">', "Operations Manager"],
+      ["native-select-disabled", "<NativeSelect disabled>"],
+      ["native-select-invalid", 'aria-invalid="true"'],
+      ["native-select-rtl", "$state<keyof typeof translations>", "בחר סטטוס"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("navigation menu docs match Fict geometry, links, hover, keyboard, and RTL", async ({ page }) => {

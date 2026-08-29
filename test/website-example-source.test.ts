@@ -754,6 +754,17 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadSwitch('switch-rtl')).toContain('dir={text().dir}')
   })
 
+  it('keeps every Native Select source aligned with its rendered preview', () => {
+    expectCuratedFamily('native-select')
+    const loadNativeSelect = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'native-select', previewName })!
+    expect(loadNativeSelect('native-select-demo')).toContain('Select status')
+    expect(loadNativeSelect('native-select-groups')).toContain('<NativeSelectOptGroup label="Operations">')
+    expect(loadNativeSelect('native-select-disabled')).toContain('<NativeSelect disabled>')
+    expect(loadNativeSelect('native-select-invalid')).toContain('aria-invalid="true"')
+    expect(loadNativeSelect('native-select-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadNativeSelect('native-select-rtl')).toContain('dir={text().dir}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!
