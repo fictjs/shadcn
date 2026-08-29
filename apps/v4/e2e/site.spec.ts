@@ -3728,6 +3728,19 @@ test.describe("Fict shadcn website", () => {
 
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(topLeft.locator("[data-sonner-toast]")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+
+    const expectedSources = [
+      ["sonner-demo", "useSonner()", "Sunday, December 03, 2023 at 9:00 AM", "action: { label: 'Undo' }"],
+      ["sonner-types", "variant: 'promise'", "Loading...", "variant: 'success'"],
+      ["sonner-description", "Monday, January 3rd at 6:00pm"],
+      ["sonner-position", "['Bottom Right', 'bottom-right']", "position })"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("spinner docs match Fict item, custom, sizes, buttons, badges, inputs, empty, and RTL", async ({ page }) => {

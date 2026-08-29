@@ -125,6 +125,18 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain('export function EmptyContent')
   })
 
+  it('renders the Sonner API used by website examples', () => {
+    const toastSource = renderRegistryEntryFiles(getBuiltinComponent('toast')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    const sonnerSource = renderRegistryEntryFiles(getBuiltinComponent('sonner')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(toastSource).toContain("export type ToastVariant = 'default' | 'success' | 'info' | 'warning' | 'error' | 'promise'")
+    expect(toastSource).toContain("export type ToastPosition = 'top-left'")
+    expect(toastSource).toContain('action?: ToastActionRecord')
+    expect(toastSource).toContain("data-position={position}")
+    expect(toastSource).toContain("data-variant={variant}")
+    expect(sonnerSource).toContain('ToastActionRecord as SonnerActionRecord')
+    expect(sonnerSource).toContain('ToastPosition as SonnerPosition')
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')

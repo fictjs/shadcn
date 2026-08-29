@@ -3,7 +3,7 @@ import type { RegistryEntry } from '../types'
 export const feedbackComponentRegistry: RegistryEntry[] = [
   {
     name: 'toast',
-    version: '0.2.0',
+    version: '0.3.0',
     type: 'ui-component',
     description: 'Accessible toast queue and presentation components',
     dependencies: [],
@@ -22,11 +22,23 @@ type GenericProps = {
   [key: string]: unknown
 }
 
+export type ToastVariant = 'default' | 'success' | 'info' | 'warning' | 'error' | 'promise'
+export type ToastPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
+
+export type ToastActionRecord = {
+  label: string
+  altText?: string
+  onClick?: () => void
+}
+
 export type ToastRecord = {
   id: string
   title?: string
   description?: string
   duration?: number
+  variant?: ToastVariant
+  position?: ToastPosition
+  action?: ToastActionRecord
 }
 
 type ToastContextValue = {
@@ -93,6 +105,15 @@ export function useToast() {
 export function ToastViewport(props: GenericProps) {
   const context = useToastContext()
   const { class: className, children, ...rest } = props
+  const positionClasses: Record<ToastPosition, string> = {
+    'top-left': 'left-0 top-0 items-start',
+    'top-center': 'left-1/2 top-0 -translate-x-1/2 items-center',
+    'top-right': 'right-0 top-0 items-end',
+    'bottom-left': 'bottom-0 left-0 flex-col-reverse items-start',
+    'bottom-center': 'bottom-0 left-1/2 -translate-x-1/2 flex-col-reverse items-center',
+    'bottom-right': 'bottom-0 right-0 flex-col-reverse items-end',
+  }
+  const positions = Object.keys(positionClasses) as ToastPosition[]
   return (
     <div
       role='region'
@@ -100,27 +121,41 @@ export function ToastViewport(props: GenericProps) {
       aria-live='polite'
       aria-relevant='additions text'
       data-slot='toast-viewport'
-      class={cn('fixed bottom-0 right-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]', className)}
+      class={cn('pointer-events-none fixed inset-0 z-[100]', className)}
       {...rest}
     >
       {children}
-      {() => context.toasts().map(toast => (
-        <Toast id={toast.id} title={toast.title} description={toast.description} />
+      {() => positions.map(position => (
+        <div data-slot='toast-position' data-position={position} class={cn('fixed flex max-h-screen w-full flex-col gap-2 p-4 md:max-w-[420px]', positionClasses[position])}>
+          {context.toasts()
+            .filter(toast => (toast.position ?? 'bottom-right') === position)
+            .map(toast => (
+              <Toast id={toast.id} title={toast.title} description={toast.description} variant={toast.variant} action={toast.action} />
+            ))}
+        </div>
       ))}
     </div>
   )
 }
 
-export function Toast(props: GenericProps & { id?: string; title?: string; description?: string; open?: boolean }) {
+export function Toast(props: GenericProps & { id?: string; title?: string; description?: string; variant?: ToastVariant; action?: ToastActionRecord; open?: boolean }) {
   const context = useContext(ToastContext)
-  const { class: className, children, id, title, description, open = true, ...rest } = props
+  const { class: className, children, id, title, description, variant = 'default', action, open = true, ...rest } = props
   if (!open) return null
   return (
     <div
       role='status'
       data-slot='toast'
       data-state='open'
-      class={cn('group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border bg-background p-4 pr-6 shadow-lg', className)}
+      data-variant={variant}
+      class={cn(
+        'group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border bg-background p-4 pr-6 shadow-lg',
+        variant === 'success' && 'border-emerald-500/50',
+        variant === 'info' && 'border-sky-500/50',
+        variant === 'warning' && 'border-amber-500/50',
+        variant === 'error' && 'border-destructive/50',
+        className,
+      )}
       {...rest}
     >
       <div class='grid gap-1'>
@@ -128,6 +163,17 @@ export function Toast(props: GenericProps & { id?: string; title?: string; descr
         {description ? <ToastDescription>{description}</ToastDescription> : null}
         {children}
       </div>
+      {action ? (
+        <ToastAction
+          altText={action.altText ?? action.label}
+          onClick={() => {
+            action.onClick?.()
+            if (id && context) context.dismiss(id)
+          }}
+        >
+          {action.label}
+        </ToastAction>
+      ) : null}
       {id && context ? <ToastClose onClick={() => context.dismiss(id)}>Dismiss</ToastClose> : null}
     </div>
   )

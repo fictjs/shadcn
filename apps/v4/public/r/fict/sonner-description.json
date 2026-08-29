@@ -5,12 +5,13 @@
   "description": "Sonner-style aliases on top of toast primitives example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "sonner"
   ],
   "files": [
     {
       "path": "src/examples/sonner-description.tsx",
-      "content": "import { Sonner, SonnerDescription, SonnerProvider, SonnerTitle, SonnerViewport } from '@/components/ui/sonner'\n\nexport default function SonnerDescriptionExample() {\n  return (\n    <SonnerProvider><SonnerViewport><Sonner><SonnerTitle>Description</SonnerTitle><SonnerDescription>Event has been created.</SonnerDescription></Sonner></SonnerViewport></SonnerProvider>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { SonnerProvider, SonnerViewport, useSonner } from '@/components/ui/sonner'\n\nfunction ToastButton() {\n  const { show } = useSonner()\n  return (\n    <Button\n      variant=\"outline\"\n      onClick={() => show({\n        title: 'Event has been created',\n        description: 'Monday, January 3rd at 6:00pm',\n      })}\n    >\n      Show Toast\n    </Button>\n  )\n}\n\nexport default function SonnerDescriptionExample() {\n  return (\n    <SonnerProvider>\n      <ToastButton />\n      <SonnerViewport />\n    </SonnerProvider>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

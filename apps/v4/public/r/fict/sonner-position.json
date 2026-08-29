@@ -5,12 +5,13 @@
   "description": "Sonner-style aliases on top of toast primitives example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "sonner"
   ],
   "files": [
     {
       "path": "src/examples/sonner-position.tsx",
-      "content": "import { Sonner, SonnerDescription, SonnerProvider, SonnerTitle, SonnerViewport } from '@/components/ui/sonner'\n\nexport default function SonnerPositionExample() {\n  return (\n    <SonnerProvider><SonnerViewport><Sonner><SonnerTitle>Position</SonnerTitle><SonnerDescription>Event has been created.</SonnerDescription></Sonner></SonnerViewport></SonnerProvider>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { SonnerProvider, SonnerViewport, useSonner } from '@/components/ui/sonner'\n\nconst positions = [\n  ['Top Left', 'top-left'],\n  ['Top Center', 'top-center'],\n  ['Top Right', 'top-right'],\n  ['Bottom Left', 'bottom-left'],\n  ['Bottom Center', 'bottom-center'],\n  ['Bottom Right', 'bottom-right'],\n] as const\n\nfunction PositionButtons() {\n  const { show } = useSonner()\n  return (\n    <div class=\"flex flex-wrap gap-2\">\n      {positions.map(([label, position]) => (\n        <Button variant=\"outline\" onClick={() => show({ title: 'Event has been created', position })}>\n          {label}\n        </Button>\n      ))}\n    </div>\n  )\n}\n\nexport default function SonnerPositionExample() {\n  return (\n    <SonnerProvider>\n      <PositionButtons />\n      <SonnerViewport />\n    </SonnerProvider>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

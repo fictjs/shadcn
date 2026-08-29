@@ -385,6 +385,22 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadEmpty('empty-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
   })
 
+  it('keeps every Sonner source aligned with its rendered preview', () => {
+    expectCuratedFamily('sonner')
+    const loadSonner = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'sonner', previewName })!
+    expect(loadSonner('sonner-demo')).toContain("description: 'Sunday, December 03, 2023 at 9:00 AM'")
+    expect(loadSonner('sonner-demo')).toContain("action: { label: 'Undo' }")
+    expect(loadSonner('sonner-description')).toContain("description: 'Monday, January 3rd at 6:00pm'")
+    expect(loadSonner('sonner-position')).toContain("['Bottom Right', 'bottom-right']")
+    expect(loadSonner('sonner-position')).toContain("show({ title: 'Event has been created', position })")
+    expect(loadSonner('sonner-types')).toContain("variant: 'promise', duration: 0")
+    expect(loadSonner('sonner-types')).toContain("variant: 'success'")
+    for (const previewName of previewCatalog.sonner) {
+      expect(loadSonner(previewName)).toContain('useSonner()')
+      expect(loadSonner(previewName)).toContain('<SonnerViewport />')
+    }
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],

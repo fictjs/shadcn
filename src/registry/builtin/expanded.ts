@@ -1484,6 +1484,13 @@ const sonnerTemplate: TemplateFn = context => `export {
   ToastProvider as SonnerProvider,
   useToast as useSonner,
 } from '${context.uiImport('toast')}'
+
+export type {
+  ToastActionRecord as SonnerActionRecord,
+  ToastPosition as SonnerPosition,
+  ToastRecord as SonnerRecord,
+  ToastVariant as SonnerVariant,
+} from '${context.uiImport('toast')}'
 `
 
 const spinnerTemplate: TemplateFn =

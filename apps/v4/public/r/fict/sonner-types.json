@@ -5,12 +5,13 @@
   "description": "Sonner-style aliases on top of toast primitives example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "sonner"
   ],
   "files": [
     {
       "path": "src/examples/sonner-types.tsx",
-      "content": "import { Sonner, SonnerDescription, SonnerProvider, SonnerTitle, SonnerViewport } from '@/components/ui/sonner'\n\nexport default function SonnerTypesExample() {\n  return (\n    <SonnerProvider><SonnerViewport><Sonner><SonnerTitle>Types</SonnerTitle><SonnerDescription>Event has been created.</SonnerDescription></Sonner></SonnerViewport></SonnerProvider>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { SonnerProvider, SonnerViewport, useSonner } from '@/components/ui/sonner'\n\nfunction TypeButtons() {\n  const { show, dismiss } = useSonner()\n\n  const showPromise = () => {\n    const id = show({ title: 'Loading...', variant: 'promise', duration: 0 })\n    void new Promise(resolve => setTimeout(resolve, 1000)).then(() => {\n      dismiss(id)\n      show({ title: 'Event has been created', variant: 'success' })\n    })\n  }\n\n  return (\n    <div class=\"flex flex-wrap gap-2\">\n      <Button variant=\"outline\" onClick={() => show({ title: 'Event has been created' })}>Default</Button>\n      <Button variant=\"outline\" onClick={() => show({ title: 'Event has been created', variant: 'success' })}>Success</Button>\n      <Button variant=\"outline\" onClick={() => show({ title: 'Be at the area 10 minutes before the event time', variant: 'info' })}>Info</Button>\n      <Button variant=\"outline\" onClick={() => show({ title: 'Event start time cannot be earlier than 8am', variant: 'warning' })}>Warning</Button>\n      <Button variant=\"outline\" onClick={() => show({ title: 'Event has not been created', variant: 'error' })}>Error</Button>\n      <Button variant=\"outline\" onClick={showPromise}>Promise</Button>\n    </div>\n  )\n}\n\nexport default function SonnerTypesExample() {\n  return (\n    <SonnerProvider>\n      <TypeButtons />\n      <SonnerViewport />\n    </SonnerProvider>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
