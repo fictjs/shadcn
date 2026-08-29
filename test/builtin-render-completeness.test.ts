@@ -99,6 +99,14 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain('export function PopoverDescription')
   })
 
+  it('renders the Input Group composition API used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('input-group')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain('export function InputGroupButton')
+    expect(source).toContain('export function InputGroupText')
+    expect(source).toContain('export function InputGroupTextarea')
+    expect(source).toContain("align?: 'inline-start' | 'inline-end' | 'block-start' | 'block-end'")
+  })
+
   it('renders the directional Drawer API used by website examples', () => {
     const entry = getBuiltinComponent('drawer')
     const source = renderRegistryEntryFiles(entry!, DEFAULT_CONFIG)

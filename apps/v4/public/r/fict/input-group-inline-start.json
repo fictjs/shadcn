@@ -5,12 +5,13 @@
   "description": "Input groups with addons and embedded controls example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "field",
     "input-group"
   ],
   "files": [
     {
       "path": "src/examples/input-group-inline-start.tsx",
-      "content": "import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\n\nexport default function InputGroupInlineStartExample() {\n  return (\n    <InputGroup><InputGroupAddon>@</InputGroupAddon><InputGroupInput placeholder=\"Group Inline Start\" /><InputGroupAddon>.com</InputGroupAddon></InputGroup>\n  )\n}\n",
+      "content": "import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'\nimport { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\n\nexport default function InputGroupInlineStartExample() {\n  return (\n    <Field class=\"max-w-sm\">\n      <FieldLabel for=\"inline-start-input\">Input</FieldLabel>\n      <InputGroup>\n        <InputGroupInput id=\"inline-start-input\" placeholder=\"Search...\" />\n        <InputGroupAddon align=\"inline-start\">\n          <span aria-hidden=\"true\">•</span>\n        </InputGroupAddon>\n      </InputGroup>\n      <FieldDescription>Icon positioned at the start.</FieldDescription>\n    </Field>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

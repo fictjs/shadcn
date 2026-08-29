@@ -2,6 +2,12 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 
 export default function InputGroupDemoExample() {
   return (
-    <InputGroup><InputGroupAddon>@</InputGroupAddon><InputGroupInput placeholder="Group Demo" /><InputGroupAddon>.com</InputGroupAddon></InputGroup>
+    <InputGroup class="max-w-xs">
+      <InputGroupInput placeholder="Search..." />
+      <InputGroupAddon>
+        <span aria-hidden="true">•</span>
+      </InputGroupAddon>
+      <InputGroupAddon align="inline-end">12 results</InputGroupAddon>
+    </InputGroup>
   )
 }

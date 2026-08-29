@@ -1,7 +1,42 @@
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from '@/components/ui/input-group'
+import { Spinner } from '@/components/ui/spinner'
 
 export default function InputGroupSpinnerExample() {
   return (
-    <InputGroup><InputGroupAddon>@</InputGroupAddon><InputGroupInput placeholder="Group Spinner" /><InputGroupAddon>.com</InputGroupAddon></InputGroup>
+    <div class="grid w-full max-w-sm gap-4">
+      <InputGroup>
+        <InputGroupInput placeholder="Searching..." />
+        <InputGroupAddon align="inline-end">
+          <Spinner />
+        </InputGroupAddon>
+      </InputGroup>
+      <InputGroup>
+        <InputGroupInput placeholder="Processing..." />
+        <InputGroupAddon>
+          <Spinner />
+        </InputGroupAddon>
+      </InputGroup>
+      <InputGroup>
+        <InputGroupInput placeholder="Saving changes..." />
+        <InputGroupAddon align="inline-end">
+          <InputGroupText>Saving...</InputGroupText>
+          <Spinner />
+        </InputGroupAddon>
+      </InputGroup>
+      <InputGroup>
+        <InputGroupInput placeholder="Refreshing data..." />
+        <InputGroupAddon>
+          <span aria-hidden="true">•</span>
+        </InputGroupAddon>
+        <InputGroupAddon align="inline-end">
+          <InputGroupText class="text-muted-foreground">Please wait...</InputGroupText>
+        </InputGroupAddon>
+      </InputGroup>
+    </div>
   )
 }

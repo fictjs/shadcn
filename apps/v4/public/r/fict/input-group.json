@@ -5,12 +5,14 @@
   "description": "Input groups with addons and embedded controls",
   "dependencies": [],
   "registryDependencies": [
-    "input"
+    "button",
+    "input",
+    "textarea"
   ],
   "files": [
     {
       "path": "src/components/ui/input-group.tsx",
-      "content": "import { cn } from '@/lib/cn'\nimport { Input } from '@/components/ui/input'\n\ntype DivProps = JSX.IntrinsicElements['div']\ntype SpanProps = JSX.IntrinsicElements['span']\n\ntype InputGroupInputProps = {\n  class?: string\n  [key: string]: unknown\n}\n\nexport function InputGroup(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('flex w-full items-stretch rounded-md border border-input bg-background', className)} {...rest} />\n}\n\nexport function InputGroupAddon(props: SpanProps) {\n  const { class: className, ...rest } = props\n  return <span class={cn('inline-flex items-center border-r px-3 text-sm text-muted-foreground last:border-r-0', className)} {...rest} />\n}\n\nexport function InputGroupInput(props: InputGroupInputProps) {\n  const { class: className, ...rest } = props\n  return <Input class={cn('rounded-none border-0 shadow-none focus-visible:ring-0', className)} {...rest} />\n}\n",
+      "content": "import { cn } from '@/lib/cn'\nimport { Button } from '@/components/ui/button'\nimport { Input } from '@/components/ui/input'\nimport { Textarea } from '@/components/ui/textarea'\n\ntype DivProps = JSX.IntrinsicElements['div']\ntype SpanProps = JSX.IntrinsicElements['span']\ntype AddonProps = SpanProps & { align?: 'inline-start' | 'inline-end' | 'block-start' | 'block-end' }\n\ntype InputGroupInputProps = {\n  class?: string\n  [key: string]: unknown\n}\n\nexport function InputGroup(props: DivProps) {\n  const { class: className, ...rest } = props\n  return <div class={cn('flex w-full items-stretch rounded-md border border-input bg-background', className)} {...rest} />\n}\n\nexport function InputGroupAddon(props: AddonProps) {\n  const { class: className, align = 'inline-start', ...rest } = props\n  return <span data-slot='input-group-addon' data-align={align} class={cn('inline-flex items-center gap-2 px-2 text-sm text-muted-foreground', align === 'inline-end' && 'order-last', align.startsWith('block-') && 'w-full', className)} {...rest} />\n}\n\nexport function InputGroupInput(props: InputGroupInputProps) {\n  const { class: className, ...rest } = props\n  return <Input class={cn('rounded-none border-0 shadow-none focus-visible:ring-0', className)} {...rest} />\n}\n\nexport function InputGroupButton(props: InputGroupInputProps) {\n  const { class: className, ...rest } = props\n  return <Button type='button' variant='ghost' size='xs' class={cn('shadow-none', className)} {...rest} />\n}\n\nexport function InputGroupText(props: SpanProps) {\n  const { class: className, ...rest } = props\n  return <span class={cn('flex items-center gap-2 text-sm text-muted-foreground', className)} {...rest} />\n}\n\nexport function InputGroupTextarea(props: InputGroupInputProps) {\n  const { class: className, ...rest } = props\n  return <Textarea data-slot='input-group-control' class={cn('flex-1 resize-none rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0', className)} {...rest} />\n}\n",
       "type": "registry:ui"
     }
   ]

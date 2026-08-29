@@ -1357,10 +1357,13 @@ export function FieldSeparator(props: DivProps) {
 `
 
 const inputGroupTemplate: TemplateFn = context => `import { cn } from '${context.imports.cn}'
+import { Button } from '${context.uiImport('button')}'
 import { Input } from '${context.uiImport('input')}'
+import { Textarea } from '${context.uiImport('textarea')}'
 
 type DivProps = JSX.IntrinsicElements['div']
 type SpanProps = JSX.IntrinsicElements['span']
+type AddonProps = SpanProps & { align?: 'inline-start' | 'inline-end' | 'block-start' | 'block-end' }
 
 type InputGroupInputProps = {
   class?: string
@@ -1372,14 +1375,29 @@ export function InputGroup(props: DivProps) {
   return <div class={cn('flex w-full items-stretch rounded-md border border-input bg-background', className)} {...rest} />
 }
 
-export function InputGroupAddon(props: SpanProps) {
-  const { class: className, ...rest } = props
-  return <span class={cn('inline-flex items-center border-r px-3 text-sm text-muted-foreground last:border-r-0', className)} {...rest} />
+export function InputGroupAddon(props: AddonProps) {
+  const { class: className, align = 'inline-start', ...rest } = props
+  return <span data-slot='input-group-addon' data-align={align} class={cn('inline-flex items-center gap-2 px-2 text-sm text-muted-foreground', align === 'inline-end' && 'order-last', align.startsWith('block-') && 'w-full', className)} {...rest} />
 }
 
 export function InputGroupInput(props: InputGroupInputProps) {
   const { class: className, ...rest } = props
   return <Input class={cn('rounded-none border-0 shadow-none focus-visible:ring-0', className)} {...rest} />
+}
+
+export function InputGroupButton(props: InputGroupInputProps) {
+  const { class: className, ...rest } = props
+  return <Button type='button' variant='ghost' size='xs' class={cn('shadow-none', className)} {...rest} />
+}
+
+export function InputGroupText(props: SpanProps) {
+  const { class: className, ...rest } = props
+  return <span class={cn('flex items-center gap-2 text-sm text-muted-foreground', className)} {...rest} />
+}
+
+export function InputGroupTextarea(props: InputGroupInputProps) {
+  const { class: className, ...rest } = props
+  return <Textarea data-slot='input-group-control' class={cn('flex-1 resize-none rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0', className)} {...rest} />
 }
 `
 
@@ -2089,7 +2107,7 @@ export const expandedComponentRegistry: RegistryEntry[] = [
   createComponentEntry({
     name: 'input-group',
     description: 'Input groups with addons and embedded controls',
-    registryDependencies: ['input'],
+    registryDependencies: ['button', 'input', 'textarea'],
     content: inputGroupTemplate,
   }),
   createComponentEntry({

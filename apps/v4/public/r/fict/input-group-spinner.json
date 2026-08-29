@@ -5,12 +5,13 @@
   "description": "Input groups with addons and embedded controls example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "input-group"
+    "input-group",
+    "spinner"
   ],
   "files": [
     {
       "path": "src/examples/input-group-spinner.tsx",
-      "content": "import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\n\nexport default function InputGroupSpinnerExample() {\n  return (\n    <InputGroup><InputGroupAddon>@</InputGroupAddon><InputGroupInput placeholder=\"Group Spinner\" /><InputGroupAddon>.com</InputGroupAddon></InputGroup>\n  )\n}\n",
+      "content": "import {\n  InputGroup,\n  InputGroupAddon,\n  InputGroupInput,\n  InputGroupText,\n} from '@/components/ui/input-group'\nimport { Spinner } from '@/components/ui/spinner'\n\nexport default function InputGroupSpinnerExample() {\n  return (\n    <div class=\"grid w-full max-w-sm gap-4\">\n      <InputGroup>\n        <InputGroupInput placeholder=\"Searching...\" />\n        <InputGroupAddon align=\"inline-end\">\n          <Spinner />\n        </InputGroupAddon>\n      </InputGroup>\n      <InputGroup>\n        <InputGroupInput placeholder=\"Processing...\" />\n        <InputGroupAddon>\n          <Spinner />\n        </InputGroupAddon>\n      </InputGroup>\n      <InputGroup>\n        <InputGroupInput placeholder=\"Saving changes...\" />\n        <InputGroupAddon align=\"inline-end\">\n          <InputGroupText>Saving...</InputGroupText>\n          <Spinner />\n        </InputGroupAddon>\n      </InputGroup>\n      <InputGroup>\n        <InputGroupInput placeholder=\"Refreshing data...\" />\n        <InputGroupAddon>\n          <span aria-hidden=\"true\">•</span>\n        </InputGroupAddon>\n        <InputGroupAddon align=\"inline-end\">\n          <InputGroupText class=\"text-muted-foreground\">Please wait...</InputGroupText>\n        </InputGroupAddon>\n      </InputGroup>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

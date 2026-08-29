@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/input-group-demo.tsx",
-      "content": "import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\n\nexport default function InputGroupDemoExample() {\n  return (\n    <InputGroup><InputGroupAddon>@</InputGroupAddon><InputGroupInput placeholder=\"Group Demo\" /><InputGroupAddon>.com</InputGroupAddon></InputGroup>\n  )\n}\n",
+      "content": "import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\n\nexport default function InputGroupDemoExample() {\n  return (\n    <InputGroup class=\"max-w-xs\">\n      <InputGroupInput placeholder=\"Search...\" />\n      <InputGroupAddon>\n        <span aria-hidden=\"true\">•</span>\n      </InputGroupAddon>\n      <InputGroupAddon align=\"inline-end\">12 results</InputGroupAddon>\n    </InputGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

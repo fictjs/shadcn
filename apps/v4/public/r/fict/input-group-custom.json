@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/input-group-custom.tsx",
-      "content": "import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\n\nexport default function InputGroupCustomExample() {\n  return (\n    <InputGroup><InputGroupAddon>@</InputGroupAddon><InputGroupInput placeholder=\"Group Custom\" /><InputGroupAddon>.com</InputGroupAddon></InputGroup>\n  )\n}\n",
+      "content": "import {\n  InputGroup,\n  InputGroupAddon,\n  InputGroupButton,\n  InputGroupTextarea,\n} from '@/components/ui/input-group'\n\nexport default function InputGroupCustomExample() {\n  return (\n    <InputGroup>\n      <InputGroupTextarea class=\"min-h-24\" placeholder=\"Autoresize textarea...\" />\n      <InputGroupAddon align=\"block-end\">\n        <InputGroupButton class=\"ml-auto\" variant=\"default\">\n          Submit\n        </InputGroupButton>\n      </InputGroupAddon>\n    </InputGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

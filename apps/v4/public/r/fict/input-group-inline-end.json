@@ -5,12 +5,13 @@
   "description": "Input groups with addons and embedded controls example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "field",
     "input-group"
   ],
   "files": [
     {
       "path": "src/examples/input-group-inline-end.tsx",
-      "content": "import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\n\nexport default function InputGroupInlineEndExample() {\n  return (\n    <InputGroup><InputGroupAddon>@</InputGroupAddon><InputGroupInput placeholder=\"Group Inline End\" /><InputGroupAddon>.com</InputGroupAddon></InputGroup>\n  )\n}\n",
+      "content": "import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'\nimport { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\n\nexport default function InputGroupInlineEndExample() {\n  return (\n    <Field class=\"max-w-sm\">\n      <FieldLabel for=\"inline-end-input\">Input</FieldLabel>\n      <InputGroup>\n        <InputGroupInput id=\"inline-end-input\" type=\"password\" placeholder=\"Enter password\" />\n        <InputGroupAddon align=\"inline-end\">\n          <span aria-hidden=\"true\">•</span>\n        </InputGroupAddon>\n      </InputGroup>\n      <FieldDescription>Icon positioned at the end.</FieldDescription>\n    </Field>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

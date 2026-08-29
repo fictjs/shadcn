@@ -5,12 +5,13 @@
   "description": "Input groups with addons and embedded controls example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "input-group"
+    "input-group",
+    "kbd"
   ],
   "files": [
     {
       "path": "src/examples/input-group-kbd.tsx",
-      "content": "import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\n\nexport default function InputGroupKbdExample() {\n  return (\n    <InputGroup><InputGroupAddon>@</InputGroupAddon><InputGroupInput placeholder=\"Group Kbd\" /><InputGroupAddon>.com</InputGroupAddon></InputGroup>\n  )\n}\n",
+      "content": "import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\nimport { Kbd } from '@/components/ui/kbd'\n\nexport default function InputGroupKbdExample() {\n  return (\n    <InputGroup class=\"max-w-sm\">\n      <InputGroupInput placeholder=\"Search...\" />\n      <InputGroupAddon>\n        <span aria-hidden=\"true\">•</span>\n      </InputGroupAddon>\n      <InputGroupAddon align=\"inline-end\">\n        <Kbd>⌘K</Kbd>\n      </InputGroupAddon>\n    </InputGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

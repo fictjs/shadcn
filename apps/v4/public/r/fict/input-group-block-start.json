@@ -5,12 +5,13 @@
   "description": "Input groups with addons and embedded controls example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "field",
     "input-group"
   ],
   "files": [
     {
       "path": "src/examples/input-group-block-start.tsx",
-      "content": "import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\n\nexport default function InputGroupBlockStartExample() {\n  return (\n    <InputGroup><InputGroupAddon>@</InputGroupAddon><InputGroupInput placeholder=\"Group Block Start\" /><InputGroupAddon>.com</InputGroupAddon></InputGroup>\n  )\n}\n",
+      "content": "import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field'\nimport {\n  InputGroup,\n  InputGroupAddon,\n  InputGroupButton,\n  InputGroupInput,\n  InputGroupText,\n  InputGroupTextarea,\n} from '@/components/ui/input-group'\n\nexport default function InputGroupBlockStartExample() {\n  return (\n    <FieldGroup class=\"max-w-sm\">\n      <Field>\n        <FieldLabel for=\"block-start-input\">Input</FieldLabel>\n        <InputGroup class=\"h-auto\">\n          <InputGroupInput id=\"block-start-input\" placeholder=\"Enter your name\" />\n          <InputGroupAddon align=\"block-start\">\n            <InputGroupText>Full Name</InputGroupText>\n          </InputGroupAddon>\n        </InputGroup>\n        <FieldDescription>Header positioned above the input.</FieldDescription>\n      </Field>\n      <Field>\n        <FieldLabel for=\"block-start-textarea\">Textarea</FieldLabel>\n        <InputGroup>\n          <InputGroupTextarea\n            id=\"block-start-textarea\"\n            placeholder=\"console.log('Hello, world!');\"\n            class=\"font-mono text-sm\"\n          />\n          <InputGroupAddon align=\"block-start\">\n            <span aria-hidden=\"true\">•</span>\n            <InputGroupText class=\"font-mono\">script.js</InputGroupText>\n            <InputGroupButton size=\"icon-xs\" class=\"ml-auto\">\n              <span aria-hidden=\"true\">•</span>\n              <span class=\"sr-only\">Copy</span>\n            </InputGroupButton>\n          </InputGroupAddon>\n        </InputGroup>\n        <FieldDescription>Header positioned above the textarea.</FieldDescription>\n      </Field>\n    </FieldGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

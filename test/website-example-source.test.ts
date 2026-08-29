@@ -828,6 +828,22 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadInput('input-rtl')).toContain('dir={text().dir}')
   })
 
+  it('keeps every Input Group source aligned with its rendered preview', () => {
+    expectCuratedFamily('input-group')
+    const loadInputGroup = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'input-group', previewName })!
+    expect(loadInputGroup('input-group-demo')).toContain('12 results')
+    expect(loadInputGroup('input-group-inline-end')).toContain('type="password"')
+    expect(loadInputGroup('input-group-block-start')).toContain('align="block-start"')
+    expect(loadInputGroup('input-group-block-end')).toContain('align="block-end"')
+    expect(loadInputGroup('input-group-text')).toContain('120 characters left')
+    expect(loadInputGroup('input-group-button')).toContain('let copied = $state(false)')
+    expect(loadInputGroup('input-group-kbd')).toContain('⌘K')
+    expect(loadInputGroup('input-group-spinner')).toContain('<Spinner')
+    expect(loadInputGroup('input-group-textarea')).toContain('script.js')
+    expect(loadInputGroup('input-group-custom')).toContain('placeholder="Autoresize textarea..."')
+    expect(loadInputGroup('input-group-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

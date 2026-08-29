@@ -2518,6 +2518,26 @@ test.describe("Fict shadcn website", () => {
     await expect(page.locator("html")).toHaveClass(/dark/)
     await expect(demo.locator('[data-slot="input-group"]')).toHaveCSS("height", "32px")
     await expect(spinner.locator("input:disabled")).toHaveCount(4)
+
+    const expectedSources = [
+      ["input-group-demo", "12 results"],
+      ["input-group-inline-end", 'type="password"'],
+      ["input-group-block-start", 'align="block-start"'],
+      ["input-group-block-end", 'align="block-end"'],
+      ["input-group-text", "120 characters left"],
+      ["input-group-button", "let copied = $state(false)"],
+      ["input-group-kbd", "⌘K"],
+      ["input-group-spinner", "<Spinner"],
+      ["input-group-textarea", "script.js"],
+      ["input-group-custom", 'placeholder="Autoresize textarea..."'],
+      ["input-group-rtl", "$state<keyof typeof translations>", "כותרת תחתונה ממוקמת"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("input otp docs match Fict slots, patterns, states, form, keyboard input, and RTL", async ({ page }) => {
