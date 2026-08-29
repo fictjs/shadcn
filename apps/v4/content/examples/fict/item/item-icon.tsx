@@ -1,7 +1,8 @@
-import { Item, ItemContent, ItemDescription, ItemLeading, ItemTitle, ItemTrailing } from '@/components/ui/item'
+import { Button } from '@/components/ui/button'
+import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/components/ui/item'
 
 export default function ItemIconExample() {
   return (
-    <Item><ItemLeading>◆</ItemLeading><ItemContent><ItemTitle>Icon</ItemTitle><ItemDescription>A composable Fict list item.</ItemDescription></ItemContent><ItemTrailing>View</ItemTrailing></Item>
+    <Item variant="outline" class="w-lg"><ItemMedia class="rounded-md bg-muted p-2">♢</ItemMedia><ItemContent><ItemTitle>Security Alert</ItemTitle><ItemDescription>New login detected from unknown device.</ItemDescription></ItemContent><ItemActions><Button variant="outline" size="sm">Review</Button></ItemActions></Item>
   )
 }

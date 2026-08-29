@@ -1,7 +1,8 @@
-import { Item, ItemContent, ItemDescription, ItemLeading, ItemTitle, ItemTrailing } from '@/components/ui/item'
+import { Button } from '@/components/ui/button'
+import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from '@/components/ui/item'
 
 export default function ItemDemoExample() {
   return (
-    <Item><ItemLeading>◆</ItemLeading><ItemContent><ItemTitle>Demo</ItemTitle><ItemDescription>A composable Fict list item.</ItemDescription></ItemContent><ItemTrailing>View</ItemTrailing></Item>
+    <ItemGroup class="w-md"><Item variant="outline"><ItemContent><ItemTitle>Basic Item</ItemTitle><ItemDescription>A simple item with title and description.</ItemDescription></ItemContent><ItemActions><Button variant="outline" size="sm">Action</Button></ItemActions></Item><Item variant="outline" size="sm" asChild><a href="#"><ItemMedia>✓</ItemMedia><ItemContent><ItemTitle>Your profile has been verified.</ItemTitle></ItemContent><ItemActions>›</ItemActions></a></Item></ItemGroup>
   )
 }

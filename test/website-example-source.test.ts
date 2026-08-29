@@ -509,6 +509,30 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadField('field-rtl')).toContain('אמצעי תשלום')
   })
 
+  it('keeps every Item source aligned with its rendered preview', () => {
+    expectCuratedFamily('item')
+    const loadItem = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'item', previewName })!
+    const markers: Record<string, string> = {
+      'item-demo': 'Your profile has been verified.',
+      'item-variant': "['muted', 'Muted Variant'",
+      'item-size': "['xs', 'Extra Small Size'",
+      'item-icon': 'New login detected from unknown device.',
+      'item-avatar': 'https://github.com/evilrabbit.png',
+      'item-image': "['Midnight City Lights', 'Electric Nights'",
+      'item-group': "['shadcn', 'shadcn@vercel.com']",
+      'item-header': "['v0-1.5-sm', 'Everyday tasks and UI generation.'",
+      'item-link': 'rel="noopener noreferrer"',
+      'item-dropdown': '<DropdownMenuContent align="end">',
+      'item-rtl': "let language = $state<keyof typeof translations>('ar')",
+    }
+    for (const previewName of previewCatalog.item) {
+      const source = loadItem(previewName)
+      expect(source, previewName).toContain(markers[previewName])
+      expect(source, previewName).not.toContain('A composable Fict list item.')
+    }
+    expect(loadItem('item-rtl')).toContain('פריט בסיסי')
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],

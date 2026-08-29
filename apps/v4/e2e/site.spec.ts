@@ -2604,6 +2604,27 @@ test.describe("Fict shadcn website", () => {
     await expect(rtl.getByText("Basic Item", { exact: true })).toBeVisible()
     await expect(rtlStack).toHaveAttribute("dir", "ltr")
 
+    const expectedSources = [
+      ["item-demo", "Your profile has been verified.", "asChild"],
+      ["item-variant", "Muted Variant", "variant={variant}"],
+      ["item-size", "Extra Small Size", "size={size}"],
+      ["item-icon", "New login detected from unknown device."],
+      ["item-avatar", "https://github.com/evilrabbit.png", "<AvatarGroup>"],
+      ["item-image", "Midnight City Lights", "Neon Dreams"],
+      ["item-group", "shadcn@vercel.com"],
+      ["item-header", "Everyday tasks and UI generation.", "<ItemHeader>"],
+      ["item-link", 'rel="noopener noreferrer"'],
+      ["item-dropdown", '<DropdownMenuContent align="end">', "evilrabbit@vercel.com"],
+      ["item-rtl", "$state<keyof typeof translations>", "פריט בסיסי"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      await expect(source).not.toContainText("A composable Fict list item.")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
+
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(page.locator("html")).toHaveClass(/dark/)
     await expect(variants.locator('[data-slot="item"]').nth(2)).not.toHaveCSS(

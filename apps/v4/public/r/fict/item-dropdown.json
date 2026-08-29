@@ -5,12 +5,15 @@
   "description": "List item layout primitives for rich rows example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "avatar",
+    "button",
+    "dropdown-menu",
     "item"
   ],
   "files": [
     {
       "path": "src/examples/item-dropdown.tsx",
-      "content": "import { Item, ItemContent, ItemDescription, ItemLeading, ItemTitle, ItemTrailing } from '@/components/ui/item'\n\nexport default function ItemDropdownExample() {\n  return (\n    <Item><ItemLeading>◆</ItemLeading><ItemContent><ItemTitle>Dropdown</ItemTitle><ItemDescription>A composable Fict list item.</ItemDescription></ItemContent><ItemTrailing>View</ItemTrailing></Item>\n  )\n}\n",
+      "content": "import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Button } from '@/components/ui/button'\nimport { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'\nimport { Item, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/components/ui/item'\n\nconst people = [['shadcn', 'shadcn@vercel.com'], ['maxleiter', 'maxleiter@vercel.com'], ['evilrabbit', 'evilrabbit@vercel.com']] as const\n\nexport default function ItemDropdownExample() {\n  return (\n    <DropdownMenu><DropdownMenuTrigger asChild><Button variant=\"outline\">Select⌄</Button></DropdownMenuTrigger><DropdownMenuContent align=\"end\">{people.map(([name, email]) => <DropdownMenuItem><Item size=\"xs\"><ItemMedia><Avatar><AvatarImage src={`https://github.com/${name}.png`} alt={name} /><AvatarFallback>{name.slice(0, 2)}</AvatarFallback></Avatar></ItemMedia><ItemContent><ItemTitle>{name}</ItemTitle><ItemDescription>{email}</ItemDescription></ItemContent></Item></DropdownMenuItem>)}</DropdownMenuContent></DropdownMenu>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

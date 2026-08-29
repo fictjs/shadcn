@@ -1,7 +1,9 @@
-import { Item, ItemContent, ItemDescription, ItemLeading, ItemTitle, ItemTrailing } from '@/components/ui/item'
+import { Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from '@/components/ui/item'
+
+const variants = [['default', 'Default Variant', 'Transparent background with no border.'], ['outline', 'Outline Variant', 'Outlined style with a visible border.'], ['muted', 'Muted Variant', 'Muted background for secondary content.']] as const
 
 export default function ItemVariantExample() {
   return (
-    <Item><ItemLeading>◆</ItemLeading><ItemContent><ItemTitle>Variant</ItemTitle><ItemDescription>A composable Fict list item.</ItemDescription></ItemContent><ItemTrailing>View</ItemTrailing></Item>
+    <ItemGroup class="w-md">{variants.map(([variant, title, description]) => <Item variant={variant}><ItemMedia>▣</ItemMedia><ItemContent><ItemTitle>{title}</ItemTitle><ItemDescription>{description}</ItemDescription></ItemContent></Item>)}</ItemGroup>
   )
 }

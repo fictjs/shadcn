@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/item-header.tsx",
-      "content": "import { Item, ItemContent, ItemDescription, ItemLeading, ItemTitle, ItemTrailing } from '@/components/ui/item'\n\nexport default function ItemHeaderExample() {\n  return (\n    <Item><ItemLeading>◆</ItemLeading><ItemContent><ItemTitle>Header</ItemTitle><ItemDescription>A composable Fict list item.</ItemDescription></ItemContent><ItemTrailing>View</ItemTrailing></Item>\n  )\n}\n",
+      "content": "import { Item, ItemContent, ItemDescription, ItemHeader, ItemTitle } from '@/components/ui/item'\n\nconst models = [['v0-1.5-sm', 'Everyday tasks and UI generation.', 'https://images.unsplash.com/photo-1650804068570-7fb2e3dbf888?q=80&w=640&auto=format&fit=crop'], ['v0-1.5-lg', 'Advanced thinking or reasoning.', 'https://images.unsplash.com/photo-1610280777472-54133d004c8c?q=80&w=640&auto=format&fit=crop'], ['v0-2.0-mini', 'Open Source model for everyone.', 'https://images.unsplash.com/photo-1602146057681-08560aee8cde?q=80&w=640&auto=format&fit=crop']] as const\n\nexport default function ItemHeaderExample() {\n  return (\n    <div class=\"grid grid-cols-3 gap-3\">{models.map(([name, description, image]) => <Item variant=\"outline\" class=\"block p-0\"><ItemHeader><img class=\"aspect-video w-full object-cover\" src={image} alt={name} /></ItemHeader><ItemContent class=\"p-4\"><ItemTitle>{name}</ItemTitle><ItemDescription>{description}</ItemDescription></ItemContent></Item>)}</div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

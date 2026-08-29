@@ -5,12 +5,13 @@
   "description": "List item layout primitives for rich rows example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "item"
   ],
   "files": [
     {
       "path": "src/examples/item-icon.tsx",
-      "content": "import { Item, ItemContent, ItemDescription, ItemLeading, ItemTitle, ItemTrailing } from '@/components/ui/item'\n\nexport default function ItemIconExample() {\n  return (\n    <Item><ItemLeading>◆</ItemLeading><ItemContent><ItemTitle>Icon</ItemTitle><ItemDescription>A composable Fict list item.</ItemDescription></ItemContent><ItemTrailing>View</ItemTrailing></Item>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@/components/ui/item'\n\nexport default function ItemIconExample() {\n  return (\n    <Item variant=\"outline\" class=\"w-lg\"><ItemMedia class=\"rounded-md bg-muted p-2\">♢</ItemMedia><ItemContent><ItemTitle>Security Alert</ItemTitle><ItemDescription>New login detected from unknown device.</ItemDescription></ItemContent><ItemActions><Button variant=\"outline\" size=\"sm\">Review</Button></ItemActions></Item>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

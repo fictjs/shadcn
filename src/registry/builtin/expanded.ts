@@ -1131,40 +1131,72 @@ export function InputOTPSeparator(props: DivProps) {
 }
 `
 
-const itemTemplate: TemplateFn = context => `import { cn } from '${context.imports.cn}'
+const itemTemplate: TemplateFn = context => `import { Slot } from '@fictjs/radix-ui'
+
+import { cn } from '${context.imports.cn}'
 
 type DivProps = JSX.IntrinsicElements['div']
 type HeadingProps = JSX.IntrinsicElements['h4']
 type ParagraphProps = JSX.IntrinsicElements['p']
 
-export function Item(props: DivProps) {
-  const { class: className, ...rest } = props
-  return <div class={cn('flex items-start gap-3 rounded-lg border p-4', className)} {...rest} />
+type ItemProps = DivProps & {
+  variant?: 'default' | 'outline' | 'muted'
+  size?: 'default' | 'sm' | 'xs'
+  asChild?: boolean
+}
+
+export function Item(props: ItemProps) {
+  const { class: className, variant = 'default', size = 'default', asChild, ...rest } = props
+  const classValue = cn(
+    'flex items-start gap-3 rounded-lg',
+    variant === 'outline' && 'border',
+    variant === 'muted' && 'bg-muted',
+    size === 'default' && 'p-4',
+    size === 'sm' && 'p-3',
+    size === 'xs' && 'gap-2 p-2',
+    className,
+  )
+  if (asChild) return <Slot.Root data-slot='item' data-variant={variant} data-size={size} class={classValue} {...rest} />
+  return <div data-slot='item' data-variant={variant} data-size={size} class={classValue} {...rest} />
 }
 
 export function ItemLeading(props: DivProps) {
   const { class: className, ...rest } = props
-  return <div class={cn('mt-0.5 shrink-0 text-muted-foreground', className)} {...rest} />
+  return <div data-slot='item-media' class={cn('mt-0.5 shrink-0 text-muted-foreground', className)} {...rest} />
 }
+
+export const ItemMedia = ItemLeading
 
 export function ItemContent(props: DivProps) {
   const { class: className, ...rest } = props
-  return <div class={cn('grid min-w-0 gap-1', className)} {...rest} />
+  return <div data-slot='item-content' class={cn('grid min-w-0 gap-1', className)} {...rest} />
 }
 
 export function ItemTitle(props: HeadingProps) {
   const { class: className, ...rest } = props
-  return <h4 class={cn('truncate text-sm font-medium', className)} {...rest} />
+  return <h4 data-slot='item-title' class={cn('truncate text-sm font-medium', className)} {...rest} />
 }
 
 export function ItemDescription(props: ParagraphProps) {
   const { class: className, ...rest } = props
-  return <p class={cn('text-sm text-muted-foreground', className)} {...rest} />
+  return <p data-slot='item-description' class={cn('text-sm text-muted-foreground', className)} {...rest} />
 }
 
 export function ItemTrailing(props: DivProps) {
   const { class: className, ...rest } = props
-  return <div class={cn('ml-auto shrink-0', className)} {...rest} />
+  return <div data-slot='item-actions' class={cn('ml-auto shrink-0', className)} {...rest} />
+}
+
+export const ItemActions = ItemTrailing
+
+export function ItemGroup(props: DivProps) {
+  const { class: className, ...rest } = props
+  return <div data-slot='item-group' class={cn('grid gap-2', className)} {...rest} />
+}
+
+export function ItemHeader(props: DivProps) {
+  const { class: className, ...rest } = props
+  return <div data-slot='item-header' class={cn('overflow-hidden rounded-t-lg', className)} {...rest} />
 }
 `
 
@@ -1681,6 +1713,7 @@ export const expandedComponentRegistry: RegistryEntry[] = [
   createComponentEntry({
     name: 'item',
     description: 'List item layout primitives for rich rows',
+    dependencies: ['@fictjs/radix-ui'],
     content: itemTemplate,
   }),
   createComponentEntry({

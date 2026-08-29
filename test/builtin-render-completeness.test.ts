@@ -169,6 +169,19 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain('export function FieldSeparator')
   })
 
+  it('renders the Item API used by website examples', () => {
+    const entry = getBuiltinComponent('item')!
+    expect(entry.dependencies).toContain('@fictjs/radix-ui')
+    const source = renderRegistryEntryFiles(entry, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain("variant?: 'default' | 'outline' | 'muted'")
+    expect(source).toContain("size?: 'default' | 'sm' | 'xs'")
+    expect(source).toContain("if (asChild) return <Slot.Root data-slot='item'")
+    expect(source).toContain('export const ItemMedia = ItemLeading')
+    expect(source).toContain('export const ItemActions = ItemTrailing')
+    expect(source).toContain('export function ItemGroup')
+    expect(source).toContain('export function ItemHeader')
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')

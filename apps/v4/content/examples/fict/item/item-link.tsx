@@ -1,7 +1,7 @@
-import { Item, ItemContent, ItemDescription, ItemLeading, ItemTitle, ItemTrailing } from '@/components/ui/item'
+import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemTitle } from '@/components/ui/item'
 
 export default function ItemLinkExample() {
   return (
-    <Item><ItemLeading>◆</ItemLeading><ItemContent><ItemTitle>Link</ItemTitle><ItemDescription>A composable Fict list item.</ItemDescription></ItemContent><ItemTrailing>View</ItemTrailing></Item>
+    <ItemGroup class="w-md"><Item asChild><a href="#"><ItemContent><ItemTitle>Visit our documentation</ItemTitle><ItemDescription>Learn how to get started with our components.</ItemDescription></ItemContent><ItemActions>›</ItemActions></a></Item><Item variant="outline" asChild><a href="#" target="_blank" rel="noopener noreferrer"><ItemContent><ItemTitle>External resource</ItemTitle><ItemDescription>Opens in a new tab with security attributes.</ItemDescription></ItemContent><ItemActions>↗</ItemActions></a></Item></ItemGroup>
   )
 }
