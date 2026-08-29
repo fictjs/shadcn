@@ -5,12 +5,13 @@
   "description": "Popover primitive wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "popover"
   ],
   "files": [
     {
       "path": "src/examples/popover-rtl.tsx",
-      "content": "import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from '@/components/ui/popover'\n\nexport default function PopoverRtlExample() {\n  return (\n    <Popover dir=\"rtl\"><PopoverTrigger>Open Rtl</PopoverTrigger><PopoverContent><p class=\"text-sm\">Configure your preferences.</p><PopoverClose>Close</PopoverClose></PopoverContent></Popover>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport {\n  Popover,\n  PopoverContent,\n  PopoverDescription,\n  PopoverHeader,\n  PopoverTitle,\n  PopoverTrigger,\n} from '@/components/ui/popover'\n\nconst translations = {\n  ar: {\n    dir: 'rtl',\n    title: 'الأبعاد',\n    description: 'تعيين الأبعاد للطبقة.',\n    sides: { left: 'يسار', top: 'أعلى', bottom: 'أسفل', right: 'يمين' },\n  },\n  he: {\n    dir: 'rtl',\n    title: 'מימדים',\n    description: 'הגדר את המימדים לשכבה.',\n    sides: { left: 'שמאל', top: 'למעלה', bottom: 'למטה', right: 'ימין' },\n  },\n  en: {\n    dir: 'ltr',\n    title: 'Dimensions',\n    description: 'Set the dimensions for the layer.',\n    sides: { left: 'Left', top: 'Top', bottom: 'Bottom', right: 'Right' },\n  },\n} as const\n\nexport default function PopoverRtlExample() {\n  let language = $state<keyof typeof translations>('ar')\n  const text = () => translations[language]\n  return (\n    <div class=\"grid gap-4\">\n      <select\n        value={language}\n        onChange={event => {\n          language = event.currentTarget.value as keyof typeof translations\n        }}\n      >\n        <option value=\"ar\">Arabic (العربية)</option>\n        <option value=\"he\">Hebrew (עברית)</option>\n        <option value=\"en\">English</option>\n      </select>\n      <div class=\"flex flex-wrap justify-center gap-2\" dir={text().dir}>\n        {(['left', 'top', 'bottom', 'right'] as const).map(side => (\n          <Popover>\n            <PopoverTrigger asChild>\n              <Button variant=\"outline\">{text().sides[side]}</Button>\n            </PopoverTrigger>\n            <PopoverContent side={side} dir={text().dir}>\n              <PopoverHeader>\n                <PopoverTitle>{text().title}</PopoverTitle>\n                <PopoverDescription>{text().description}</PopoverDescription>\n              </PopoverHeader>\n            </PopoverContent>\n          </Popover>\n        ))}\n      </div>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

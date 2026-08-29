@@ -5,12 +5,14 @@
   "description": "Popover primitive wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
+    "input",
     "popover"
   ],
   "files": [
     {
       "path": "src/examples/popover-form.tsx",
-      "content": "import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from '@/components/ui/popover'\n\nexport default function PopoverFormExample() {\n  return (\n    <Popover><PopoverTrigger>Open Form</PopoverTrigger><PopoverContent><p class=\"text-sm\">Configure your preferences.</p><PopoverClose>Close</PopoverClose></PopoverContent></Popover>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Input } from '@/components/ui/input'\nimport {\n  Popover,\n  PopoverContent,\n  PopoverDescription,\n  PopoverHeader,\n  PopoverTitle,\n  PopoverTrigger,\n} from '@/components/ui/popover'\n\nexport default function PopoverFormExample() {\n  return (\n    <Popover>\n      <PopoverTrigger asChild>\n        <Button variant=\"outline\">Open Popover</Button>\n      </PopoverTrigger>\n      <PopoverContent class=\"w-64\" align=\"start\">\n        <PopoverHeader>\n          <PopoverTitle>Dimensions</PopoverTitle>\n          <PopoverDescription>Set the dimensions for the layer.</PopoverDescription>\n        </PopoverHeader>\n        <div class=\"mt-4 grid gap-4\">\n          <label for=\"width\" class=\"grid grid-cols-2 items-center\">\n            Width\n            <Input id=\"width\" defaultValue=\"100%\" />\n          </label>\n          <label for=\"height\" class=\"grid grid-cols-2 items-center\">\n            Height\n            <Input id=\"height\" defaultValue=\"25px\" />\n          </label>\n        </div>\n      </PopoverContent>\n    </Popover>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

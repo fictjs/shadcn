@@ -92,6 +92,13 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain('export function SelectSeparator')
   })
 
+  it('renders the Popover composition API used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('popover')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain('export function PopoverHeader')
+    expect(source).toContain('export function PopoverTitle')
+    expect(source).toContain('export function PopoverDescription')
+  })
+
   it('renders the directional Drawer API used by website examples', () => {
     const entry = getBuiltinComponent('drawer')
     const source = renderRegistryEntryFiles(entry!, DEFAULT_CONFIG)

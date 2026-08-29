@@ -205,6 +205,21 @@ export function PopoverContent(props: PopoverContentProps) {
     />
   )
 }
+
+export function PopoverHeader(props: PopoverContentProps) {
+  const { class: className, ...rest } = props
+  return <div class={cn('flex flex-col gap-1', className)} {...rest} />
+}
+
+export function PopoverTitle(props: PopoverContentProps) {
+  const { class: className, ...rest } = props
+  return <h4 class={cn('font-medium leading-none', className)} {...rest} />
+}
+
+export function PopoverDescription(props: PopoverContentProps) {
+  const { class: className, ...rest } = props
+  return <p class={cn('text-sm text-muted-foreground', className)} {...rest} />
+}
 `,
       },
     ],

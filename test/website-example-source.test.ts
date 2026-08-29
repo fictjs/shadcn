@@ -791,6 +791,17 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadSelect('select-rtl')).toContain('dir={text().dir}')
   })
 
+  it('keeps every Popover source aligned with its rendered preview', () => {
+    expectCuratedFamily('popover')
+    const loadPopover = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'popover', previewName })!
+    expect(loadPopover('popover-demo')).toContain("['max-height', 'Max. height', 'none']")
+    expect(loadPopover('popover-basic')).toContain('<PopoverContent align="start">')
+    expect(loadPopover('popover-alignments')).toContain("(['start', 'center', 'end'] as const).map")
+    expect(loadPopover('popover-form')).toContain('<Input id="height" defaultValue="25px" />')
+    expect(loadPopover('popover-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadPopover('popover-rtl')).toContain('dir={text().dir}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

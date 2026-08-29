@@ -3282,6 +3282,20 @@ test.describe("Fict shadcn website", () => {
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await rtl.getByRole("button", { name: "Bottom" }).click()
     await expect(rtl.getByRole("dialog")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+
+    const expectedSources = [
+      ["popover-demo", "Max. width", "['max-height', 'Max. height', 'none']"],
+      ["popover-basic", '<PopoverContent align="start">'],
+      ["popover-alignments", "(['start', 'center', 'end'] as const).map"],
+      ["popover-form", '<Input id="height" defaultValue="25px" />'],
+      ["popover-rtl", "$state<keyof typeof translations>", "הגדר את המימדים לשכבה"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("progress docs match Fict values, labels, controlled slider, animation, and RTL", async ({ page }) => {

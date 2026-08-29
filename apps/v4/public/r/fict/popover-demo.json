@@ -5,12 +5,14 @@
   "description": "Popover primitive wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
+    "input",
     "popover"
   ],
   "files": [
     {
       "path": "src/examples/popover-demo.tsx",
-      "content": "import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from '@/components/ui/popover'\n\nexport default function PopoverDemoExample() {\n  return (\n    <Popover><PopoverTrigger>Open Demo</PopoverTrigger><PopoverContent><p class=\"text-sm\">Configure your preferences.</p><PopoverClose>Close</PopoverClose></PopoverContent></Popover>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Input } from '@/components/ui/input'\nimport {\n  Popover,\n  PopoverContent,\n  PopoverDescription,\n  PopoverHeader,\n  PopoverTitle,\n  PopoverTrigger,\n} from '@/components/ui/popover'\n\nexport default function PopoverDemoExample() {\n  return (\n    <Popover>\n      <PopoverTrigger asChild>\n        <Button variant=\"outline\">Open popover</Button>\n      </PopoverTrigger>\n      <PopoverContent class=\"w-80\">\n        <PopoverHeader>\n          <PopoverTitle>Dimensions</PopoverTitle>\n          <PopoverDescription>Set the dimensions for the layer.</PopoverDescription>\n        </PopoverHeader>\n        <div class=\"mt-4 grid gap-2\">\n          {[\n            ['width', 'Width', '100%'],\n            ['max-width', 'Max. width', '300px'],\n            ['height', 'Height', '25px'],\n            ['max-height', 'Max. height', 'none'],\n          ].map(([id, label, value]) => (\n            <label for={id} class=\"grid grid-cols-3 items-center gap-4\">\n              {label}\n              <Input id={id} defaultValue={value} class=\"col-span-2 h-8\" />\n            </label>\n          ))}\n        </div>\n      </PopoverContent>\n    </Popover>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

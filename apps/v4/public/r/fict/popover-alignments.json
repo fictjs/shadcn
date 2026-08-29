@@ -5,12 +5,13 @@
   "description": "Popover primitive wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "popover"
   ],
   "files": [
     {
       "path": "src/examples/popover-alignments.tsx",
-      "content": "import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from '@/components/ui/popover'\n\nexport default function PopoverAlignmentsExample() {\n  return (\n    <Popover><PopoverTrigger>Open Alignments</PopoverTrigger><PopoverContent><p class=\"text-sm\">Configure your preferences.</p><PopoverClose>Close</PopoverClose></PopoverContent></Popover>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'\n\nexport default function PopoverAlignmentsExample() {\n  return (\n    <div class=\"flex gap-6\">\n      {(['start', 'center', 'end'] as const).map(align => (\n        <Popover>\n          <PopoverTrigger asChild>\n            <Button variant=\"outline\" size=\"sm\">\n              {align[0].toUpperCase() + align.slice(1)}\n            </Button>\n          </PopoverTrigger>\n          <PopoverContent align={align} class=\"w-40\">\n            Aligned to {align}\n          </PopoverContent>\n        </Popover>\n      ))}\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
