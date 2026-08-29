@@ -5,12 +5,14 @@
   "description": "Button grouping container with orientation support example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "button-group"
+    "button",
+    "button-group",
+    "input"
   ],
   "files": [
     {
       "path": "src/examples/button-group-input.tsx",
-      "content": "import { ButtonGroup } from '@/components/ui/button-group'\n\nexport default function ButtonGroupInputExample() {\n  return (\n    <ButtonGroup><button type=\"button\">Previous</button><button type=\"button\">Group Input</button><button type=\"button\">Next</button></ButtonGroup>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { ButtonGroup } from '@/components/ui/button-group'\nimport { Input } from '@/components/ui/input'\n\nexport default function ButtonGroupInputExample() {\n  return (\n    <ButtonGroup>\n      <Input placeholder=\"Search...\" />\n      <Button variant=\"outline\" aria-label=\"Search\">\n        <span aria-hidden=\"true\">•</span>\n      </Button>\n    </ButtonGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

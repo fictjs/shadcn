@@ -1,7 +1,14 @@
+import { Button } from '@/components/ui/button'
 import { ButtonGroup } from '@/components/ui/button-group'
+import { Input } from '@/components/ui/input'
 
 export default function ButtonGroupInputExample() {
   return (
-    <ButtonGroup><button type="button">Previous</button><button type="button">Group Input</button><button type="button">Next</button></ButtonGroup>
+    <ButtonGroup>
+      <Input placeholder="Search..." />
+      <Button variant="outline" aria-label="Search">
+        <span aria-hidden="true">•</span>
+      </Button>
+    </ButtonGroup>
   )
 }

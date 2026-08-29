@@ -5,12 +5,13 @@
   "description": "Button grouping container with orientation support example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "button-group"
   ],
   "files": [
     {
       "path": "src/examples/button-group-orientation.tsx",
-      "content": "import { ButtonGroup } from '@/components/ui/button-group'\n\nexport default function ButtonGroupOrientationExample() {\n  return (\n    <ButtonGroup><button type=\"button\">Previous</button><button type=\"button\">Group Orientation</button><button type=\"button\">Next</button></ButtonGroup>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { ButtonGroup } from '@/components/ui/button-group'\n\nexport default function ButtonGroupOrientationExample() {\n  return (\n    <ButtonGroup orientation=\"vertical\" aria-label=\"Media controls\" class=\"h-fit\">\n      <Button variant=\"outline\" size=\"icon\">\n        <span aria-hidden=\"true\">•</span>\n      </Button>\n      <Button variant=\"outline\" size=\"icon\">\n        <span aria-hidden=\"true\">•</span>\n      </Button>\n    </ButtonGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

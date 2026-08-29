@@ -5,12 +5,16 @@
   "description": "Button grouping container with orientation support example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "button-group"
+    "button",
+    "button-group",
+    "field",
+    "popover",
+    "textarea"
   ],
   "files": [
     {
       "path": "src/examples/button-group-popover.tsx",
-      "content": "import { ButtonGroup } from '@/components/ui/button-group'\n\nexport default function ButtonGroupPopoverExample() {\n  return (\n    <ButtonGroup><button type=\"button\">Previous</button><button type=\"button\">Group Popover</button><button type=\"button\">Next</button></ButtonGroup>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { ButtonGroup } from '@/components/ui/button-group'\nimport { Field, FieldDescription, FieldLabel } from '@/components/ui/field'\nimport {\n  Popover,\n  PopoverContent,\n  PopoverDescription,\n  PopoverHeader,\n  PopoverTitle,\n  PopoverTrigger,\n} from '@/components/ui/popover'\nimport { Textarea } from '@/components/ui/textarea'\n\nexport default function ButtonGroupPopoverExample() {\n  return (\n    <ButtonGroup>\n      <Button variant=\"outline\">\n        <span aria-hidden=\"true\">•</span> Copilot\n      </Button>\n      <Popover>\n        <PopoverTrigger asChild>\n          <Button variant=\"outline\" size=\"icon\" aria-label=\"Open Popover\">\n            <span aria-hidden=\"true\">•</span>\n          </Button>\n        </PopoverTrigger>\n        <PopoverContent align=\"end\" class=\"rounded-xl text-sm\">\n          <PopoverHeader>\n            <PopoverTitle>Start a new task with Copilot</PopoverTitle>\n            <PopoverDescription>Describe your task in natural language.</PopoverDescription>\n          </PopoverHeader>\n          <Field>\n            <FieldLabel for=\"task\" class=\"sr-only\">\n              Task Description\n            </FieldLabel>\n            <Textarea id=\"task\" placeholder=\"I need to...\" class=\"resize-none\" />\n            <FieldDescription>Copilot will open a pull request for review.</FieldDescription>\n          </Field>\n        </PopoverContent>\n      </Popover>\n    </ButtonGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

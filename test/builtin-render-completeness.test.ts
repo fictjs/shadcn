@@ -107,6 +107,11 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain("align?: 'inline-start' | 'inline-end' | 'block-start' | 'block-end'")
   })
 
+  it('renders the Button Group separator used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('button-group')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain('export function ButtonGroupSeparator')
+  })
+
   it('renders the directional Drawer API used by website examples', () => {
     const entry = getBuiltinComponent('drawer')
     const source = renderRegistryEntryFiles(entry!, DEFAULT_CONFIG)

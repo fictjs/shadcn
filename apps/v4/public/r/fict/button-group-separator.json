@@ -5,12 +5,13 @@
   "description": "Button grouping container with orientation support example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "button-group"
   ],
   "files": [
     {
       "path": "src/examples/button-group-separator.tsx",
-      "content": "import { ButtonGroup } from '@/components/ui/button-group'\n\nexport default function ButtonGroupSeparatorExample() {\n  return (\n    <ButtonGroup><button type=\"button\">Previous</button><button type=\"button\">Group Separator</button><button type=\"button\">Next</button></ButtonGroup>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { ButtonGroup, ButtonGroupSeparator } from '@/components/ui/button-group'\n\nexport default function ButtonGroupSeparatorDemoExample() {\n  return (\n    <ButtonGroup>\n      <Button variant=\"secondary\" size=\"sm\">\n        Copy\n      </Button>\n      <ButtonGroupSeparator />\n      <Button variant=\"secondary\" size=\"sm\">\n        Paste\n      </Button>\n    </ButtonGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

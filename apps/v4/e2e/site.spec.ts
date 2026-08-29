@@ -1014,6 +1014,23 @@ test.describe("Fict shadcn website", () => {
     await expect(rtl.getByRole("button", { name: "ארכיון" })).toBeVisible()
     await rtl.getByLabel("Preview language").selectOption("en")
     await expect(rtl.locator('[data-slot="button-group"]').first()).toHaveAttribute("dir", "ltr")
+
+    const expectedSources = [
+      ["button-group-orientation", 'orientation="vertical"'],
+      ["button-group-size", 'size="lg"'],
+      ["button-group-separator", "<ButtonGroupSeparator />"],
+      ["button-group-input", 'placeholder="Search..."'],
+      ["button-group-input-group", "let voiceEnabled = $state(false)"],
+      ["button-group-select", "let currency = $state('$')"],
+      ["button-group-popover", "<PopoverContent"],
+      ["button-group-rtl", "$state<keyof typeof translations>", "ארכיון"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("calendar docs match Fict geometry and date interactions", async ({ page }) => {

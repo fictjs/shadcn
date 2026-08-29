@@ -5,12 +5,15 @@
   "description": "Button grouping container with orientation support example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "button-group"
+    "button",
+    "button-group",
+    "input",
+    "select"
   ],
   "files": [
     {
       "path": "src/examples/button-group-select.tsx",
-      "content": "import { ButtonGroup } from '@/components/ui/button-group'\n\nexport default function ButtonGroupSelectExample() {\n  return (\n    <ButtonGroup><button type=\"button\">Previous</button><button type=\"button\">Group Select</button><button type=\"button\">Next</button></ButtonGroup>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { ButtonGroup } from '@/components/ui/button-group'\nimport { Input } from '@/components/ui/input'\nimport {\n  Select,\n  SelectContent,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from '@/components/ui/select'\n\nexport default function ButtonGroupSelectExample() {\n  let currency = $state('$')\n  return (\n    <ButtonGroup>\n      <Select\n        value={() => currency}\n        onValueChange={value => {\n          currency = value\n        }}\n      >\n        <SelectTrigger class=\"w-20\">\n          <SelectValue />\n        </SelectTrigger>\n        <SelectContent>\n          <SelectItem value=\"$\">$</SelectItem>\n          <SelectItem value=\"€\">€</SelectItem>\n          <SelectItem value=\"£\">£</SelectItem>\n        </SelectContent>\n      </Select>\n      <Input aria-label=\"Amount\" placeholder=\"0.00\" />\n      <Button variant=\"outline\" size=\"icon\" aria-label=\"Continue\">\n        →\n      </Button>\n    </ButtonGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

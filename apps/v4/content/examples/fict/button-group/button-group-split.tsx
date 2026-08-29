@@ -1,7 +1,14 @@
-import { ButtonGroup } from '@/components/ui/button-group'
+import { Button } from '@/components/ui/button'
+import { ButtonGroup, ButtonGroupSeparator } from '@/components/ui/button-group'
 
 export default function ButtonGroupSplitExample() {
   return (
-    <ButtonGroup><button type="button">Previous</button><button type="button">Group Split</button><button type="button">Next</button></ButtonGroup>
+    <ButtonGroup>
+      <Button variant="secondary">Button</Button>
+      <ButtonGroupSeparator />
+      <Button size="icon" variant="secondary">
+        <span aria-hidden="true">•</span>
+      </Button>
+    </ButtonGroup>
   )
 }

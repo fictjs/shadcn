@@ -5,12 +5,16 @@
   "description": "Button grouping container with orientation support example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "button-group"
+    "button",
+    "button-group",
+    "input",
+    "input-group",
+    "tooltip"
   ],
   "files": [
     {
       "path": "src/examples/button-group-nested.tsx",
-      "content": "import { ButtonGroup } from '@/components/ui/button-group'\n\nexport default function ButtonGroupNestedExample() {\n  return (\n    <ButtonGroup><button type=\"button\">Previous</button><button type=\"button\">Group Nested</button><button type=\"button\">Next</button></ButtonGroup>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { ButtonGroup } from '@/components/ui/button-group'\nimport { Input } from '@/components/ui/input'\nimport { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\nimport { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'\n\nexport default function ButtonGroupNestedExample() {\n  return (\n    <ButtonGroup>\n      <ButtonGroup>\n        <Button variant=\"outline\" size=\"icon\">\n          <span aria-hidden=\"true\">•</span>\n        </Button>\n      </ButtonGroup>\n      <ButtonGroup>\n        <InputGroup>\n          <InputGroupInput placeholder=\"Send a message...\" />\n          <Tooltip>\n            <TooltipTrigger asChild>\n              <InputGroupAddon align=\"inline-end\">\n                <span aria-hidden=\"true\">•</span>\n              </InputGroupAddon>\n            </TooltipTrigger>\n            <TooltipContent>Voice Mode</TooltipContent>\n          </Tooltip>\n        </InputGroup>\n      </ButtonGroup>\n    </ButtonGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

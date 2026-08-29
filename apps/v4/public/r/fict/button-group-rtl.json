@@ -5,12 +5,13 @@
   "description": "Button grouping container with orientation support example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "button-group"
   ],
   "files": [
     {
       "path": "src/examples/button-group-rtl.tsx",
-      "content": "import { ButtonGroup } from '@/components/ui/button-group'\n\nexport default function ButtonGroupRtlExample() {\n  return (\n    <ButtonGroup dir=\"rtl\"><button type=\"button\">Previous</button><button type=\"button\">Group Rtl</button><button type=\"button\">Next</button></ButtonGroup>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { ButtonGroup } from '@/components/ui/button-group'\n\nconst translations = {\n  ar: { dir: 'rtl', buttons: ['أرشفة', 'تقرير', 'تأجيل'] },\n  he: { dir: 'rtl', buttons: ['ארכיון', 'דוח', 'דחה'] },\n  en: { dir: 'ltr', buttons: ['Archive', 'Report', 'Snooze'] },\n} as const\n\nexport default function ButtonGroupRtlExample() {\n  let language = $state<keyof typeof translations>('ar')\n  const text = () => translations[language]\n  return (\n    <div class=\"grid gap-4\">\n      <select\n        value={language}\n        onChange={event => {\n          language = event.currentTarget.value as keyof typeof translations\n        }}\n      >\n        <option value=\"ar\">Arabic (العربية)</option>\n        <option value=\"he\">Hebrew (עברית)</option>\n        <option value=\"en\">English</option>\n      </select>\n      <ButtonGroup dir={text().dir}>\n        {text().buttons.map(label => (\n          <Button variant=\"outline\">{label}</Button>\n        ))}\n      </ButtonGroup>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

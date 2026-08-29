@@ -5,12 +5,13 @@
   "description": "Button grouping container with orientation support example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "button-group"
   ],
   "files": [
     {
       "path": "src/examples/button-group-size.tsx",
-      "content": "import { ButtonGroup } from '@/components/ui/button-group'\n\nexport default function ButtonGroupSizeExample() {\n  return (\n    <ButtonGroup><button type=\"button\">Previous</button><button type=\"button\">Group Size</button><button type=\"button\">Next</button></ButtonGroup>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { ButtonGroup } from '@/components/ui/button-group'\n\nexport default function ButtonGroupSizeExample() {\n  return (\n    <div class=\"flex flex-col items-start gap-8\">\n      <ButtonGroup>\n        <Button variant=\"outline\" size=\"sm\">\n          Small\n        </Button>\n        <Button variant=\"outline\" size=\"sm\">\n          Button\n        </Button>\n        <Button variant=\"outline\" size=\"sm\">\n          Group\n        </Button>\n        <Button variant=\"outline\" size=\"icon-sm\">\n          <span aria-hidden=\"true\">•</span>\n        </Button>\n      </ButtonGroup>\n      <ButtonGroup>\n        <Button variant=\"outline\">Default</Button>\n        <Button variant=\"outline\">Button</Button>\n        <Button variant=\"outline\">Group</Button>\n        <Button variant=\"outline\" size=\"icon\">\n          <span aria-hidden=\"true\">•</span>\n        </Button>\n      </ButtonGroup>\n      <ButtonGroup>\n        <Button variant=\"outline\" size=\"lg\">\n          Large\n        </Button>\n        <Button variant=\"outline\" size=\"lg\">\n          Button\n        </Button>\n        <Button variant=\"outline\" size=\"lg\">\n          Group\n        </Button>\n        <Button variant=\"outline\" size=\"icon-lg\">\n          <span aria-hidden=\"true\">•</span>\n        </Button>\n      </ButtonGroup>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

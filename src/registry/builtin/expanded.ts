@@ -163,6 +163,11 @@ export function ButtonGroup(props: ButtonGroupProps) {
   const { class: className, orientation, attached, ...rest } = props
   return <div role='group' class={cn(buttonGroupVariants({ orientation, attached }), className)} {...rest} />
 }
+
+export function ButtonGroupSeparator(props: JSX.IntrinsicElements['div']) {
+  const { class: className, ...rest } = props
+  return <div role='separator' class={cn('self-stretch bg-border data-[orientation=vertical]:w-px data-[orientation=horizontal]:h-px', className)} {...rest} />
+}
 `
 
 const calendarTemplate: TemplateFn = context => `import { createContext, useContext } from 'fict'

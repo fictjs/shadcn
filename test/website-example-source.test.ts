@@ -844,6 +844,20 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadInputGroup('input-group-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
   })
 
+  it('keeps every Button Group source aligned with its rendered preview', () => {
+    expectCuratedFamily('button-group')
+    const loadButtonGroup = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'button-group', previewName })!
+    expect(loadButtonGroup('button-group-orientation')).toContain('orientation="vertical"')
+    expect(loadButtonGroup('button-group-size')).toContain('size="lg"')
+    expect(loadButtonGroup('button-group-separator')).toContain('<ButtonGroupSeparator />')
+    expect(loadButtonGroup('button-group-split')).toContain('<ButtonGroupSeparator />')
+    expect(loadButtonGroup('button-group-input')).toContain('placeholder="Search..."')
+    expect(loadButtonGroup('button-group-input-group')).toContain('let voiceEnabled = $state(false)')
+    expect(loadButtonGroup('button-group-select')).toContain("let currency = $state('$')")
+    expect(loadButtonGroup('button-group-popover')).toContain('<PopoverContent')
+    expect(loadButtonGroup('button-group-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!
