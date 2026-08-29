@@ -3031,7 +3031,6 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-component-card[data-doc-preview-name="sheet-rtl"] .doc-component-preview-stage { display: block; height: 352px; min-height: 352px; padding: 0; }
 
 .doc-component-card[data-doc-preview-name="sidebar-demo"] .doc-component-preview-stage { box-sizing: border-box; height: 400px; min-height: 400px; padding: 0; }
-.doc-component-card[data-doc-preview-name="sidebar-demo"] .doc-component-code { display: none; }
 .doc-sidebar-demo { display: flex; width: 100%; height: 100%; overflow: hidden; color: var(--foreground); background: var(--background); }
 .doc-sidebar-panel { display: flex; box-sizing: border-box; width: 252px; min-width: 252px; height: 100%; flex-direction: column; border-inline-end: 1px solid var(--sidebar-border); background: var(--sidebar); transition: width 200ms linear, min-width 200ms linear; }
 .doc-sidebar-team, .doc-sidebar-user, .doc-sidebar-nav-button { display: flex; box-sizing: border-box; width: 100%; align-items: center; gap: 8px; border: 0; border-radius: 8px; color: var(--sidebar-foreground); background: transparent; font: inherit; text-align: start; cursor: pointer; }

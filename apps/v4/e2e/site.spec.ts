@@ -3945,7 +3945,7 @@ test.describe("Fict shadcn website", () => {
     const root = preview.locator("[data-doc-sidebar-root]")
     const panel = preview.locator(".doc-sidebar-panel")
     await expect(stage).toHaveCSS("height", "400px")
-    await expect(preview.locator(".doc-component-code")).toBeHidden()
+    await expect(preview.locator(".doc-component-code")).toBeVisible()
     await expect(panel).toHaveCSS("width", "252px")
     await expect(panel).toContainText("Acme Inc")
     await expect(panel).toContainText("Enterprise")
@@ -3971,15 +3971,15 @@ test.describe("Fict shadcn website", () => {
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(panel).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
 
-    await page.setViewportSize({ width: 390, height: 844 })
-    await expect(stage).toHaveCSS("height", "320px")
-    await expect(panel).toHaveCSS("width", "220px")
-
     await preview.getByRole("button", { name: "View Code" }).click()
     const source = preview.locator("[data-doc-preview-full-code]")
     for (const marker of ["let collapsed = $state(false)", "Acme Inc", "Genesis", "event.ctrlKey && event.key === 'b'", "SidebarLink"]) {
       await expect(source).toContainText(marker)
     }
+
+    await page.setViewportSize({ width: 390, height: 844 })
+    await expect(stage).toHaveCSS("height", "320px")
+    await expect(panel).toHaveCSS("width", "220px")
   })
 
   test("skeleton docs match Fict profile, card, text, form, table, animation, and RTL", async ({ page }) => {
