@@ -3979,7 +3979,7 @@ test.describe("Fict shadcn website", () => {
 
     const expectedSources = [
       ["sheet-demo", '<Input id="sheet-demo-name" value="Pedro Duarte" />', "Save changes"],
-      ["sheet-side", "const sides = ['top', 'right', 'bottom', 'left'] as const", "<SheetContent side={side}"],
+      ["sheet-side", "const sides = ['top', 'right', 'bottom', 'left'] as const", "<SheetContent side={side}", "consectetur adipiscing elit. Sed do eiusmod tempor"],
       ["sheet-no-close-button", "This sheet doesn't have a close button", "<SheetContent>"],
       ["sheet-rtl", "$state<keyof typeof translations>('ar')", "side={text().dir === 'rtl' ? 'left' : 'right'}"],
     ] as const

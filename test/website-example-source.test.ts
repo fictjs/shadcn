@@ -426,6 +426,7 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadSheet('sheet-side')).toContain("const sides = ['top', 'right', 'bottom', 'left'] as const")
     expect(loadSheet('sheet-side')).toContain('<SheetContent side={side}')
     expect(loadSheet('sheet-side')).toContain('Array.from({ length: 10 }')
+    expect(loadSheet('sheet-side')).toContain('consectetur adipiscing elit. Sed do eiusmod tempor')
     expect(loadSheet('sheet-no-close-button')).not.toContain('<SheetClose')
     expect(loadSheet('sheet-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
     expect(loadSheet('sheet-rtl')).toContain("side={text().dir === 'rtl' ? 'left' : 'right'}")

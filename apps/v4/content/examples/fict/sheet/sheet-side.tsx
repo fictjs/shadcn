@@ -26,7 +26,7 @@ export default function SheetSideExample() {
             </SheetHeader>
             <div class="overflow-y-auto px-4">
               {Array.from({ length: 10 }, (_, index) => (
-                <p class="mb-2 leading-relaxed">Paragraph {index + 1}: Lorem ipsum dolor sit amet.</p>
+                <p class="mb-2 leading-relaxed">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
               ))}
             </div>
             <SheetFooter>
