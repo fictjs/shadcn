@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/menubar-icons.tsx",
-      "content": "import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from '@/components/ui/menubar'\n\nexport default function MenubarIconsExample() {\n  return (\n    <Menubar><MenubarMenu><MenubarTrigger>File</MenubarTrigger><MenubarContent><MenubarItem>New Tab</MenubarItem><MenubarItem>Icons</MenubarItem><MenubarItem>Print</MenubarItem></MenubarContent></MenubarMenu></Menubar>\n  )\n}\n",
+      "content": "import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarShortcut, MenubarTrigger } from '@/components/ui/menubar'\n\nfunction Icon(props: { name: string }) {\n  return <svg aria-label={props.name} viewBox=\"0 0 24 24\"><path d=\"M4 4h16v16H4zM8 9h8M8 13h6\" /></svg>\n}\n\nexport default function MenubarIconsExample() {\n  return (\n    <Menubar class=\"w-72\"><MenubarMenu><MenubarTrigger>File</MenubarTrigger><MenubarContent><MenubarItem><Icon name=\"File\" />New File <MenubarShortcut>⌘N</MenubarShortcut></MenubarItem><MenubarItem><Icon name=\"Folder\" />Open Folder</MenubarItem><MenubarSeparator /><MenubarItem><Icon name=\"Save\" />Save <MenubarShortcut>⌘S</MenubarShortcut></MenubarItem></MenubarContent></MenubarMenu><MenubarMenu><MenubarTrigger>More</MenubarTrigger><MenubarContent><MenubarItem><Icon name=\"Settings\" />Settings</MenubarItem><MenubarItem><Icon name=\"Help\" />Help</MenubarItem><MenubarSeparator /><MenubarItem variant=\"destructive\"><Icon name=\"Trash\" />Delete</MenubarItem></MenubarContent></MenubarMenu></Menubar>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

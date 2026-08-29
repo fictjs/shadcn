@@ -2831,6 +2831,21 @@ test.describe("Fict shadcn website", () => {
     await expect(rtlBar).toHaveAttribute("dir", "ltr")
     await expect(rtl.locator("[data-doc-menubar-trigger]")).toHaveText(["File", "Edit", "View", "Profiles"])
 
+    const expectedSources = [
+      ["menubar-demo", "<MenubarCheckboxItem checked>Full URLs", '<MenubarRadioGroup value="benoit">'],
+      ["menubar-checkbox", "Always Show Bookmarks Bar", "Force Reload"],
+      ["menubar-radio", "$state('benoit')", 'value="system"'],
+      ["menubar-submenu", "<MenubarSubTrigger>Share</MenubarSubTrigger>", "Find Previous"],
+      ["menubar-icons", 'variant="destructive"', '<Icon name="Trash" />'],
+      ["menubar-rtl", "$state<keyof typeof translations>", "כרטיסייה חדשה"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
+
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(page.locator("html")).toHaveClass(/dark/)
     await file.click()

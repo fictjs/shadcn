@@ -178,7 +178,7 @@ export function ContextMenuSubContent(props: GenericProps) {
   },
   {
     name: 'menubar',
-    version: '0.2.0',
+    version: '0.3.0',
     type: 'ui-component',
     description: 'Menubar wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -192,6 +192,9 @@ import { cn } from '${context.imports.cn}'
 
 export const Menubar = MenubarPrimitive.Root
 export const MenubarMenu = MenubarPrimitive.Menu
+export const MenubarGroup = MenubarPrimitive.Group
+export const MenubarRadioGroup = MenubarPrimitive.RadioGroup
+export const MenubarSub = MenubarPrimitive.Sub
 
 type GenericProps = {
   class?: string
@@ -220,13 +223,44 @@ export function MenubarContent(props: GenericProps) {
 }
 
 export function MenubarItem(props: GenericProps) {
-  const { class: className, ...rest } = props
+  const { class: className, inset, variant = 'default', ...rest } = props
   return (
     <MenubarPrimitive.Item
-      class={cn('relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground', className)}
+      data-variant={variant}
+      class={cn('relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground', inset && 'pl-8', variant === 'destructive' && 'text-destructive focus:bg-destructive/10', className)}
       {...rest}
     />
   )
+}
+
+export function MenubarCheckboxItem(props: GenericProps) {
+  const { class: className, ...rest } = props
+  return <MenubarPrimitive.CheckboxItem class={cn('relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent', className)} {...rest} />
+}
+
+export function MenubarRadioItem(props: GenericProps) {
+  const { class: className, ...rest } = props
+  return <MenubarPrimitive.RadioItem class={cn('relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent', className)} {...rest} />
+}
+
+export function MenubarSeparator(props: GenericProps) {
+  const { class: className, ...rest } = props
+  return <MenubarPrimitive.Separator class={cn('-mx-1 my-1 h-px bg-muted', className)} {...rest} />
+}
+
+export function MenubarShortcut(props: GenericProps) {
+  const { class: className, ...rest } = props
+  return <span class={cn('ml-auto text-xs tracking-widest text-muted-foreground', className)} {...rest} />
+}
+
+export function MenubarSubTrigger(props: GenericProps) {
+  const { class: className, inset, ...rest } = props
+  return <MenubarPrimitive.SubTrigger class={cn('flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent data-[state=open]:bg-accent', inset && 'pl-8', className)} {...rest} />
+}
+
+export function MenubarSubContent(props: GenericProps) {
+  const { class: className, ...rest } = props
+  return <MenubarPrimitive.SubContent class={cn('z-50 min-w-32 overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-lg', className)} {...rest} />
 }
 `,
       },

@@ -1,7 +1,7 @@
-import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from '@/components/ui/menubar'
+import { Menubar, MenubarCheckboxItem, MenubarContent, MenubarGroup, MenubarItem, MenubarMenu, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger } from '@/components/ui/menubar'
 
 export default function MenubarDemoExample() {
   return (
-    <Menubar><MenubarMenu><MenubarTrigger>File</MenubarTrigger><MenubarContent><MenubarItem>New Tab</MenubarItem><MenubarItem>Demo</MenubarItem><MenubarItem>Print</MenubarItem></MenubarContent></MenubarMenu></Menubar>
+    <Menubar class="w-72"><MenubarMenu><MenubarTrigger>File</MenubarTrigger><MenubarContent><MenubarGroup><MenubarItem>New Tab <MenubarShortcut>⌘T</MenubarShortcut></MenubarItem><MenubarItem>New Window <MenubarShortcut>⌘N</MenubarShortcut></MenubarItem><MenubarItem disabled>New Incognito Window</MenubarItem></MenubarGroup><MenubarSeparator /><MenubarSub><MenubarSubTrigger>Share</MenubarSubTrigger><MenubarSubContent><MenubarItem>Email link</MenubarItem><MenubarItem>Messages</MenubarItem><MenubarItem>Notes</MenubarItem></MenubarSubContent></MenubarSub><MenubarSeparator /><MenubarItem>Print... <MenubarShortcut>⌘P</MenubarShortcut></MenubarItem></MenubarContent></MenubarMenu><MenubarMenu><MenubarTrigger>View</MenubarTrigger><MenubarContent><MenubarCheckboxItem>Bookmarks Bar</MenubarCheckboxItem><MenubarCheckboxItem checked>Full URLs</MenubarCheckboxItem></MenubarContent></MenubarMenu><MenubarMenu><MenubarTrigger>Profiles</MenubarTrigger><MenubarContent><MenubarRadioGroup value="benoit"><MenubarRadioItem value="andy">Andy</MenubarRadioItem><MenubarRadioItem value="benoit">Benoit</MenubarRadioItem><MenubarRadioItem value="luis">Luis</MenubarRadioItem></MenubarRadioGroup></MenubarContent></MenubarMenu></Menubar>
   )
 }

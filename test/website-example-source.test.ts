@@ -533,6 +533,18 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadItem('item-rtl')).toContain('פריט בסיסי')
   })
 
+  it('keeps every Menubar source aligned with its rendered preview', () => {
+    expectCuratedFamily('menubar')
+    const loadMenubar = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'menubar', previewName })!
+    expect(loadMenubar('menubar-demo')).toContain('<MenubarCheckboxItem checked>Full URLs</MenubarCheckboxItem>')
+    expect(loadMenubar('menubar-checkbox')).toContain('Always Show Bookmarks Bar')
+    expect(loadMenubar('menubar-radio')).toContain("let user = $state('benoit')")
+    expect(loadMenubar('menubar-submenu')).toContain('<MenubarSubTrigger>Share</MenubarSubTrigger>')
+    expect(loadMenubar('menubar-icons')).toContain('<MenubarItem variant="destructive">')
+    expect(loadMenubar('menubar-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadMenubar('menubar-rtl')).toContain('כרטיסייה חדשה')
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],

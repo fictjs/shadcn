@@ -182,6 +182,19 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain('export function ItemHeader')
   })
 
+  it('renders the Menubar API used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('menubar')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain('export const MenubarGroup = MenubarPrimitive.Group')
+    expect(source).toContain('export const MenubarRadioGroup = MenubarPrimitive.RadioGroup')
+    expect(source).toContain('export const MenubarSub = MenubarPrimitive.Sub')
+    expect(source).toContain('export function MenubarCheckboxItem')
+    expect(source).toContain('export function MenubarRadioItem')
+    expect(source).toContain('export function MenubarSeparator')
+    expect(source).toContain('export function MenubarShortcut')
+    expect(source).toContain('export function MenubarSubTrigger')
+    expect(source).toContain('export function MenubarSubContent')
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')

@@ -1,7 +1,7 @@
-import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from '@/components/ui/menubar'
+import { Menubar, MenubarCheckboxItem, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarShortcut, MenubarTrigger } from '@/components/ui/menubar'
 
 export default function MenubarCheckboxExample() {
   return (
-    <Menubar><MenubarMenu><MenubarTrigger>File</MenubarTrigger><MenubarContent><MenubarItem>New Tab</MenubarItem><MenubarItem>Checkbox</MenubarItem><MenubarItem>Print</MenubarItem></MenubarContent></MenubarMenu></Menubar>
+    <Menubar class="w-72"><MenubarMenu><MenubarTrigger>View</MenubarTrigger><MenubarContent class="w-64"><MenubarCheckboxItem>Always Show Bookmarks Bar</MenubarCheckboxItem><MenubarCheckboxItem checked>Always Show Full URLs</MenubarCheckboxItem><MenubarSeparator /><MenubarItem inset>Reload <MenubarShortcut>⌘R</MenubarShortcut></MenubarItem><MenubarItem disabled inset>Force Reload <MenubarShortcut>⇧⌘R</MenubarShortcut></MenubarItem></MenubarContent></MenubarMenu><MenubarMenu><MenubarTrigger>Format</MenubarTrigger><MenubarContent><MenubarCheckboxItem checked>Strikethrough</MenubarCheckboxItem><MenubarCheckboxItem>Code</MenubarCheckboxItem><MenubarCheckboxItem>Superscript</MenubarCheckboxItem></MenubarContent></MenubarMenu></Menubar>
   )
 }
