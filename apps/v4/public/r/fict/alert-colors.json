@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/alert-colors.tsx",
-      "content": "import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'\n\nfunction WarningIcon() {\n  return (\n    <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\">\n      <path d=\"M12 3 2.8 19h18.4L12 3Z\" />\n      <path d=\"M12 9v4M12 16h.01\" />\n    </svg>\n  )\n}\n\nexport default function AlertColorsExample() {\n  return (\n    <Alert class=\"border-amber-500/50 text-amber-700 dark:text-amber-300\">\n      <WarningIcon />\n      <AlertTitle>Your subscription will expire in 3 days.</AlertTitle>\n      <AlertDescription>\n        Renew now to avoid service interruption or upgrade to a paid plan.\n      </AlertDescription>\n    </Alert>\n  )\n}\n",
+      "content": "import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'\n\nfunction WarningIcon() {\n  return (\n    <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\">\n      <path d=\"M12 3 2.8 19h18.4L12 3Z\" />\n      <path d=\"M12 9v4M12 16h.01\" />\n    </svg>\n  )\n}\n\nexport default function AlertColorsExample() {\n  return (\n    <Alert class=\"border-amber-500/50 text-amber-700 dark:text-amber-300\">\n      <WarningIcon />\n      <AlertTitle>Your subscription will expire in 3 days.</AlertTitle>\n      <AlertDescription>\n        Renew now to avoid service interruption or upgrade to a paid plan to continue using the service.\n      </AlertDescription>\n    </Alert>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

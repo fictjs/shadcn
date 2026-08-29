@@ -244,6 +244,7 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadAlert('alert-action')).toContain('<Button size="sm" variant="outline">')
     expect(loadAlert('alert-action')).toContain('Enable')
     expect(loadAlert('alert-colors')).toContain('border-amber-500/50')
+    expect(loadAlert('alert-colors')).toContain('to continue using the service.')
     expect(loadAlert('alert-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
     expect(loadAlert('alert-rtl')).toContain('translations[language].map')
   })

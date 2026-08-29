@@ -491,7 +491,7 @@ test.describe("Fict shadcn website", () => {
       ["alert-basic", "Account updated successfully"],
       ["alert-destructive", 'variant="destructive"', "Payment failed"],
       ["alert-action", '<Button size="sm" variant="outline">', "Enable"],
-      ["alert-colors", "border-amber-500/50"],
+      ["alert-colors", "border-amber-500/50", "to continue using the service."],
       ["alert-rtl", "$state<keyof typeof translations>", "translations[language].map"],
     ] as const
     for (const [previewName, ...markers] of expectedSources) {
