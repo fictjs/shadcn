@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/input-otp-invalid.tsx",
-      "content": "import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'\n\nexport default function InputOTPInvalidExample() {\n  return (\n    <InputOTP><InputOTPGroup>{[0, 1, 2].map(index => <InputOTPSlot index={index} total={6} />)}</InputOTPGroup><InputOTPSeparator /><InputOTPGroup>{[3, 4, 5].map(index => <InputOTPSlot index={index} total={6} />)}</InputOTPGroup></InputOTP>\n  )\n}\n",
+      "content": "import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'\n\nexport default function InputOTPInvalidExample() {\n  return (\n    <InputOTP defaultValue=\"000000\" maxLength={6} aria-invalid=\"true\"><InputOTPGroup>{[0, 1].map(index => <InputOTPSlot index={index} aria-invalid=\"true\" />)}</InputOTPGroup><InputOTPSeparator /><InputOTPGroup>{[2, 3].map(index => <InputOTPSlot index={index} aria-invalid=\"true\" />)}</InputOTPGroup><InputOTPSeparator /><InputOTPGroup>{[4, 5].map(index => <InputOTPSlot index={index} aria-invalid=\"true\" />)}</InputOTPGroup></InputOTP>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

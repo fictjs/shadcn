@@ -285,6 +285,21 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain('context.values().includes(value)')
   })
 
+  it('renders the Input OTP controlled value, pattern, length, disabled, and required API used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('input-otp')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain("import { createContext, useContext } from 'fict'")
+    expect(source).toContain('value?: MaybeAccessor<string>')
+    expect(source).toContain('onValueChange?: (value: string) => void')
+    expect(source).toContain('maxLength?: number')
+    expect(source).toContain('pattern?: RegExp')
+    expect(source).toContain('required?: boolean')
+    expect(source).toContain('const InputOTPContext = createContext<InputOTPContextValue | null>(null)')
+    expect(source).toContain("const nextCharacter = [...character].find(candidate => !props.pattern || props.pattern.test(candidate)) ?? ''")
+    expect(source).toContain("value={() => context.value()[index] ?? ''}")
+    expect(source).toContain('disabled={context.disabled || disabled}')
+    expect(source).toContain('required={context.required}')
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')

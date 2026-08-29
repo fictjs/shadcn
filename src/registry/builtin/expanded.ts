@@ -1383,13 +1383,43 @@ export function InputGroupInput(props: InputGroupInputProps) {
 }
 `
 
-const inputOtpTemplate: TemplateFn = context => `import { cn } from '${context.imports.cn}'
+const inputOtpTemplate: TemplateFn = context => `import { createContext, useContext } from 'fict'
+import { createSignal } from 'fict/advanced'
+
+import { cn } from '${context.imports.cn}'
 
 type DivProps = JSX.IntrinsicElements['div']
+type MaybeAccessor<T> = T | (() => T)
+
+type InputOTPProps = DivProps & {
+  value?: MaybeAccessor<string>
+  defaultValue?: string
+  onValueChange?: (value: string) => void
+  maxLength?: number
+  pattern?: RegExp
+  disabled?: boolean
+  required?: boolean
+}
 
 type SlotProps = JSX.IntrinsicElements['input'] & {
   index: number
-  total: number
+  total?: number
+}
+
+type InputOTPContextValue = {
+  value: () => string
+  update: (index: number, character: string) => void
+  maxLength: number
+  pattern?: RegExp
+  disabled: boolean
+  required: boolean
+}
+
+const InputOTPContext = createContext<InputOTPContextValue | null>(null)
+
+function read<T>(value: MaybeAccessor<T> | undefined, fallback: T): T {
+  if (typeof value === 'function') return (value as () => T)()
+  return value ?? fallback
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -1405,9 +1435,24 @@ function focusSibling(target: HTMLInputElement, index: number, total: number): v
   next?.select()
 }
 
-export function InputOTP(props: DivProps) {
-  const { class: className, ...rest } = props
-  return <div data-slot='input-otp' class={cn('flex items-center gap-2', className)} {...rest} />
+export function InputOTP(props: InputOTPProps) {
+  const internalValue = createSignal((props.defaultValue ?? '').slice(0, props.maxLength ?? 6))
+  const maxLength = props.maxLength ?? 6
+  const value = () => read(props.value, internalValue()).slice(0, maxLength)
+  const update = (index: number, character: string) => {
+    const nextCharacter = [...character].find(candidate => !props.pattern || props.pattern.test(candidate)) ?? ''
+    const characters = value().padEnd(maxLength, ' ').split('')
+    characters[index] = nextCharacter || ' '
+    const next = characters.join('').trimEnd()
+    if (props.value === undefined) internalValue(next)
+    props.onValueChange?.(next)
+  }
+  const { class: className, children, value: _value, defaultValue, onValueChange, maxLength: _maxLength, pattern, disabled, required, ...rest } = props
+  return (
+    <InputOTPContext.Provider value={{ value, update, maxLength, pattern, disabled: disabled ?? false, required: required ?? false }}>
+      <div data-slot='input-otp' class={cn('flex items-center gap-2', disabled && 'opacity-50', className)} {...rest}>{children}</div>
+    </InputOTPContext.Provider>
+  )
 }
 
 export function InputOTPGroup(props: DivProps) {
@@ -1416,19 +1461,26 @@ export function InputOTPGroup(props: DivProps) {
 }
 
 export function InputOTPSlot(props: SlotProps) {
-  const { class: className, index, total, onInput, onKeyDown, ...rest } = props
+  const context = useContext(InputOTPContext)
+  if (!context) throw new Error('InputOTPSlot must be used inside InputOTP')
+  const { class: className, index, total = context.maxLength, onInput, onKeyDown, disabled, ...rest } = props
 
   return (
     <input
-      inputMode='numeric'
+      inputMode={context.pattern?.test('a') ? 'text' : 'numeric'}
       maxLength={1}
       autoComplete='one-time-code'
       data-otp-index={index}
+      data-slot='input-otp-slot'
+      value={() => context.value()[index] ?? ''}
+      disabled={context.disabled || disabled}
+      required={context.required}
       class={cn('h-10 w-10 rounded-md border border-input bg-background text-center text-sm font-semibold shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring', className)}
       onInput={(event: Event) => {
         onInput?.(event)
         const target = event.currentTarget as HTMLInputElement | null
         if (!target) return
+        context.update(index, target.value.slice(-1))
         if (target.value.length >= 1) {
           focusSibling(target, index + 1, total)
         }
@@ -1441,6 +1493,7 @@ export function InputOTPSlot(props: SlotProps) {
         if (!target) return
 
         if (event.key === 'Backspace' && target.value.length === 0) {
+          context.update(index, '')
           focusSibling(target, index - 1, total)
         }
       }}

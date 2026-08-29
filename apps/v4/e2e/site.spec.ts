@@ -2591,6 +2591,25 @@ test.describe("Fict shadcn website", () => {
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(page.locator("html")).toHaveClass(/dark/)
     await expect(invalid.locator('[data-slot="input-otp-group"]').first()).toHaveCSS("box-shadow", /3px/)
+
+    const expectedSources = [
+      ["input-otp-demo", 'defaultValue="123456" maxLength={6}'],
+      ["input-otp-pattern", "pattern={/^[0-9]$/}"],
+      ["input-otp-separator", "<InputOTPSeparator />"],
+      ["input-otp-disabled", '<InputOTP disabled defaultValue="123456"'],
+      ["input-otp-controlled", "$state('')", "value={() => value}", "You entered: ${value}"],
+      ["input-otp-invalid", 'aria-invalid="true"'],
+      ["input-otp-four-digits", "maxLength={4}"],
+      ["input-otp-alphanumeric", "pattern={/^[a-zA-Z0-9]$/}"],
+      ["input-otp-form", "<CardTitle>Verify your login</CardTitle>", "<InputOTP required value={() => code}"],
+      ["input-otp-rtl", "$state<keyof typeof translations>", "dir={text().dir}"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("item docs match Fict layouts, variants, media, links, dropdown, and RTL", async ({ page }) => {

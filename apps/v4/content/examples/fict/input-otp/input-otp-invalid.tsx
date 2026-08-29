@@ -2,6 +2,6 @@ import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/comp
 
 export default function InputOTPInvalidExample() {
   return (
-    <InputOTP><InputOTPGroup>{[0, 1, 2].map(index => <InputOTPSlot index={index} total={6} />)}</InputOTPGroup><InputOTPSeparator /><InputOTPGroup>{[3, 4, 5].map(index => <InputOTPSlot index={index} total={6} />)}</InputOTPGroup></InputOTP>
+    <InputOTP defaultValue="000000" maxLength={6} aria-invalid="true"><InputOTPGroup>{[0, 1].map(index => <InputOTPSlot index={index} aria-invalid="true" />)}</InputOTPGroup><InputOTPSeparator /><InputOTPGroup>{[2, 3].map(index => <InputOTPSlot index={index} aria-invalid="true" />)}</InputOTPGroup><InputOTPSeparator /><InputOTPGroup>{[4, 5].map(index => <InputOTPSlot index={index} aria-invalid="true" />)}</InputOTPGroup></InputOTP>
   )
 }

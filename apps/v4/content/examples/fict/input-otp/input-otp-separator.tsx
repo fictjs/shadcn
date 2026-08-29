@@ -2,6 +2,6 @@ import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/comp
 
 export default function InputOTPSeparatorExample() {
   return (
-    <InputOTP><InputOTPGroup>{[0, 1, 2].map(index => <InputOTPSlot index={index} total={6} />)}</InputOTPGroup><InputOTPSeparator /><InputOTPGroup>{[3, 4, 5].map(index => <InputOTPSlot index={index} total={6} />)}</InputOTPGroup></InputOTP>
+    <InputOTP maxLength={6} pattern={/^[0-9]$/}><InputOTPGroup>{[0, 1].map(index => <InputOTPSlot index={index} />)}</InputOTPGroup><InputOTPSeparator /><InputOTPGroup>{[2, 3].map(index => <InputOTPSlot index={index} />)}</InputOTPGroup><InputOTPSeparator /><InputOTPGroup>{[4, 5].map(index => <InputOTPSlot index={index} />)}</InputOTPGroup></InputOTP>
   )
 }

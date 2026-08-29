@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/input-otp-controlled.tsx",
-      "content": "import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'\n\nexport default function InputOTPControlledExample() {\n  return (\n    <InputOTP><InputOTPGroup>{[0, 1, 2].map(index => <InputOTPSlot index={index} total={6} />)}</InputOTPGroup><InputOTPSeparator /><InputOTPGroup>{[3, 4, 5].map(index => <InputOTPSlot index={index} total={6} />)}</InputOTPGroup></InputOTP>\n  )\n}\n",
+      "content": "import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'\n\nexport default function InputOTPControlledExample() {\n  let value = $state('')\n\n  return (\n    <div class=\"grid gap-2\"><InputOTP value={() => value} onValueChange={next => { value = next }} maxLength={6}><InputOTPGroup>{Array.from({ length: 6 }, (_, index) => <InputOTPSlot index={index} />)}</InputOTPGroup></InputOTP><p>{value ? `You entered: ${value}` : 'Enter your one-time password.'}</p></div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

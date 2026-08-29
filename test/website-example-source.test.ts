@@ -696,6 +696,24 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadCombobox('combobox-rtl')).toContain('dir={text().dir}')
   })
 
+  it('keeps every Input OTP source aligned with its rendered preview', () => {
+    expectCuratedFamily('input-otp')
+    const loadInputOtp = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'input-otp', previewName })!
+    expect(loadInputOtp('input-otp-demo')).toContain('defaultValue="123456" maxLength={6}')
+    expect(loadInputOtp('input-otp-pattern')).toContain('pattern={/^[0-9]$/}')
+    expect(loadInputOtp('input-otp-separator').match(/<InputOTPSeparator \/>/g)).toHaveLength(2)
+    expect(loadInputOtp('input-otp-disabled')).toContain('<InputOTP disabled defaultValue="123456"')
+    expect(loadInputOtp('input-otp-controlled')).toContain("let value = $state('')")
+    expect(loadInputOtp('input-otp-controlled')).toContain('value={() => value} onValueChange=')
+    expect(loadInputOtp('input-otp-invalid').match(/aria-invalid="true"/g)).toHaveLength(4)
+    expect(loadInputOtp('input-otp-four-digits')).toContain('maxLength={4}')
+    expect(loadInputOtp('input-otp-alphanumeric')).toContain('pattern={/^[a-zA-Z0-9]$/}')
+    expect(loadInputOtp('input-otp-form')).toContain('<CardTitle>Verify your login</CardTitle>')
+    expect(loadInputOtp('input-otp-form')).toContain('<InputOTP required value={() => code}')
+    expect(loadInputOtp('input-otp-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadInputOtp('input-otp-rtl')).toContain('dir={text().dir}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

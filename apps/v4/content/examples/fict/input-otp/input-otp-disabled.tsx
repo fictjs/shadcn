@@ -2,6 +2,6 @@ import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/comp
 
 export default function InputOTPDisabledExample() {
   return (
-    <InputOTP><InputOTPGroup>{[0, 1, 2].map(index => <InputOTPSlot index={index} total={6} />)}</InputOTPGroup><InputOTPSeparator /><InputOTPGroup>{[3, 4, 5].map(index => <InputOTPSlot index={index} total={6} />)}</InputOTPGroup></InputOTP>
+    <InputOTP disabled defaultValue="123456" maxLength={6}><InputOTPGroup>{[0, 1, 2].map(index => <InputOTPSlot index={index} />)}</InputOTPGroup><InputOTPSeparator /><InputOTPGroup>{[3, 4, 5].map(index => <InputOTPSlot index={index} />)}</InputOTPGroup></InputOTP>
   )
 }

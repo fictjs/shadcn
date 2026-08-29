@@ -2,6 +2,6 @@ import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/comp
 
 export default function InputOTPPatternExample() {
   return (
-    <InputOTP><InputOTPGroup>{[0, 1, 2].map(index => <InputOTPSlot index={index} total={6} />)}</InputOTPGroup><InputOTPSeparator /><InputOTPGroup>{[3, 4, 5].map(index => <InputOTPSlot index={index} total={6} />)}</InputOTPGroup></InputOTP>
+    <label class="grid gap-2">Digits Only<InputOTP maxLength={6} pattern={/^[0-9]$/}><InputOTPGroup>{Array.from({ length: 6 }, (_, index) => <InputOTPSlot index={index} aria-label={`Digit ${index + 1}`} />)}</InputOTPGroup></InputOTP></label>
   )
 }
