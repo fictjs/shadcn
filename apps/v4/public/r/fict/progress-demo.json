@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/progress-demo.tsx",
-      "content": "import { Progress } from '@/components/ui/progress'\n\nexport default function ProgressDemoExample() {\n  return (\n    <Progress value={66} max={100} />\n  )\n}\n",
+      "content": "import { Progress } from '@/components/ui/progress'\n\nexport default function ProgressDemoExample() {\n  return <Progress value={66} max={100} aria-label=\"Loading progress\" />\n}\n",
       "type": "registry:page"
     }
   ]

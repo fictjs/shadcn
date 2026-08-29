@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/progress-rtl.tsx",
-      "content": "import { Progress } from '@/components/ui/progress'\n\nexport default function ProgressRtlExample() {\n  return (\n    <Progress dir=\"rtl\" value={66} max={100} />\n  )\n}\n",
+      "content": "import { Progress } from '@/components/ui/progress'\n\nconst translations = {\n  ar: { dir: 'rtl', label: 'تقدم الرفع', value: '٦٦%' },\n  he: { dir: 'rtl', label: 'התקדמות העלאה', value: '66%' },\n  en: { dir: 'ltr', label: 'Upload progress', value: '66%' },\n} as const\n\nexport default function ProgressRtlExample() {\n  let language = $state<keyof typeof translations>('ar')\n  const text = () => translations[language]\n  return <div class=\"grid gap-4\"><select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof translations }}><option value=\"ar\">Arabic (العربية)</option><option value=\"he\">Hebrew (עברית)</option><option value=\"en\">English</option></select><div class=\"grid w-full max-w-sm gap-2\" dir={text().dir}><label for=\"upload-progress-rtl\" class=\"flex justify-between\"><span>{text().label}</span><span>{text().value}</span></label><Progress id=\"upload-progress-rtl\" value={66} max={100} /></div></div>\n}\n",
       "type": "registry:page"
     }
   ]

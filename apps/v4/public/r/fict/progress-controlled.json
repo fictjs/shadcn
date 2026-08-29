@@ -5,12 +5,13 @@
   "description": "Progress primitive wrapper example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "progress"
+    "progress",
+    "slider"
   ],
   "files": [
     {
       "path": "src/examples/progress-controlled.tsx",
-      "content": "import { Progress } from '@/components/ui/progress'\n\nexport default function ProgressControlledExample() {\n  return (\n    <Progress value={72} max={100} />\n  )\n}\n",
+      "content": "import { Progress } from '@/components/ui/progress'\nimport { Slider } from '@/components/ui/slider'\n\nexport default function ProgressControlledExample() {\n  let value = $state(50)\n  return <div class=\"grid w-full max-w-sm gap-3\"><Progress value={value} max={100} /><Slider value={[value]} min={0} max={100} step={1} aria-label=\"Progress\" onValueChange={next => { value = next[0] }} /></div>\n}\n",
       "type": "registry:page"
     }
   ]

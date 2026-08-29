@@ -550,6 +550,18 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadCheckbox('checkbox-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
   })
 
+  it('keeps every Progress source aligned with its rendered preview', () => {
+    expectCuratedFamily('progress')
+    const loadProgress = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'progress', previewName })!
+    expect(loadProgress('progress-demo')).toContain('<Progress value={66} max={100}')
+    expect(loadProgress('progress-label')).toContain('<label for="upload-progress"')
+    expect(loadProgress('progress-label')).toContain('<span>66%</span>')
+    expect(loadProgress('progress-controlled')).toContain('let value = $state(50)')
+    expect(loadProgress('progress-controlled')).toContain('onValueChange={next => { value = next[0] }}')
+    expect(loadProgress('progress-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadProgress('progress-rtl')).toContain('dir={text().dir}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

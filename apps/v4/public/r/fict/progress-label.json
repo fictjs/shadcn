@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/progress-label.tsx",
-      "content": "import { Progress } from '@/components/ui/progress'\n\nexport default function ProgressLabelExample() {\n  return (\n    <Progress value={66} max={100} />\n  )\n}\n",
+      "content": "import { Progress } from '@/components/ui/progress'\n\nexport default function ProgressLabelExample() {\n  return <div class=\"grid w-full max-w-sm gap-2\"><label for=\"upload-progress\" class=\"flex justify-between\"><span>Upload progress</span><span>66%</span></label><Progress id=\"upload-progress\" value={66} max={100} /></div>\n}\n",
       "type": "registry:page"
     }
   ]

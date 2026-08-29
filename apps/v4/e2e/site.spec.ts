@@ -3220,6 +3220,19 @@ test.describe("Fict shadcn website", () => {
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(page.locator("html")).toHaveClass(/dark/)
     await expect(rtl.locator(".doc-progress-indicator")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+
+    const expectedSources = [
+      ["progress-demo", "<Progress value={66} max={100}"],
+      ["progress-label", '<label for="upload-progress"', "<span>66%</span>"],
+      ["progress-controlled", "let value = $state(50)", "onValueChange={next => { value = next[0] }}"],
+      ["progress-rtl", "$state<keyof typeof translations>('ar')", "dir={text().dir}"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("radio group docs match Fict selection, cards, states, keyboard, and RTL", async ({ page }) => {
