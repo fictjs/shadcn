@@ -5,12 +5,14 @@
   "description": "Keyboard keycap component example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "kbd"
+    "button",
+    "kbd",
+    "tooltip"
   ],
   "files": [
     {
       "path": "src/examples/kbd-tooltip.tsx",
-      "content": "import { Kbd } from '@/components/ui/kbd'\n\nexport default function KbdTooltipExample() {\n  return (\n    <div class=\"flex items-center gap-2\"><Kbd>⌘</Kbd><Kbd>Tooltip</Kbd></div>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Kbd, KbdGroup } from '@/components/ui/kbd'\nimport { Tooltip, TooltipContent, TooltipProvider, TooltipTriggerEl } from '@/components/ui/tooltip'\n\nexport default function KbdTooltipExample() {\n  return <TooltipProvider><div class=\"flex\"><Tooltip><TooltipTriggerEl asChild><Button variant=\"outline\">Save</Button></TooltipTriggerEl><TooltipContent>Save Changes <Kbd>S</Kbd></TooltipContent></Tooltip><Tooltip><TooltipTriggerEl asChild><Button variant=\"outline\">Print</Button></TooltipTriggerEl><TooltipContent>Print Document <KbdGroup><Kbd>Ctrl</Kbd><Kbd>P</Kbd></KbdGroup></TooltipContent></Tooltip></div></TooltipProvider>\n}\n",
       "type": "registry:page"
     }
   ]

@@ -4327,6 +4327,21 @@ test.describe("Fict shadcn website", () => {
       "background-color",
       "rgba(0, 0, 0, 0)",
     )
+
+    const expectedSources = [
+      ["kbd-demo", "<KbdGroup>", "<Kbd>Ctrl</Kbd>"],
+      ["kbd-group", "to open the command palette"],
+      ["kbd-button", "Accept <Kbd>⏎</Kbd>"],
+      ["kbd-tooltip", "Save Changes", "Print Document"],
+      ["kbd-input-group", 'placeholder="Search..."', "<Kbd>⌘</Kbd>"],
+      ["kbd-rtl", "$state<'ar' | 'he' | 'en'>"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
 

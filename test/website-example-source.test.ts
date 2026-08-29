@@ -330,6 +330,17 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadCollapsible('collapsible-rtl')).toContain('הזמנה #4189')
   })
 
+  it('keeps every Kbd source aligned with its rendered preview', () => {
+    expectCuratedFamily('kbd')
+    const loadKbd = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'kbd', previewName })!
+    expect(loadKbd('kbd-demo').match(/<Kbd(?:\s|>)/g)).toHaveLength(6)
+    expect(loadKbd('kbd-group')).toContain('to open the command palette')
+    expect(loadKbd('kbd-button')).toContain('Accept <Kbd>⏎</Kbd>')
+    expect(loadKbd('kbd-tooltip')).toContain('Save Changes <Kbd>S</Kbd>')
+    expect(loadKbd('kbd-input-group')).toContain('placeholder="Search..."')
+    expect(loadKbd('kbd-rtl')).toContain("let language = $state<'ar' | 'he' | 'en'>('ar')")
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],

@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/kbd-demo.tsx",
-      "content": "import { Kbd } from '@/components/ui/kbd'\n\nexport default function KbdDemoExample() {\n  return (\n    <div class=\"flex items-center gap-2\"><Kbd>⌘</Kbd><Kbd>Demo</Kbd></div>\n  )\n}\n",
+      "content": "import { Kbd, KbdGroup } from '@/components/ui/kbd'\n\nexport default function KbdDemoExample() {\n  return <div class=\"grid gap-4\"><KbdGroup><Kbd>⌘</Kbd><Kbd>⇧</Kbd><Kbd>⌥</Kbd><Kbd>⌃</Kbd></KbdGroup><KbdGroup><Kbd>Ctrl</Kbd><span>+</span><Kbd>B</Kbd></KbdGroup></div>\n}\n",
       "type": "registry:page"
     }
   ]

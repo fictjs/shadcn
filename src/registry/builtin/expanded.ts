@@ -1119,7 +1119,12 @@ type KbdProps = JSX.IntrinsicElements['kbd']
 
 export function Kbd(props: KbdProps) {
   const { class: className, ...rest } = props
-  return <kbd class={cn('inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 text-[10px] font-medium text-muted-foreground', className)} {...rest} />
+  return <kbd data-slot='kbd' class={cn('inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 text-xs font-medium text-muted-foreground', className)} {...rest} />
+}
+
+export function KbdGroup(props: KbdProps) {
+  const { class: className, ...rest } = props
+  return <kbd data-slot='kbd-group' class={cn('inline-flex items-center gap-1', className)} {...rest} />
 }
 `
 

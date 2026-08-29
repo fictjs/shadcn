@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/kbd-group.tsx",
-      "content": "import { Kbd } from '@/components/ui/kbd'\n\nexport default function KbdGroupExample() {\n  return (\n    <div class=\"flex items-center gap-2\"><Kbd>⌘</Kbd><Kbd>Group</Kbd></div>\n  )\n}\n",
+      "content": "import { Kbd, KbdGroup } from '@/components/ui/kbd'\n\nexport default function KbdGroupExample() {\n  return <p>Use <KbdGroup><Kbd>Ctrl + B</Kbd><Kbd>Ctrl + K</Kbd></KbdGroup> to open the command palette</p>\n}\n",
       "type": "registry:page"
     }
   ]

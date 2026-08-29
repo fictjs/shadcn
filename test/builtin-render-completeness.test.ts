@@ -108,6 +108,15 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain('export function CardAction')
   })
 
+  it('renders the Kbd API used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('kbd')!, DEFAULT_CONFIG)
+      .map(file => file.content)
+      .join('\n')
+    expect(source).toContain("data-slot='kbd'")
+    expect(source).toContain('export function KbdGroup')
+    expect(source).toContain("data-slot='kbd-group'")
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')

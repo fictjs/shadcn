@@ -5,12 +5,13 @@
   "description": "Keyboard keycap component example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "kbd"
   ],
   "files": [
     {
       "path": "src/examples/kbd-button.tsx",
-      "content": "import { Kbd } from '@/components/ui/kbd'\n\nexport default function KbdButtonExample() {\n  return (\n    <div class=\"flex items-center gap-2\"><Kbd>⌘</Kbd><Kbd>Button</Kbd></div>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Kbd } from '@/components/ui/kbd'\n\nexport default function KbdButtonExample() {\n  return <Button variant=\"outline\">Accept <Kbd>⏎</Kbd></Button>\n}\n",
       "type": "registry:page"
     }
   ]

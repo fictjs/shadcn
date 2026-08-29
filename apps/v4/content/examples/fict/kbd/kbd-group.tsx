@@ -1,7 +1,5 @@
-import { Kbd } from '@/components/ui/kbd'
+import { Kbd, KbdGroup } from '@/components/ui/kbd'
 
 export default function KbdGroupExample() {
-  return (
-    <div class="flex items-center gap-2"><Kbd>⌘</Kbd><Kbd>Group</Kbd></div>
-  )
+  return <p>Use <KbdGroup><Kbd>Ctrl + B</Kbd><Kbd>Ctrl + K</Kbd></KbdGroup> to open the command palette</p>
 }

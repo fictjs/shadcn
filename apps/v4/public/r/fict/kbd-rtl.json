@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/kbd-rtl.tsx",
-      "content": "import { Kbd } from '@/components/ui/kbd'\n\nexport default function KbdRtlExample() {\n  return (\n    <div dir=\"rtl\" class=\"flex items-center gap-2\"><Kbd>⌘</Kbd><Kbd>Rtl</Kbd></div>\n  )\n}\n",
+      "content": "import { Kbd, KbdGroup } from '@/components/ui/kbd'\n\nexport default function KbdRtlExample() {\n  let language = $state<'ar' | 'he' | 'en'>('ar')\n  const direction = () => language === 'en' ? 'ltr' : 'rtl'\n  return <div class=\"grid gap-4\"><select value={language} onChange={event => { language = event.currentTarget.value as 'ar' | 'he' | 'en' }}><option value=\"ar\">Arabic (العربية)</option><option value=\"he\">Hebrew (עברית)</option><option value=\"en\">English</option></select><div class=\"grid gap-4\" dir={direction()}><KbdGroup><Kbd>⌘</Kbd><Kbd>⇧</Kbd><Kbd>⌥</Kbd><Kbd>⌃</Kbd></KbdGroup><KbdGroup><Kbd>Ctrl</Kbd><span>+</span><Kbd>B</Kbd></KbdGroup></div></div>\n}\n",
       "type": "registry:page"
     }
   ]
