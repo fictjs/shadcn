@@ -2292,6 +2292,24 @@ test.describe("Fict shadcn website", () => {
     await expect(source).toContainText("endMonth={new Date(2026, 8, 1)}")
   })
 
+  test("toast docs render the real Fict toast and matching source", async ({ page }) => {
+    await page.goto("/docs/components/fict/toast")
+    await waitForClientReady(page)
+
+    const preview = page.locator('[data-doc-preview-name="toast-demo"]')
+    await expect(preview).not.toContainText("Registry preview surface")
+    const toast = preview.locator("[data-doc-toast-preview]")
+    await expect(toast).toHaveAttribute("role", "status")
+    await expect(toast).toContainText("Event created")
+    await expect(toast).toContainText("Sunday, August 29 at 9:00 AM")
+    await expect(toast.getByRole("button", { name: "Undo" })).toBeVisible()
+
+    await preview.getByRole("button", { name: "View Code" }).click()
+    const source = preview.locator("[data-doc-preview-full-code]")
+    await expect(source).toContainText("<ToastTitle>Event created</ToastTitle>")
+    await expect(source).toContainText('<ToastAction altText="Undo">Undo</ToastAction>')
+  })
+
   test("hover card docs match Fict delays, geometry, sides, pointer transit, focus, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/fict/hover-card")

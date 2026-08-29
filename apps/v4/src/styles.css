@@ -3150,6 +3150,8 @@ a.doc-item:hover { background: color-mix(in oklab, var(--accent) 50%, transparen
 .doc-sonner-toast.is-warning .doc-sonner-icon { color: #d97706; }
 .doc-sonner-toast.is-error .doc-sonner-icon { color: var(--destructive); }
 .doc-sonner-toast > button { height: 24px; border: 0; border-radius: 6px; padding: 0 8px; color: var(--primary-foreground); background: var(--primary); font: inherit; font-weight: 500; cursor: pointer; }
+.doc-toast-preview { display: flex; box-sizing: border-box; width: 356px; max-width: 100%; min-height: 72px; align-items: center; gap: 12px; border: 1px solid var(--border); border-radius: 10px; padding: 16px; color: var(--foreground); background: var(--background); box-shadow: 0 4px 12px rgb(0 0 0 / 10%); font-size: 13px; line-height: 18px; }
+.doc-toast-preview > button { height: 28px; border: 1px solid var(--border); border-radius: 6px; padding: 0 10px; color: var(--foreground); background: transparent; font: inherit; font-weight: 500; cursor: pointer; }
 .doc-sonner-toast:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 
 .doc-component-card[data-doc-preview-name^="spinner-"]:not([data-doc-preview-name="spinner-rtl"]) .doc-component-preview-stage { height: 288px; min-height: 288px; }

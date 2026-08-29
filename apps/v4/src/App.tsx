@@ -4387,6 +4387,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocSliderPreview name={props.name} />
   ) : family === "sonner" ? (
     <DocSonnerPreview name={props.name} />
+  ) : family === "toast" ? (
+    <DocToastPreview name={props.name} />
   ) : family === "spinner" ? (
     <DocSpinnerPreview name={props.name} />
   ) : family === "switch" ? (
@@ -5242,6 +5244,16 @@ function DocSonnerPreview(props: { name: string }) {
   if (variant === "description") return button("Show Toast", { description: "Monday, January 3rd at 6:00pm" })
   if (variant === "position") return <div class="doc-sonner-buttons is-position">{["Top Left", "Top Center", "Top Right", "Bottom Left", "Bottom Center", "Bottom Right"].map((label) => button(label, { position: label.toLowerCase().replace(" ", "-") }))}</div>
   return button("Show Toast", { description: "Sunday, December 03, 2023 at 9:00 AM", action: "Undo" })
+}
+
+function DocToastPreview(props: { name: string }) {
+  untrack(() => props.name)
+  return (
+    <div class="doc-toast-preview" data-doc-toast-preview role="status">
+      <div class="doc-sonner-content"><strong>Event created</strong><span>Sunday, August 29 at 9:00 AM</span></div>
+      <button type="button">Undo</button>
+    </div>
+  )
 }
 
 function DocSpinner(props: { size?: number; class?: string }) {
@@ -7758,6 +7770,7 @@ function getDocPreviewFamily(name: string): string {
     "pagination",
     "skeleton",
     "spinner",
+    "toast",
     "popover",
     "progress",
     "slider",
