@@ -2219,6 +2219,19 @@ test.describe("Fict shadcn website", () => {
     logicalTriggerBox = await logicalTrigger.boundingBox()
     popupBox = await popup.boundingBox()
     expect((popupBox?.x ?? 0) + (popupBox?.width ?? 0)).toBeCloseTo((logicalTriggerBox?.x ?? 0) - 4, 3)
+
+    const expectedSources = [
+      ["hover-card-demo", "<HoverCard openDelay={10} closeDelay={100}>", "<strong>@fictjs</strong>"],
+      ["hover-card-sides", "const sides = ['left', 'top', 'bottom', 'right'] as const", "<HoverCardContent side={side}>"],
+      ["hover-card-rtl", "'inline-start', 'inline-end'", "$state<keyof typeof translations>('ar')"],
+    ] as const
+    await page.mouse.move(10, 10)
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`).first()
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("input docs match all Fict layouts, states, groups, form controls, focus, and RTL", async ({ page }) => {

@@ -575,6 +575,18 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadPagination('pagination-rtl')).toContain('dir={text().dir}')
   })
 
+  it('keeps every Hover Card source aligned with its rendered preview', () => {
+    expectCuratedFamily('hover-card')
+    const loadHoverCard = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'hover-card', previewName })!
+    expect(loadHoverCard('hover-card-demo')).toContain('<HoverCard openDelay={10} closeDelay={100}>')
+    expect(loadHoverCard('hover-card-demo')).toContain('<strong>@fictjs</strong>')
+    expect(loadHoverCard('hover-card-sides')).toContain("const sides = ['left', 'top', 'bottom', 'right'] as const")
+    expect(loadHoverCard('hover-card-sides')).toContain('<HoverCardContent side={side}>')
+    expect(loadHoverCard('hover-card-rtl')).toContain("'inline-start', 'inline-end'")
+    expect(loadHoverCard('hover-card-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadHoverCard('hover-card-rtl')).toContain('dir={text().dir}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

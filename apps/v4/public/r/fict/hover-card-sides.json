@@ -5,12 +5,13 @@
   "description": "Hover card primitive wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "hover-card"
   ],
   "files": [
     {
       "path": "src/examples/hover-card-sides.tsx",
-      "content": "import { HoverCard, HoverCardContent, HoverCardTriggerEl } from '@/components/ui/hover-card'\n\nexport default function HoverCardSidesExample() {\n  return (\n    <HoverCard openDelay={100}><HoverCardTriggerEl asChild><a href=\"https://fict.dev\">@fict</a></HoverCardTriggerEl><HoverCardContent><strong>Fict</strong><p class=\"text-sm text-muted-foreground\">Fine-grained TypeScript UI.</p></HoverCardContent></HoverCard>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { HoverCard, HoverCardContent, HoverCardTriggerEl } from '@/components/ui/hover-card'\n\nconst sides = ['left', 'top', 'bottom', 'right'] as const\n\nexport default function HoverCardSidesExample() {\n  return <div class=\"flex flex-wrap gap-2\">{sides.map(side => <HoverCard openDelay={100} closeDelay={100}><HoverCardTriggerEl asChild><Button variant=\"outline\" class=\"capitalize\">{side}</Button></HoverCardTriggerEl><HoverCardContent side={side}><strong>Hover Card</strong><p class=\"text-sm\">This hover card appears on the {side} side of the trigger.</p></HoverCardContent></HoverCard>)}</div>\n}\n",
       "type": "registry:page"
     }
   ]
