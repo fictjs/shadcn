@@ -894,10 +894,18 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadDropdownMenu('dropdown-menu-submenu')).toContain('<DropdownMenuSub>')
     expect(loadDropdownMenu('dropdown-menu-checkboxes')).toContain('let panel = $state(false)')
     expect(loadDropdownMenu('dropdown-menu-radio-group')).toContain("let position = $state('bottom')")
+    expect(loadDropdownMenu('dropdown-menu-checkboxes-icons')).toContain('Notification Preferences')
+    expect(loadDropdownMenu('dropdown-menu-checkboxes-icons')).toContain('Push notifications')
+    expect(loadDropdownMenu('dropdown-menu-radio-icons')).toContain('Select Payment Method')
+    expect(loadDropdownMenu('dropdown-menu-radio-icons')).toContain('Bank Transfer')
     expect(loadDropdownMenu('dropdown-menu-destructive')).toContain('variant="destructive"')
     expect(loadDropdownMenu('dropdown-menu-avatar')).toContain('/avatars/shadcn.jpg')
     expect(loadDropdownMenu('dropdown-menu-complex')).toContain('Sign Out')
+    expect(loadDropdownMenu('dropdown-menu-complex')).toContain('Recent Projects')
+    expect(loadDropdownMenu('dropdown-menu-complex')).toContain('Notification Types')
     expect(loadDropdownMenu('dropdown-menu-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadDropdownMenu('dropdown-menu-rtl')).toContain("let visibility = $state({ status: true, activity: false, panel: false })")
+    expect(loadDropdownMenu('dropdown-menu-rtl')).toContain("webhook: 'خطاف ويب'")
   })
 
   it('keeps every Date Picker source aligned with its rendered preview', () => {

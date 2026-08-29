@@ -1,48 +1,30 @@
 import { Button } from '@/components/ui/button'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
+  DropdownMenuLabel, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator,
+  DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
+function MenuIcon() { return <span aria-hidden="true">◇</span> }
+
 export default function DropdownMenuComplexExample() {
+  let view = $state({ sidebar: true, status: false })
+  let theme = $state('light')
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">Complex Menu</Button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild><Button variant="outline">Complex Menu</Button></DropdownMenuTrigger>
       <DropdownMenuContent class="max-h-72 w-44 overflow-y-auto">
-        <DropdownMenuLabel>File</DropdownMenuLabel>
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            New File<DropdownMenuShortcut>⌘N</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Open File<DropdownMenuShortcut>⌘O</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Open Recent</DropdownMenuSubTrigger>
-            <DropdownMenuSubContent>
-              <DropdownMenuItem>project.fict</DropdownMenuItem>
-              <DropdownMenuItem>package.json</DropdownMenuItem>
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
+        <DropdownMenuGroup><DropdownMenuLabel>File</DropdownMenuLabel>
+          <DropdownMenuItem><MenuIcon />New File<DropdownMenuShortcut>⌘N</DropdownMenuShortcut></DropdownMenuItem>
+          <DropdownMenuItem><MenuIcon />New Folder<DropdownMenuShortcut>⇧⌘N</DropdownMenuShortcut></DropdownMenuItem>
+          <DropdownMenuSub><DropdownMenuSubTrigger><MenuIcon />Open Recent</DropdownMenuSubTrigger><DropdownMenuPortal><DropdownMenuSubContent><DropdownMenuGroup><DropdownMenuLabel>Recent Projects</DropdownMenuLabel><DropdownMenuItem><MenuIcon />Project Alpha</DropdownMenuItem><DropdownMenuItem><MenuIcon />Project Beta</DropdownMenuItem><DropdownMenuSub><DropdownMenuSubTrigger>More Projects</DropdownMenuSubTrigger><DropdownMenuPortal><DropdownMenuSubContent><DropdownMenuItem>Project Gamma</DropdownMenuItem><DropdownMenuItem>Project Delta</DropdownMenuItem></DropdownMenuSubContent></DropdownMenuPortal></DropdownMenuSub></DropdownMenuGroup><DropdownMenuSeparator /><DropdownMenuItem><MenuIcon />Browse...</DropdownMenuItem></DropdownMenuSubContent></DropdownMenuPortal></DropdownMenuSub>
+          <DropdownMenuSeparator /><DropdownMenuItem><MenuIcon />Save<DropdownMenuShortcut>⌘S</DropdownMenuShortcut></DropdownMenuItem><DropdownMenuItem><MenuIcon />Export<DropdownMenuShortcut>⇧⌘E</DropdownMenuShortcut></DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuLabel>Edit</DropdownMenuLabel>
-        {['Undo', 'Redo', 'Cut', 'Copy', 'Paste', 'Find', 'Replace'].map(item => (
-          <DropdownMenuItem>{item}</DropdownMenuItem>
-        ))}
+        <DropdownMenuGroup><DropdownMenuLabel>View</DropdownMenuLabel><DropdownMenuCheckboxItem checked={() => view.sidebar} onCheckedChange={sidebar => { view = { ...view, sidebar } }}><MenuIcon />Show Sidebar</DropdownMenuCheckboxItem><DropdownMenuCheckboxItem checked={() => view.status} onCheckedChange={status => { view = { ...view, status } }}><MenuIcon />Show Status Bar</DropdownMenuCheckboxItem><DropdownMenuSub><DropdownMenuSubTrigger><MenuIcon />Theme</DropdownMenuSubTrigger><DropdownMenuPortal><DropdownMenuSubContent><DropdownMenuLabel>Appearance</DropdownMenuLabel><DropdownMenuRadioGroup value={() => theme} onValueChange={value => { theme = value }}>{['Light', 'Dark', 'System'].map(label => <DropdownMenuRadioItem value={label.toLowerCase()}>{label}</DropdownMenuRadioItem>)}</DropdownMenuRadioGroup></DropdownMenuSubContent></DropdownMenuPortal></DropdownMenuSub></DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive">Sign Out</DropdownMenuItem>
+        <DropdownMenuGroup><DropdownMenuLabel>Account</DropdownMenuLabel><DropdownMenuItem><MenuIcon />Profile<DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut></DropdownMenuItem><DropdownMenuItem><MenuIcon />Billing</DropdownMenuItem><DropdownMenuSub><DropdownMenuSubTrigger><MenuIcon />Settings</DropdownMenuSubTrigger><DropdownMenuPortal><DropdownMenuSubContent><DropdownMenuLabel>Preferences</DropdownMenuLabel><DropdownMenuItem>Keyboard Shortcuts</DropdownMenuItem><DropdownMenuItem>Language</DropdownMenuItem><DropdownMenuSub><DropdownMenuSubTrigger>Notifications</DropdownMenuSubTrigger><DropdownMenuPortal><DropdownMenuSubContent><DropdownMenuLabel>Notification Types</DropdownMenuLabel><DropdownMenuCheckboxItem checked>Push Notifications</DropdownMenuCheckboxItem><DropdownMenuCheckboxItem checked>Email Notifications</DropdownMenuCheckboxItem></DropdownMenuSubContent></DropdownMenuPortal></DropdownMenuSub><DropdownMenuSeparator /><DropdownMenuItem>Privacy &amp; Security</DropdownMenuItem></DropdownMenuSubContent></DropdownMenuPortal></DropdownMenuSub></DropdownMenuGroup>
+        <DropdownMenuSeparator /><DropdownMenuItem>Help &amp; Support</DropdownMenuItem><DropdownMenuItem>Documentation</DropdownMenuItem><DropdownMenuSeparator /><DropdownMenuItem variant="destructive"><MenuIcon />Sign Out<DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut></DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

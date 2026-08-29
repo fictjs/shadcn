@@ -2039,10 +2039,12 @@ test.describe("Fict shadcn website", () => {
       ["dropdown-menu-submenu", "<DropdownMenuSub>"],
       ["dropdown-menu-checkboxes", "let panel = $state(false)"],
       ["dropdown-menu-radio-group", "let position = $state('bottom')"],
+      ["dropdown-menu-checkboxes-icons", "Notification Preferences", "Push notifications"],
+      ["dropdown-menu-radio-icons", "Select Payment Method", "Bank Transfer"],
       ["dropdown-menu-destructive", 'variant="destructive"'],
       ["dropdown-menu-avatar", "/avatars/shadcn.jpg"],
-      ["dropdown-menu-complex", "New File", "Sign Out"],
-      ["dropdown-menu-rtl", "$state<keyof typeof translations>", "הזמן משתמשים"],
+      ["dropdown-menu-complex", "New File", "Recent Projects", "Notification Types", "Sign Out"],
+      ["dropdown-menu-rtl", "$state<keyof typeof translations>", "visibility = $state", "خطاف ويب", "הזמן משתמשים"],
     ] as const
     for (const [previewName, ...markers] of expectedSources) {
       const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
