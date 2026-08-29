@@ -912,6 +912,14 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(source).toContain('<FormMessage />')
   })
 
+  it('keeps the Range Calendar source aligned with its rendered preview', () => {
+    expectCuratedFamily('range-calendar')
+    const source = loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'range-calendar', previewName: 'range-calendar-demo' })!
+    expect(source).toContain('<RangeCalendar')
+    expect(source).toContain('startMonth={new Date(2026, 7, 1)}')
+    expect(source).toContain('endMonth={new Date(2026, 8, 1)}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!
