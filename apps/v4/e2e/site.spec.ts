@@ -3951,6 +3951,19 @@ test.describe("Fict shadcn website", () => {
     await expect(rtlTable.locator("th")).toHaveText(["Invoice", "Status", "Method", "Amount"])
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(rtlTable.locator("tfoot")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+
+    const expectedSources = [
+      ["table-demo", "INV007", "<TableFooter>", "$2,500.00"],
+      ["table-footer", "INV003", "Bank Transfer"],
+      ["table-actions", "Wireless Mouse", '<DropdownMenuContent align="end">', "text-destructive"],
+      ["table-rtl", "$state<keyof typeof translations>", "חשבונית", "העברה בנקאית"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("tabs docs match Fict cards, line, vertical, disabled, icons, keyboard, and RTL", async ({ page }) => {

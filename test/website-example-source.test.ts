@@ -429,6 +429,19 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadTooltip('tooltip-rtl')).toContain('הוסף לספרייה')
   })
 
+  it('keeps every Table source aligned with its rendered preview', () => {
+    expectCuratedFamily('table')
+    const loadTable = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'table', previewName })!
+    expect(loadTable('table-demo')).toContain("['INV007', 'Unpaid', 'Credit Card', '$300.00']")
+    expect(loadTable('table-demo')).toContain('<TableFooter>')
+    expect(loadTable('table-footer')).toContain("['INV003', 'Unpaid', 'Bank Transfer', '$350.00']")
+    expect(loadTable('table-actions')).toContain("['Wireless Mouse', '$29.99']")
+    expect(loadTable('table-actions')).toContain('<DropdownMenuContent align="end">')
+    expect(loadTable('table-actions')).toContain('<DropdownMenuItem class="text-destructive">Delete</DropdownMenuItem>')
+    expect(loadTable('table-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadTable('table-rtl')).toContain("headings: ['חשבונית', 'סטטוס', 'שיטה', 'סכום']")
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],
