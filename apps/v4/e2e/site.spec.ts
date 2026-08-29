@@ -432,6 +432,8 @@ test.describe("Fict shadcn website", () => {
     await expect(disabledTrigger).toHaveAttribute("aria-expanded", "false")
 
     const rtl = page.locator('[data-doc-preview-name="accordion-rtl"]')
+    await rtl.getByRole("button", { name: "View Code" }).click()
+    await expect(rtl.locator("[data-doc-preview-full-code]")).toContainText("سينتهي صلاحية الرابط خلال 24 ساعة.")
     await rtl.getByLabel("Preview language").selectOption("he")
     await expect(rtl.locator(".doc-rtl-preview")).toHaveAttribute("dir", "rtl")
     await expect(rtl.locator("[data-doc-accordion-label]").first()).toHaveText("איך אני מאפס את הסיסמה שלי?")

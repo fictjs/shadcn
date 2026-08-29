@@ -175,6 +175,8 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
       previewName: 'accordion-rtl',
     })
     expect(rtlSource).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(rtlSource).toContain('سينتهي صلاحية الرابط خلال 24 ساعة.')
+    expect(rtlSource).toContain('השינויים יבואו לידי ביטוי במחזור החיוב הבא.')
     expect(rtlSource).not.toContain('language-selector')
   })
 
