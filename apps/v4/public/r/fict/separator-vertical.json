@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/separator-vertical.tsx",
-      "content": "import { Separator } from '@/components/ui/separator'\n\nexport default function SeparatorVerticalExample() {\n  return (\n    <div class=\"space-y-3\"><div>Vertical</div><Separator /><div>Content</div></div>\n  )\n}\n",
+      "content": "import { Separator } from '@/components/ui/separator'\n\nexport default function SeparatorVerticalExample() { return <div class=\"flex h-5 items-center gap-4\"><span>Blog</span><Separator orientation=\"vertical\" /><span>Docs</span><Separator orientation=\"vertical\" /><span>Source</span></div> }\n",
       "type": "registry:page"
     }
   ]

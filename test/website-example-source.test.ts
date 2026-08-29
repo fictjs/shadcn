@@ -363,6 +363,16 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadSpinner('spinner-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
   })
 
+  it('keeps every Separator source aligned with its rendered preview', () => {
+    expectCuratedFamily('separator')
+    const loadSeparator = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'separator', previewName })!
+    expect(loadSeparator('separator-demo')).toContain('The Foundation for your Design System')
+    expect(loadSeparator('separator-vertical').match(/orientation="vertical"/g)).toHaveLength(2)
+    expect(loadSeparator('separator-menu')).toContain('Manage preferences')
+    expect(loadSeparator('separator-list')).toContain("['Item 1', 'Value 1']")
+    expect(loadSeparator('separator-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],

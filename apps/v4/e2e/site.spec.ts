@@ -3403,6 +3403,20 @@ test.describe("Fict shadcn website", () => {
     await rtl.getByLabel("Preview language").selectOption("en")
     await expect(rtlDemo).toHaveAttribute("dir", "ltr")
     await expect(rtlDemo).toContainText("The Foundation for your Design System")
+
+    const expectedSources = [
+      ["separator-demo", "The Foundation for your Design System"],
+      ["separator-vertical", 'orientation="vertical"'],
+      ["separator-menu", "Manage preferences"],
+      ["separator-list", "Item 1", "Value 3"],
+      ["separator-rtl", "$state<keyof typeof translations>", "הבסיס למערכת העיצוב שלך"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("sheet docs match Fict sides, forms, focus, dismissal, close controls, and RTL", async ({ page }) => {

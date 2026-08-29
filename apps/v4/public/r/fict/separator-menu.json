@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/separator-menu.tsx",
-      "content": "import { Separator } from '@/components/ui/separator'\n\nexport default function SeparatorMenuExample() {\n  return (\n    <div class=\"space-y-3\"><div>Menu</div><Separator /><div>Content</div></div>\n  )\n}\n",
+      "content": "import { Separator } from '@/components/ui/separator'\n\nconst entries = [['Settings', 'Manage preferences'], ['Account', 'Profile & security'], ['Help', 'Support & docs']]\nexport default function SeparatorMenuExample() { return <div class=\"flex items-center gap-4\">{entries.map((entry, index) => <>{index ? <Separator orientation=\"vertical\" class=\"h-10\" /> : null}<div><strong>{entry[0]}</strong><small class=\"block text-muted-foreground\">{entry[1]}</small></div></>)}</div> }\n",
       "type": "registry:page"
     }
   ]

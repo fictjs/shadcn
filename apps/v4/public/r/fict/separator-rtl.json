@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/separator-rtl.tsx",
-      "content": "import { Separator } from '@/components/ui/separator'\n\nexport default function SeparatorRtlExample() {\n  return (\n    <div dir=\"rtl\" class=\"space-y-3\"><div>Rtl</div><Separator /><div>Content</div></div>\n  )\n}\n",
+      "content": "import { Separator } from '@/components/ui/separator'\n\nconst translations = { ar: ['الأساس لنظام التصميم الخاص بك', 'مجموعة من المكونات المصممة بشكل جميل يمكنك تخصيصها وتوسيعها والبناء عليها.'], he: ['הבסיס למערכת העיצוב שלך', 'סט של רכיבים מעוצבים בצורה יפה שאתה יכול להתאים אישית, להרחיב ולבנות עליהם.'], en: ['The Foundation for your Design System', 'A set of beautifully designed Fict components that you can customize, extend, and build on.'] } as const\nexport default function SeparatorRtlExample() { let language = $state<keyof typeof translations>('ar'); const direction = () => language === 'en' ? 'ltr' : 'rtl'; return <div class=\"grid gap-4\"><select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof translations }}><option value=\"ar\">Arabic (العربية)</option><option value=\"he\">Hebrew (עברית)</option><option value=\"en\">English</option></select><div class=\"grid w-96 gap-4\" dir={direction()}><div><strong>Fict shadcn</strong><p>{translations[language][0]}</p></div><Separator /><p>{translations[language][1]}</p></div></div> }\n",
       "type": "registry:page"
     }
   ]
