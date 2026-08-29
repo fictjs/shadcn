@@ -4616,6 +4616,9 @@ test.describe("Fict shadcn website", () => {
       ["typography-rtl", "$state<keyof typeof translations>", "מיסוי הצחוק"],
     ] as const
     await expect(page.locator(".doc-component-card:not(.doc-component-card-source)")).toHaveCount(expectedSources.length)
+    const inlineCode = page.locator('[data-doc-preview-name="typography-inline-code"]')
+    await expect(inlineCode).toContainText("@fictjs/radix-ui")
+    await expect(inlineCode).not.toContainText("@radix-ui/react-alert-dialog")
     for (const [previewName, ...markers] of expectedSources) {
       const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
       await preview.getByRole("button", { name: "View Code" }).click()

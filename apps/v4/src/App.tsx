@@ -5356,7 +5356,7 @@ function DocTypographyPreview(props: { name: string }) {
   if (variant === "p") return <p class="doc-typography-p">The king, seeing how much happier his subjects were, realized the error of his ways and repealed the joke tax.</p>
   if (variant === "blockquote") return <blockquote class="doc-typography-blockquote">"After all," he said, "everyone enjoys a good joke, so it's only fair that they should pay for the privilege."</blockquote>
   if (variant === "list") return <ul class="doc-typography-list"><li>1st level of puns: 5 gold coins</li><li>2nd level of jokes: 10 gold coins</li><li>3rd level of one-liners : 20 gold coins</li></ul>
-  if (variant === "inline-code") return <code class="doc-typography-inline-code">@radix-ui/react-alert-dialog</code>
+  if (variant === "inline-code") return <code class="doc-typography-inline-code">@fictjs/radix-ui</code>
   if (variant === "lead") return <p class="doc-typography-lead">A modal dialog that interrupts the user with important content and expects a response.</p>
   if (variant === "large") return <div class="doc-typography-large">Are you absolutely sure?</div>
   if (variant === "small") return <small class="doc-typography-small">Email address</small>
