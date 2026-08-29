@@ -1,7 +1,9 @@
-import { Combobox, ComboboxInput, ComboboxItem, ComboboxList } from '@/components/ui/combobox'
+import { Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxList } from '@/components/ui/combobox'
+
+const frameworks = ['Next.js', 'SvelteKit', 'Nuxt.js', 'Remix', 'Astro'] as const
 
 export default function ComboboxDisabledExample() {
   return (
-    <Combobox defaultValue="Fict"><ComboboxInput placeholder="Search framework..." /><ComboboxList forceMount><ComboboxItem value="Fict">Fict</ComboboxItem><ComboboxItem value="Vue">Vue</ComboboxItem><ComboboxItem value="React">React</ComboboxItem></ComboboxList></Combobox>
+    <Combobox><ComboboxInput placeholder="Select a framework" disabled /><ComboboxContent><ComboboxList>{frameworks.map(item => <ComboboxItem value={item}>{item}</ComboboxItem>)}</ComboboxList></ComboboxContent></Combobox>
   )
 }

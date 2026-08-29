@@ -5,12 +5,13 @@
   "description": "Filterable combobox with controlled value and open state example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "combobox"
+    "combobox",
+    "field"
   ],
   "files": [
     {
       "path": "src/examples/combobox-rtl.tsx",
-      "content": "import { Combobox, ComboboxInput, ComboboxItem, ComboboxList } from '@/components/ui/combobox'\n\nexport default function ComboboxRtlExample() {\n  return (\n    <Combobox dir=\"rtl\" defaultValue=\"Fict\"><ComboboxInput placeholder=\"Search framework...\" /><ComboboxList forceMount><ComboboxItem value=\"Fict\">Fict</ComboboxItem><ComboboxItem value=\"Vue\">Vue</ComboboxItem><ComboboxItem value=\"React\">React</ComboboxItem></ComboboxList></Combobox>\n  )\n}\n",
+      "content": "import { Combobox, ComboboxChip, ComboboxChips, ComboboxChipsInput, ComboboxContent, ComboboxEmpty, ComboboxItem, ComboboxList, ComboboxValue } from '@/components/ui/combobox'\nimport { Field, FieldLabel } from '@/components/ui/field'\n\nconst translations = {\n  ar: { dir: 'rtl', label: 'الفئات', placeholder: 'أضف فئات', empty: 'لم يتم العثور على فئات.', values: ['التكنولوجيا', 'التصميم', 'الأعمال'] },\n  he: { dir: 'rtl', label: 'קטגוריות', placeholder: 'הוסף קטגוריות', empty: 'לא נמצאו קטגוריות.', values: ['טכנולוגיה', 'עיצוב', 'עסקים'] },\n  en: { dir: 'ltr', label: 'Categories', placeholder: 'Add categories', empty: 'No categories found.', values: ['Technology', 'Design', 'Business'] },\n} as const\n\nexport default function ComboboxRtlExample() {\n  let language = $state<keyof typeof translations>('ar')\n  const text = () => translations[language]\n\n  return (\n    <Field dir={text().dir} class=\"mx-auto w-full max-w-xs\">\n      <select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof translations }}><option value=\"ar\">Arabic (العربية)</option><option value=\"he\">Hebrew (עברית)</option><option value=\"en\">English</option></select>\n      <FieldLabel>{text().label}</FieldLabel>\n      <Combobox multiple autoHighlight defaultValue={['technology']}>\n        <ComboboxChips><ComboboxValue>{values => <>{values.map(value => <ComboboxChip value={value}>{text().values[['technology', 'design', 'business'].indexOf(value)]}</ComboboxChip>)}<ComboboxChipsInput placeholder={text().placeholder} /></>}</ComboboxValue></ComboboxChips>\n        <ComboboxContent dir={text().dir}><ComboboxEmpty>{text().empty}</ComboboxEmpty><ComboboxList>{['technology', 'design', 'business'].map((value, index) => <ComboboxItem value={value}>{text().values[index]}</ComboboxItem>)}</ComboboxList></ComboboxContent>\n      </Combobox>\n    </Field>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

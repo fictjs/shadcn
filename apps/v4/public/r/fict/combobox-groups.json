@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/combobox-groups.tsx",
-      "content": "import { Combobox, ComboboxInput, ComboboxItem, ComboboxList } from '@/components/ui/combobox'\n\nexport default function ComboboxGroupsExample() {\n  return (\n    <Combobox defaultValue=\"Fict\"><ComboboxInput placeholder=\"Search framework...\" /><ComboboxList forceMount><ComboboxItem value=\"Fict\">Fict</ComboboxItem><ComboboxItem value=\"Vue\">Vue</ComboboxItem><ComboboxItem value=\"React\">React</ComboboxItem></ComboboxList></Combobox>\n  )\n}\n",
+      "content": "import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxLabel, ComboboxList, ComboboxSeparator } from '@/components/ui/combobox'\n\nconst timezones = [\n  ['Americas', ['(GMT-5) New York', '(GMT-8) Los Angeles', '(GMT-6) Chicago']],\n  ['Europe', ['(GMT+0) London', '(GMT+1) Paris', '(GMT+1) Berlin']],\n  ['Asia/Pacific', ['(GMT+9) Tokyo', '(GMT+8) Shanghai', '(GMT+8) Singapore']],\n] as const\n\nexport default function ComboboxGroupsExample() {\n  return (\n    <Combobox><ComboboxInput placeholder=\"Select a timezone\" /><ComboboxContent><ComboboxEmpty>No timezones found.</ComboboxEmpty><ComboboxList>{timezones.map(([group, items], index) => <><ComboboxGroup><ComboboxLabel>{group}</ComboboxLabel>{items.map(item => <ComboboxItem value={item}>{item}</ComboboxItem>)}</ComboboxGroup>{index < timezones.length - 1 ? <ComboboxSeparator /> : null}</>)}</ComboboxList></ComboboxContent></Combobox>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

@@ -236,12 +236,14 @@ type GenericProps = {
 type MaybeAccessor<T> = T | (() => T)
 
 type ComboboxProps = GenericProps & {
-  value?: MaybeAccessor<string>
-  defaultValue?: string
-  onValueChange?: (value: string) => void
+  value?: MaybeAccessor<string | string[]>
+  defaultValue?: string | string[]
+  onValueChange?: (value: string | string[]) => void
   open?: MaybeAccessor<boolean>
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
+  multiple?: boolean
+  autoHighlight?: boolean
 }
 
 type ComboboxItemProps = GenericProps & {
@@ -249,12 +251,16 @@ type ComboboxItemProps = GenericProps & {
 }
 
 type ComboboxContextValue = {
-  value: () => string
-  setValue: (value: string) => void
+  values: () => string[]
+  selectValue: (value: string) => void
+  removeValue: (value: string) => void
+  clear: () => void
   open: () => boolean
   setOpen: (open: boolean) => void
   query: () => string
   setQuery: (query: string) => void
+  multiple: boolean
+  autoHighlight: boolean
 }
 
 const ComboboxContext = createContext<ComboboxContextValue | null>(null)
@@ -271,27 +277,41 @@ function useCombobox(): ComboboxContextValue {
 }
 
 export function Combobox(props: ComboboxProps) {
-  const internalValue = createSignal(props.defaultValue ?? '')
+  const initialValues = Array.isArray(props.defaultValue) ? props.defaultValue : props.defaultValue ? [props.defaultValue] : []
+  const internalValues = createSignal<string[]>(initialValues)
   const internalOpen = createSignal(props.defaultOpen ?? false)
   const query = createSignal('')
 
-  const setValue = (value: string) => {
-    if (props.value === undefined) internalValue(value)
-    props.onValueChange?.(value)
+  const values = () => {
+    const controlled = read(props.value, props.multiple ? [] : '')
+    if (props.value === undefined) return internalValues()
+    return Array.isArray(controlled) ? controlled : controlled ? [controlled] : []
+  }
+  const commitValues = (next: string[]) => {
+    if (props.value === undefined) internalValues(next)
+    props.onValueChange?.(props.multiple ? next : next[0] ?? '')
   }
   const setOpen = (open: boolean) => {
     if (props.open === undefined) internalOpen(open)
     props.onOpenChange?.(open)
   }
   const contextValue: ComboboxContextValue = {
-    value: () => read(props.value, internalValue()),
-    setValue,
+    values,
+    selectValue: value => {
+      const current = values()
+      if (props.multiple) commitValues(current.includes(value) ? current.filter(item => item !== value) : [...current, value])
+      else commitValues([value])
+    },
+    removeValue: value => commitValues(values().filter(item => item !== value)),
+    clear: () => commitValues([]),
     open: () => read(props.open, internalOpen()),
     setOpen,
     query,
     setQuery: value => {
       query(value)
     },
+    multiple: props.multiple ?? false,
+    autoHighlight: props.autoHighlight ?? false,
   }
 
   const {
@@ -303,6 +323,8 @@ export function Combobox(props: ComboboxProps) {
     open,
     defaultOpen,
     onOpenChange,
+    multiple,
+    autoHighlight,
     ...rest
   } = props
 
@@ -317,32 +339,45 @@ export function Combobox(props: ComboboxProps) {
 
 export function ComboboxInput(props: GenericProps) {
   const context = useCombobox()
-  const { class: className, onFocus, onInput, ...rest } = props
+  const { class: className, onFocus, onInput, onKeyDown, children, showClear, ...rest } = props
+  const input = <input
+    type='text'
+    role='combobox'
+    aria-autocomplete='list'
+    aria-expanded={() => context.open()}
+    value={() => context.query() || (context.multiple ? '' : context.values()[0] ?? '')}
+    data-slot='combobox-input-control'
+    class='min-w-0 flex-1 bg-transparent outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50'
+    onFocus={(event: FocusEvent) => {
+      ;(onFocus as ((event: FocusEvent) => void) | undefined)?.(event)
+      if (!event.defaultPrevented) context.setOpen(true)
+    }}
+    onInput={(event: Event) => {
+      ;(onInput as ((event: Event) => void) | undefined)?.(event)
+      if (event.defaultPrevented) return
+      const target = event.currentTarget as HTMLInputElement
+      context.setQuery(target.value)
+      context.setOpen(true)
+    }}
+    onKeyDown={(event: KeyboardEvent) => {
+      ;(onKeyDown as ((event: KeyboardEvent) => void) | undefined)?.(event)
+      if (event.key === 'Escape') context.setOpen(false)
+    }}
+    {...rest}
+  />
   return (
-    <input
-      type='text'
-      role='combobox'
-      aria-autocomplete='list'
-      aria-expanded={() => context.open()}
-      value={() => context.query() || context.value()}
+    <div
       data-slot='combobox-input'
       class={cn(
-        'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+        'flex h-9 w-full items-center gap-2 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm ring-offset-background focus-within:ring-1 focus-within:ring-ring has-[[aria-invalid=true]]:border-destructive',
         className,
       )}
-      onFocus={(event: FocusEvent) => {
-        ;(onFocus as ((event: FocusEvent) => void) | undefined)?.(event)
-        if (!event.defaultPrevented) context.setOpen(true)
-      }}
-      onInput={(event: Event) => {
-        ;(onInput as ((event: Event) => void) | undefined)?.(event)
-        if (event.defaultPrevented) return
-        const target = event.currentTarget as HTMLInputElement
-        context.setQuery(target.value)
-        context.setOpen(true)
-      }}
-      {...rest}
-    />
+    >
+      {children}
+      {input}
+      {showClear && context.values().length ? <button type='button' aria-label='Clear selection' onClick={() => { context.clear(); context.setQuery('') }}>×</button> : null}
+      <button type='button' aria-label='Toggle options' tabIndex={-1} onClick={() => context.setOpen(!context.open())}>⌄</button>
+    </div>
   )
 }
 
@@ -362,6 +397,67 @@ export function ComboboxList(props: GenericProps) {
     ) : null
 }
 
+export function ComboboxContent(props: GenericProps) {
+  const context = useCombobox()
+  const { class: className, children, forceMount, ...rest } = props
+  return () => context.open() || forceMount ? <div data-slot='combobox-content' class={cn('absolute z-50 mt-1 w-full rounded-md border bg-popover p-1 text-popover-foreground shadow-md', className)} {...rest}>{children}</div> : null
+}
+
+export function ComboboxEmpty(props: GenericProps) {
+  const { class: className, ...rest } = props
+  return <div data-slot='combobox-empty' class={cn('px-2 py-6 text-center text-sm text-muted-foreground', className)} {...rest} />
+}
+
+export function ComboboxGroup(props: GenericProps) {
+  const { class: className, ...rest } = props
+  return <div role='group' data-slot='combobox-group' class={cn('py-1', className)} {...rest} />
+}
+
+export function ComboboxLabel(props: GenericProps) {
+  const { class: className, ...rest } = props
+  return <div data-slot='combobox-label' class={cn('px-2 py-1.5 text-xs font-medium text-muted-foreground', className)} {...rest} />
+}
+
+export function ComboboxSeparator(props: GenericProps) {
+  const { class: className, ...rest } = props
+  return <div role='separator' data-slot='combobox-separator' class={cn('-mx-1 my-1 h-px bg-border', className)} {...rest} />
+}
+
+export function ComboboxChips(props: GenericProps) {
+  const context = useCombobox()
+  const { class: className, onClick, ...rest } = props
+  return <div data-slot='combobox-chips' class={cn('flex min-h-9 w-full flex-wrap items-center gap-1 rounded-md border px-2 py-1', className)} onClick={(event: MouseEvent) => { ;(onClick as ((event: MouseEvent) => void) | undefined)?.(event); if (!event.defaultPrevented) context.setOpen(true) }} {...rest} />
+}
+
+export function ComboboxChip(props: ComboboxItemProps) {
+  const context = useCombobox()
+  const { class: className, children, value, ...rest } = props
+  return (
+    <span data-slot='combobox-chip' class={cn('inline-flex items-center gap-1 rounded-sm bg-muted px-2 py-0.5 text-sm', className)} {...rest}>
+      {children}
+      <button type='button' aria-label={\`Remove \${value}\`} onClick={() => context.removeValue(value)}>×</button>
+    </span>
+  )
+}
+
+export function ComboboxChipsInput(props: GenericProps) {
+  const context = useCombobox()
+  const { class: className, onInput, ...rest } = props
+  return <input role='combobox' aria-expanded={() => context.open()} value={() => context.query()} class={cn('min-w-20 flex-1 bg-transparent py-1 text-sm outline-none', className)} onFocus={() => context.setOpen(true)} onInput={(event: Event) => { ;(onInput as ((event: Event) => void) | undefined)?.(event); context.setQuery((event.currentTarget as HTMLInputElement).value); context.setOpen(true) }} {...rest} />
+}
+
+export function ComboboxValue(props: GenericProps) {
+  const context = useCombobox()
+  const { children, ...rest } = props
+  return () => <span data-slot='combobox-value' {...rest}>{typeof children === 'function' ? children(context.values()) : children ?? context.values().join(', ')}</span>
+}
+
+export function ComboboxTrigger(props: GenericProps) {
+  const context = useCombobox()
+  const { class: className, children, onClick, ...rest } = props
+  return <button type='button' role='combobox' aria-expanded={() => context.open()} data-slot='combobox-trigger' class={cn('flex h-9 w-full items-center justify-between rounded-md border px-3 text-sm', className)} onClick={(event: MouseEvent) => { ;(onClick as ((event: MouseEvent) => void) | undefined)?.(event); if (!event.defaultPrevented) context.setOpen(!context.open()) }} {...rest}>{children}<span aria-hidden='true'>⌄</span></button>
+}
+
 export function ComboboxItem(props: ComboboxItemProps) {
   const context = useCombobox()
   const { class: className, children, value, onClick, ...rest } = props
@@ -376,16 +472,17 @@ export function ComboboxItem(props: ComboboxItemProps) {
       <button
         type='button'
         role='option'
-        aria-selected={() => context.value() === value}
+        aria-selected={() => context.values().includes(value)}
         data-slot='combobox-item'
-        data-state={() => (context.value() === value ? 'selected' : 'idle')}
+        data-state={() => (context.values().includes(value) ? 'selected' : 'idle')}
+        data-highlighted={() => context.autoHighlight && !context.query() ? 'true' : undefined}
         class={cn('relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-left text-sm outline-none hover:bg-accent hover:text-accent-foreground', className)}
         onClick={(event: MouseEvent) => {
           ;(onClick as ((event: MouseEvent) => void) | undefined)?.(event)
           if (event.defaultPrevented) return
-          context.setValue(value)
-          context.setQuery(value)
-          context.setOpen(false)
+          context.selectValue(value)
+          context.setQuery(context.multiple ? '' : value)
+          if (!context.multiple) context.setOpen(false)
         }}
         {...rest}
       >

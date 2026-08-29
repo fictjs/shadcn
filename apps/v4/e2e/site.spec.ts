@@ -1424,6 +1424,27 @@ test.describe("Fict shadcn website", () => {
     await expect(rtlRoot).toHaveAttribute("dir", "ltr")
     await expect(rtlInput).toHaveAttribute("placeholder", "Add categories")
     await expect(rtl.locator("[data-doc-combobox-chip]")).toContainText("Technology")
+
+    const expectedSources = [
+      ["combobox-demo", "['Next.js', 'SvelteKit', 'Nuxt.js', 'Remix', 'Astro']"],
+      ["combobox-basic", '<ComboboxInput placeholder="Select a framework" />'],
+      ["combobox-multiple", "multiple autoHighlight", "<ComboboxChip value={value}>"],
+      ["combobox-clear", "showClear"],
+      ["combobox-groups", "<ComboboxLabel>{group}</ComboboxLabel>", "<ComboboxSeparator />"],
+      ["combobox-custom", "<ItemDescription>{description}</ItemDescription>"],
+      ["combobox-invalid", 'aria-invalid="true"'],
+      ["combobox-disabled", "disabled />"],
+      ["combobox-auto-highlight", "<Combobox autoHighlight>"],
+      ["combobox-popup", '<ComboboxTrigger class="w-64">', 'aria-label="Search countries"'],
+      ["combobox-input-group", "<GlobeIcon />"],
+      ["combobox-rtl", "$state<keyof typeof translations>", "dir={text().dir}"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("command docs match Fict geometry, filtering, dialogs, keyboard, scrolling, and RTL", async ({ page }) => {

@@ -5,12 +5,13 @@
   "description": "Filterable combobox with controlled value and open state example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "combobox"
+    "combobox",
+    "item"
   ],
   "files": [
     {
       "path": "src/examples/combobox-custom.tsx",
-      "content": "import { Combobox, ComboboxInput, ComboboxItem, ComboboxList } from '@/components/ui/combobox'\n\nexport default function ComboboxCustomExample() {\n  return (\n    <Combobox defaultValue=\"Fict\"><ComboboxInput placeholder=\"Search framework...\" /><ComboboxList forceMount><ComboboxItem value=\"Fict\">Fict</ComboboxItem><ComboboxItem value=\"Vue\">Vue</ComboboxItem><ComboboxItem value=\"React\">React</ComboboxItem></ComboboxList></Combobox>\n  )\n}\n",
+      "content": "import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList } from '@/components/ui/combobox'\nimport { Item, ItemContent, ItemDescription, ItemTitle } from '@/components/ui/item'\n\nconst countries = [\n  ['argentina', 'Argentina', 'South America (ar)'],\n  ['australia', 'Australia', 'Oceania (au)'],\n  ['japan', 'Japan', 'Asia (jp)'],\n  ['united-states', 'United States', 'North America (us)'],\n] as const\n\nexport default function ComboboxCustomExample() {\n  return (\n    <Combobox><ComboboxInput placeholder=\"Search countries...\" /><ComboboxContent><ComboboxEmpty>No countries found.</ComboboxEmpty><ComboboxList>{countries.map(([value, label, description]) => <ComboboxItem value={value}><Item size=\"xs\" class=\"p-0\"><ItemContent><ItemTitle>{label}</ItemTitle><ItemDescription>{description}</ItemDescription></ItemContent></Item></ComboboxItem>)}</ComboboxList></ComboboxContent></Combobox>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

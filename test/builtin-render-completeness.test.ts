@@ -271,6 +271,20 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain("dir={opts?.direction}")
   })
 
+  it('renders the Combobox multiple, chips, clear, group, content, and popup API used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('combobox')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain('value?: MaybeAccessor<string | string[]>')
+    expect(source).toContain('multiple?: boolean')
+    expect(source).toContain('autoHighlight?: boolean')
+    expect(source).toContain('selectValue: (value: string) => void')
+    expect(source).toContain('showClear && context.values().length')
+    for (const exportedComponent of ['ComboboxContent', 'ComboboxEmpty', 'ComboboxGroup', 'ComboboxLabel', 'ComboboxSeparator', 'ComboboxChips', 'ComboboxChip', 'ComboboxChipsInput', 'ComboboxValue', 'ComboboxTrigger']) {
+      expect(source).toContain(`export function ${exportedComponent}`)
+    }
+    expect(source).toContain('props.multiple ? next : next[0]')
+    expect(source).toContain('context.values().includes(value)')
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')

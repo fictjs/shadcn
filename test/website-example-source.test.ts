@@ -676,6 +676,26 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadCarousel('carousel-rtl')).toContain('opts={{ direction: settings().dir }}')
   })
 
+  it('keeps every Combobox source aligned with its rendered preview', () => {
+    expectCuratedFamily('combobox')
+    const loadCombobox = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'combobox', previewName })!
+    for (const previewName of ['combobox-demo', 'combobox-basic']) expect(loadCombobox(previewName)).toContain("['Next.js', 'SvelteKit', 'Nuxt.js', 'Remix', 'Astro']")
+    expect(loadCombobox('combobox-multiple')).toContain("multiple autoHighlight defaultValue={['Next.js']}")
+    expect(loadCombobox('combobox-multiple')).toContain('<ComboboxChip value={value}>')
+    expect(loadCombobox('combobox-clear')).toContain('showClear')
+    expect(loadCombobox('combobox-groups')).toContain('<ComboboxLabel>{group}</ComboboxLabel>')
+    expect(loadCombobox('combobox-groups')).toContain('<ComboboxSeparator />')
+    expect(loadCombobox('combobox-custom')).toContain('<ItemDescription>{description}</ItemDescription>')
+    expect(loadCombobox('combobox-invalid')).toContain('aria-invalid="true"')
+    expect(loadCombobox('combobox-disabled')).toContain('disabled />')
+    expect(loadCombobox('combobox-auto-highlight')).toContain('<Combobox autoHighlight>')
+    expect(loadCombobox('combobox-popup')).toContain('<ComboboxTrigger class="w-64">')
+    expect(loadCombobox('combobox-popup')).toContain('aria-label="Search countries"')
+    expect(loadCombobox('combobox-input-group')).toContain('<GlobeIcon />')
+    expect(loadCombobox('combobox-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadCombobox('combobox-rtl')).toContain('dir={text().dir}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!
