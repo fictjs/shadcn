@@ -5,12 +5,13 @@
   "description": "Dropdown menu wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "dropdown-menu"
   ],
   "files": [
     {
       "path": "src/examples/dropdown-menu-rtl.tsx",
-      "content": "import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'\n\nexport default function DropdownMenuRtlExample() {\n  return (\n    <DropdownMenu dir=\"rtl\"><DropdownMenuTrigger>Open Menu Rtl</DropdownMenuTrigger><DropdownMenuContent><DropdownMenuLabel>My Account</DropdownMenuLabel><DropdownMenuSeparator /><DropdownMenuItem>Profile</DropdownMenuItem><DropdownMenuCheckboxItem checked>Notifications</DropdownMenuCheckboxItem><DropdownMenuItem>Log out</DropdownMenuItem></DropdownMenuContent></DropdownMenu>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport {\n  DropdownMenu,\n  DropdownMenuContent,\n  DropdownMenuItem,\n  DropdownMenuSub,\n  DropdownMenuSubContent,\n  DropdownMenuSubTrigger,\n  DropdownMenuTrigger,\n} from '@/components/ui/dropdown-menu'\n\nconst translations = {\n  ar: {\n    dir: 'rtl',\n    open: 'افتح القائمة',\n    profile: 'الملف الشخصي',\n    invite: 'دعوة مستخدمين',\n    email: 'بريد إلكتروني',\n  },\n  he: { dir: 'rtl', open: 'פתח תפריט', profile: 'פרופיל', invite: 'הזמן משתמשים', email: 'דוא״ל' },\n  en: { dir: 'ltr', open: 'Open', profile: 'Profile', invite: 'Invite users', email: 'Email' },\n} as const\n\nexport default function DropdownMenuRtlExample() {\n  let language = $state<keyof typeof translations>('ar')\n  const text = () => translations[language]\n  return (\n    <div class=\"grid gap-4\">\n      <select\n        value={language}\n        onChange={event => {\n          language = event.currentTarget.value as keyof typeof translations\n        }}\n      >\n        <option value=\"ar\">Arabic (العربية)</option>\n        <option value=\"he\">Hebrew (עברית)</option>\n        <option value=\"en\">English</option>\n      </select>\n      <DropdownMenu dir={text().dir}>\n        <DropdownMenuTrigger asChild>\n          <Button variant=\"outline\">{text().open}</Button>\n        </DropdownMenuTrigger>\n        <DropdownMenuContent dir={text().dir}>\n          <DropdownMenuItem>{text().profile}</DropdownMenuItem>\n          <DropdownMenuSub>\n            <DropdownMenuSubTrigger>{text().invite}</DropdownMenuSubTrigger>\n            <DropdownMenuSubContent dir={text().dir}>\n              <DropdownMenuItem>{text().email}</DropdownMenuItem>\n            </DropdownMenuSubContent>\n          </DropdownMenuSub>\n        </DropdownMenuContent>\n      </DropdownMenu>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

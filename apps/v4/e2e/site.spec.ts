@@ -2020,6 +2020,23 @@ test.describe("Fict shadcn website", () => {
     await expect(panel).toHaveAttribute("dir", "ltr")
     await expect(rtl.getByRole("menuitem", { name: /Invite users/ })).toBeVisible()
     await page.keyboard.press("Escape")
+
+    const expectedSources = [
+      ["dropdown-menu-demo", "<DropdownMenuShortcut>"],
+      ["dropdown-menu-submenu", "<DropdownMenuSub>"],
+      ["dropdown-menu-checkboxes", "let panel = $state(false)"],
+      ["dropdown-menu-radio-group", "let position = $state('bottom')"],
+      ["dropdown-menu-destructive", 'variant="destructive"'],
+      ["dropdown-menu-avatar", "/avatars/shadcn.jpg"],
+      ["dropdown-menu-complex", "New File", "Sign Out"],
+      ["dropdown-menu-rtl", "$state<keyof typeof translations>", "הזמן משתמשים"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("empty docs match Fict layouts, media, actions, search, backgrounds, and RTL content", async ({ page }) => {

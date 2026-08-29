@@ -5,12 +5,14 @@
   "description": "Dropdown menu wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "avatar",
+    "button",
     "dropdown-menu"
   ],
   "files": [
     {
       "path": "src/examples/dropdown-menu-avatar.tsx",
-      "content": "import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'\n\nexport default function DropdownMenuAvatarExample() {\n  return (\n    <DropdownMenu><DropdownMenuTrigger>Open Menu Avatar</DropdownMenuTrigger><DropdownMenuContent><DropdownMenuLabel>My Account</DropdownMenuLabel><DropdownMenuSeparator /><DropdownMenuItem>Profile</DropdownMenuItem><DropdownMenuCheckboxItem checked>Notifications</DropdownMenuCheckboxItem><DropdownMenuItem>Log out</DropdownMenuItem></DropdownMenuContent></DropdownMenu>\n  )\n}\n",
+      "content": "import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Button } from '@/components/ui/button'\nimport {\n  DropdownMenu,\n  DropdownMenuContent,\n  DropdownMenuGroup,\n  DropdownMenuItem,\n  DropdownMenuSeparator,\n  DropdownMenuTrigger,\n} from '@/components/ui/dropdown-menu'\n\nexport default function DropdownMenuAvatarExample() {\n  return (\n    <DropdownMenu>\n      <DropdownMenuTrigger asChild>\n        <Button variant=\"ghost\" size=\"icon\" class=\"rounded-full\">\n          <Avatar>\n            <AvatarImage src=\"/avatars/shadcn.jpg\" alt=\"shadcn\" />\n            <AvatarFallback>LR</AvatarFallback>\n          </Avatar>\n        </Button>\n      </DropdownMenuTrigger>\n      <DropdownMenuContent align=\"end\">\n        <DropdownMenuGroup>\n          <DropdownMenuItem>\n            <span aria-hidden=\"true\">•</span>\n            Account\n          </DropdownMenuItem>\n          <DropdownMenuItem>\n            <span aria-hidden=\"true\">•</span>\n            Billing\n          </DropdownMenuItem>\n          <DropdownMenuItem>\n            <span aria-hidden=\"true\">•</span>\n            Notifications\n          </DropdownMenuItem>\n        </DropdownMenuGroup>\n        <DropdownMenuSeparator />\n        <DropdownMenuItem>\n          <span aria-hidden=\"true\">•</span>\n          Sign Out\n        </DropdownMenuItem>\n      </DropdownMenuContent>\n    </DropdownMenu>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

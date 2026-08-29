@@ -120,6 +120,13 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain('export function ContextMenuShortcut')
   })
 
+  it('renders the Dropdown Menu APIs used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('dropdown-menu')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain('export const DropdownMenuRadioGroup')
+    expect(source).toContain('export const DropdownMenuGroup')
+    expect(source).toContain('export function DropdownMenuShortcut')
+  })
+
   it('renders the directional Drawer API used by website examples', () => {
     const entry = getBuiltinComponent('drawer')
     const source = renderRegistryEntryFiles(entry!, DEFAULT_CONFIG)

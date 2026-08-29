@@ -5,12 +5,13 @@
   "description": "Dropdown menu wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "dropdown-menu"
   ],
   "files": [
     {
       "path": "src/examples/dropdown-menu-complex.tsx",
-      "content": "import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'\n\nexport default function DropdownMenuComplexExample() {\n  return (\n    <DropdownMenu><DropdownMenuTrigger>Open Menu Complex</DropdownMenuTrigger><DropdownMenuContent><DropdownMenuLabel>My Account</DropdownMenuLabel><DropdownMenuSeparator /><DropdownMenuItem>Profile</DropdownMenuItem><DropdownMenuCheckboxItem checked>Notifications</DropdownMenuCheckboxItem><DropdownMenuItem>Log out</DropdownMenuItem></DropdownMenuContent></DropdownMenu>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport {\n  DropdownMenu,\n  DropdownMenuContent,\n  DropdownMenuGroup,\n  DropdownMenuItem,\n  DropdownMenuLabel,\n  DropdownMenuSeparator,\n  DropdownMenuShortcut,\n  DropdownMenuSub,\n  DropdownMenuSubContent,\n  DropdownMenuSubTrigger,\n  DropdownMenuTrigger,\n} from '@/components/ui/dropdown-menu'\n\nexport default function DropdownMenuComplexExample() {\n  return (\n    <DropdownMenu>\n      <DropdownMenuTrigger asChild>\n        <Button variant=\"outline\">Complex Menu</Button>\n      </DropdownMenuTrigger>\n      <DropdownMenuContent class=\"max-h-72 w-44 overflow-y-auto\">\n        <DropdownMenuLabel>File</DropdownMenuLabel>\n        <DropdownMenuGroup>\n          <DropdownMenuItem>\n            New File<DropdownMenuShortcut>⌘N</DropdownMenuShortcut>\n          </DropdownMenuItem>\n          <DropdownMenuItem>\n            Open File<DropdownMenuShortcut>⌘O</DropdownMenuShortcut>\n          </DropdownMenuItem>\n          <DropdownMenuSub>\n            <DropdownMenuSubTrigger>Open Recent</DropdownMenuSubTrigger>\n            <DropdownMenuSubContent>\n              <DropdownMenuItem>project.fict</DropdownMenuItem>\n              <DropdownMenuItem>package.json</DropdownMenuItem>\n            </DropdownMenuSubContent>\n          </DropdownMenuSub>\n        </DropdownMenuGroup>\n        <DropdownMenuSeparator />\n        <DropdownMenuLabel>Edit</DropdownMenuLabel>\n        {['Undo', 'Redo', 'Cut', 'Copy', 'Paste', 'Find', 'Replace'].map(item => (\n          <DropdownMenuItem>{item}</DropdownMenuItem>\n        ))}\n        <DropdownMenuSeparator />\n        <DropdownMenuItem variant=\"destructive\">Sign Out</DropdownMenuItem>\n      </DropdownMenuContent>\n    </DropdownMenu>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

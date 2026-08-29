@@ -18,6 +18,9 @@ import { cn } from '${context.imports.cn}'
 
 export const DropdownMenu = DropdownMenuPrimitive.Root
 export const DropdownMenuRadio = DropdownMenuPrimitive.RadioGroup
+export const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup
+export const DropdownMenuGroup = DropdownMenuPrimitive.Group
+export const DropdownMenuPortal = DropdownMenuPrimitive.Portal
 export const DropdownMenuSub = DropdownMenuPrimitive.Sub
 
 type GenericProps = {
@@ -83,6 +86,11 @@ export function DropdownMenuLabel(props: GenericProps) {
 export function DropdownMenuSeparator(props: GenericProps) {
   const { class: className, ...rest } = props
   return <DropdownMenuPrimitive.Separator class={cn('-mx-1 my-1 h-px bg-muted', className)} {...rest} />
+}
+
+export function DropdownMenuShortcut(props: JSX.IntrinsicElements['span']) {
+  const { class: className, ...rest } = props
+  return <span class={cn('ml-auto text-xs tracking-widest text-muted-foreground', className)} {...rest} />
 }
 
 export function DropdownMenuSubTrigger(props: GenericProps) {

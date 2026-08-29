@@ -871,6 +871,19 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadContextMenu('context-menu-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
   })
 
+  it('keeps every Dropdown Menu source aligned with its rendered preview', () => {
+    expectCuratedFamily('dropdown-menu')
+    const loadDropdownMenu = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'dropdown-menu', previewName })!
+    expect(loadDropdownMenu('dropdown-menu-demo')).toContain('<DropdownMenuShortcut>')
+    expect(loadDropdownMenu('dropdown-menu-submenu')).toContain('<DropdownMenuSub>')
+    expect(loadDropdownMenu('dropdown-menu-checkboxes')).toContain('let panel = $state(false)')
+    expect(loadDropdownMenu('dropdown-menu-radio-group')).toContain("let position = $state('bottom')")
+    expect(loadDropdownMenu('dropdown-menu-destructive')).toContain('variant="destructive"')
+    expect(loadDropdownMenu('dropdown-menu-avatar')).toContain('/avatars/shadcn.jpg')
+    expect(loadDropdownMenu('dropdown-menu-complex')).toContain('Sign Out')
+    expect(loadDropdownMenu('dropdown-menu-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

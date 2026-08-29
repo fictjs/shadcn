@@ -5,12 +5,13 @@
   "description": "Dropdown menu wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "dropdown-menu"
   ],
   "files": [
     {
       "path": "src/examples/dropdown-menu-icons.tsx",
-      "content": "import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'\n\nexport default function DropdownMenuIconsExample() {\n  return (\n    <DropdownMenu><DropdownMenuTrigger>Open Menu Icons</DropdownMenuTrigger><DropdownMenuContent><DropdownMenuLabel>My Account</DropdownMenuLabel><DropdownMenuSeparator /><DropdownMenuItem>Profile</DropdownMenuItem><DropdownMenuCheckboxItem checked>Notifications</DropdownMenuCheckboxItem><DropdownMenuItem>Log out</DropdownMenuItem></DropdownMenuContent></DropdownMenu>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport {\n  DropdownMenu,\n  DropdownMenuContent,\n  DropdownMenuItem,\n  DropdownMenuSeparator,\n  DropdownMenuTrigger,\n} from '@/components/ui/dropdown-menu'\n\nexport default function DropdownMenuIconsExample() {\n  return (\n    <DropdownMenu>\n      <DropdownMenuTrigger asChild>\n        <Button variant=\"outline\">Open</Button>\n      </DropdownMenuTrigger>\n      <DropdownMenuContent>\n        <DropdownMenuItem>\n          <span aria-hidden=\"true\">•</span>\n          Profile\n        </DropdownMenuItem>\n        <DropdownMenuItem>\n          <span aria-hidden=\"true\">•</span>\n          Billing\n        </DropdownMenuItem>\n        <DropdownMenuItem>\n          <span aria-hidden=\"true\">•</span>\n          Settings\n        </DropdownMenuItem>\n        <DropdownMenuSeparator />\n        <DropdownMenuItem variant=\"destructive\">\n          <span aria-hidden=\"true\">•</span>\n          Log out\n        </DropdownMenuItem>\n      </DropdownMenuContent>\n    </DropdownMenu>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
