@@ -199,6 +199,20 @@ export function SelectContent(props: GenericProps) {
   )
 }
 
+export function SelectGroup(props: GenericProps) {
+  return <SelectPrimitive.Group {...props} />
+}
+
+export function SelectLabel(props: GenericProps) {
+  const { class: className, ...rest } = props
+  return <SelectPrimitive.Label class={cn('px-2 py-1.5 text-sm font-semibold', className)} {...rest} />
+}
+
+export function SelectSeparator(props: GenericProps) {
+  const { class: className, ...rest } = props
+  return <SelectPrimitive.Separator class={cn('-mx-1 my-1 h-px bg-muted', className)} {...rest} />
+}
+
 export function SelectItem(props: GenericProps) {
   const { class: className, children, ...rest } = props
   return (

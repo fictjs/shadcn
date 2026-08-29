@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/select-groups.tsx",
-      "content": "import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\n\nexport default function SelectGroupsExample() {\n  return (\n    <Select defaultValue=\"fict\"><SelectTrigger><SelectValue placeholder=\"Groups\" /></SelectTrigger><SelectContent><SelectItem value=\"fict\">Fict</SelectItem><SelectItem value=\"typescript\">TypeScript</SelectItem></SelectContent></Select>\n  )\n}\n",
+      "content": "import {\n  Select,\n  SelectContent,\n  SelectGroup,\n  SelectItem,\n  SelectLabel,\n  SelectSeparator,\n  SelectTrigger,\n  SelectValue,\n} from '@/components/ui/select'\n\nexport default function SelectGroupsExample() {\n  return (\n    <Select>\n      <SelectTrigger class=\"w-full max-w-48\">\n        <SelectValue placeholder=\"Select a fruit\" />\n      </SelectTrigger>\n      <SelectContent>\n        <SelectGroup>\n          <SelectLabel>Fruits</SelectLabel>\n          {['Apple', 'Banana', 'Blueberry'].map(item => (\n            <SelectItem value={item.toLowerCase()}>{item}</SelectItem>\n          ))}\n        </SelectGroup>\n        <SelectSeparator />\n        <SelectGroup>\n          <SelectLabel>Vegetables</SelectLabel>\n          {['Carrot', 'Broccoli', 'Spinach'].map(item => (\n            <SelectItem value={item.toLowerCase()}>{item}</SelectItem>\n          ))}\n        </SelectGroup>\n      </SelectContent>\n    </Select>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

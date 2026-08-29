@@ -5,12 +5,13 @@
   "description": "Select primitive wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "select"
+    "select",
+    "switch"
   ],
   "files": [
     {
       "path": "src/examples/select-align-item.tsx",
-      "content": "import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\n\nexport default function SelectAlignItemExample() {\n  return (\n    <Select defaultValue=\"fict\"><SelectTrigger><SelectValue placeholder=\"Align Item\" /></SelectTrigger><SelectContent><SelectItem value=\"fict\">Fict</SelectItem><SelectItem value=\"typescript\">TypeScript</SelectItem></SelectContent></Select>\n  )\n}\n",
+      "content": "import {\n  Select,\n  SelectContent,\n  SelectGroup,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from '@/components/ui/select'\nimport { Switch } from '@/components/ui/switch'\n\nexport default function SelectAlignItemExample() {\n  let aligned = $state(true)\n  return (\n    <div class=\"grid w-full max-w-xs gap-4\">\n      <div class=\"flex items-center justify-between gap-4\">\n        <div>\n          <label for=\"align-item\">Align Item</label>\n          <p class=\"text-sm text-muted-foreground\">Toggle to align the item with the trigger.</p>\n        </div>\n        <Switch\n          id=\"align-item\"\n          checked={() => aligned}\n          onCheckedChange={value => {\n            aligned = value\n          }}\n        />\n      </div>\n      <Select defaultValue=\"banana\">\n        <SelectTrigger>\n          <SelectValue />\n        </SelectTrigger>\n        <SelectContent position={aligned ? 'item-aligned' : 'popper'}>\n          <SelectGroup>\n            {['Apple', 'Banana', 'Blueberry', 'Grapes', 'Pineapple'].map(fruit => (\n              <SelectItem value={fruit.toLowerCase()}>{fruit}</SelectItem>\n            ))}\n          </SelectGroup>\n        </SelectContent>\n      </Select>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

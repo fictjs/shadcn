@@ -1,7 +1,27 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 export default function SelectDemoExample() {
   return (
-    <Select defaultValue="fict"><SelectTrigger><SelectValue placeholder="Demo" /></SelectTrigger><SelectContent><SelectItem value="fict">Fict</SelectItem><SelectItem value="typescript">TypeScript</SelectItem></SelectContent></Select>
+    <Select>
+      <SelectTrigger class="w-full max-w-48">
+        <SelectValue placeholder="Select a fruit" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectLabel>Fruits</SelectLabel>
+          {['Apple', 'Banana', 'Blueberry', 'Grapes', 'Pineapple'].map(fruit => (
+            <SelectItem value={fruit.toLowerCase()}>{fruit}</SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   )
 }

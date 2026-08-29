@@ -778,6 +778,19 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadRadioGroup('radio-group-rtl')).toContain('dir={text().dir}')
   })
 
+  it('keeps every Select source aligned with its rendered preview', () => {
+    expectCuratedFamily('select')
+    const loadSelect = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'select', previewName })!
+    expect(loadSelect('select-demo')).toContain('<SelectValue placeholder="Select a fruit" />')
+    expect(loadSelect('select-align-item')).toContain("position={aligned ? 'item-aligned' : 'popper'}")
+    expect(loadSelect('select-groups')).toContain('<SelectLabel>Vegetables</SelectLabel>')
+    expect(loadSelect('select-scrollable')).toContain("'South America': ['Argentina Time', 'Bolivia Time', 'Brasilia Time', 'Chile Standard Time']")
+    expect(loadSelect('select-disabled')).toContain('<Select disabled>')
+    expect(loadSelect('select-invalid')).toContain('aria-invalid="true"')
+    expect(loadSelect('select-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadSelect('select-rtl')).toContain('dir={text().dir}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

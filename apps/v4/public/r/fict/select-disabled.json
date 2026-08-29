@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/select-disabled.tsx",
-      "content": "import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'\n\nexport default function SelectDisabledExample() {\n  return (\n    <Select defaultValue=\"fict\"><SelectTrigger><SelectValue placeholder=\"Disabled\" /></SelectTrigger><SelectContent><SelectItem value=\"fict\">Fict</SelectItem><SelectItem value=\"typescript\">TypeScript</SelectItem></SelectContent></Select>\n  )\n}\n",
+      "content": "import {\n  Select,\n  SelectContent,\n  SelectGroup,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from '@/components/ui/select'\n\nexport default function SelectDisabledExample() {\n  return (\n    <Select disabled>\n      <SelectTrigger class=\"w-full max-w-48\">\n        <SelectValue placeholder=\"Select a fruit\" />\n      </SelectTrigger>\n      <SelectContent>\n        <SelectGroup>\n          {['Apple', 'Banana', 'Blueberry', 'Grapes', 'Pineapple'].map(fruit => (\n            <SelectItem value={fruit.toLowerCase()} disabled={fruit === 'Grapes'}>\n              {fruit}\n            </SelectItem>\n          ))}\n        </SelectGroup>\n      </SelectContent>\n    </Select>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

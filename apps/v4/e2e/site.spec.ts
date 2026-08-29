@@ -3629,6 +3629,22 @@ test.describe("Fict shadcn website", () => {
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(page.locator("html")).toHaveClass(/dark/)
     await expect(demoTrigger).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+
+    const expectedSources = [
+      ["select-demo", '<SelectValue placeholder="Select a fruit" />'],
+      ["select-align-item", "position={aligned ? 'item-aligned' : 'popper'}"],
+      ["select-groups", "<SelectLabel>Vegetables</SelectLabel>"],
+      ["select-scrollable", "Indonesia Central Standard Time", "Chile Standard Time"],
+      ["select-disabled", "<Select disabled>"],
+      ["select-invalid", 'aria-invalid="true"', "Please select a fruit."],
+      ["select-rtl", "$state<keyof typeof translations>", "אוכמניה"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("separator docs match Fict horizontal, vertical, menu, list, and RTL layouts", async ({ page }) => {
