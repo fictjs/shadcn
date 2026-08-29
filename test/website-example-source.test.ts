@@ -967,6 +967,16 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(rtl).toContain('dir={text().dir}')
   })
 
+  it('keeps the Sidebar source aligned with its rendered preview', () => {
+    expectCuratedFamily('sidebar')
+    const source = loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'sidebar', previewName: 'sidebar-demo' })!
+    expect(source).toContain("let collapsed = $state(false)")
+    expect(source).toContain("{ title: 'Models', items: ['Genesis', 'Explorer', 'Quantum'] }")
+    expect(source).toContain("event.ctrlKey && event.key === 'b'")
+    expect(source).toContain('Acme Inc')
+    expect(source).toContain('<SidebarLink href="#">{item}</SidebarLink>')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

@@ -3974,6 +3974,12 @@ test.describe("Fict shadcn website", () => {
     await page.setViewportSize({ width: 390, height: 844 })
     await expect(stage).toHaveCSS("height", "320px")
     await expect(panel).toHaveCSS("width", "220px")
+
+    await preview.getByRole("button", { name: "View Code" }).click()
+    const source = preview.locator("[data-doc-preview-full-code]")
+    for (const marker of ["let collapsed = $state(false)", "Acme Inc", "Genesis", "event.ctrlKey && event.key === 'b'", "SidebarLink"]) {
+      await expect(source).toContainText(marker)
+    }
   })
 
   test("skeleton docs match Fict profile, card, text, form, table, animation, and RTL", async ({ page }) => {
