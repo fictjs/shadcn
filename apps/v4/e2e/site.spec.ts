@@ -94,6 +94,34 @@ test.describe("Fict shadcn website", () => {
     await expect(page).toHaveTitle("New Project - Fict shadcn")
   })
 
+  test("every component documentation route renders real previews and complete source", async ({ page }) => {
+    test.setTimeout(120_000)
+    await page.goto("/docs/components/fict/accordion")
+    await waitForClientReady(page)
+    const routes = await page.locator('a[href^="/docs/components/fict/"]').evaluateAll(links =>
+      [...new Set(links.map(link => new URL((link as HTMLAnchorElement).href).pathname))]
+    )
+    expect(routes.length).toBeGreaterThan(50)
+
+    for (const route of routes) {
+      const response = await page.goto(route)
+      expect(response?.ok(), route).toBe(true)
+      await waitForClientReady(page)
+      const previews = page.locator(".doc-component-card:not(.doc-component-card-source)")
+      expect(await previews.count(), route).toBeGreaterThan(0)
+      for (const previewText of await previews.allTextContents()) {
+        expect(previewText, route).not.toContain("Registry preview surface")
+      }
+      for (const preview of await previews.all()) {
+        await expect(preview.getByRole("button", { name: "View Code" })).toHaveCount(1)
+        const code = preview.locator("[data-doc-preview-full-code]")
+        await expect(code).toHaveCount(1)
+        expect((await code.textContent())?.trim().length, route).toBeGreaterThan(20)
+        expect(await code.locator(".shiki-line").count(), route).toBeGreaterThan(1)
+      }
+    }
+  })
+
   test("examples root keeps catalog controls while detail routes stay focused", async ({ page }) => {
     await page.goto("/examples")
 
