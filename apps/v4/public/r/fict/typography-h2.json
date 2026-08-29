@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "src/examples/typography-h2.tsx",
-      "content": "export default function TypographyH2Example() {\n  return (\n    <article><h1 class=\"text-4xl font-bold\">H2</h1><p class=\"mt-4 leading-7\">Semantic typography rendered by Fict.</p></article>\n  )\n}\n",
+      "content": "export default function TypographyH2Example() {\n  return (\n    <h2 class=\"scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0\">The People of the Kingdom</h2>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

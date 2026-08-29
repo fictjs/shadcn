@@ -4052,6 +4052,37 @@ test.describe("Fict shadcn website", () => {
     }
   })
 
+  test("typography docs expose the rendered Fict markup for every example", async ({ page }) => {
+    await page.goto("/docs/components/fict/typography")
+    await waitForClientReady(page)
+
+    const expectedSources = [
+      ["typography-demo", "Taxing Laughter: The Joke Tax Chronicles", "<blockquote", "<table"],
+      ["typography-h1", "text-4xl font-extrabold"],
+      ["typography-h2", "The People of the Kingdom"],
+      ["typography-h3", "The Joke Tax"],
+      ["typography-h4", "People stopped telling jokes"],
+      ["typography-p", "repealed the joke tax"],
+      ["typography-blockquote", "<blockquote"],
+      ["typography-table", "People&apos;s happiness", "Ecstatic"],
+      ["typography-list", "1st level of puns: 5 gold coins"],
+      ["typography-inline-code", "@fictjs/radix-ui"],
+      ["typography-lead", "expects a response"],
+      ["typography-large", "Are you absolutely sure?"],
+      ["typography-small", "Email address"],
+      ["typography-muted", "Enter your email address."],
+      ["typography-rtl", "$state<keyof typeof translations>", "מיסוי הצחוק"],
+    ] as const
+    await expect(page.locator(".doc-component-card:not(.doc-component-card-source)")).toHaveCount(expectedSources.length)
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      await expect(source).not.toContainText("Semantic typography rendered by Fict.")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
+  })
+
   test("textarea docs match Fict base, field, disabled, invalid, button, focus, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/fict/textarea")

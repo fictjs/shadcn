@@ -442,6 +442,34 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadTable('table-rtl')).toContain("headings: ['חשבונית', 'סטטוס', 'שיטה', 'סכום']")
   })
 
+  it('keeps every Typography source aligned with its rendered preview', () => {
+    expectCuratedFamily('typography')
+    const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!
+    const markers: Record<string, string> = {
+      'typography-demo': 'Taxing Laughter: The Joke Tax Chronicles',
+      'typography-h1': 'text-4xl font-extrabold',
+      'typography-h2': 'The People of the Kingdom',
+      'typography-h3': 'The Joke Tax',
+      'typography-h4': 'People stopped telling jokes',
+      'typography-p': 'repealed the joke tax',
+      'typography-blockquote': '<blockquote',
+      'typography-table': "King&apos;s Treasury",
+      'typography-list': '1st level of puns: 5 gold coins',
+      'typography-inline-code': '@fictjs/radix-ui',
+      'typography-lead': 'expects a response',
+      'typography-large': 'Are you absolutely sure?',
+      'typography-small': 'Email address',
+      'typography-muted': 'Enter your email address.',
+      'typography-rtl': "let language = $state<keyof typeof translations>('ar')",
+    }
+    for (const previewName of previewCatalog.typography) {
+      const source = loadTypography(previewName)
+      expect(source, previewName).toContain(markers[previewName])
+      expect(source, previewName).not.toContain('Semantic typography rendered by Fict.')
+    }
+    expect(loadTypography('typography-rtl')).toContain('מיסוי הצחוק: כרוניקות מס הבדיחה')
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],

@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "src/examples/typography-lead.tsx",
-      "content": "export default function TypographyLeadExample() {\n  return (\n    <article><h1 class=\"text-4xl font-bold\">Lead</h1><p class=\"mt-4 leading-7\">Semantic typography rendered by Fict.</p></article>\n  )\n}\n",
+      "content": "export default function TypographyLeadExample() {\n  return (\n    <p class=\"text-xl text-muted-foreground\">A modal dialog that interrupts the user with important content and expects a response.</p>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

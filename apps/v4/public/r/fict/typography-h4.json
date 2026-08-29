@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "src/examples/typography-h4.tsx",
-      "content": "export default function TypographyH4Example() {\n  return (\n    <article><h1 class=\"text-4xl font-bold\">H4</h1><p class=\"mt-4 leading-7\">Semantic typography rendered by Fict.</p></article>\n  )\n}\n",
+      "content": "export default function TypographyH4Example() {\n  return (\n    <h4 class=\"scroll-m-20 text-xl font-semibold tracking-tight\">People stopped telling jokes</h4>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

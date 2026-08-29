@@ -1,5 +1,5 @@
 export default function TypographyBlockquoteExample() {
   return (
-    <article><h1 class="text-4xl font-bold">Blockquote</h1><p class="mt-4 leading-7">Semantic typography rendered by Fict.</p></article>
+    <blockquote class="mt-6 border-l-2 pl-6 italic">&quot;After all,&quot; he said, &quot;everyone enjoys a good joke, so it&apos;s only fair that they should pay for the privilege.&quot;</blockquote>
   )
 }

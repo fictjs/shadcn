@@ -1,5 +1,5 @@
 export default function TypographyInlineCodeExample() {
   return (
-    <article><h1 class="text-4xl font-bold">Inline Code</h1><p class="mt-4 leading-7">Semantic typography rendered by Fict.</p></article>
+    <code class="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">@fictjs/radix-ui</code>
   )
 }

@@ -1,5 +1,5 @@
 export default function TypographyH1Example() {
   return (
-    <article><h1 class="text-4xl font-bold">H1</h1><p class="mt-4 leading-7">Semantic typography rendered by Fict.</p></article>
+    <h1 class="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">Taxing Laughter: The Joke Tax Chronicles</h1>
   )
 }

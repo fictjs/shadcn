@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "src/examples/typography-h1.tsx",
-      "content": "export default function TypographyH1Example() {\n  return (\n    <article><h1 class=\"text-4xl font-bold\">H1</h1><p class=\"mt-4 leading-7\">Semantic typography rendered by Fict.</p></article>\n  )\n}\n",
+      "content": "export default function TypographyH1Example() {\n  return (\n    <h1 class=\"scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance\">Taxing Laughter: The Joke Tax Chronicles</h1>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

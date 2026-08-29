@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "src/examples/typography-table.tsx",
-      "content": "export default function TypographyTableExample() {\n  return (\n    <article><h1 class=\"text-4xl font-bold\">Table</h1><p class=\"mt-4 leading-7\">Semantic typography rendered by Fict.</p></article>\n  )\n}\n",
+      "content": "export default function TypographyTableExample() {\n  return (\n    <div class=\"my-6 w-full overflow-y-auto\">\n      <table class=\"w-full\">\n        <thead><tr class=\"m-0 border-t p-0 even:bg-muted\"><th class=\"border px-4 py-2 text-left font-bold\">King&apos;s Treasury</th><th class=\"border px-4 py-2 text-left font-bold\">People&apos;s happiness</th></tr></thead>\n        <tbody><tr class=\"m-0 border-t p-0 even:bg-muted\"><td class=\"border px-4 py-2 text-left\">Empty</td><td class=\"border px-4 py-2 text-left\">Overflowing</td></tr><tr class=\"m-0 border-t p-0 even:bg-muted\"><td class=\"border px-4 py-2 text-left\">Modest</td><td class=\"border px-4 py-2 text-left\">Satisfied</td></tr><tr class=\"m-0 border-t p-0 even:bg-muted\"><td class=\"border px-4 py-2 text-left\">Full</td><td class=\"border px-4 py-2 text-left\">Ecstatic</td></tr></tbody>\n      </table>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

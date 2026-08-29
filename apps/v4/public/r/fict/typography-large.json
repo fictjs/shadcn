@@ -8,7 +8,7 @@
   "files": [
     {
       "path": "src/examples/typography-large.tsx",
-      "content": "export default function TypographyLargeExample() {\n  return (\n    <article><h1 class=\"text-4xl font-bold\">Large</h1><p class=\"mt-4 leading-7\">Semantic typography rendered by Fict.</p></article>\n  )\n}\n",
+      "content": "export default function TypographyLargeExample() {\n  return (\n    <div class=\"text-lg font-semibold\">Are you absolutely sure?</div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
