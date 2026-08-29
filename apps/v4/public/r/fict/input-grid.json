@@ -5,12 +5,13 @@
   "description": "Styled text input example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "field",
     "input"
   ],
   "files": [
     {
       "path": "src/examples/input-grid.tsx",
-      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputGridExample() {\n  return (\n    <Input placeholder=\"Grid\" />\n  )\n}\n",
+      "content": "import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'\nimport { Input } from '@/components/ui/input'\n\nexport default function InputGridExample() {\n  return (\n    <FieldGroup class=\"grid max-w-sm grid-cols-2\">\n      <Field>\n        <FieldLabel for=\"first-name\">First Name</FieldLabel>\n        <Input id=\"first-name\" placeholder=\"Jordan\" />\n      </Field>\n      <Field>\n        <FieldLabel for=\"last-name\">Last Name</FieldLabel>\n        <Input id=\"last-name\" placeholder=\"Lee\" />\n      </Field>\n    </FieldGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

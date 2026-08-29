@@ -2397,6 +2397,26 @@ test.describe("Fict shadcn website", () => {
     await expect(page.locator("html")).toHaveClass(/dark/)
     await expect(disabled.getByLabel("Email")).toBeDisabled()
     await expect(invalidInput).toHaveAttribute("aria-invalid", "true")
+
+    const expectedSources = [
+      ["input-demo", 'type="password" placeholder="sk-..."'],
+      ["input-fieldgroup", '<Button type="reset" variant="outline">'],
+      ["input-disabled", "disabled"],
+      ["input-invalid", "aria-invalid"],
+      ["input-file", 'type="file"'],
+      ["input-required", "required"],
+      ["input-badge", '<Badge variant="secondary"'],
+      ["input-input-group", "<InputGroupAddon>https://</InputGroupAddon>"],
+      ["input-button-group", "<ButtonGroup>"],
+      ["input-form", '<SelectItem value="ca">Canada</SelectItem>'],
+      ["input-rtl", "$state<keyof typeof translations>", "מפתח ה-API שלך מוצפן"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("input group docs match Fict alignment, content, controls, focus, and RTL", async ({ page }) => {

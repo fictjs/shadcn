@@ -5,12 +5,14 @@
   "description": "Styled text input example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "badge",
+    "field",
     "input"
   ],
   "files": [
     {
       "path": "src/examples/input-badge.tsx",
-      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputBadgeExample() {\n  return (\n    <Input placeholder=\"Badge\" />\n  )\n}\n",
+      "content": "import { Badge } from '@/components/ui/badge'\nimport { Field, FieldLabel } from '@/components/ui/field'\nimport { Input } from '@/components/ui/input'\n\nexport default function InputBadgeExample() {\n  return (\n    <Field>\n      <FieldLabel for=\"input-badge\">\n        Webhook URL{' '}\n        <Badge variant=\"secondary\" class=\"ml-auto\">\n          Beta\n        </Badge>\n      </FieldLabel>\n      <Input id=\"input-badge\" type=\"url\" placeholder=\"https://api.example.com/webhook\" />\n    </Field>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

@@ -5,12 +5,13 @@
   "description": "Styled text input example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "field",
     "input"
   ],
   "files": [
     {
       "path": "src/examples/input-demo.tsx",
-      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputDemoExample() {\n  return (\n    <Input placeholder=\"Demo\" />\n  )\n}\n",
+      "content": "import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'\nimport { Input } from '@/components/ui/input'\n\nexport default function InputDemoExample() {\n  return (\n    <Field>\n      <FieldLabel for=\"input-demo-api-key\">API Key</FieldLabel>\n      <Input id=\"input-demo-api-key\" type=\"password\" placeholder=\"sk-...\" />\n      <FieldDescription>Your API key is encrypted and stored securely.</FieldDescription>\n    </Field>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

@@ -5,12 +5,13 @@
   "description": "Styled text input example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "field",
     "input"
   ],
   "files": [
     {
       "path": "src/examples/input-disabled.tsx",
-      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputDisabledExample() {\n  return (\n    <Input disabled placeholder=\"Disabled\" />\n  )\n}\n",
+      "content": "import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'\nimport { Input } from '@/components/ui/input'\n\nexport default function InputDisabledExample() {\n  return (\n    <Field data-disabled>\n      <FieldLabel for=\"input-demo-disabled\">Email</FieldLabel>\n      <Input id=\"input-demo-disabled\" type=\"email\" placeholder=\"Email\" disabled />\n      <FieldDescription>This field is currently disabled.</FieldDescription>\n    </Field>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

@@ -5,12 +5,13 @@
   "description": "Styled text input example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "field",
     "input"
   ],
   "files": [
     {
       "path": "src/examples/input-required.tsx",
-      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputRequiredExample() {\n  return (\n    <Input placeholder=\"Required\" />\n  )\n}\n",
+      "content": "import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'\nimport { Input } from '@/components/ui/input'\n\nexport default function InputRequiredExample() {\n  return (\n    <Field>\n      <FieldLabel for=\"input-required\">\n        Required Field <span class=\"text-destructive\">*</span>\n      </FieldLabel>\n      <Input id=\"input-required\" placeholder=\"This field is required\" required />\n      <FieldDescription>This field must be filled out.</FieldDescription>\n    </Field>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

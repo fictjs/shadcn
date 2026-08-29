@@ -5,12 +5,14 @@
   "description": "Styled text input example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
+    "field",
     "input"
   ],
   "files": [
     {
       "path": "src/examples/input-inline.tsx",
-      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputInlineExample() {\n  return (\n    <Input placeholder=\"Inline\" />\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Field } from '@/components/ui/field'\nimport { Input } from '@/components/ui/input'\n\nexport default function InputInlineExample() {\n  return (\n    <Field orientation=\"horizontal\">\n      <Input type=\"search\" placeholder=\"Search...\" />\n      <Button>Search</Button>\n    </Field>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

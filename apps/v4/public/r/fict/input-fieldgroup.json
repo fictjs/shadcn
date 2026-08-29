@@ -5,12 +5,14 @@
   "description": "Styled text input example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
+    "field",
     "input"
   ],
   "files": [
     {
       "path": "src/examples/input-fieldgroup.tsx",
-      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputFieldgroupExample() {\n  return (\n    <Input placeholder=\"Fieldgroup\" />\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field'\nimport { Input } from '@/components/ui/input'\n\nexport default function InputFieldgroupExample() {\n  return (\n    <FieldGroup>\n      <Field>\n        <FieldLabel for=\"fieldgroup-name\">Name</FieldLabel>\n        <Input id=\"fieldgroup-name\" placeholder=\"Jordan Lee\" />\n      </Field>\n      <Field>\n        <FieldLabel for=\"fieldgroup-email\">Email</FieldLabel>\n        <Input id=\"fieldgroup-email\" type=\"email\" placeholder=\"name@example.com\" />\n        <FieldDescription>We&apos;ll send updates to this address.</FieldDescription>\n      </Field>\n      <Field orientation=\"horizontal\">\n        <Button type=\"reset\" variant=\"outline\">\n          Reset\n        </Button>\n        <Button type=\"submit\">Submit</Button>\n      </Field>\n    </FieldGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

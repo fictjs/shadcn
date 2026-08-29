@@ -5,12 +5,14 @@
   "description": "Styled text input example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "input"
+    "button",
+    "input",
+    "select"
   ],
   "files": [
     {
       "path": "src/examples/input-form.tsx",
-      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputFormExample() {\n  return (\n    <Input placeholder=\"Form\" />\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Input } from '@/components/ui/input'\nimport {\n  Select,\n  SelectContent,\n  SelectItem,\n  SelectTrigger,\n  SelectValue,\n} from '@/components/ui/select'\n\nexport default function InputFormExample() {\n  return (\n    <form class=\"grid w-full max-w-sm gap-4\" onSubmit={event => event.preventDefault()}>\n      <label class=\"grid gap-2\">\n        Name\n        <Input name=\"name\" placeholder=\"Evil Rabbit\" required />\n      </label>\n      <label class=\"grid gap-2\">\n        Email\n        <Input name=\"email\" type=\"email\" placeholder=\"john@example.com\" />\n        <small>We'll never share your email with anyone.</small>\n      </label>\n      <div class=\"grid grid-cols-2 gap-4\">\n        <label class=\"grid gap-2\">\n          Phone\n          <Input name=\"phone\" type=\"tel\" placeholder=\"+1 (555) 123-4567\" />\n        </label>\n        <label class=\"grid gap-2\">\n          Country\n          <Select defaultValue=\"us\">\n            <SelectTrigger>\n              <SelectValue />\n            </SelectTrigger>\n            <SelectContent>\n              <SelectItem value=\"us\">United States</SelectItem>\n              <SelectItem value=\"uk\">United Kingdom</SelectItem>\n              <SelectItem value=\"ca\">Canada</SelectItem>\n            </SelectContent>\n          </Select>\n        </label>\n      </div>\n      <label class=\"grid gap-2\">\n        Address\n        <Input name=\"address\" placeholder=\"123 Main St\" />\n      </label>\n      <div class=\"flex gap-2\">\n        <Button type=\"button\" variant=\"outline\">\n          Cancel\n        </Button>\n        <Button type=\"submit\">Submit</Button>\n      </div>\n    </form>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

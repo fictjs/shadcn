@@ -811,6 +811,23 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadNavigationMenu('navigation-menu-rtl')).toContain('dir={text().dir}')
   })
 
+  it('keeps every Input source aligned with its rendered preview', () => {
+    expectCuratedFamily('input')
+    const loadInput = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'input', previewName })!
+    expect(loadInput('input-demo')).toContain('type="password" placeholder="sk-..."')
+    expect(loadInput('input-fieldgroup')).toContain('<Button type="reset" variant="outline">')
+    expect(loadInput('input-disabled')).toContain('disabled')
+    expect(loadInput('input-invalid')).toContain('aria-invalid')
+    expect(loadInput('input-file')).toContain('type="file"')
+    expect(loadInput('input-required')).toContain('required')
+    expect(loadInput('input-badge')).toContain('<Badge variant="secondary"')
+    expect(loadInput('input-input-group')).toContain('<InputGroupAddon>https://</InputGroupAddon>')
+    expect(loadInput('input-button-group')).toContain('<ButtonGroup>')
+    expect(loadInput('input-form')).toContain('<SelectItem value="ca">Canada</SelectItem>')
+    expect(loadInput('input-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadInput('input-rtl')).toContain('dir={text().dir}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

@@ -5,12 +5,13 @@
   "description": "Styled text input example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "field",
     "input"
   ],
   "files": [
     {
       "path": "src/examples/input-field.tsx",
-      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputFieldExample() {\n  return (\n    <Input placeholder=\"Field\" />\n  )\n}\n",
+      "content": "import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'\nimport { Input } from '@/components/ui/input'\n\nexport default function InputFieldExample() {\n  return (\n    <Field>\n      <FieldLabel for=\"input-field-username\">Username</FieldLabel>\n      <Input id=\"input-field-username\" type=\"text\" placeholder=\"Enter your username\" />\n      <FieldDescription>Choose a unique username for your account.</FieldDescription>\n    </Field>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

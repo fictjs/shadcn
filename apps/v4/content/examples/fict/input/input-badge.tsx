@@ -1,7 +1,17 @@
+import { Badge } from '@/components/ui/badge'
+import { Field, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 
 export default function InputBadgeExample() {
   return (
-    <Input placeholder="Badge" />
+    <Field>
+      <FieldLabel for="input-badge">
+        Webhook URL{' '}
+        <Badge variant="secondary" class="ml-auto">
+          Beta
+        </Badge>
+      </FieldLabel>
+      <Input id="input-badge" type="url" placeholder="https://api.example.com/webhook" />
+    </Field>
   )
 }

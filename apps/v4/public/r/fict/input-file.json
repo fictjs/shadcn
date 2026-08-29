@@ -5,12 +5,13 @@
   "description": "Styled text input example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "field",
     "input"
   ],
   "files": [
     {
       "path": "src/examples/input-file.tsx",
-      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputFileExample() {\n  return (\n    <Input placeholder=\"File\" />\n  )\n}\n",
+      "content": "import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'\nimport { Input } from '@/components/ui/input'\n\nexport default function InputFileExample() {\n  return (\n    <Field>\n      <FieldLabel for=\"picture\">Picture</FieldLabel>\n      <Input id=\"picture\" type=\"file\" />\n      <FieldDescription>Select a picture to upload.</FieldDescription>\n    </Field>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

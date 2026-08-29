@@ -5,12 +5,13 @@
   "description": "Styled text input example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "field",
     "input"
   ],
   "files": [
     {
       "path": "src/examples/input-invalid.tsx",
-      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputInvalidExample() {\n  return (\n    <Input placeholder=\"Invalid\" />\n  )\n}\n",
+      "content": "import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'\nimport { Input } from '@/components/ui/input'\n\nexport default function InputInvalidExample() {\n  return (\n    <Field data-invalid>\n      <FieldLabel for=\"input-invalid\">Invalid Input</FieldLabel>\n      <Input id=\"input-invalid\" placeholder=\"Error\" aria-invalid />\n      <FieldDescription>This field contains validation errors.</FieldDescription>\n    </Field>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

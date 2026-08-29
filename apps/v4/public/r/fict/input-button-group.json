@@ -5,12 +5,15 @@
   "description": "Styled text input example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
+    "button-group",
+    "field",
     "input"
   ],
   "files": [
     {
       "path": "src/examples/input-button-group.tsx",
-      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputButtonGroupExample() {\n  return (\n    <Input placeholder=\"Button Group\" />\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { ButtonGroup } from '@/components/ui/button-group'\nimport { Field, FieldLabel } from '@/components/ui/field'\nimport { Input } from '@/components/ui/input'\n\nexport default function InputButtonGroupExample() {\n  return (\n    <Field>\n      <FieldLabel for=\"input-button-group\">Search</FieldLabel>\n      <ButtonGroup>\n        <Input id=\"input-button-group\" placeholder=\"Type to search...\" />\n        <Button variant=\"outline\">Search</Button>\n      </ButtonGroup>\n    </Field>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

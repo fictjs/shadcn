@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/input-rtl.tsx",
-      "content": "import { Input } from '@/components/ui/input'\n\nexport default function InputRtlExample() {\n  return (\n    <Input dir=\"rtl\" placeholder=\"Rtl\" />\n  )\n}\n",
+      "content": "import { Input } from '@/components/ui/input'\n\nconst translations = {\n  ar: { dir: 'rtl', label: 'مفتاح API', description: 'مفتاح API الخاص بك مشفر ومخزن بأمان.' },\n  he: { dir: 'rtl', label: 'מפתח API', description: 'מפתח ה-API שלך מוצפן ונשמר בצורה מאובטחת.' },\n  en: {\n    dir: 'ltr',\n    label: 'API Key',\n    description: 'Your API key is encrypted and stored securely.',\n  },\n} as const\n\nexport default function InputRtlExample() {\n  let language = $state<keyof typeof translations>('ar')\n  const text = () => translations[language]\n  return (\n    <div class=\"grid gap-4\">\n      <select\n        value={language}\n        onChange={event => {\n          language = event.currentTarget.value as keyof typeof translations\n        }}\n      >\n        <option value=\"ar\">Arabic (العربية)</option>\n        <option value=\"he\">Hebrew (עברית)</option>\n        <option value=\"en\">English</option>\n      </select>\n      <div class=\"grid w-80 gap-2\" dir={text().dir}>\n        <label for=\"input-rtl\">{text().label}</label>\n        <Input id=\"input-rtl\" type=\"password\" placeholder=\"sk-...\" dir={text().dir} />\n        <p class=\"text-sm text-muted-foreground\">{text().description}</p>\n      </div>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
