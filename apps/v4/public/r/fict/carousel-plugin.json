@@ -5,12 +5,13 @@
   "description": "Scroll-snap carousel building blocks example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "card",
     "carousel"
   ],
   "files": [
     {
       "path": "src/examples/carousel-plugin.tsx",
-      "content": "import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'\n\nexport default function CarouselPluginExample() {\n  return (\n    <Carousel><CarouselContent>{[1, 2, 3].map(item => <CarouselItem><div class=\"rounded-md border p-8\">Slide {item}</div></CarouselItem>)}</CarouselContent><CarouselPrevious /><CarouselNext /></Carousel>\n  )\n}\n",
+      "content": "import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'\nimport { Card, CardContent } from '@/components/ui/card'\n\nexport default function CarouselPluginExample() {\n  return (\n    <Carousel autoplayMs={2000} stopOnInteraction class=\"w-full max-w-[10rem] sm:max-w-xs\">\n      <CarouselContent>\n        {Array.from({ length: 5 }, (_, index) => <CarouselItem><div class=\"p-1\"><Card><CardContent class=\"flex aspect-square items-center justify-center p-6\"><span class=\"text-4xl font-semibold\">{index + 1}</span></CardContent></Card></div></CarouselItem>)}\n      </CarouselContent>\n      <CarouselPrevious />\n      <CarouselNext />\n    </Carousel>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

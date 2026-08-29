@@ -5,12 +5,13 @@
   "description": "Scroll-snap carousel building blocks example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "card",
     "carousel"
   ],
   "files": [
     {
       "path": "src/examples/carousel-api.tsx",
-      "content": "import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'\n\nexport default function CarouselApiExample() {\n  return (\n    <Carousel><CarouselContent>{[1, 2, 3].map(item => <CarouselItem><div class=\"rounded-md border p-8\">Slide {item}</div></CarouselItem>)}</CarouselContent><CarouselPrevious /><CarouselNext /></Carousel>\n  )\n}\n",
+      "content": "import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '@/components/ui/carousel'\nimport { Card, CardContent } from '@/components/ui/card'\n\nexport default function CarouselApiExample() {\n  let api = $state<CarouselApi | null>(null)\n  let current = $state(1)\n  let count = $state(0)\n\n  return (\n    <div class=\"mx-auto max-w-[10rem] sm:max-w-xs\">\n      <Carousel setApi={next => { api = next; count = next.scrollSnapList().length; current = next.selectedScrollSnap() + 1; next.on('select', selected => { current = selected.selectedScrollSnap() + 1 }) }} class=\"w-full max-w-xs\">\n        <CarouselContent>\n          {Array.from({ length: 5 }, (_, index) => <CarouselItem><Card class=\"m-px\"><CardContent class=\"flex aspect-square items-center justify-center p-6\"><span class=\"text-4xl font-semibold\">{index + 1}</span></CardContent></Card></CarouselItem>)}\n        </CarouselContent>\n        <CarouselPrevious />\n        <CarouselNext />\n      </Carousel>\n      <div class=\"py-2 text-center text-sm text-muted-foreground\">Slide {current} of {count}</div>\n      {api ? null : <span class=\"sr-only\">Loading carousel</span>}\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

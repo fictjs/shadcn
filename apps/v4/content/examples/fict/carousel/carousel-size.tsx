@@ -1,7 +1,14 @@
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
+import { Card, CardContent } from '@/components/ui/card'
 
 export default function CarouselSizeExample() {
   return (
-    <Carousel><CarouselContent>{[1, 2, 3].map(item => <CarouselItem><div class="rounded-md border p-8">Slide {item}</div></CarouselItem>)}</CarouselContent><CarouselPrevious /><CarouselNext /></Carousel>
+    <Carousel opts={{ align: 'start' }} class="w-full max-w-[12rem] sm:max-w-xs md:max-w-sm">
+      <CarouselContent>
+        {Array.from({ length: 5 }, (_, index) => <CarouselItem class="basis-1/2 lg:basis-1/3"><div class="p-1"><Card><CardContent class="flex aspect-square items-center justify-center p-6"><span class="text-3xl font-semibold">{index + 1}</span></CardContent></Card></div></CarouselItem>)}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
   )
 }

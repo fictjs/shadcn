@@ -576,86 +576,201 @@ export function CalendarGrid(props: CalendarGridProps) {
 }
 `
 
-const carouselTemplate: TemplateFn = context => `import { cn } from '${context.imports.cn}'
+const carouselTemplate: TemplateFn = context => `import { onDestroy, onMount } from 'fict'
+
+import { cn } from '${context.imports.cn}'
 
 type DivProps = JSX.IntrinsicElements['div']
 type ButtonProps = JSX.IntrinsicElements['button']
 
-function findCarouselTrack(start: EventTarget | null): HTMLElement | null {
-  if (!(start instanceof HTMLElement)) return null
-  const root = start.closest('[data-slot="carousel"]') as HTMLElement | null
-  if (!root) return null
-  return root.querySelector('[data-slot="carousel-content"]') as HTMLElement | null
+export interface CarouselApi {
+  scrollPrev: () => void
+  scrollNext: () => void
+  scrollTo: (index: number) => void
+  selectedScrollSnap: () => number
+  scrollSnapList: () => number[]
+  canScrollPrev: () => boolean
+  canScrollNext: () => boolean
+  on: (event: 'select', listener: (api: CarouselApi) => void) => () => void
 }
 
-function scrollTrackByPage(track: HTMLElement, direction: 1 | -1): void {
-  const pageSize = track.clientWidth || 320
-  track.scrollBy({ left: pageSize * direction, behavior: 'smooth' })
+type CarouselProps = DivProps & {
+  orientation?: 'horizontal' | 'vertical'
+  opts?: { align?: 'start' | 'center' | 'end'; direction?: 'ltr' | 'rtl'; loop?: boolean }
+  setApi?: (api: CarouselApi) => void
+  onSlideChange?: (index: number, count: number) => void
+  autoplayMs?: number
+  stopOnInteraction?: boolean
 }
 
-export function Carousel(props: DivProps) {
-  const { class: className, ...rest } = props
-  return <div data-slot='carousel' class={cn('relative w-full', className)} {...rest} />
+function carouselRoot(start: EventTarget | null): HTMLElement | null {
+  return start instanceof HTMLElement ? start.closest('[data-slot="carousel"]') as HTMLElement | null : null
 }
 
-export function CarouselContent(props: DivProps) {
-  const { class: className, ...rest } = props
+function carouselItems(root: HTMLElement): HTMLElement[] {
+  return Array.from(root.querySelectorAll<HTMLElement>('[data-slot="carousel-item"]'))
+}
+
+function carouselIndex(root: HTMLElement): number {
+  return Number(root.dataset.carouselIndex ?? 0)
+}
+
+function selectCarousel(root: HTMLElement, requestedIndex: number): void {
+  const items = carouselItems(root)
+  const count = items.length
+  if (!count) return
+  const loop = root.dataset.loop === 'true'
+  const index = loop ? (requestedIndex + count) % count : Math.max(0, Math.min(requestedIndex, count - 1))
+  const track = root.querySelector<HTMLElement>('[data-slot="carousel-content"]')
+  const item = items[index]
+  if (track && item) {
+    const orientation = root.dataset.orientation === 'vertical' ? 'vertical' : 'horizontal'
+    track.scrollTo({
+      left: orientation === 'horizontal' ? item.offsetLeft : 0,
+      top: orientation === 'vertical' ? item.offsetTop : 0,
+      behavior: 'smooth',
+    })
+  }
+  root.dataset.carouselIndex = String(index)
+  root.dataset.carouselCount = String(count)
+  root.dispatchEvent(new CustomEvent('carousel:select', { detail: { index, count } }))
+}
+
+function createCarouselApi(root: HTMLElement): CarouselApi {
+  const listeners = new Set<(api: CarouselApi) => void>()
+  const api: CarouselApi = {
+    scrollPrev: () => selectCarousel(root, carouselIndex(root) - 1),
+    scrollNext: () => selectCarousel(root, carouselIndex(root) + 1),
+    scrollTo: index => selectCarousel(root, index),
+    selectedScrollSnap: () => carouselIndex(root),
+    scrollSnapList: () => carouselItems(root).map((_, index) => index),
+    canScrollPrev: () => root.dataset.loop === 'true' || carouselIndex(root) > 0,
+    canScrollNext: () => root.dataset.loop === 'true' || carouselIndex(root) < carouselItems(root).length - 1,
+    on: (event, listener) => {
+      if (event === 'select') listeners.add(listener)
+      return () => listeners.delete(listener)
+    },
+  }
+  root.addEventListener('carousel:select', () => listeners.forEach(listener => listener(api)))
+  return api
+}
+
+export function Carousel(props: CarouselProps) {
+  let root: HTMLElement | null = null
+  let timer: number | undefined
+  let api: CarouselApi | undefined
+  const {
+    class: className,
+    orientation = 'horizontal',
+    opts,
+    setApi,
+    onSlideChange,
+    autoplayMs,
+    stopOnInteraction = true,
+    onKeyDown,
+    onMouseEnter,
+    onMouseLeave,
+    ...rest
+  } = props
+
+  const stopAutoplay = () => {
+    if (timer !== undefined) window.clearInterval(timer)
+    timer = undefined
+  }
+  const startAutoplay = () => {
+    stopAutoplay()
+    if (autoplayMs && autoplayMs > 0 && api) timer = window.setInterval(api.scrollNext, autoplayMs)
+  }
+
+  onMount(() => {
+    if (!root) return
+    api = createCarouselApi(root)
+    root.dataset.carouselCount = String(carouselItems(root).length)
+    setApi?.(api)
+    const onSelect = (event: Event) => {
+      const detail = (event as CustomEvent<{ index: number; count: number }>).detail
+      onSlideChange?.(detail.index, detail.count)
+      if (stopOnInteraction) startAutoplay()
+    }
+    root.addEventListener('carousel:select', onSelect)
+    startAutoplay()
+    return () => root?.removeEventListener('carousel:select', onSelect)
+  })
+  onDestroy(stopAutoplay)
+
   return (
     <div
-      data-slot='carousel-content'
-      class={cn('flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-4 [&::-webkit-scrollbar]:hidden', className)}
+      ref={node => { root = node }}
+      data-slot='carousel'
+      data-orientation={orientation}
+      data-loop={opts?.loop ? 'true' : 'false'}
+      data-align={opts?.align ?? 'start'}
+      data-carousel-index='0'
+      dir={opts?.direction}
+      role='region'
+      aria-roledescription='carousel'
+      tabIndex={0}
+      class={cn('group/carousel relative w-full', className)}
+      onKeyDown={(event: KeyboardEvent) => {
+        onKeyDown?.(event)
+        if (event.defaultPrevented || !api) return
+        const previousKey = orientation === 'vertical' ? 'ArrowUp' : 'ArrowLeft'
+        const nextKey = orientation === 'vertical' ? 'ArrowDown' : 'ArrowRight'
+        if (event.key === previousKey) api.scrollPrev()
+        else if (event.key === nextKey) api.scrollNext()
+        else if (event.key === 'Home') api.scrollTo(0)
+        else if (event.key === 'End') api.scrollTo(api.scrollSnapList().length - 1)
+      }}
+      onMouseEnter={(event: MouseEvent) => { onMouseEnter?.(event); if (stopOnInteraction) stopAutoplay() }}
+      onMouseLeave={(event: MouseEvent) => { onMouseLeave?.(event); if (stopOnInteraction) startAutoplay() }}
       {...rest}
     />
   )
 }
 
+export function CarouselContent(props: DivProps) {
+  const { class: className, ...rest } = props
+  return <div data-slot='carousel-content' class={cn('flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-4 [&::-webkit-scrollbar]:hidden group-data-[orientation=vertical]/carousel:h-full group-data-[orientation=vertical]/carousel:flex-col group-data-[orientation=vertical]/carousel:snap-y group-data-[orientation=vertical]/carousel:overflow-x-hidden group-data-[orientation=vertical]/carousel:overflow-y-auto', className)} {...rest} />
+}
+
 export function CarouselItem(props: DivProps) {
   const { class: className, ...rest } = props
-  return <div data-slot='carousel-item' class={cn('min-w-0 shrink-0 grow-0 basis-full snap-center', className)} {...rest} />
+  return <div data-slot='carousel-item' role='group' aria-roledescription='slide' class={cn('min-w-0 shrink-0 grow-0 basis-full snap-center', className)} {...rest} />
+}
+
+function carouselButton(props: ButtonProps, direction: -1 | 1) {
+  const { class: className, onClick, children, ...rest } = props
+  const previous = direction === -1
+  return (
+    <button
+      type='button'
+      aria-label={previous ? 'Previous slide' : 'Next slide'}
+      class={cn(
+        'absolute top-1/2 z-10 -translate-y-1/2 rounded-full border bg-background px-3 py-2 text-sm shadow-sm',
+        previous ? 'left-2' : 'right-2',
+        'group-data-[orientation=vertical]/carousel:left-1/2 group-data-[orientation=vertical]/carousel:right-auto group-data-[orientation=vertical]/carousel:-translate-x-1/2',
+        previous ? 'group-data-[orientation=vertical]/carousel:top-2' : 'group-data-[orientation=vertical]/carousel:bottom-2 group-data-[orientation=vertical]/carousel:top-auto',
+        className,
+      )}
+      onClick={(event: MouseEvent) => {
+        onClick?.(event)
+        if (event.defaultPrevented) return
+        const root = carouselRoot(event.currentTarget)
+        if (root) selectCarousel(root, carouselIndex(root) + direction)
+      }}
+      {...rest}
+    >
+      {children ?? (previous ? '‹' : '›')}
+    </button>
+  )
 }
 
 export function CarouselPrevious(props: ButtonProps) {
-  const { class: className, onClick, ...rest } = props
-
-  return (
-    <button
-      type='button'
-      aria-label='Previous slide'
-      class={cn('absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full border bg-background px-3 py-2 text-sm shadow-sm', className)}
-      onClick={(event: MouseEvent) => {
-        onClick?.(event)
-        if (event.defaultPrevented) return
-        const track = findCarouselTrack(event.currentTarget)
-        if (!track) return
-        scrollTrackByPage(track, -1)
-      }}
-      {...rest}
-    >
-      ‹
-    </button>
-  )
+  return carouselButton(props, -1)
 }
 
 export function CarouselNext(props: ButtonProps) {
-  const { class: className, onClick, ...rest } = props
-
-  return (
-    <button
-      type='button'
-      aria-label='Next slide'
-      class={cn('absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full border bg-background px-3 py-2 text-sm shadow-sm', className)}
-      onClick={(event: MouseEvent) => {
-        onClick?.(event)
-        if (event.defaultPrevented) return
-        const track = findCarouselTrack(event.currentTarget)
-        if (!track) return
-        scrollTrackByPage(track, 1)
-      }}
-      {...rest}
-    >
-      ›
-    </button>
-  )
+  return carouselButton(props, 1)
 }
 `
 

@@ -5,12 +5,13 @@
   "description": "Scroll-snap carousel building blocks example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "card",
     "carousel"
   ],
   "files": [
     {
       "path": "src/examples/carousel-orientation.tsx",
-      "content": "import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'\n\nexport default function CarouselOrientationExample() {\n  return (\n    <Carousel><CarouselContent>{[1, 2, 3].map(item => <CarouselItem><div class=\"rounded-md border p-8\">Slide {item}</div></CarouselItem>)}</CarouselContent><CarouselPrevious /><CarouselNext /></Carousel>\n  )\n}\n",
+      "content": "import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'\nimport { Card, CardContent } from '@/components/ui/card'\n\nexport default function CarouselOrientationExample() {\n  return (\n    <Carousel opts={{ align: 'start' }} orientation=\"vertical\" class=\"w-full max-w-xs\">\n      <CarouselContent class=\"-mt-1 h-[270px] gap-0\">\n        {Array.from({ length: 5 }, (_, index) => <CarouselItem class=\"basis-1/2 pt-1\"><div class=\"p-1\"><Card><CardContent class=\"flex items-center justify-center p-6\"><span class=\"text-3xl font-semibold\">{index + 1}</span></CardContent></Card></div></CarouselItem>)}\n      </CarouselContent>\n      <CarouselPrevious>↑</CarouselPrevious>\n      <CarouselNext>↓</CarouselNext>\n    </Carousel>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

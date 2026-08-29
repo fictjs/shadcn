@@ -1233,6 +1233,22 @@ test.describe("Fict shadcn website", () => {
     await rtl.getByLabel("Preview language").selectOption("en")
     await expect(carousels.nth(6)).toHaveAttribute("dir", "ltr")
     await expect(carousels.nth(6).locator(".doc-carousel-card-content strong").first()).toHaveText("1")
+
+    const expectedSources = [
+      ["carousel-demo", "Array.from({ length: 5 }", '<CardContent class="flex aspect-square'],
+      ["carousel-size", 'class="basis-1/2 lg:basis-1/3"'],
+      ["carousel-spacing", 'class="-ml-1 gap-0"', 'class="basis-1/2 pl-1 lg:basis-1/3"'],
+      ["carousel-orientation", 'orientation="vertical"', "<CarouselPrevious>↑</CarouselPrevious>"],
+      ["carousel-api", "type CarouselApi", "next.on('select'", "Slide {current} of {count}"],
+      ["carousel-plugin", "autoplayMs={2000} stopOnInteraction"],
+      ["carousel-rtl", "$state<keyof typeof languages>", "opts={{ direction: settings().dir }}"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("chart docs match Fict stages, progressive examples, tooltips, series, and RTL", async ({ page }) => {

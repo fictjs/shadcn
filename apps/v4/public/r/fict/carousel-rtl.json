@@ -5,12 +5,13 @@
   "description": "Scroll-snap carousel building blocks example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "card",
     "carousel"
   ],
   "files": [
     {
       "path": "src/examples/carousel-rtl.tsx",
-      "content": "import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'\n\nexport default function CarouselRtlExample() {\n  return (\n    <Carousel dir=\"rtl\"><CarouselContent>{[1, 2, 3].map(item => <CarouselItem><div class=\"rounded-md border p-8\">Slide {item}</div></CarouselItem>)}</CarouselContent><CarouselPrevious /><CarouselNext /></Carousel>\n  )\n}\n",
+      "content": "import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'\nimport { Card, CardContent } from '@/components/ui/card'\n\nconst languages = {\n  ar: { dir: 'rtl', digits: ['٠', '١', '٢', '٣', '٤', '٥'] },\n  he: { dir: 'rtl', digits: ['0', '1', '2', '3', '4', '5'] },\n  en: { dir: 'ltr', digits: ['0', '1', '2', '3', '4', '5'] },\n} as const\n\nexport default function CarouselRtlExample() {\n  let language = $state<keyof typeof languages>('ar')\n  const settings = () => languages[language]\n\n  return (\n    <div class=\"grid gap-4\">\n      <select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof languages }}>\n        <option value=\"ar\">Arabic (العربية)</option>\n        <option value=\"he\">Hebrew (עברית)</option>\n        <option value=\"en\">English</option>\n      </select>\n      <Carousel dir={settings().dir} opts={{ direction: settings().dir }} class=\"w-full max-w-[12rem] sm:max-w-xs\">\n        <CarouselContent>\n          {Array.from({ length: 5 }, (_, index) => <CarouselItem><div class=\"p-1\"><Card dir={settings().dir}><CardContent class=\"flex aspect-square items-center justify-center p-6\"><span class=\"text-4xl font-semibold\">{settings().digits[index + 1]}</span></CardContent></Card></div></CarouselItem>)}\n        </CarouselContent>\n        <CarouselPrevious />\n        <CarouselNext />\n      </Carousel>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

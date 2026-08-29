@@ -256,6 +256,21 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain('context.dayContent?.(day, modifiers)')
   })
 
+  it('renders the Carousel orientation, API, keyboard, autoplay, and RTL API used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('carousel')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain("import { onDestroy, onMount } from 'fict'")
+    expect(source).toContain('export interface CarouselApi')
+    expect(source).toContain("orientation?: 'horizontal' | 'vertical'")
+    expect(source).toContain("opts?: { align?: 'start' | 'center' | 'end'; direction?: 'ltr' | 'rtl'; loop?: boolean }")
+    expect(source).toContain('setApi?: (api: CarouselApi) => void')
+    expect(source).toContain('onSlideChange?: (index: number, count: number) => void')
+    expect(source).toContain('autoplayMs?: number')
+    expect(source).toContain("root.dispatchEvent(new CustomEvent('carousel:select'")
+    expect(source).toContain("else if (event.key === 'End') api.scrollTo")
+    expect(source).toContain('group-data-[orientation=vertical]/carousel:flex-col')
+    expect(source).toContain("dir={opts?.direction}")
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')

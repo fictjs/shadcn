@@ -658,6 +658,24 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadCalendar('calendar-rtl')).toContain('locale={() => settings().locale}')
   })
 
+  it('keeps every Carousel source aligned with its rendered preview', () => {
+    expectCuratedFamily('carousel')
+    const loadCarousel = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'carousel', previewName })!
+    expect(loadCarousel('carousel-demo')).toContain('Array.from({ length: 5 }')
+    expect(loadCarousel('carousel-demo')).toContain('<CardContent class="flex aspect-square')
+    expect(loadCarousel('carousel-size')).toContain('class="basis-1/2 lg:basis-1/3"')
+    expect(loadCarousel('carousel-spacing')).toContain('class="-ml-1 gap-0"')
+    expect(loadCarousel('carousel-spacing')).toContain('class="basis-1/2 pl-1 lg:basis-1/3"')
+    expect(loadCarousel('carousel-orientation')).toContain('orientation="vertical"')
+    expect(loadCarousel('carousel-orientation')).toContain('<CarouselPrevious>↑</CarouselPrevious>')
+    expect(loadCarousel('carousel-api')).toContain('type CarouselApi')
+    expect(loadCarousel('carousel-api')).toContain("next.on('select', selected =>")
+    expect(loadCarousel('carousel-api')).toContain('Slide {current} of {count}')
+    expect(loadCarousel('carousel-plugin')).toContain('autoplayMs={2000} stopOnInteraction')
+    expect(loadCarousel('carousel-rtl')).toContain("let language = $state<keyof typeof languages>('ar')")
+    expect(loadCarousel('carousel-rtl')).toContain('opts={{ direction: settings().dir }}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!
