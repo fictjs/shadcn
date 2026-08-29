@@ -904,6 +904,14 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(source).toContain('dir={direction()}')
   })
 
+  it('keeps the Form source aligned with its rendered preview', () => {
+    expectCuratedFamily('form')
+    const source = loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'form', previewName: 'form-demo' })!
+    expect(source).toContain('<FormField name="username">')
+    expect(source).toContain('This is your public display name.')
+    expect(source).toContain('<FormMessage />')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!
