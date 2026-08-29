@@ -1001,7 +1001,10 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     const rtl = loadDataTable('data-table-rtl')
     expect(rtl).toContain("let language = $state<keyof typeof translations>('ar')")
     expect(rtl).toContain("filter: 'סנן אימיילים...'")
-    expect(rtl).toContain('dir={text().dir}')
+    expect(rtl).toContain('dir={t.dir}')
+    expect(rtl).toContain("let selected = $state<string[]>([])")
+    expect(rtl).toContain('<DropdownMenuLabel>{t.actions}</DropdownMenuLabel>')
+    expect(rtl).toContain("details: 'צפה בפרטי תשלום'")
   })
 
   it('keeps the Sidebar source aligned with its rendered preview', () => {

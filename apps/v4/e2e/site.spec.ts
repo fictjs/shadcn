@@ -1736,7 +1736,7 @@ test.describe("Fict shadcn website", () => {
 
     const expectedSources = [
       ["data-table-demo", "let selected = $state<string[]>([])", "DropdownMenuCheckboxItem", "Copy payment ID"],
-      ["data-table-rtl", "$state<keyof typeof translations>", "סנן אימיילים...", "dir={text().dir}"],
+      ["data-table-rtl", "$state<keyof typeof translations>", "סנן אימיילים...", "dir={t.dir}", "DropdownMenuLabel>{t.actions}", "צפה בפרטי תשלום"],
     ] as const
     for (const [previewName, ...markers] of expectedSources) {
       const sourcePreview = page.locator(`[data-doc-preview-name="${previewName}"]`)
