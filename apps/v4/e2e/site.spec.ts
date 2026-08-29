@@ -2760,7 +2760,7 @@ test.describe("Fict shadcn website", () => {
       ["input-otp-invalid", 'aria-invalid="true"'],
       ["input-otp-four-digits", "maxLength={4}"],
       ["input-otp-alphanumeric", "pattern={/^[a-zA-Z0-9]$/}"],
-      ["input-otp-form", "<CardTitle>Verify your login</CardTitle>", "<InputOTP required value={() => code}"],
+      ["input-otp-form", "<CardTitle>Verify your login</CardTitle>", "sent to your email address:", "<InputOTP required value={() => code}"],
       ["input-otp-rtl", "$state<keyof typeof translations>", "dir={text().dir}"],
     ] as const
     for (const [previewName, ...markers] of expectedSources) {

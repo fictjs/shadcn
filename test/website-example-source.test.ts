@@ -726,6 +726,7 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadInputOtp('input-otp-four-digits')).toContain('maxLength={4}')
     expect(loadInputOtp('input-otp-alphanumeric')).toContain('pattern={/^[a-zA-Z0-9]$/}')
     expect(loadInputOtp('input-otp-form')).toContain('<CardTitle>Verify your login</CardTitle>')
+    expect(loadInputOtp('input-otp-form')).toContain('sent to your email address:')
     expect(loadInputOtp('input-otp-form')).toContain('<InputOTP required value={() => code}')
     expect(loadInputOtp('input-otp-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
     expect(loadInputOtp('input-otp-rtl')).toContain('dir={text().dir}')
