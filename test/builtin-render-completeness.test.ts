@@ -221,6 +221,21 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain('export function MenubarSubContent')
   })
 
+  it('renders the Toggle Group variants, sizing, spacing, and orientation API used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('toggle-group')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain("import { createContext, useContext } from 'fict'")
+    expect(source).toContain("variant?: 'default' | 'outline'")
+    expect(source).toContain("size?: 'default' | 'sm' | 'lg'")
+    expect(source).toContain('spacing?: number')
+    expect(source).toContain("data-slot='toggle-group'")
+    expect(source).toContain('data-spacing={spacing}')
+    expect(source).toContain("'--toggle-group-gap': `${spacing * 0.25}rem`")
+    expect(source).toContain('data-[orientation=vertical]:flex-col')
+    expect(source).toContain('<ToggleGroupContext.Provider value={{ variant, size, spacing }}>')
+    expect(source).toContain('const resolvedVariant = context.variant ?? variant')
+    expect(source).toContain('toggleVariants({ variant: resolvedVariant, size: resolvedSize })')
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')

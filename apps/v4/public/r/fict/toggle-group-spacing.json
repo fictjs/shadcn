@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/toggle-group-spacing.tsx",
-      "content": "import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'\n\nexport default function ToggleGroupSpacingExample() {\n  return (\n    <ToggleGroup type=\"single\"><ToggleGroupItem value=\"bold\">B</ToggleGroupItem><ToggleGroupItem value=\"italic\">I</ToggleGroupItem><ToggleGroupItem value=\"underline\">U</ToggleGroupItem></ToggleGroup>\n  )\n}\n",
+      "content": "import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'\n\nconst directions = ['top', 'bottom', 'left', 'right'] as const\n\nexport default function ToggleGroupSpacingExample() {\n  return (\n    <ToggleGroup type=\"single\" size=\"sm\" defaultValue=\"top\" variant=\"outline\" spacing={2}>\n      {directions.map(value => <ToggleGroupItem value={value} aria-label={`Toggle ${value}`}>{value[0].toUpperCase() + value.slice(1)}</ToggleGroupItem>)}\n    </ToggleGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

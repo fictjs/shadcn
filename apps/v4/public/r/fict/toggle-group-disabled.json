@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/toggle-group-disabled.tsx",
-      "content": "import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'\n\nexport default function ToggleGroupDisabledExample() {\n  return (\n    <ToggleGroup type=\"single\"><ToggleGroupItem disabled value=\"bold\">B</ToggleGroupItem><ToggleGroupItem value=\"italic\">I</ToggleGroupItem><ToggleGroupItem value=\"underline\">U</ToggleGroupItem></ToggleGroup>\n  )\n}\n",
+      "content": "import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'\n\nexport default function ToggleGroupDisabledExample() {\n  return (\n    <ToggleGroup disabled type=\"multiple\">\n      <ToggleGroupItem value=\"bold\" aria-label=\"Toggle bold\">B</ToggleGroupItem>\n      <ToggleGroupItem value=\"italic\" aria-label=\"Toggle italic\">I</ToggleGroupItem>\n      <ToggleGroupItem value=\"underline\" aria-label=\"Toggle underline\">U</ToggleGroupItem>\n    </ToggleGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

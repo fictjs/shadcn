@@ -617,6 +617,24 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadSlider('slider-rtl')).toContain('dir={directions[language]}')
   })
 
+  it('keeps every Toggle Group source aligned with its rendered preview', () => {
+    expectCuratedFamily('toggle-group')
+    const loadToggleGroup = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'toggle-group', previewName })!
+    expect(loadToggleGroup('toggle-group-demo')).toContain('variant="outline" type="multiple"')
+    expect(loadToggleGroup('toggle-group-demo')).toContain('<FormatIcon kind="underline" />')
+    expect(loadToggleGroup('toggle-group-outline')).toContain('defaultValue="all"')
+    expect(loadToggleGroup('toggle-group-sizes').match(/<ToggleGroup type="single"/g)).toHaveLength(2)
+    expect(loadToggleGroup('toggle-group-sizes')).toContain('size="sm"')
+    expect(loadToggleGroup('toggle-group-spacing')).toContain('spacing={2}')
+    expect(loadToggleGroup('toggle-group-vertical')).toContain('orientation="vertical" spacing={1}')
+    expect(loadToggleGroup('toggle-group-vertical')).toContain("defaultValue={['bold', 'italic']}")
+    expect(loadToggleGroup('toggle-group-disabled')).toContain('<ToggleGroup disabled type="multiple">')
+    expect(loadToggleGroup('toggle-group-font-weight-selector')).toContain("let fontWeight = $state<(typeof weights)[number]>('normal')")
+    expect(loadToggleGroup('toggle-group-font-weight-selector')).toContain('onValueChange={value => { if (value) fontWeight = value as typeof fontWeight }}')
+    expect(loadToggleGroup('toggle-group-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadToggleGroup('toggle-group-rtl')).toContain('dir={text().direction}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

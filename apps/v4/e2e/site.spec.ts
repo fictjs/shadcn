@@ -4474,6 +4474,23 @@ test.describe("Fict shadcn website", () => {
     await expect(rtl.locator("[data-doc-toggle-group-item]")).toHaveText(["List", "Grid", "Cards"])
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(rtl.getByRole("button", { name: "Grid" })).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+
+    const expectedSources = [
+      ["toggle-group-demo", 'variant="outline" type="multiple"', '<FormatIcon kind="underline" />'],
+      ["toggle-group-outline", 'defaultValue="all"'],
+      ["toggle-group-sizes", 'size="sm"', "directions.map"],
+      ["toggle-group-spacing", "spacing={2}"],
+      ["toggle-group-vertical", 'orientation="vertical"', "defaultValue={['bold', 'italic']}"],
+      ["toggle-group-disabled", '<ToggleGroup disabled type="multiple">'],
+      ["toggle-group-font-weight-selector", "$state<(typeof weights)[number]>", "onValueChange"],
+      ["toggle-group-rtl", "$state<keyof typeof translations>", "dir={text().direction}"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("tooltip docs match Fict sides, keyboard, disabled triggers, dismissal, and RTL", async ({ page }) => {

@@ -5,12 +5,13 @@
   "description": "Toggle group wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "field",
     "toggle-group"
   ],
   "files": [
     {
       "path": "src/examples/toggle-group-font-weight-selector.tsx",
-      "content": "import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'\n\nexport default function ToggleGroupFontWeightSelectorExample() {\n  return (\n    <ToggleGroup type=\"single\"><ToggleGroupItem value=\"bold\">B</ToggleGroupItem><ToggleGroupItem value=\"italic\">I</ToggleGroupItem><ToggleGroupItem value=\"underline\">U</ToggleGroupItem></ToggleGroup>\n  )\n}\n",
+      "content": "import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'\nimport { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'\n\nconst weights = ['light', 'normal', 'medium', 'bold'] as const\n\nexport default function ToggleGroupFontWeightSelectorExample() {\n  let fontWeight = $state<(typeof weights)[number]>('normal')\n\n  return (\n    <Field>\n      <FieldLabel>Font Weight</FieldLabel>\n      <ToggleGroup type=\"single\" value={fontWeight} onValueChange={value => { if (value) fontWeight = value as typeof fontWeight }} variant=\"outline\" spacing={2} size=\"lg\">\n        {weights.map(value => (\n          <ToggleGroupItem value={value} aria-label={value[0].toUpperCase() + value.slice(1)} class=\"flex size-16 flex-col items-center justify-center rounded-xl\">\n            <span class={`text-2xl leading-none font-${value}`}>Aa</span>\n            <span class=\"text-xs text-muted-foreground\">{value[0].toUpperCase() + value.slice(1)}</span>\n          </ToggleGroupItem>\n        ))}\n      </ToggleGroup>\n      <FieldDescription>Use <code class=\"rounded-md bg-muted px-1 py-0.5 font-mono\">font-{fontWeight}</code> to set the font weight.</FieldDescription>\n    </Field>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

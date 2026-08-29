@@ -1,7 +1,11 @@
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
+const directions = ['top', 'bottom', 'left', 'right'] as const
+
 export default function ToggleGroupSpacingExample() {
   return (
-    <ToggleGroup type="single"><ToggleGroupItem value="bold">B</ToggleGroupItem><ToggleGroupItem value="italic">I</ToggleGroupItem><ToggleGroupItem value="underline">U</ToggleGroupItem></ToggleGroup>
+    <ToggleGroup type="single" size="sm" defaultValue="top" variant="outline" spacing={2}>
+      {directions.map(value => <ToggleGroupItem value={value} aria-label={`Toggle ${value}`}>{value[0].toUpperCase() + value.slice(1)}</ToggleGroupItem>)}
+    </ToggleGroup>
   )
 }
