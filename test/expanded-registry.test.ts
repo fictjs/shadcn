@@ -60,7 +60,8 @@ describe('expanded registry entries', () => {
     expect(commandSource).not.toContain('@fictjs/ui-primitives')
     expect(inputOtpSource).toContain('export function InputOTPSlot')
     expect(chartSource).toContain('export interface ChartPoint')
-    expect(drawerSource).toContain('Sheet as Drawer')
+    expect(drawerSource).toContain('export function Drawer(props: DrawerProps)')
+    expect(drawerSource).toContain('<DrawerDirectionContext.Provider value={direction}>')
     expect(utilsSource).toContain('export function cn')
 
     assertTranspileOk(alertSource, 'alert.tsx')
