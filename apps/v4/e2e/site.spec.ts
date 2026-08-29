@@ -1449,13 +1449,13 @@ test.describe("Fict shadcn website", () => {
       ["combobox-basic", '<ComboboxInput placeholder="Select a framework" />'],
       ["combobox-multiple", "multiple autoHighlight", "<ComboboxChip value={value}>"],
       ["combobox-clear", "showClear"],
-      ["combobox-groups", "<ComboboxLabel>{group}</ComboboxLabel>", "<ComboboxSeparator />"],
-      ["combobox-custom", "<ItemDescription>{description}</ItemDescription>"],
+      ["combobox-groups", "<ComboboxLabel>{group}</ComboboxLabel>", "<ComboboxSeparator />", "(GMT-3) São Paulo"],
+      ["combobox-custom", "<ItemDescription>{description}</ItemDescription>", "South Korea", "Asia (kr)"],
       ["combobox-invalid", 'aria-invalid="true"'],
       ["combobox-disabled", "disabled />"],
       ["combobox-auto-highlight", "<Combobox autoHighlight>"],
-      ["combobox-popup", '<ComboboxTrigger class="w-64">', 'aria-label="Search countries"'],
-      ["combobox-input-group", "<GlobeIcon />"],
+      ["combobox-popup", '<ComboboxTrigger class="w-64">', 'aria-label="Search countries"', "New Zealand"],
+      ["combobox-input-group", "<GlobeIcon />", "(GMT-5) Toronto"],
       ["combobox-rtl", "$state<keyof typeof translations>", "dir={text().dir}"],
     ] as const
     for (const [previewName, ...markers] of expectedSources) {

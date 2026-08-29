@@ -1,6 +1,10 @@
 import { Combobox, ComboboxContent, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxLabel, ComboboxList } from '@/components/ui/combobox'
 
-const timezones = [['Americas', ['(GMT-5) New York', '(GMT-8) Los Angeles']], ['Europe', ['(GMT+0) London', '(GMT+1) Paris']], ['Asia/Pacific', ['(GMT+9) Tokyo', '(GMT+8) Shanghai']]] as const
+const timezones = [
+  ['Americas', ['(GMT-5) New York', '(GMT-8) Los Angeles', '(GMT-6) Chicago', '(GMT-5) Toronto', '(GMT-8) Vancouver', '(GMT-3) São Paulo']],
+  ['Europe', ['(GMT+0) London', '(GMT+1) Paris', '(GMT+1) Berlin', '(GMT+1) Rome', '(GMT+1) Madrid', '(GMT+1) Amsterdam']],
+  ['Asia/Pacific', ['(GMT+9) Tokyo', '(GMT+8) Shanghai', '(GMT+8) Singapore', '(GMT+4) Dubai', '(GMT+11) Sydney', '(GMT+9) Seoul']],
+] as const
 
 function GlobeIcon() {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" /></svg>

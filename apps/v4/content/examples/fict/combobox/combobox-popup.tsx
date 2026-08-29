@@ -1,6 +1,11 @@
 import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger, ComboboxValue } from '@/components/ui/combobox'
 
-const countries = [['', 'Select country'], ['argentina', 'Argentina'], ['australia', 'Australia'], ['japan', 'Japan'], ['united-states', 'United States']] as const
+const countries = [
+  ['', 'Select country'], ['argentina', 'Argentina'], ['australia', 'Australia'], ['brazil', 'Brazil'], ['canada', 'Canada'],
+  ['china', 'China'], ['colombia', 'Colombia'], ['egypt', 'Egypt'], ['france', 'France'], ['germany', 'Germany'], ['italy', 'Italy'],
+  ['japan', 'Japan'], ['kenya', 'Kenya'], ['mexico', 'Mexico'], ['new-zealand', 'New Zealand'], ['nigeria', 'Nigeria'],
+  ['south-africa', 'South Africa'], ['south-korea', 'South Korea'], ['united-kingdom', 'United Kingdom'], ['united-states', 'United States'],
+] as const
 
 export default function ComboboxPopupExample() {
   return (
