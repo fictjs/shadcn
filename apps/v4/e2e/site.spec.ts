@@ -4394,6 +4394,20 @@ test.describe("Fict shadcn website", () => {
     await page.keyboard.press("Space")
     await expect(rtl.locator('[data-slot="collapsible-content"]')).toBeVisible()
     await expect(rtlRoot).toContainText("Shipping address")
+
+    const expectedSources = [
+      ["collapsible-demo", "let open = $state(false)", "Order #4189"],
+      ["collapsible-basic", "Product details", "Learn More"],
+      ["collapsible-settings", 'aria-label="Radius X expanded"'],
+      ["collapsible-file-tree", "app.tsx", '<TabsTrigger value="outline">Outline</TabsTrigger>'],
+      ["collapsible-rtl", "$state<keyof typeof translations>", "הזמנה #4189"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("checkbox docs match Fict states, groups, table selection, keyboard, and RTL", async ({ page }) => {

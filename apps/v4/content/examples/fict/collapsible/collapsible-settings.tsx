@@ -1,7 +1,10 @@
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { Input } from '@/components/ui/input'
+
+function ExpandIcon() { return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3" /></svg> }
 
 export default function CollapsibleSettingsExample() {
-  return (
-    <Collapsible defaultOpen><CollapsibleTrigger>Settings</CollapsibleTrigger><CollapsibleContent><div class="mt-2 rounded-md border p-3">Collapsible content</div></CollapsibleContent></Collapsible>
-  )
+  return <Card class="w-80"><CardHeader><CardTitle>Radius</CardTitle><CardDescription>Set the corner radius of the element.</CardDescription></CardHeader><CardContent><Collapsible class="flex items-start gap-2"><div class="grid flex-1 grid-cols-2 gap-2"><Input aria-label="Radius X" value="0" /><Input aria-label="Radius Y" value="0" /><CollapsibleContent class="col-span-2 grid grid-cols-2 gap-2"><Input aria-label="Radius X expanded" value="0" /><Input aria-label="Radius Y expanded" value="0" /></CollapsibleContent></div><CollapsibleTrigger asChild><Button variant="outline" size="icon" aria-label="Expand radius controls"><ExpandIcon /></Button></CollapsibleTrigger></Collapsible></CardContent></Card>
 }

@@ -311,6 +311,25 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadCard('card-rtl')).toContain('התחבר לחשבון שלך')
   })
 
+  it('keeps every Collapsible source aligned with its rendered preview', () => {
+    expectCuratedFamily('collapsible')
+
+    const loadCollapsible = (previewName: string) => loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: 'collapsible',
+      previewName,
+    })!
+
+    expect(loadCollapsible('collapsible-demo')).toContain('let open = $state(false)')
+    expect(loadCollapsible('collapsible-demo')).toContain('Order #4189')
+    expect(loadCollapsible('collapsible-basic')).toContain('Product details')
+    expect(loadCollapsible('collapsible-settings')).toContain('aria-label="Radius X expanded"')
+    expect(loadCollapsible('collapsible-file-tree')).toContain("const files = ['app.tsx'")
+    expect(loadCollapsible('collapsible-file-tree')).toContain('<TabsTrigger value="outline">Outline</TabsTrigger>')
+    expect(loadCollapsible('collapsible-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadCollapsible('collapsible-rtl')).toContain('הזמנה #4189')
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],
