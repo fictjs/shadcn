@@ -102,7 +102,7 @@
   {
     "name": "drawer",
     "type": "ui-component",
-    "description": "Drawer aliases powered by sheet components"
+    "description": "Directional drawer primitives powered by sheet components"
   },
   {
     "name": "dropdown-menu",

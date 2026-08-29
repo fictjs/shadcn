@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "drawer",
   "type": "registry:ui",
-  "description": "Drawer aliases powered by sheet components",
+  "description": "Directional drawer primitives powered by sheet components",
   "dependencies": [],
   "registryDependencies": [
     "sheet"
@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/components/ui/drawer.tsx",
-      "content": "export {\n  Sheet as Drawer,\n  SheetClose as DrawerClose,\n  SheetContent as DrawerContent,\n  SheetDescription as DrawerDescription,\n  SheetFooter as DrawerFooter,\n  SheetHeader as DrawerHeader,\n  SheetTitle as DrawerTitle,\n  SheetTrigger as DrawerTrigger,\n} from '@/components/ui/sheet'\n",
+      "content": "import { createContext, useContext } from 'fict'\n\nimport { cn } from '@/lib/cn'\nimport {\n  Sheet,\n  SheetClose,\n  SheetContent,\n  SheetDescription,\n  SheetFooter,\n  SheetHeader,\n  SheetTitle,\n  SheetTrigger,\n} from '@/components/ui/sheet'\n\ntype DrawerDirection = 'top' | 'right' | 'bottom' | 'left'\ntype GenericProps = {\n  class?: string\n  children?: unknown\n  [key: string]: unknown\n}\ntype DrawerProps = GenericProps & { direction?: DrawerDirection }\n\nconst DrawerDirectionContext = createContext<DrawerDirection>('bottom')\n\nexport function Drawer(props: DrawerProps) {\n  const { direction = 'bottom', children, ...rest } = props\n  return (\n    <DrawerDirectionContext.Provider value={direction}>\n      <Sheet {...rest}>{children}</Sheet>\n    </DrawerDirectionContext.Provider>\n  )\n}\n\nexport const DrawerClose = SheetClose\nexport const DrawerDescription = SheetDescription\nexport const DrawerFooter = SheetFooter\nexport const DrawerHeader = SheetHeader\nexport const DrawerTitle = SheetTitle\nexport const DrawerTrigger = SheetTrigger\n\nexport function DrawerContent(props: GenericProps) {\n  const direction = useContext(DrawerDirectionContext)\n  const { class: className, children, ...rest } = props\n  return (\n    <SheetContent\n      side={direction}\n      data-slot='drawer-content'\n      data-drawer-direction={direction}\n      class={cn(\n        'flex h-auto flex-col text-sm',\n        direction === 'bottom' && 'mt-24 max-h-[80vh] rounded-t-xl',\n        direction === 'top' && 'mb-24 max-h-[80vh] rounded-b-xl',\n        direction === 'left' && 'w-3/4 rounded-r-xl sm:max-w-sm',\n        direction === 'right' && 'w-3/4 rounded-l-xl sm:max-w-sm',\n        className,\n      )}\n      {...rest}\n    >\n      {(direction === 'bottom' || direction === 'top') ? <div class='mx-auto mt-4 h-1 w-[100px] shrink-0 rounded-full bg-muted' aria-hidden='true' /> : null}\n      {children}\n    </SheetContent>\n  )\n}\n",
       "type": "registry:ui"
     }
   ]

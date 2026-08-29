@@ -399,6 +399,27 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadSheet('sheet-rtl')).toContain("side={text().dir === 'rtl' ? 'left' : 'right'}")
   })
 
+  it('keeps every Drawer source aligned with its rendered preview', () => {
+    expectCuratedFamily('drawer')
+
+    const loadDrawer = (previewName: string) => loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: 'drawer',
+      previewName,
+    })!
+
+    expect(loadDrawer('drawer-demo')).toContain('let goal = $state(350)')
+    expect(loadDrawer('drawer-demo')).toContain('activity.map')
+    expect(loadDrawer('drawer-scrollable-content')).toContain('<Drawer direction="right">')
+    expect(loadDrawer('drawer-scrollable-content')).toContain('Array.from({ length: 10 }')
+    expect(loadDrawer('drawer-sides')).toContain("const sides = ['top', 'right', 'bottom', 'left'] as const")
+    expect(loadDrawer('drawer-sides')).toContain('<Drawer direction={side}>')
+    expect(loadDrawer('drawer-dialog')).toContain('<div class="hidden md:block">')
+    expect(loadDrawer('drawer-dialog')).toContain('<div class="md:hidden">')
+    expect(loadDrawer('drawer-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadDrawer('drawer-rtl')).toContain('goal.toLocaleString(text().locale)')
+  })
+
   it('keeps every Empty source aligned with its rendered preview', () => {
     expectCuratedFamily('empty')
     const loadEmpty = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'empty', previewName })!

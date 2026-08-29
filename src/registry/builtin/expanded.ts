@@ -916,16 +916,69 @@ export function DataTable<Row extends Record<string, unknown>>(props: DataTableP
 }
 `
 
-const drawerTemplate: TemplateFn = context => `export {
-  Sheet as Drawer,
-  SheetClose as DrawerClose,
-  SheetContent as DrawerContent,
-  SheetDescription as DrawerDescription,
-  SheetFooter as DrawerFooter,
-  SheetHeader as DrawerHeader,
-  SheetTitle as DrawerTitle,
-  SheetTrigger as DrawerTrigger,
+const drawerTemplate: TemplateFn = context => `import { createContext, useContext } from 'fict'
+
+import { cn } from '${context.imports.cn}'
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
 } from '${context.uiImport('sheet')}'
+
+type DrawerDirection = 'top' | 'right' | 'bottom' | 'left'
+type GenericProps = {
+  class?: string
+  children?: unknown
+  [key: string]: unknown
+}
+type DrawerProps = GenericProps & { direction?: DrawerDirection }
+
+const DrawerDirectionContext = createContext<DrawerDirection>('bottom')
+
+export function Drawer(props: DrawerProps) {
+  const { direction = 'bottom', children, ...rest } = props
+  return (
+    <DrawerDirectionContext.Provider value={direction}>
+      <Sheet {...rest}>{children}</Sheet>
+    </DrawerDirectionContext.Provider>
+  )
+}
+
+export const DrawerClose = SheetClose
+export const DrawerDescription = SheetDescription
+export const DrawerFooter = SheetFooter
+export const DrawerHeader = SheetHeader
+export const DrawerTitle = SheetTitle
+export const DrawerTrigger = SheetTrigger
+
+export function DrawerContent(props: GenericProps) {
+  const direction = useContext(DrawerDirectionContext)
+  const { class: className, children, ...rest } = props
+  return (
+    <SheetContent
+      side={direction}
+      data-slot='drawer-content'
+      data-drawer-direction={direction}
+      class={cn(
+        'flex h-auto flex-col text-sm',
+        direction === 'bottom' && 'mt-24 max-h-[80vh] rounded-t-xl',
+        direction === 'top' && 'mb-24 max-h-[80vh] rounded-b-xl',
+        direction === 'left' && 'w-3/4 rounded-r-xl sm:max-w-sm',
+        direction === 'right' && 'w-3/4 rounded-l-xl sm:max-w-sm',
+        className,
+      )}
+      {...rest}
+    >
+      {(direction === 'bottom' || direction === 'top') ? <div class='mx-auto mt-4 h-1 w-[100px] shrink-0 rounded-full bg-muted' aria-hidden='true' /> : null}
+      {children}
+    </SheetContent>
+  )
+}
 `
 
 const emptyTemplate: TemplateFn = context => `import { cn } from '${context.imports.cn}'
@@ -1684,7 +1737,7 @@ export const expandedComponentRegistry: RegistryEntry[] = [
   }),
   createComponentEntry({
     name: 'drawer',
-    description: 'Drawer aliases powered by sheet components',
+    description: 'Directional drawer primitives powered by sheet components',
     registryDependencies: ['sheet'],
     content: drawerTemplate,
   }),

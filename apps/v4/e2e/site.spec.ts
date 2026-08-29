@@ -1801,6 +1801,21 @@ test.describe("Fict shadcn website", () => {
     await expect(drawer.getByRole("button", { name: "Close" })).toBeHidden()
     await expect(drawer.getByRole("button", { name: "Cancel" })).toBeVisible()
     await drawer.getByRole("button", { name: "Cancel" }).click()
+
+    const expectedSources = [
+      ["drawer-demo", "let goal = $state(350)", "activity.map"],
+      ["drawer-scrollable-content", '<Drawer direction="right">', "Array.from({ length: 10 }"],
+      ["drawer-sides", "const sides = ['top', 'right', 'bottom', 'left'] as const", "<Drawer direction={side}>"],
+      ["drawer-dialog", '<div class="hidden md:block">', '<div class="md:hidden">'],
+      ["drawer-rtl", "$state<keyof typeof translations>('ar')", "goal.toLocaleString(text().locale)"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+      await expect(source).not.toContainText("Open Demo")
+    }
   })
 
   test("dropdown menu docs match Fict geometry, state, submenus, keyboard, avatar, complex, and RTL behavior", async ({ page }) => {

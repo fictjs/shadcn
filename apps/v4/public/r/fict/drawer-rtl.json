@@ -2,15 +2,16 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "drawer-rtl",
   "type": "registry:example",
-  "description": "Drawer aliases powered by sheet components example for Fict",
+  "description": "Directional drawer primitives powered by sheet components example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "drawer"
   ],
   "files": [
     {
       "path": "src/examples/drawer-rtl.tsx",
-      "content": "import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'\n\nexport default function DrawerRtlExample() {\n  return (\n    <Drawer dir=\"rtl\"><DrawerTrigger>Open Rtl</DrawerTrigger><DrawerContent><DrawerHeader><DrawerTitle>Rtl</DrawerTitle><DrawerDescription>Adjust the value, then save.</DrawerDescription></DrawerHeader><div class=\"p-4\">Goal: 350</div><DrawerFooter><button type=\"button\">Save</button><DrawerClose>Cancel</DrawerClose></DrawerFooter></DrawerContent></Drawer>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'\n\nconst translations = {\n  ar: { dir: 'rtl', locale: 'ar-EG', trigger: 'فتح الدرج', title: 'نقل الهدف', description: 'حدد هدف نشاطك اليومي.', calories: 'سعرات حرارية/يوم', decrease: 'تقليل', increase: 'زيادة', submit: 'إرسال', cancel: 'إلغاء' },\n  he: { dir: 'rtl', locale: 'he-IL', trigger: 'פתח מגירה', title: 'הזז מטרה', description: 'הגדר את יעד הפעילות היומי שלך.', calories: 'קלוריות/יום', decrease: 'הקטן', increase: 'הגדל', submit: 'שלח', cancel: 'בטל' },\n  en: { dir: 'ltr', locale: 'en-US', trigger: 'Open Drawer', title: 'Move Goal', description: 'Set your daily activity goal.', calories: 'Calories/day', decrease: 'Decrease', increase: 'Increase', submit: 'Submit', cancel: 'Cancel' },\n} as const\n\nexport default function DrawerRtlExample() {\n  let language = $state<keyof typeof translations>('ar')\n  let goal = $state(350)\n  const text = () => translations[language]\n  const adjust = (amount: number) => { goal = Math.max(200, Math.min(400, goal + amount)) }\n\n  return (\n    <div class=\"grid gap-4\">\n      <select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof translations }}><option value=\"ar\">Arabic (العربية)</option><option value=\"he\">Hebrew (עברית)</option><option value=\"en\">English</option></select>\n      <Drawer>\n        <DrawerTrigger asChild><Button variant=\"outline\">{text().trigger}</Button></DrawerTrigger>\n        <DrawerContent dir={text().dir} data-lang={text().dir === 'rtl' ? language : undefined}>\n          <div class=\"mx-auto w-full max-w-sm\">\n            <DrawerHeader><DrawerTitle>{text().title}</DrawerTitle><DrawerDescription>{text().description}</DrawerDescription></DrawerHeader>\n            <div class=\"flex items-center justify-center gap-2 p-4\"><Button variant=\"outline\" size=\"icon\" onClick={() => adjust(-10)} disabled={goal <= 200} aria-label={text().decrease}>−</Button><div class=\"text-center\"><strong class=\"text-7xl\">{goal.toLocaleString(text().locale)}</strong><div>{text().calories}</div></div><Button variant=\"outline\" size=\"icon\" onClick={() => adjust(10)} disabled={goal >= 400} aria-label={text().increase}>+</Button></div>\n            <DrawerFooter><Button>{text().submit}</Button><DrawerClose asChild><Button variant=\"outline\">{text().cancel}</Button></DrawerClose></DrawerFooter>\n          </div>\n        </DrawerContent>\n      </Drawer>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
