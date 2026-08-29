@@ -928,6 +928,19 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(source).toContain('<ToastAction altText="Undo">Undo</ToastAction>')
   })
 
+  it('keeps every Resizable source aligned with its rendered preview', () => {
+    expectCuratedFamily('resizable')
+    const loadResizable = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'resizable', previewName })!
+    expect(loadResizable('resizable-demo')).toContain('<strong>Three</strong>')
+    expect(loadResizable('resizable-demo')).toContain('<ResizablePanelGroup direction="vertical">')
+    expect(loadResizable('resizable-vertical')).toContain('<strong>Header</strong>')
+    expect(loadResizable('resizable-vertical')).toContain('<ResizableHandle />')
+    expect(loadResizable('resizable-handle')).toContain('<strong>Sidebar</strong>')
+    expect(loadResizable('resizable-handle')).toContain('<ResizableHandle withHandle />')
+    expect(loadResizable('resizable-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadResizable('resizable-rtl')).toContain('dir={text().dir}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

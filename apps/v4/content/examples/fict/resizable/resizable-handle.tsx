@@ -2,6 +2,10 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/componen
 
 export default function ResizableHandleExample() {
   return (
-    <ResizablePanelGroup direction="horizontal"><ResizablePanel defaultSize={40}>One</ResizablePanel><ResizableHandle withHandle /><ResizablePanel defaultSize={60}>Two</ResizablePanel></ResizablePanelGroup>
+    <ResizablePanelGroup direction="horizontal" class="max-w-md">
+      <ResizablePanel defaultSize={25} class="flex items-center justify-center"><strong>Sidebar</strong></ResizablePanel>
+      <ResizableHandle withHandle />
+      <ResizablePanel defaultSize={75} class="flex items-center justify-center"><strong>Content</strong></ResizablePanel>
+    </ResizablePanelGroup>
   )
 }

@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/resizable-vertical.tsx",
-      "content": "import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable'\n\nexport default function ResizableVerticalExample() {\n  return (\n    <ResizablePanelGroup orientation=\"vertical\" direction=\"vertical\"><ResizablePanel defaultSize={40}>One</ResizablePanel><ResizableHandle withHandle /><ResizablePanel defaultSize={60}>Two</ResizablePanel></ResizablePanelGroup>\n  )\n}\n",
+      "content": "import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable'\n\nexport default function ResizableVerticalExample() {\n  return (\n    <ResizablePanelGroup direction=\"vertical\" class=\"min-h-[200px] max-w-md\">\n      <ResizablePanel defaultSize={25} class=\"flex items-center justify-center\"><strong>Header</strong></ResizablePanel>\n      <ResizableHandle />\n      <ResizablePanel defaultSize={75} class=\"flex items-center justify-center\"><strong>Content</strong></ResizablePanel>\n    </ResizablePanelGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

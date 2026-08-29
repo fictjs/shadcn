@@ -3616,6 +3616,19 @@ test.describe("Fict shadcn website", () => {
     await rtl.getByLabel("Preview language").selectOption("en")
     await expect(rtlGroup).toHaveAttribute("dir", "ltr")
     await expect(rtl.locator("strong")).toHaveText(["One", "Two", "Three"])
+
+    const expectedSources = [
+      ["resizable-demo", "<strong>Three</strong>", '<ResizablePanelGroup direction="vertical">'],
+      ["resizable-vertical", "<strong>Header</strong>", "<ResizableHandle />"],
+      ["resizable-handle", "<strong>Sidebar</strong>", "<ResizableHandle withHandle />"],
+      ["resizable-rtl", "$state<keyof typeof translations>", "dir={text().dir}"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("scroll area docs match Fict dimensions, content, scrolling, bars, and RTL", async ({ page }) => {
