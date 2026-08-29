@@ -1655,7 +1655,7 @@ test.describe("Fict shadcn website", () => {
       ["context-menu-radio", "let person = $state('pedro')"],
       ["context-menu-destructive", 'variant="destructive"'],
       ["context-menu-sides", 'side="right"'],
-      ["context-menu-rtl", "$state<keyof typeof translations>", "ניווט"],
+      ["context-menu-rtl", "$state<keyof typeof translations>", "ניווט", "ContextMenuCheckboxItem checked", "Colm Tuite"],
     ] as const
     for (const [previewName, ...markers] of expectedSources) {
       const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)

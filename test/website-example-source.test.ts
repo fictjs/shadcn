@@ -887,6 +887,8 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadContextMenu('context-menu-destructive')).toContain('variant="destructive"')
     expect(loadContextMenu('context-menu-sides')).toContain('side="right"')
     expect(loadContextMenu('context-menu-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadContextMenu('context-menu-rtl')).toContain('<ContextMenuCheckboxItem checked>{t.bookmarks}</ContextMenuCheckboxItem>')
+    expect(loadContextMenu('context-menu-rtl')).toContain('<ContextMenuRadioItem value="colm">Colm Tuite</ContextMenuRadioItem>')
   })
 
   it('keeps every Dropdown Menu source aligned with its rendered preview', () => {
