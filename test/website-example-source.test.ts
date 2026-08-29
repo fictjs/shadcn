@@ -897,6 +897,13 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadDatePicker('date-picker-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
   })
 
+  it('keeps Direction mapped to the localized Card source', () => {
+    expectCuratedFamily('direction')
+    const source = loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'direction', previewName: 'card-rtl' })!
+    expect(source).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(source).toContain('dir={direction()}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!
