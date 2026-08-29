@@ -96,6 +96,18 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain('export function AvatarGroupCount')
   })
 
+  it('renders the Card API used by website examples', () => {
+    const entry = getBuiltinComponent('card')
+    const source = renderRegistryEntryFiles(entry!, DEFAULT_CONFIG)
+      .map(file => file.content)
+      .join('\n')
+
+    expect(source).toContain("size?: 'default' | 'sm'")
+    expect(source).toContain("data-slot='card'")
+    expect(source).toContain("data-slot='card-action'")
+    expect(source).toContain('export function CardAction')
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')

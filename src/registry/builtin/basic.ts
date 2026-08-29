@@ -122,7 +122,7 @@ export { badgeVariants }
   },
   {
     name: 'card',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Card layout primitives',
     dependencies: [],
@@ -135,35 +135,41 @@ export { badgeVariants }
 type DivProps = JSX.IntrinsicElements['div']
 type HeadingProps = JSX.IntrinsicElements['h3']
 type ParagraphProps = JSX.IntrinsicElements['p']
+type CardProps = DivProps & { size?: 'default' | 'sm' }
 
-export function Card(props: DivProps) {
-  const { class: className, ...rest } = props
-  return <div class={cn('rounded-xl border bg-card text-card-foreground shadow', className)} {...rest} />
+export function Card(props: CardProps) {
+  const { class: className, size = 'default', ...rest } = props
+  return <div data-slot='card' data-size={size} class={cn('group/card flex flex-col rounded-xl border bg-card text-card-foreground shadow', size === 'sm' && 'gap-3 py-4', className)} {...rest} />
 }
 
 export function CardHeader(props: DivProps) {
   const { class: className, ...rest } = props
-  return <div class={cn('flex flex-col space-y-1.5 p-6', className)} {...rest} />
+  return <div data-slot='card-header' class={cn('grid auto-rows-min items-start gap-1.5 px-6 pt-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] group-data-[size=sm]/card:px-4 group-data-[size=sm]/card:pt-0', className)} {...rest} />
 }
 
 export function CardTitle(props: HeadingProps) {
   const { class: className, ...rest } = props
-  return <h3 class={cn('font-semibold leading-none tracking-tight', className)} {...rest} />
+  return <h3 data-slot='card-title' class={cn('font-semibold leading-none tracking-tight', className)} {...rest} />
 }
 
 export function CardDescription(props: ParagraphProps) {
   const { class: className, ...rest } = props
-  return <p class={cn('text-sm text-muted-foreground', className)} {...rest} />
+  return <p data-slot='card-description' class={cn('text-sm text-muted-foreground', className)} {...rest} />
+}
+
+export function CardAction(props: DivProps) {
+  const { class: className, ...rest } = props
+  return <div data-slot='card-action' class={cn('col-start-2 row-span-2 row-start-1 self-start justify-self-end', className)} {...rest} />
 }
 
 export function CardContent(props: DivProps) {
   const { class: className, ...rest } = props
-  return <div class={cn('p-6 pt-0', className)} {...rest} />
+  return <div data-slot='card-content' class={cn('px-6 group-data-[size=sm]/card:px-4', className)} {...rest} />
 }
 
 export function CardFooter(props: DivProps) {
   const { class: className, ...rest } = props
-  return <div class={cn('flex items-center p-6 pt-0', className)} {...rest} />
+  return <div data-slot='card-footer' class={cn('flex items-center px-6 pb-6 group-data-[size=sm]/card:border-t group-data-[size=sm]/card:px-4 group-data-[size=sm]/card:pt-4 group-data-[size=sm]/card:pb-0', className)} {...rest} />
 }
 `,
       },

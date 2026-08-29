@@ -5,12 +5,14 @@
   "description": "Card layout primitives example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "badge",
+    "button",
     "card"
   ],
   "files": [
     {
       "path": "src/examples/card-image.tsx",
-      "content": "import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\n\nexport default function CardImageExample() {\n  return (\n    <Card><CardHeader><CardTitle>Image</CardTitle><CardDescription>Built with Fict Card primitives.</CardDescription></CardHeader><CardContent>Card content</CardContent><CardFooter><button type=\"button\">Continue</button></CardFooter></Card>\n  )\n}\n",
+      "content": "import { Badge } from '@/components/ui/badge'\nimport { Button } from '@/components/ui/button'\nimport { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\n\nexport default function CardImageExample() {\n  return (\n    <Card class=\"relative w-full max-w-sm overflow-hidden pt-0\">\n      <div class=\"absolute inset-0 z-30 aspect-video bg-black/35\" aria-hidden=\"true\" />\n      <img src=\"https://avatar.vercel.sh/shadcn1\" alt=\"Event cover\" class=\"relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40\" />\n      <CardHeader><CardAction><Badge variant=\"secondary\">Featured</Badge></CardAction><CardTitle>Design systems meetup</CardTitle><CardDescription>A practical talk on component APIs, accessibility, and shipping faster.</CardDescription></CardHeader>\n      <CardFooter><Button class=\"w-full\">View Event</Button></CardFooter>\n    </Card>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

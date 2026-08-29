@@ -1141,6 +1141,19 @@ test.describe("Fict shadcn website", () => {
     await rtl.getByLabel("Preview language").selectOption("en")
     await expect(rtl.getByRole("heading", { name: "Login to your account" })).toBeVisible()
     await expect(cards.nth(3)).toHaveAttribute("dir", "ltr")
+
+    const expectedSources = [
+      ["card-demo", "<CardAction>", '<Input id="password" type="password"'],
+      ["card-small", '<Card size="sm"', "Small Card"],
+      ["card-image", '<Badge variant="secondary">Featured</Badge>', 'alt="Event cover"'],
+      ["card-rtl", "$state<keyof typeof translations>", "התחבר לחשבון שלך"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("carousel docs match Fict geometry, controls, API, autoplay, and RTL", async ({ page }) => {

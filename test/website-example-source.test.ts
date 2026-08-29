@@ -292,6 +292,25 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadBreadcrumb('breadcrumb-rtl')).toContain('פירורי לחם')
   })
 
+  it('keeps every Card source aligned with its rendered preview', () => {
+    expectCuratedFamily('card')
+
+    const loadCard = (previewName: string) => loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: 'card',
+      previewName,
+    })!
+
+    expect(loadCard('card-demo')).toContain('<CardAction><Button variant="link">Sign Up</Button>')
+    expect(loadCard('card-demo')).toContain('<Input id="password" type="password" required />')
+    expect(loadCard('card-small')).toContain('<Card size="sm"')
+    expect(loadCard('card-small')).toContain('This card uses the small size variant.')
+    expect(loadCard('card-image')).toContain('<Badge variant="secondary">Featured</Badge>')
+    expect(loadCard('card-image')).toContain('alt="Event cover"')
+    expect(loadCard('card-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadCard('card-rtl')).toContain('התחבר לחשבון שלך')
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],

@@ -5,12 +5,13 @@
   "description": "Card layout primitives example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "card"
   ],
   "files": [
     {
       "path": "src/examples/card-small.tsx",
-      "content": "import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\n\nexport default function CardSmallExample() {\n  return (\n    <Card><CardHeader><CardTitle>Small</CardTitle><CardDescription>Built with Fict Card primitives.</CardDescription></CardHeader><CardContent>Card content</CardContent><CardFooter><button type=\"button\">Continue</button></CardFooter></Card>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\n\nexport default function CardSmallExample() {\n  return (\n    <Card size=\"sm\" class=\"w-full max-w-sm\">\n      <CardHeader><CardTitle>Small Card</CardTitle><CardDescription>This card uses the small size variant.</CardDescription></CardHeader>\n      <CardContent><p>The card component supports a size prop that can be set to &quot;sm&quot; for a more compact appearance.</p></CardContent>\n      <CardFooter><Button variant=\"outline\" size=\"sm\" class=\"w-full\">Action</Button></CardFooter>\n    </Card>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

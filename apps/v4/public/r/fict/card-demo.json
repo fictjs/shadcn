@@ -5,12 +5,15 @@
   "description": "Card layout primitives example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "card"
+    "button",
+    "card",
+    "input",
+    "label"
   ],
   "files": [
     {
       "path": "src/examples/card-demo.tsx",
-      "content": "import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\n\nexport default function CardDemoExample() {\n  return (\n    <Card><CardHeader><CardTitle>Demo</CardTitle><CardDescription>Built with Fict Card primitives.</CardDescription></CardHeader><CardContent>Card content</CardContent><CardFooter><button type=\"button\">Continue</button></CardFooter></Card>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'\nimport { Input } from '@/components/ui/input'\nimport { Label } from '@/components/ui/label'\n\nexport default function CardDemoExample() {\n  return (\n    <Card class=\"w-full max-w-sm\">\n      <CardHeader><CardTitle>Login to your account</CardTitle><CardDescription>Enter your email below to login to your account</CardDescription><CardAction><Button variant=\"link\">Sign Up</Button></CardAction></CardHeader>\n      <CardContent><form><div class=\"flex flex-col gap-6\"><div class=\"grid gap-2\"><Label for=\"email\">Email</Label><Input id=\"email\" type=\"email\" placeholder=\"m@example.com\" required /></div><div class=\"grid gap-2\"><div class=\"flex items-center\"><Label for=\"password\">Password</Label><a href=\"#\" class=\"ml-auto text-sm underline-offset-4 hover:underline\">Forgot your password?</a></div><Input id=\"password\" type=\"password\" required /></div></div></form></CardContent>\n      <CardFooter class=\"flex-col gap-2\"><Button type=\"submit\" class=\"w-full\">Login</Button><Button variant=\"outline\" class=\"w-full\">Login with Google</Button></CardFooter>\n    </Card>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
