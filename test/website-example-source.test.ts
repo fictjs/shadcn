@@ -562,6 +562,19 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadProgress('progress-rtl')).toContain('dir={text().dir}')
   })
 
+  it('keeps every Pagination source aligned with its rendered preview', () => {
+    expectCuratedFamily('pagination')
+    const loadPagination = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'pagination', previewName })!
+    expect(loadPagination('pagination-demo')).toContain('<PaginationLink href="#" isActive>2</PaginationLink>')
+    expect(loadPagination('pagination-demo')).toContain('<PaginationEllipsis />')
+    expect(loadPagination('pagination-simple')).toContain('[1, 2, 3, 4, 5].map')
+    expect(loadPagination('pagination-simple')).not.toContain('PaginationPrevious')
+    expect(loadPagination('pagination-icons-only')).toContain("let rows = $state('25')")
+    expect(loadPagination('pagination-icons-only')).toContain('<ArrowIcon direction="previous" />')
+    expect(loadPagination('pagination-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadPagination('pagination-rtl')).toContain('dir={text().dir}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

@@ -1,7 +1,5 @@
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
+import { Pagination, PaginationContent, PaginationItem, PaginationLink } from '@/components/ui/pagination'
 
 export default function PaginationSimpleExample() {
-  return (
-    <Pagination><PaginationContent><PaginationItem><PaginationPrevious href="#" /></PaginationItem><PaginationItem><PaginationLink href="#" isActive>1</PaginationLink></PaginationItem><PaginationItem><PaginationEllipsis /></PaginationItem><PaginationItem><PaginationNext href="#" /></PaginationItem></PaginationContent></Pagination>
-  )
+  return <Pagination><PaginationContent>{[1, 2, 3, 4, 5].map(page => <PaginationItem><PaginationLink href="#" isActive={page === 2}>{page}</PaginationLink></PaginationItem>)}</PaginationContent></Pagination>
 }

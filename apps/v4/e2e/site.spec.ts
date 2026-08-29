@@ -3084,6 +3084,19 @@ test.describe("Fict shadcn website", () => {
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(page.locator("html")).toHaveClass(/dark/)
     await expect(demo.locator('[aria-current="page"]')).not.toHaveCSS("border-color", "rgba(0, 0, 0, 0)")
+
+    const expectedSources = [
+      ["pagination-demo", '<PaginationLink href="#" isActive>2</PaginationLink>', "<PaginationEllipsis />"],
+      ["pagination-simple", "[1, 2, 3, 4, 5].map"],
+      ["pagination-icons-only", "let rows = $state('25')", '<ArrowIcon direction="previous" />'],
+      ["pagination-rtl", "$state<keyof typeof translations>('ar')", "dir={text().dir}"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("popover docs match Fict content, alignment, form focus, dismissal, and RTL", async ({ page }) => {
