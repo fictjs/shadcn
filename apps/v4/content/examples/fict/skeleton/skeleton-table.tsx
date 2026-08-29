@@ -1,7 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function SkeletonTableExample() {
-  return (
-    <div class="flex items-center gap-4"><Skeleton class="h-12 w-12 rounded-full" /><div class="space-y-2"><Skeleton class="h-4 w-48" /><Skeleton class="h-4 w-32" /></div></div>
-  )
+  return <div class="grid w-96 gap-3">{Array.from({ length: 5 }, () => <div class="grid grid-cols-[1fr_6rem_5rem] gap-4"><Skeleton class="h-4 w-full" /><Skeleton class="h-4 w-24" /><Skeleton class="h-4 w-20" /></div>)}</div>
 }

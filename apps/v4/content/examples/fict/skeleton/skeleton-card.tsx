@@ -1,7 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function SkeletonCardExample() {
-  return (
-    <div class="flex items-center gap-4"><Skeleton class="h-12 w-12 rounded-full" /><div class="space-y-2"><Skeleton class="h-4 w-48" /><Skeleton class="h-4 w-32" /></div></div>
-  )
+  return <div class="grid w-80 gap-4 rounded-lg border p-4"><header class="grid gap-2"><Skeleton class="h-4 w-48" /><Skeleton class="h-4 w-36" /></header><Skeleton class="aspect-video w-72" /></div>
 }

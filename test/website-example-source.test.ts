@@ -587,6 +587,21 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadHoverCard('hover-card-rtl')).toContain('dir={text().dir}')
   })
 
+  it('keeps every Skeleton source aligned with its rendered preview', () => {
+    expectCuratedFamily('skeleton')
+    const loadSkeleton = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'skeleton', previewName })!
+    expect(loadSkeleton('skeleton-demo')).toContain('class="size-12 rounded-full"')
+    expect(loadSkeleton('skeleton-demo')).toContain('class="h-4 w-[250px]"')
+    expect(loadSkeleton('skeleton-avatar')).toContain('class="size-10 rounded-full"')
+    expect(loadSkeleton('skeleton-card')).toContain('class="aspect-video w-72"')
+    expect(loadSkeleton('skeleton-text').match(/<Skeleton/g)).toHaveLength(3)
+    expect(loadSkeleton('skeleton-form').match(/<Skeleton/g)).toHaveLength(5)
+    expect(loadSkeleton('skeleton-table')).toContain('Array.from({ length: 5 }')
+    expect(loadSkeleton('skeleton-table').match(/<Skeleton/g)).toHaveLength(3)
+    expect(loadSkeleton('skeleton-rtl')).toContain("let language = $state<keyof typeof directions>('ar')")
+    expect(loadSkeleton('skeleton-rtl')).toContain('dir={directions[language]}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

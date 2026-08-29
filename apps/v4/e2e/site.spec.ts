@@ -3750,6 +3750,22 @@ test.describe("Fict shadcn website", () => {
     await expect(rtl.locator(".doc-skeleton-rtl-preview")).toHaveAttribute("dir", "ltr")
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(rtl.locator(".doc-skeleton").first()).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+
+    const expectedSources = [
+      ["skeleton-demo", 'class="size-12 rounded-full"', 'class="h-4 w-[250px]"'],
+      ["skeleton-avatar", 'class="size-10 rounded-full"'],
+      ["skeleton-card", 'class="aspect-video w-72"'],
+      ["skeleton-text", 'class="h-4 w-60"'],
+      ["skeleton-form", 'class="h-9 w-80"'],
+      ["skeleton-table", "Array.from({ length: 5 }"],
+      ["skeleton-rtl", "$state<keyof typeof directions>('ar')", "dir={directions[language]}"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("slider docs match Fict values, ranges, vertical controls, disabled state, and RTL", async ({ page }) => {

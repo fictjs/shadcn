@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/skeleton-rtl.tsx",
-      "content": "import { Skeleton } from '@/components/ui/skeleton'\n\nexport default function SkeletonRtlExample() {\n  return (\n    <div dir=\"rtl\" class=\"flex items-center gap-4\"><Skeleton class=\"h-12 w-12 rounded-full\" /><div class=\"space-y-2\"><Skeleton class=\"h-4 w-48\" /><Skeleton class=\"h-4 w-32\" /></div></div>\n  )\n}\n",
+      "content": "import { Skeleton } from '@/components/ui/skeleton'\n\nconst directions = { ar: 'rtl', he: 'rtl', en: 'ltr' } as const\n\nexport default function SkeletonRtlExample() {\n  let language = $state<keyof typeof directions>('ar')\n  return <div class=\"grid gap-4\"><select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof directions }}><option value=\"ar\">Arabic (العربية)</option><option value=\"he\">Hebrew (עברית)</option><option value=\"en\">English</option></select><div class=\"flex items-center gap-4\" dir={directions[language]}><Skeleton class=\"size-12 rounded-full\" /><div class=\"grid gap-2\"><Skeleton class=\"h-4 w-[250px]\" /><Skeleton class=\"h-4 w-[200px]\" /></div></div></div>\n}\n",
       "type": "registry:page"
     }
   ]
