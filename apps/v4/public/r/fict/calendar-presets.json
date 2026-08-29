@@ -5,12 +5,14 @@
   "description": "Accessible date grid with controlled selection and month navigation example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "calendar"
+    "button",
+    "calendar",
+    "card"
   ],
   "files": [
     {
       "path": "src/examples/calendar-presets.tsx",
-      "content": "import { Calendar } from '@/components/ui/calendar'\n\nexport default function CalendarPresetsExample() {\n  return (\n    <Calendar defaultValue={new Date(2026, 7, 29)} defaultMonth={new Date(2026, 7, 1)} />\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Calendar } from '@/components/ui/calendar'\nimport { Card, CardContent, CardFooter } from '@/components/ui/card'\n\nconst presets = [\n  ['Today', 0],\n  ['Tomorrow', 1],\n  ['In 3 days', 3],\n  ['In a week', 7],\n  ['In 2 weeks', 14],\n] as const\n\nexport default function CalendarPresetsExample() {\n  let date = $state(new Date())\n  let month = $state(new Date(date.getFullYear(), date.getMonth(), 1))\n\n  return (\n    <Card class=\"mx-auto w-fit max-w-[300px]\" size=\"sm\">\n      <CardContent>\n        <Calendar mode=\"single\" selected={() => date} onSelect={next => { if (next instanceof Date) date = next }} month={() => month} onMonthChange={next => { month = next }} fixedWeeks class=\"border-0 p-0\" />\n      </CardContent>\n      <CardFooter class=\"flex flex-wrap gap-2 border-t\">\n        {presets.map(([label, offset]) => <Button variant=\"outline\" size=\"sm\" class=\"flex-1\" onClick={() => { const next = new Date(); next.setDate(next.getDate() + offset); date = next; month = new Date(next.getFullYear(), next.getMonth(), 1) }}>{label}</Button>)}\n      </CardFooter>\n    </Card>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

@@ -236,6 +236,26 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain('toggleVariants({ variant: resolvedVariant, size: resolvedSize })')
   })
 
+  it('renders the Calendar selection, range, multi-month, caption, and day customization API used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('calendar')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain('export type CalendarDateRange = { from?: Date; to?: Date }')
+    expect(source).toContain("mode?: 'single' | 'range'")
+    expect(source).toContain('selected?: MaybeAccessor<DateLike | CalendarDateRange>')
+    expect(source).toContain('onSelect?: (value: Date | CalendarDateRange | undefined) => void')
+    expect(source).toContain('numberOfMonths?: number')
+    expect(source).toContain("captionLayout?: 'label' | 'dropdown'")
+    expect(source).toContain('showWeekNumber?: boolean')
+    expect(source).toContain('disabled?: ((date: Date) => boolean) | Date[]')
+    expect(source).toContain('dayContent?: (date: Date, modifiers: CalendarDayModifiers) => unknown')
+    expect(source).toContain("if (mode === 'range')")
+    expect(source).toContain("data-slot='calendar-months'")
+    expect(source).toContain('monthOffset={monthOffset}')
+    expect(source).toContain("context.captionLayout === 'dropdown'")
+    expect(source).toContain("data-range-middle={modifiers.rangeMiddle ? 'true' : undefined}")
+    expect(source).toContain("data-slot='calendar-week-number'")
+    expect(source).toContain('context.dayContent?.(day, modifiers)')
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')

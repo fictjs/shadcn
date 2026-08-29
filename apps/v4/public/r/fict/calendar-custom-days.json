@@ -5,12 +5,13 @@
   "description": "Accessible date grid with controlled selection and month navigation example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "calendar"
+    "calendar",
+    "card"
   ],
   "files": [
     {
       "path": "src/examples/calendar-custom-days.tsx",
-      "content": "import { Calendar } from '@/components/ui/calendar'\n\nexport default function CalendarCustomDaysExample() {\n  return (\n    <Calendar defaultValue={new Date(2026, 7, 29)} defaultMonth={new Date(2026, 7, 1)} />\n  )\n}\n",
+      "content": "import { Calendar, type CalendarDateRange } from '@/components/ui/calendar'\nimport { Card, CardContent } from '@/components/ui/card'\n\nexport default function CalendarCustomDaysExample() {\n  const year = new Date().getFullYear()\n  let range = $state<CalendarDateRange>({ from: new Date(year, 11, 8), to: new Date(year, 11, 18) })\n\n  return (\n    <Card class=\"mx-auto w-fit p-0\">\n      <CardContent class=\"p-0\">\n        <Calendar\n          mode=\"range\"\n          defaultMonth={range.from}\n          selected={() => range}\n          onSelect={next => { if (next && !(next instanceof Date)) range = next }}\n          captionLayout=\"dropdown\"\n          dayContent={(day, modifiers) => <>{day.getDate()}{!modifiers.outside ? <small>{day.getDay() % 6 === 0 ? '$120' : '$100'}</small> : null}</>}\n        />\n      </CardContent>\n    </Card>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

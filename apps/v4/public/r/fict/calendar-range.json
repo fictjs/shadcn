@@ -5,12 +5,13 @@
   "description": "Accessible date grid with controlled selection and month navigation example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "calendar"
+    "calendar",
+    "card"
   ],
   "files": [
     {
       "path": "src/examples/calendar-range.tsx",
-      "content": "import { Calendar } from '@/components/ui/calendar'\n\nexport default function CalendarRangeExample() {\n  return (\n    <Calendar defaultValue={new Date(2026, 7, 29)} defaultMonth={new Date(2026, 7, 1)} />\n  )\n}\n",
+      "content": "import { Calendar, type CalendarDateRange } from '@/components/ui/calendar'\nimport { Card, CardContent } from '@/components/ui/card'\n\nexport default function CalendarRangeExample() {\n  const year = new Date().getFullYear()\n  let range = $state<CalendarDateRange>({\n    from: new Date(year, 0, 12),\n    to: new Date(year, 1, 11),\n  })\n\n  return (\n    <Card class=\"mx-auto w-fit p-0\">\n      <CardContent class=\"p-0\">\n        <Calendar\n          mode=\"range\"\n          defaultMonth={range.from}\n          selected={() => range}\n          onSelect={next => { if (next && !(next instanceof Date)) range = next }}\n          numberOfMonths={2}\n        />\n      </CardContent>\n    </Card>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

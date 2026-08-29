@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/calendar-rtl.tsx",
-      "content": "import { Calendar } from '@/components/ui/calendar'\n\nexport default function CalendarRtlExample() {\n  return (\n    <Calendar dir=\"rtl\" defaultValue={new Date(2026, 7, 29)} defaultMonth={new Date(2026, 7, 1)} />\n  )\n}\n",
+      "content": "import { Calendar } from '@/components/ui/calendar'\n\nconst languages = {\n  ar: { dir: 'rtl', locale: 'ar-SA' },\n  he: { dir: 'rtl', locale: 'he-IL' },\n  en: { dir: 'ltr', locale: 'en-US' },\n} as const\n\nexport default function CalendarRtlExample() {\n  let language = $state<keyof typeof languages>('ar')\n  let date = $state(new Date())\n  const settings = () => languages[language]\n\n  return (\n    <div class=\"grid gap-4\">\n      <select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof languages }}>\n        <option value=\"ar\">Arabic (العربية)</option>\n        <option value=\"he\">Hebrew (עברית)</option>\n        <option value=\"en\">English</option>\n      </select>\n      <Calendar mode=\"single\" selected={() => date} onSelect={next => { if (next instanceof Date) date = next }} captionLayout=\"dropdown\" dir={settings().dir} locale={() => settings().locale} />\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

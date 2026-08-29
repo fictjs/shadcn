@@ -172,32 +172,55 @@ import { cn } from '${context.imports.cn}'
 
 type DateLike = Date | string | null | undefined
 type MaybeAccessor<T> = T | (() => T)
+export type CalendarDateRange = { from?: Date; to?: Date }
+type CalendarSelection = Date | CalendarDateRange | null
+type CalendarDayModifiers = {
+  selected: boolean
+  rangeStart: boolean
+  rangeMiddle: boolean
+  rangeEnd: boolean
+  outside: boolean
+  disabled: boolean
+}
 
 type CalendarProps = {
   class?: string
   value?: MaybeAccessor<DateLike>
   defaultValue?: DateLike
   onValueChange?: (value: Date | null) => void
+  mode?: 'single' | 'range'
+  selected?: MaybeAccessor<DateLike | CalendarDateRange>
+  defaultSelected?: DateLike | CalendarDateRange
+  onSelect?: (value: Date | CalendarDateRange | undefined) => void
   month?: MaybeAccessor<DateLike>
   defaultMonth?: DateLike
   onMonthChange?: (month: Date) => void
   locale?: MaybeAccessor<string>
   weekStartsOn?: MaybeAccessor<number>
   showOutsideDays?: MaybeAccessor<boolean>
-  disabled?: (date: Date) => boolean
+  numberOfMonths?: number
+  captionLayout?: 'label' | 'dropdown'
+  showWeekNumber?: boolean
+  fixedWeeks?: boolean
+  disabled?: ((date: Date) => boolean) | Date[]
+  dayContent?: (date: Date, modifiers: CalendarDayModifiers) => unknown
   children?: unknown
   [key: string]: unknown
 }
 
 type CalendarContextValue = {
-  value: () => Date | null
-  setValue: (value: Date) => void
+  selection: () => CalendarSelection
+  setSelection: (value: Date) => void
+  mode: 'single' | 'range'
   month: () => Date
   setMonth: (month: Date) => void
   locale: () => string
   weekStartsOn: () => number
   showOutsideDays: () => boolean
+  showWeekNumber: boolean
+  captionLayout: 'label' | 'dropdown'
   disabled: (date: Date) => boolean
+  dayContent?: (date: Date, modifiers: CalendarDayModifiers) => unknown
 }
 
 type GenericProps = {
@@ -209,6 +232,7 @@ type GenericProps = {
 type CalendarGridProps = GenericProps & {
   showOutsideDays?: MaybeAccessor<boolean>
   onDaySelect?: (day: Date, event: MouseEvent) => void
+  monthOffset?: number
 }
 
 const CalendarContext = createContext<CalendarContextValue | null>(null)
@@ -222,6 +246,16 @@ function toDate(value: DateLike): Date | null {
   if (value === null || value === undefined) return null
   const date = value instanceof Date ? new Date(value.getTime()) : new Date(value)
   return Number.isNaN(date.getTime()) ? null : date
+}
+
+function toSelection(value: DateLike | CalendarDateRange): CalendarSelection {
+  if (value && typeof value === 'object' && !(value instanceof Date) && ('from' in value || 'to' in value)) {
+    const from = toDate(value.from)
+    const to = toDate(value.to)
+    return { from: from ? normalizeDate(from) : undefined, to: to ? normalizeDate(to) : undefined }
+  }
+  const date = toDate(value as DateLike)
+  return date ? normalizeDate(date) : null
 }
 
 function normalizeDate(date: Date): Date {
@@ -241,6 +275,29 @@ function isSameDay(left: Date | null, right: Date): boolean {
   )
 }
 
+function dateTime(date: Date): number {
+  return normalizeDate(date).getTime()
+}
+
+function isDateDisabled(disabled: CalendarProps['disabled'], date: Date): boolean {
+  if (typeof disabled === 'function') return disabled(date)
+  return disabled?.some(candidate => isSameDay(candidate, date)) ?? false
+}
+
+function selectionModifiers(selection: CalendarSelection, day: Date, outside: boolean, disabled: boolean): CalendarDayModifiers {
+  if (selection instanceof Date || selection === null) {
+    const selected = isSameDay(selection, day)
+    return { selected, rangeStart: false, rangeMiddle: false, rangeEnd: false, outside, disabled }
+  }
+  const from = selection.from ? normalizeDate(selection.from) : undefined
+  const to = selection.to ? normalizeDate(selection.to) : undefined
+  const time = dateTime(day)
+  const rangeStart = Boolean(from && isSameDay(from, day))
+  const rangeEnd = Boolean(to && isSameDay(to, day))
+  const rangeMiddle = Boolean(from && to && time > dateTime(from) && time < dateTime(to))
+  return { selected: rangeStart || rangeMiddle || rangeEnd, rangeStart, rangeMiddle, rangeEnd, outside, disabled }
+}
+
 function isSameMonth(left: Date, right: Date): boolean {
   return left.getFullYear() === right.getFullYear() && left.getMonth() === right.getMonth()
 }
@@ -257,6 +314,12 @@ function visibleDays(month: Date, weekStartsOn: number): Date[] {
   )
 }
 
+function weekNumber(date: Date): number {
+  const firstDay = new Date(date.getFullYear(), 0, 1)
+  const elapsedDays = Math.floor((normalizeDate(date).getTime() - normalizeDate(firstDay).getTime()) / 86400000)
+  return Math.ceil((elapsedDays + firstDay.getDay() + 1) / 7)
+}
+
 function useCalendar(): CalendarContextValue {
   const context = useContext(CalendarContext)
   if (!context) throw new Error('Calendar parts must be used inside Calendar')
@@ -264,27 +327,48 @@ function useCalendar(): CalendarContextValue {
 }
 
 export function Calendar(props: CalendarProps) {
-  const initialValue = toDate(props.defaultValue)
-  const internalValue = createSignal<Date | null>(initialValue ? normalizeDate(initialValue) : null)
+  const mode = props.mode ?? 'single'
+  const initialSelection = toSelection(props.defaultSelected ?? props.defaultValue)
+  const internalSelection = createSignal<CalendarSelection>(initialSelection)
   const internalMonth = createSignal(
-    normalizeMonth(toDate(props.defaultMonth) ?? toDate(read(props.month, null)) ?? initialValue ?? new Date()),
+    normalizeMonth(
+      toDate(props.defaultMonth) ??
+      toDate(read(props.month, null)) ??
+      (initialSelection instanceof Date ? initialSelection : initialSelection?.from) ??
+      new Date(),
+    ),
   )
 
-  const currentValue = () => {
-    const controlled = props.value === undefined ? null : toDate(read(props.value, null))
-    return props.value === undefined ? internalValue() : controlled ? normalizeDate(controlled) : null
+  const currentSelection = () => {
+    if (props.selected !== undefined) return toSelection(read(props.selected, null))
+    if (props.value !== undefined) return toSelection(read(props.value, null))
+    return internalSelection()
   }
   const currentMonth = () => {
     const controlled = props.month === undefined ? null : toDate(read(props.month, null))
     return props.month === undefined ? internalMonth() : normalizeMonth(controlled ?? internalMonth())
   }
   const contextValue: CalendarContextValue = {
-    value: currentValue,
-    setValue: value => {
+    selection: currentSelection,
+    setSelection: value => {
       const next = normalizeDate(value)
-      if (props.value === undefined) internalValue(next)
-      props.onValueChange?.(next)
+      if (mode === 'range') {
+        const current = currentSelection()
+        const range = current && !(current instanceof Date) ? current : {}
+        const nextRange = !range.from || range.to
+          ? { from: next, to: undefined }
+          : dateTime(next) < dateTime(range.from)
+            ? { from: next, to: range.from }
+            : { from: range.from, to: next }
+        if (props.selected === undefined && props.value === undefined) internalSelection(nextRange)
+        props.onSelect?.(nextRange)
+      } else {
+        if (props.selected === undefined && props.value === undefined) internalSelection(next)
+        props.onValueChange?.(next)
+        props.onSelect?.(next)
+      }
     },
+    mode,
     month: currentMonth,
     setMonth: value => {
       const next = normalizeMonth(value)
@@ -294,7 +378,10 @@ export function Calendar(props: CalendarProps) {
     locale: () => read(props.locale, 'en-US'),
     weekStartsOn: () => Math.min(6, Math.max(0, Math.floor(read(props.weekStartsOn, 0)))),
     showOutsideDays: () => read(props.showOutsideDays, true),
-    disabled: date => props.disabled?.(date) ?? false,
+    showWeekNumber: props.showWeekNumber ?? false,
+    captionLayout: props.captionLayout ?? 'label',
+    disabled: date => isDateDisabled(props.disabled, date),
+    dayContent: props.dayContent,
   }
 
   const {
@@ -303,13 +390,22 @@ export function Calendar(props: CalendarProps) {
     value,
     defaultValue,
     onValueChange,
+    mode: _mode,
+    selected,
+    defaultSelected,
+    onSelect,
     month,
     defaultMonth,
     onMonthChange,
     locale,
     weekStartsOn,
     showOutsideDays,
+    numberOfMonths = 1,
+    captionLayout,
+    showWeekNumber,
+    fixedWeeks,
     disabled,
+    dayContent,
     ...rest
   } = props
 
@@ -317,14 +413,18 @@ export function Calendar(props: CalendarProps) {
     <CalendarContext.Provider value={contextValue}>
       <div data-slot='calendar' class={cn('rounded-lg border p-3', className)} {...rest}>
         {children ?? (
-          <>
-            <CalendarHeader>
-              <CalendarPrevButton>Previous month</CalendarPrevButton>
-              <CalendarTitle />
-              <CalendarNextButton>Next month</CalendarNextButton>
-            </CalendarHeader>
-            <CalendarGrid />
-          </>
+          <div data-slot='calendar-months' class='flex flex-col gap-4 md:flex-row'>
+            {Array.from({ length: Math.max(1, numberOfMonths) }, (_, monthOffset) => (
+              <section data-slot='calendar-month'>
+                <CalendarHeader>
+                  {monthOffset === 0 ? <CalendarPrevButton>Previous month</CalendarPrevButton> : <span />}
+                  <CalendarTitle monthOffset={monthOffset} />
+                  {monthOffset === Math.max(1, numberOfMonths) - 1 ? <CalendarNextButton>Next month</CalendarNextButton> : <span />}
+                </CalendarHeader>
+                <CalendarGrid monthOffset={monthOffset} />
+              </section>
+            ))}
+          </div>
         )}
       </div>
     </CalendarContext.Provider>
@@ -338,10 +438,34 @@ export function CalendarHeader(props: GenericProps) {
 
 export function CalendarTitle(props: GenericProps) {
   const context = useCalendar()
-  const { class: className, children, ...rest } = props
+  const { class: className, children, monthOffset = 0, ...rest } = props
+  const visibleMonth = () => addMonths(context.month(), Number(monthOffset))
+  if (context.captionLayout === 'dropdown') {
+    return () => {
+      const month = visibleMonth()
+      return (
+        <span data-slot='calendar-title' class={cn('flex items-center gap-1 text-sm font-medium', className)} {...rest}>
+          <select
+            aria-label='Choose the Month'
+            value={String(month.getMonth())}
+            onChange={(event: Event) => context.setMonth(new Date(month.getFullYear(), Number((event.currentTarget as HTMLSelectElement).value) - Number(monthOffset), 1))}
+          >
+            {Array.from({ length: 12 }, (_, index) => <option value={String(index)}>{new Intl.DateTimeFormat(context.locale(), { month: 'short' }).format(new Date(2026, index, 1))}</option>)}
+          </select>
+          <select
+            aria-label='Choose the Year'
+            value={String(month.getFullYear())}
+            onChange={(event: Event) => context.setMonth(new Date(Number((event.currentTarget as HTMLSelectElement).value), month.getMonth() - Number(monthOffset), 1))}
+          >
+            {Array.from({ length: 201 }, (_, index) => month.getFullYear() - 100 + index).map(year => <option value={String(year)}>{year}</option>)}
+          </select>
+        </span>
+      )
+    }
+  }
   return (
     <span data-slot='calendar-title' class={cn('text-sm font-medium', className)} {...rest}>
-      {children ?? (() => new Intl.DateTimeFormat(context.locale(), { month: 'long', year: 'numeric' }).format(context.month()))}
+      {children ?? (() => new Intl.DateTimeFormat(context.locale(), { month: 'long', year: 'numeric' }).format(visibleMonth()))}
     </span>
   )
 }
@@ -388,13 +512,13 @@ export function CalendarNextButton(props: GenericProps) {
 
 export function CalendarGrid(props: CalendarGridProps) {
   const context = useCalendar()
-  const { class: className, children, showOutsideDays, onDaySelect, ...rest } = props
+  const { class: className, children, showOutsideDays, onDaySelect, monthOffset = 0, ...rest } = props
   return () => {
     if (children) {
       return <div role='grid' data-slot='calendar-grid' class={cn('grid grid-cols-7 gap-1', className)} {...rest}>{children}</div>
     }
 
-    const month = context.month()
+    const month = addMonths(context.month(), monthOffset)
     const weekStartsOn = context.weekStartsOn()
     const labels = Array.from({ length: 7 }, (_, index) => {
       const date = new Date(2026, 0, 4 + ((weekStartsOn + index) % 7))
@@ -402,40 +526,48 @@ export function CalendarGrid(props: CalendarGridProps) {
     })
 
     return (
-      <div role='grid' data-slot='calendar-grid' class={cn('grid grid-cols-7 gap-1', className)} {...rest}>
+      <div role='grid' data-slot='calendar-grid' class={cn('grid gap-1', context.showWeekNumber ? 'grid-cols-8' : 'grid-cols-7', className)} {...rest}>
+        {context.showWeekNumber ? <span role='columnheader' class='py-1 text-center text-xs text-muted-foreground'>#</span> : null}
         {labels.map(label => (
           <span role='columnheader' class='py-1 text-center text-xs text-muted-foreground'>{label}</span>
         ))}
-        {visibleDays(month, weekStartsOn).map(day => {
+        {visibleDays(month, weekStartsOn).map((day, index) => {
           const outside = !isSameMonth(day, month)
           const hidden = !read(showOutsideDays, context.showOutsideDays()) && outside
-          const selected = isSameDay(context.value(), day)
           const dayDisabled = context.disabled(day)
+          const modifiers = selectionModifiers(context.selection(), day, outside, dayDisabled)
 
           return hidden ? (
-            <span aria-hidden='true' />
+            <>{context.showWeekNumber && index % 7 === 0 ? <span aria-hidden='true' /> : null}<span aria-hidden='true' /></>
           ) : (
-            <button
-              type='button'
-              role='gridcell'
-              aria-selected={selected}
-              disabled={dayDisabled}
-              data-state={selected ? 'selected' : 'idle'}
-              data-outside-month={outside ? 'true' : undefined}
-              class={cn(
-                'h-8 rounded-md text-sm hover:bg-accent disabled:pointer-events-none disabled:opacity-40',
-                selected && 'bg-primary text-primary-foreground hover:bg-primary',
-                outside && 'text-muted-foreground opacity-60',
-              )}
-              onClick={(event: MouseEvent) => {
-                onDaySelect?.(day, event)
-                if (event.defaultPrevented || dayDisabled) return
-                context.setValue(day)
-                context.setMonth(day)
-              }}
-            >
-              {String(day.getDate())}
-            </button>
+            <>
+              {context.showWeekNumber && index % 7 === 0 ? <span data-slot='calendar-week-number' class='flex h-8 items-center justify-center text-xs text-muted-foreground'>{weekNumber(day)}</span> : null}
+              <button
+                type='button'
+                role='gridcell'
+                aria-selected={modifiers.selected}
+                disabled={dayDisabled}
+                data-state={modifiers.selected ? 'selected' : 'idle'}
+                data-range-start={modifiers.rangeStart ? 'true' : undefined}
+                data-range-middle={modifiers.rangeMiddle ? 'true' : undefined}
+                data-range-end={modifiers.rangeEnd ? 'true' : undefined}
+                data-outside-month={outside ? 'true' : undefined}
+                class={cn(
+                  'flex h-8 flex-col items-center justify-center rounded-md text-sm hover:bg-accent disabled:pointer-events-none disabled:opacity-40',
+                  modifiers.selected && 'bg-primary text-primary-foreground hover:bg-primary',
+                  modifiers.rangeMiddle && 'rounded-none bg-accent text-accent-foreground hover:bg-accent',
+                  outside && 'text-muted-foreground opacity-60',
+                )}
+                onClick={(event: MouseEvent) => {
+                  onDaySelect?.(day, event)
+                  if (event.defaultPrevented || dayDisabled) return
+                  context.setSelection(day)
+                  context.setMonth(day)
+                }}
+              >
+                {context.dayContent?.(day, modifiers) ?? String(day.getDate())}
+              </button>
+            </>
           )
         })}
       </div>

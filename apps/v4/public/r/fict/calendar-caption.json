@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/calendar-caption.tsx",
-      "content": "import { Calendar } from '@/components/ui/calendar'\n\nexport default function CalendarCaptionExample() {\n  return (\n    <Calendar defaultValue={new Date(2026, 7, 29)} defaultMonth={new Date(2026, 7, 1)} />\n  )\n}\n",
+      "content": "import { Calendar } from '@/components/ui/calendar'\n\nexport default function CalendarCaptionExample() {\n  return (\n    <Calendar mode=\"single\" captionLayout=\"dropdown\" class=\"rounded-lg border\" />\n  )\n}\n",
       "type": "registry:page"
     }
   ]

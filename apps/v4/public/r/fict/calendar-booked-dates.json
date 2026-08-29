@@ -5,12 +5,13 @@
   "description": "Accessible date grid with controlled selection and month navigation example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "calendar"
+    "calendar",
+    "card"
   ],
   "files": [
     {
       "path": "src/examples/calendar-booked-dates.tsx",
-      "content": "import { Calendar } from '@/components/ui/calendar'\n\nexport default function CalendarBookedDatesExample() {\n  return (\n    <Calendar defaultValue={new Date(2026, 7, 29)} defaultMonth={new Date(2026, 7, 1)} />\n  )\n}\n",
+      "content": "import { Card, CardContent } from '@/components/ui/card'\nimport { Calendar } from '@/components/ui/calendar'\n\nexport default function CalendarBookedDatesExample() {\n  const year = new Date().getFullYear()\n  let date = $state(new Date(year, 1, 3))\n  const bookedDates = Array.from({ length: 15 }, (_, index) => new Date(year, 1, 12 + index))\n\n  return (\n    <Card class=\"mx-auto w-fit p-0\">\n      <CardContent class=\"p-0\">\n        <Calendar mode=\"single\" defaultMonth={date} selected={() => date} onSelect={next => { if (next instanceof Date) date = next }} disabled={bookedDates} />\n      </CardContent>\n    </Card>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

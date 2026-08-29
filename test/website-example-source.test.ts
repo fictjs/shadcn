@@ -635,6 +635,29 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadToggleGroup('toggle-group-rtl')).toContain('dir={text().direction}')
   })
 
+  it('keeps every Calendar source aligned with its rendered preview', () => {
+    expectCuratedFamily('calendar')
+    const loadCalendar = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'calendar', previewName })!
+    expect(loadCalendar('calendar-demo')).toContain('let date = $state(new Date())')
+    expect(loadCalendar('calendar-demo')).toContain('captionLayout="dropdown"')
+    expect(loadCalendar('calendar-hijri')).toContain('locale="fa-IR-u-ca-persian"')
+    expect(loadCalendar('calendar-basic')).toContain('<Calendar mode="single"')
+    expect(loadCalendar('calendar-range')).toContain('type CalendarDateRange')
+    expect(loadCalendar('calendar-range')).toContain('numberOfMonths={2}')
+    expect(loadCalendar('calendar-caption')).toContain('captionLayout="dropdown"')
+    expect(loadCalendar('calendar-presets')).toContain("['In a week', 7]")
+    expect(loadCalendar('calendar-presets')).toContain('month={() => month}')
+    expect(loadCalendar('calendar-time')).toContain('value="10:30:00"')
+    expect(loadCalendar('calendar-time')).toContain('value="12:30:00"')
+    expect(loadCalendar('calendar-booked-dates')).toContain('Array.from({ length: 15 }')
+    expect(loadCalendar('calendar-booked-dates')).toContain('disabled={bookedDates}')
+    expect(loadCalendar('calendar-custom-days')).toContain('dayContent={(day, modifiers) =>')
+    expect(loadCalendar('calendar-custom-days')).toContain("'$120' : '$100'")
+    expect(loadCalendar('calendar-week-numbers')).toContain('showWeekNumber')
+    expect(loadCalendar('calendar-rtl')).toContain("let language = $state<keyof typeof languages>('ar')")
+    expect(loadCalendar('calendar-rtl')).toContain('locale={() => settings().locale}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

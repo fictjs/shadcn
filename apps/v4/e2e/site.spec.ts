@@ -1092,6 +1092,26 @@ test.describe("Fict shadcn website", () => {
     await rtl.getByLabel("Preview language").selectOption("en")
     await expect(rtl.locator(".doc-calendar-rtl-preview")).toHaveAttribute("dir", "ltr")
     await expect(rtl.locator(".doc-calendar-weekday").first()).toHaveText("Su")
+
+    const expectedSources = [
+      ["calendar-demo", "$state(new Date())", 'captionLayout="dropdown"'],
+      ["calendar-hijri", 'locale="fa-IR-u-ca-persian"', 'dir="rtl"'],
+      ["calendar-basic", '<Calendar mode="single"'],
+      ["calendar-range", "type CalendarDateRange", "numberOfMonths={2}"],
+      ["calendar-caption", 'captionLayout="dropdown"'],
+      ["calendar-presets", "['In a week', 7]", "month={() => month}"],
+      ["calendar-time", 'value="10:30:00"', 'value="12:30:00"'],
+      ["calendar-booked-dates", "Array.from({ length: 15 }", "disabled={bookedDates}"],
+      ["calendar-custom-days", "dayContent={(day, modifiers) =>", "$120"],
+      ["calendar-week-numbers", "showWeekNumber"],
+      ["calendar-rtl", "$state<keyof typeof languages>", "locale={() => settings().locale}"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("card docs match Fict layouts, fields, image, sizes, and RTL content", async ({ page }) => {
