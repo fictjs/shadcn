@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/radio-group-choice-card.tsx",
-      "content": "import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'\n\nexport default function RadioGroupChoiceCardExample() {\n  return (\n    <RadioGroup defaultValue=\"comfortable\"><label><RadioGroupItem value=\"default\" /> Default</label><label><RadioGroupItem value=\"comfortable\" /> Group Choice Card</label></RadioGroup>\n  )\n}\n",
+      "content": "import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'\n\nconst plans = [\n  ['plus', 'Plus', 'For individuals and small teams.'],\n  ['pro', 'Pro', 'For growing businesses.'],\n  ['enterprise', 'Enterprise', 'For large teams and enterprises.'],\n]\n\nexport default function RadioGroupChoiceCardExample() {\n  return (\n    <RadioGroup defaultValue=\"plus\" class=\"grid w-full max-w-sm gap-3\">\n      {plans.map(([value, title, description]) => (\n        <label class=\"flex items-center justify-between gap-4 rounded-lg border p-4\">\n          <span>\n            <strong class=\"block\">{title}</strong>\n            <small class=\"text-muted-foreground\">{description}</small>\n          </span>\n          <RadioGroupItem value={value} />\n        </label>\n      ))}\n    </RadioGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

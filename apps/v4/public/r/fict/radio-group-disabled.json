@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/radio-group-disabled.tsx",
-      "content": "import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'\n\nexport default function RadioGroupDisabledExample() {\n  return (\n    <RadioGroup disabled defaultValue=\"comfortable\"><label><RadioGroupItem value=\"default\" /> Default</label><label><RadioGroupItem value=\"comfortable\" /> Group Disabled</label></RadioGroup>\n  )\n}\n",
+      "content": "import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'\n\nexport default function RadioGroupDisabledExample() {\n  return (\n    <RadioGroup defaultValue=\"option2\" class=\"grid gap-3\">\n      <label class=\"flex items-center gap-3 opacity-50\">\n        <RadioGroupItem value=\"option1\" disabled />\n        Disabled\n      </label>\n      <label class=\"flex items-center gap-3\">\n        <RadioGroupItem value=\"option2\" />\n        Option 2\n      </label>\n      <label class=\"flex items-center gap-3\">\n        <RadioGroupItem value=\"option3\" />\n        Option 3\n      </label>\n    </RadioGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

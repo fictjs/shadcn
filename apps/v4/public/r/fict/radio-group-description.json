@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/radio-group-description.tsx",
-      "content": "import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'\n\nexport default function RadioGroupDescriptionExample() {\n  return (\n    <RadioGroup defaultValue=\"comfortable\"><label><RadioGroupItem value=\"default\" /> Default</label><label><RadioGroupItem value=\"comfortable\" /> Group Description</label></RadioGroup>\n  )\n}\n",
+      "content": "import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'\n\nconst options = [\n  ['default', 'Default', 'Standard spacing for most use cases.'],\n  ['comfortable', 'Comfortable', 'More space between elements.'],\n  ['compact', 'Compact', 'Minimal spacing for dense layouts.'],\n]\n\nexport default function RadioGroupDescriptionExample() {\n  return (\n    <RadioGroup defaultValue=\"comfortable\" class=\"grid gap-4\">\n      {options.map(([value, label, description]) => (\n        <label class=\"flex items-start gap-3\">\n          <RadioGroupItem value={value} />\n          <span>\n            <strong class=\"block\">{label}</strong>\n            <small class=\"text-muted-foreground\">{description}</small>\n          </span>\n        </label>\n      ))}\n    </RadioGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

@@ -765,6 +765,19 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadNativeSelect('native-select-rtl')).toContain('dir={text().dir}')
   })
 
+  it('keeps every Radio Group source aligned with its rendered preview', () => {
+    expectCuratedFamily('radio-group')
+    const loadRadioGroup = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'radio-group', previewName })!
+    expect(loadRadioGroup('radio-group-demo')).toContain('defaultValue="comfortable"')
+    expect(loadRadioGroup('radio-group-description')).toContain('Minimal spacing for dense layouts.')
+    expect(loadRadioGroup('radio-group-choice-card')).toContain("['enterprise', 'Enterprise', 'For large teams and enterprises.']")
+    expect(loadRadioGroup('radio-group-fieldset')).toContain('Lifetime ($299.99)')
+    expect(loadRadioGroup('radio-group-disabled')).toContain('<RadioGroupItem value="option1" disabled />')
+    expect(loadRadioGroup('radio-group-invalid')).toContain('aria-invalid="true"')
+    expect(loadRadioGroup('radio-group-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadRadioGroup('radio-group-rtl')).toContain('dir={text().dir}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

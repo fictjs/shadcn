@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/radio-group-fieldset.tsx",
-      "content": "import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'\n\nexport default function RadioGroupFieldsetExample() {\n  return (\n    <RadioGroup defaultValue=\"comfortable\"><label><RadioGroupItem value=\"default\" /> Default</label><label><RadioGroupItem value=\"comfortable\" /> Group Fieldset</label></RadioGroup>\n  )\n}\n",
+      "content": "import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'\n\nexport default function RadioGroupFieldsetExample() {\n  return (\n    <fieldset class=\"w-full max-w-xs\">\n      <legend class=\"font-medium\">Subscription Plan</legend>\n      <p class=\"mb-4 text-sm text-muted-foreground\">\n        Yearly and lifetime plans offer significant savings.\n      </p>\n      <RadioGroup defaultValue=\"monthly\" class=\"grid gap-3\">\n        {[\n          ['monthly', 'Monthly ($9.99/month)'],\n          ['yearly', 'Yearly ($99.99/year)'],\n          ['lifetime', 'Lifetime ($299.99)'],\n        ].map(([value, label]) => (\n          <label class=\"flex items-center gap-3\">\n            <RadioGroupItem value={value} />\n            {label}\n          </label>\n        ))}\n      </RadioGroup>\n    </fieldset>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

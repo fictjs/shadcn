@@ -3418,6 +3418,22 @@ test.describe("Fict shadcn website", () => {
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(page.locator("html")).toHaveClass(/dark/)
     await expect(rtl.getByRole("radio", { name: /^Comfortable/ })).toBeChecked()
+
+    const expectedSources = [
+      ["radio-group-demo", 'defaultValue="comfortable"', "Compact"],
+      ["radio-group-description", "Minimal spacing for dense layouts."],
+      ["radio-group-choice-card", "For large teams and enterprises."],
+      ["radio-group-fieldset", "Lifetime ($299.99)"],
+      ["radio-group-disabled", '<RadioGroupItem value="option1" disabled />'],
+      ["radio-group-invalid", 'aria-invalid="true"'],
+      ["radio-group-rtl", "$state<keyof typeof translations>", "ריווח מינימלי לפריסות צפופות"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("resizable docs match Fict layouts, handles, pointer, keyboard, and RTL", async ({ page }) => {
