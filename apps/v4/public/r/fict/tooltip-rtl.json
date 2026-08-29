@@ -5,12 +5,13 @@
   "description": "Tooltip primitive wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "tooltip"
   ],
   "files": [
     {
       "path": "src/examples/tooltip-rtl.tsx",
-      "content": "import { Tooltip, TooltipContent, TooltipProvider, TooltipTriggerEl } from '@/components/ui/tooltip'\n\nexport default function TooltipRtlExample() {\n  return (\n    <TooltipProvider dir=\"rtl\"><Tooltip><TooltipTriggerEl asChild><button type=\"button\">Hover</button></TooltipTriggerEl><TooltipContent>Rtl</TooltipContent></Tooltip></TooltipProvider>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'\n\nconst translations = {\n  ar: { dir: 'rtl', content: 'إضافة إلى المكتبة', left: 'يسار', top: 'أعلى', bottom: 'أسفل', right: 'يمين' },\n  he: { dir: 'rtl', content: 'הוסף לספרייה', left: 'שמאל', top: 'למעלה', bottom: 'למטה', right: 'ימין' },\n  en: { dir: 'ltr', content: 'Add to library', left: 'Left', top: 'Top', bottom: 'Bottom', right: 'Right' },\n} as const\n\nconst sides = ['left', 'top', 'bottom', 'right'] as const\n\nexport default function TooltipRtlExample() {\n  let language = $state<keyof typeof translations>('ar')\n  const t = translations[language]\n  return (\n    <div>\n      <select aria-label=\"Preview language\" value={language} onChange={event => language = event.currentTarget.value as keyof typeof translations}>\n        <option value=\"ar\">Arabic (العربية)</option><option value=\"he\">Hebrew (עברית)</option><option value=\"en\">English</option>\n      </select>\n      <TooltipProvider dir={t.dir}>\n        <div class=\"flex flex-wrap gap-2\" dir={t.dir}>\n          {sides.map(side => (\n            <Tooltip>\n              <TooltipTrigger asChild><Button variant=\"outline\" class=\"w-fit capitalize\">{t[side]}</Button></TooltipTrigger>\n              <TooltipContent side={side}>{t.content}</TooltipContent>\n            </Tooltip>\n          ))}\n        </div>\n      </TooltipProvider>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

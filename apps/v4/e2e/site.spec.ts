@@ -4311,6 +4311,20 @@ test.describe("Fict shadcn website", () => {
     await expect(tooltip).toHaveText("Add to library")
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(tooltip).toHaveCSS("background-color", "oklch(0.922 0 0)")
+
+    const expectedSources = [
+      ["tooltip-demo", "<p>Add to library</p>"],
+      ["tooltip-sides", "<TooltipContent side={side}>", "['left', 'top', 'bottom', 'right']"],
+      ["tooltip-keyboard", "Save Changes <Kbd>S</Kbd>"],
+      ["tooltip-disabled", "This feature is currently unavailable", "disabled>Disabled</Button>"],
+      ["tooltip-rtl", "$state<keyof typeof translations>", "הוסף לספרייה"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("kbd docs match Fict keys, groups, buttons, tooltips, input group, and RTL", async ({ page }) => {

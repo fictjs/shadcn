@@ -1,7 +1,13 @@
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTriggerEl } from '@/components/ui/tooltip'
+import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 export default function TooltipDemoExample() {
   return (
-    <TooltipProvider><Tooltip><TooltipTriggerEl asChild><button type="button">Hover</button></TooltipTriggerEl><TooltipContent>Demo</TooltipContent></Tooltip></TooltipProvider>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild><Button variant="outline">Hover</Button></TooltipTrigger>
+        <TooltipContent><p>Add to library</p></TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   )
 }

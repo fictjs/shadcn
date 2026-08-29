@@ -211,7 +211,7 @@ export function PopoverContent(props: PopoverContentProps) {
   },
   {
     name: 'tooltip',
-    version: '0.2.0',
+    version: '0.3.0',
     type: 'ui-component',
     description: 'Tooltip primitive wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -225,6 +225,7 @@ import { cn } from '${context.imports.cn}'
 
 export const TooltipProvider = TooltipPrimitive.Provider
 export const Tooltip = TooltipPrimitive.Root
+export const TooltipTrigger = TooltipPrimitive.Trigger
 export const TooltipTriggerEl = TooltipPrimitive.Trigger
 
 type TooltipContentProps = {

@@ -416,6 +416,19 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadTabs('tabs-rtl')).toContain('צפיות בדף עלו ב-25%')
   })
 
+  it('keeps every Tooltip source aligned with its rendered preview', () => {
+    expectCuratedFamily('tooltip')
+    const loadTooltip = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'tooltip', previewName })!
+    expect(loadTooltip('tooltip-demo')).toContain('<p>Add to library</p>')
+    expect(loadTooltip('tooltip-sides')).toContain("const sides = ['left', 'top', 'bottom', 'right'] as const")
+    expect(loadTooltip('tooltip-sides')).toContain('<TooltipContent side={side}>')
+    expect(loadTooltip('tooltip-keyboard')).toContain('Save Changes <Kbd>S</Kbd>')
+    expect(loadTooltip('tooltip-disabled')).toContain('<span class="inline-block w-fit"><Button variant="outline" disabled>')
+    expect(loadTooltip('tooltip-disabled')).toContain('This feature is currently unavailable')
+    expect(loadTooltip('tooltip-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadTooltip('tooltip-rtl')).toContain('הוסף לספרייה')
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],

@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/components/ui/tooltip.tsx",
-      "content": "import { Tooltip as TooltipPrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\n\nexport const TooltipProvider = TooltipPrimitive.Provider\nexport const Tooltip = TooltipPrimitive.Root\nexport const TooltipTriggerEl = TooltipPrimitive.Trigger\n\ntype TooltipContentProps = {\n  class?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\nexport function TooltipContent(props: TooltipContentProps) {\n  const { class: className, sideOffset = 4, ...rest } = props\n  return (\n    <TooltipPrimitive.Content\n      sideOffset={sideOffset}\n      class={cn('z-50 overflow-hidden rounded-md bg-primary px-3 py-1.5 text-xs text-primary-foreground', className)}\n      {...rest}\n    />\n  )\n}\n",
+      "content": "import { Tooltip as TooltipPrimitive } from '@fictjs/radix-ui'\n\nimport { cn } from '@/lib/cn'\n\nexport const TooltipProvider = TooltipPrimitive.Provider\nexport const Tooltip = TooltipPrimitive.Root\nexport const TooltipTrigger = TooltipPrimitive.Trigger\nexport const TooltipTriggerEl = TooltipPrimitive.Trigger\n\ntype TooltipContentProps = {\n  class?: string\n  children?: unknown\n  [key: string]: unknown\n}\n\nexport function TooltipContent(props: TooltipContentProps) {\n  const { class: className, sideOffset = 4, ...rest } = props\n  return (\n    <TooltipPrimitive.Content\n      sideOffset={sideOffset}\n      class={cn('z-50 overflow-hidden rounded-md bg-primary px-3 py-1.5 text-xs text-primary-foreground', className)}\n      {...rest}\n    />\n  )\n}\n",
       "type": "registry:ui"
     }
   ]

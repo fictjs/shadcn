@@ -5,12 +5,14 @@
   "description": "Tooltip primitive wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
+    "kbd",
     "tooltip"
   ],
   "files": [
     {
       "path": "src/examples/tooltip-keyboard.tsx",
-      "content": "import { Tooltip, TooltipContent, TooltipProvider, TooltipTriggerEl } from '@/components/ui/tooltip'\n\nexport default function TooltipKeyboardExample() {\n  return (\n    <TooltipProvider><Tooltip><TooltipTriggerEl asChild><button type=\"button\">Hover</button></TooltipTriggerEl><TooltipContent>Keyboard</TooltipContent></Tooltip></TooltipProvider>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Kbd } from '@/components/ui/kbd'\nimport { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'\n\nfunction SaveIcon() {\n  return <svg aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path d=\"M15.2 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.8zM17 21v-8H7v8M7 3v5h8\" /></svg>\n}\n\nexport default function TooltipKeyboardExample() {\n  return (\n    <TooltipProvider>\n      <Tooltip>\n        <TooltipTrigger asChild><Button variant=\"outline\" size=\"icon-sm\" aria-label=\"Save changes\"><SaveIcon /></Button></TooltipTrigger>\n        <TooltipContent class=\"pr-1.5\"><div class=\"flex items-center gap-2\">Save Changes <Kbd>S</Kbd></div></TooltipContent>\n      </Tooltip>\n    </TooltipProvider>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

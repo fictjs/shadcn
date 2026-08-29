@@ -5,12 +5,13 @@
   "description": "Tooltip primitive wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "tooltip"
   ],
   "files": [
     {
       "path": "src/examples/tooltip-demo.tsx",
-      "content": "import { Tooltip, TooltipContent, TooltipProvider, TooltipTriggerEl } from '@/components/ui/tooltip'\n\nexport default function TooltipDemoExample() {\n  return (\n    <TooltipProvider><Tooltip><TooltipTriggerEl asChild><button type=\"button\">Hover</button></TooltipTriggerEl><TooltipContent>Demo</TooltipContent></Tooltip></TooltipProvider>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'\n\nexport default function TooltipDemoExample() {\n  return (\n    <TooltipProvider>\n      <Tooltip>\n        <TooltipTrigger asChild><Button variant=\"outline\">Hover</Button></TooltipTrigger>\n        <TooltipContent><p>Add to library</p></TooltipContent>\n      </Tooltip>\n    </TooltipProvider>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

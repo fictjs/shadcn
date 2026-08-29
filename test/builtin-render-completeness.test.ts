@@ -145,6 +145,12 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain('[[data-variant=line]_&][data-state=active]:border-foreground')
   })
 
+  it('renders the Tooltip API used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('tooltip')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain('export const TooltipTrigger = TooltipPrimitive.Trigger')
+    expect(source).toContain('export const TooltipTriggerEl = TooltipPrimitive.Trigger')
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')
