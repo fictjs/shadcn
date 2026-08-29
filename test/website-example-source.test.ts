@@ -172,6 +172,13 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
   it('keeps every Badge source aligned with its rendered preview', () => {
     expectCuratedFamily('badge')
 
+    const docs = fs.readFileSync(
+      path.join(process.cwd(), 'apps/v4/content/docs/components/fict/badge.mdx'),
+      'utf8',
+    )
+    expect(docs).toContain('import { Badge } from "@/components/ui/badge"')
+    expect(docs).not.toContain('import * as Badge')
+
     const loadBadge = (previewName: string) => loadFictExampleSource({
       exampleRoot: repositoryExampleRoot,
       componentName: 'badge',
