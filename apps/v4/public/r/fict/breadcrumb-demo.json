@@ -5,12 +5,14 @@
   "description": "Composable breadcrumb navigation primitives example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "breadcrumb"
+    "breadcrumb",
+    "button",
+    "dropdown-menu"
   ],
   "files": [
     {
       "path": "src/examples/breadcrumb-demo.tsx",
-      "content": "import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'\n\nexport default function BreadcrumbDemoExample() {\n  return (\n    <Breadcrumb><BreadcrumbList><BreadcrumbItem><BreadcrumbLink href=\"/\">Home</BreadcrumbLink></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem><BreadcrumbEllipsis /></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem><BreadcrumbPage>Demo</BreadcrumbPage></BreadcrumbItem></BreadcrumbList></Breadcrumb>\n  )\n}\n",
+      "content": "import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'\nimport { Button } from '@/components/ui/button'\nimport { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'\n\nexport default function BreadcrumbDemoExample() {\n  return (\n    <Breadcrumb><BreadcrumbList>\n      <BreadcrumbItem><BreadcrumbLink href=\"#\">Home</BreadcrumbLink></BreadcrumbItem><BreadcrumbSeparator />\n      <BreadcrumbItem><DropdownMenu><DropdownMenuTrigger asChild><Button size=\"icon-sm\" variant=\"ghost\"><BreadcrumbEllipsis /><span class=\"sr-only\">Toggle menu</span></Button></DropdownMenuTrigger><DropdownMenuContent align=\"start\"><DropdownMenuItem>Documentation</DropdownMenuItem><DropdownMenuItem>Themes</DropdownMenuItem><DropdownMenuItem>GitHub</DropdownMenuItem></DropdownMenuContent></DropdownMenu></BreadcrumbItem><BreadcrumbSeparator />\n      <BreadcrumbItem><BreadcrumbLink href=\"#\">Components</BreadcrumbLink></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem><BreadcrumbPage>Breadcrumb</BreadcrumbPage></BreadcrumbItem>\n    </BreadcrumbList></Breadcrumb>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

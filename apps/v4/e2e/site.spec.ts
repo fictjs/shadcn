@@ -850,6 +850,22 @@ test.describe("Fict shadcn website", () => {
     await rtl.getByLabel("Preview language").selectOption("en")
     await expect(rtl.locator('[data-slot="breadcrumb"]')).toHaveAttribute("dir", "ltr")
     await expect(rtl.getByRole("button", { name: "Components" })).toBeVisible()
+
+    const expectedSources = [
+      ["breadcrumb-demo", "<DropdownMenuTrigger asChild>", "<BreadcrumbEllipsis />"],
+      ["breadcrumb-basic", "<BreadcrumbLink href=\"#\">Components"],
+      ["breadcrumb-separator", "<DotIcon />"],
+      ["breadcrumb-dropdown", "<ChevronDownIcon />", "Documentation"],
+      ["breadcrumb-ellipsis", "<BreadcrumbEllipsis />", 'href="/docs/components"'],
+      ["breadcrumb-link", 'href="/components"'],
+      ["breadcrumb-rtl", "$state<keyof typeof translations>", "פירורי לחם"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("button docs match Fict variants, sizes, icons, groups, links, and RTL behavior", async ({ page }) => {

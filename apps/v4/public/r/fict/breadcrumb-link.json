@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/breadcrumb-link.tsx",
-      "content": "import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'\n\nexport default function BreadcrumbLinkExample() {\n  return (\n    <Breadcrumb><BreadcrumbList><BreadcrumbItem><BreadcrumbLink href=\"/\">Home</BreadcrumbLink></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem><BreadcrumbEllipsis /></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem><BreadcrumbPage>Link</BreadcrumbPage></BreadcrumbItem></BreadcrumbList></Breadcrumb>\n  )\n}\n",
+      "content": "import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'\n\nexport default function BreadcrumbLinkExample() {\n  return <Breadcrumb><BreadcrumbList><BreadcrumbItem><BreadcrumbLink href=\"/\">Home</BreadcrumbLink></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem><BreadcrumbLink href=\"/components\">Components</BreadcrumbLink></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem><BreadcrumbPage>Breadcrumb</BreadcrumbPage></BreadcrumbItem></BreadcrumbList></Breadcrumb>\n}\n",
       "type": "registry:page"
     }
   ]

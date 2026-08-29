@@ -272,6 +272,26 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadAvatar('avatar-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
   })
 
+  it('keeps every Breadcrumb source aligned with its rendered preview', () => {
+    expectCuratedFamily('breadcrumb')
+
+    const loadBreadcrumb = (previewName: string) => loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: 'breadcrumb',
+      previewName,
+    })!
+
+    expect(loadBreadcrumb('breadcrumb-demo')).toContain('<DropdownMenuTrigger asChild>')
+    expect(loadBreadcrumb('breadcrumb-demo')).toContain('<BreadcrumbEllipsis />')
+    expect(loadBreadcrumb('breadcrumb-basic').match(/<BreadcrumbItem>/g)).toHaveLength(3)
+    expect(loadBreadcrumb('breadcrumb-separator').match(/<DotIcon \/>/g)).toHaveLength(2)
+    expect(loadBreadcrumb('breadcrumb-dropdown')).toContain('<ChevronDownIcon />')
+    expect(loadBreadcrumb('breadcrumb-ellipsis')).toContain('<BreadcrumbEllipsis />')
+    expect(loadBreadcrumb('breadcrumb-link')).toContain('href="/components"')
+    expect(loadBreadcrumb('breadcrumb-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadBreadcrumb('breadcrumb-rtl')).toContain('פירורי לחם')
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],

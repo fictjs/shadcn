@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/breadcrumb-separator.tsx",
-      "content": "import { Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'\n\nexport default function BreadcrumbSeparatorExample() {\n  return (\n    <Breadcrumb><BreadcrumbList><BreadcrumbItem><BreadcrumbLink href=\"/\">Home</BreadcrumbLink></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem><BreadcrumbEllipsis /></BreadcrumbItem><BreadcrumbSeparator /><BreadcrumbItem><BreadcrumbPage>Separator</BreadcrumbPage></BreadcrumbItem></BreadcrumbList></Breadcrumb>\n  )\n}\n",
+      "content": "import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'\n\nfunction DotIcon() {\n  return <svg viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"2.5\" /></svg>\n}\n\nexport default function BreadcrumbSeparatorExample() {\n  return <Breadcrumb><BreadcrumbList><BreadcrumbItem><BreadcrumbLink href=\"/\">Home</BreadcrumbLink></BreadcrumbItem><BreadcrumbSeparator><DotIcon /></BreadcrumbSeparator><BreadcrumbItem><BreadcrumbLink href=\"/components\">Components</BreadcrumbLink></BreadcrumbItem><BreadcrumbSeparator><DotIcon /></BreadcrumbSeparator><BreadcrumbItem><BreadcrumbPage>Breadcrumb</BreadcrumbPage></BreadcrumbItem></BreadcrumbList></Breadcrumb>\n}\n",
       "type": "registry:page"
     }
   ]
