@@ -5,12 +5,13 @@
   "description": "Styled textarea example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "textarea"
   ],
   "files": [
     {
       "path": "src/examples/textarea-button.tsx",
-      "content": "import { Textarea } from '@/components/ui/textarea'\n\nexport default function TextareaButtonExample() {\n  return (\n    <Textarea placeholder=\"Button\" rows={4} />\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Textarea } from '@/components/ui/textarea'\n\nexport default function TextareaButtonExample() {\n  return (\n    <div class=\"grid gap-2\"><Textarea placeholder=\"Type your message here.\" rows={4} /><Button>Send message</Button></div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

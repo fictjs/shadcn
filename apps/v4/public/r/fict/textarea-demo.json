@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/textarea-demo.tsx",
-      "content": "import { Textarea } from '@/components/ui/textarea'\n\nexport default function TextareaDemoExample() {\n  return (\n    <Textarea placeholder=\"Demo\" rows={4} />\n  )\n}\n",
+      "content": "import { Textarea } from '@/components/ui/textarea'\n\nexport default function TextareaDemoExample() {\n  return <Textarea placeholder=\"Type your message here.\" rows={4} />\n}\n",
       "type": "registry:page"
     }
   ]

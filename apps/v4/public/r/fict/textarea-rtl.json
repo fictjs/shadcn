@@ -5,12 +5,13 @@
   "description": "Styled textarea example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "label",
     "textarea"
   ],
   "files": [
     {
       "path": "src/examples/textarea-rtl.tsx",
-      "content": "import { Textarea } from '@/components/ui/textarea'\n\nexport default function TextareaRtlExample() {\n  return (\n    <Textarea dir=\"rtl\" placeholder=\"Rtl\" rows={4} />\n  )\n}\n",
+      "content": "import { Label } from '@/components/ui/label'\nimport { Textarea } from '@/components/ui/textarea'\n\nconst translations = {\n  ar: { dir: 'rtl', label: 'التعليقات', description: 'شاركنا أفكارك حول خدمتنا.', placeholder: 'تعليقاتك تساعدنا على التحسين...' },\n  he: { dir: 'rtl', label: 'משוב', description: 'שתף את מחשבותיך על השירות שלנו.', placeholder: 'המשוב שלך עוזר לנו להשתפר...' },\n  en: { dir: 'ltr', label: 'Feedback', description: 'Share your thoughts about our service.', placeholder: 'Your feedback helps us improve...' },\n} as const\n\nexport default function TextareaRtlExample() {\n  let language = $state<keyof typeof translations>('ar')\n  const text = () => translations[language]\n\n  return (\n    <div class=\"grid gap-2\" dir={text().dir}><select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof translations }}><option value=\"ar\">Arabic (العربية)</option><option value=\"he\">Hebrew (עברית)</option><option value=\"en\">English</option></select><Label for=\"feedback\">{text().label}</Label><p class=\"text-sm text-muted-foreground\">{text().description}</p><Textarea id=\"feedback\" dir={text().dir} placeholder={text().placeholder} rows={4} /></div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

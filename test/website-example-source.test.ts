@@ -727,6 +727,20 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadToggle('toggle-rtl')).toContain('dir={text().dir}')
   })
 
+  it('keeps every Textarea source aligned with its rendered preview', () => {
+    expectCuratedFamily('textarea')
+    const loadTextarea = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'textarea', previewName })!
+    expect(loadTextarea('textarea-demo')).toContain('placeholder="Type your message here."')
+    expect(loadTextarea('textarea-field')).toContain('<Label for="message">Message</Label>')
+    expect(loadTextarea('textarea-field')).toContain('Enter your message below.')
+    expect(loadTextarea('textarea-disabled')).toContain('disabled placeholder="Type your message here."')
+    expect(loadTextarea('textarea-invalid')).toContain('aria-invalid="true"')
+    expect(loadTextarea('textarea-invalid')).toContain('Please enter a valid message.')
+    expect(loadTextarea('textarea-button')).toContain('<Button>Send message</Button>')
+    expect(loadTextarea('textarea-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadTextarea('textarea-rtl')).toContain('placeholder={text().placeholder}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

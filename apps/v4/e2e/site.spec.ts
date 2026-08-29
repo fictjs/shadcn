@@ -4407,6 +4407,21 @@ test.describe("Fict shadcn website", () => {
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await rtlTextarea.focus()
     await expectFocusRing(rtlTextarea)
+
+    const expectedSources = [
+      ["textarea-demo", 'placeholder="Type your message here."'],
+      ["textarea-field", '<Label for="message">Message</Label>', "Enter your message below."],
+      ["textarea-disabled", 'disabled placeholder="Type your message here."'],
+      ["textarea-invalid", 'aria-invalid="true"', "Please enter a valid message."],
+      ["textarea-button", "<Button>Send message</Button>"],
+      ["textarea-rtl", "$state<keyof typeof translations>", "placeholder={text().placeholder}"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("toggle docs match Fict variants, text, sizes, disabled, pressed state, focus, and RTL", async ({ page }) => {

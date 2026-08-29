@@ -5,12 +5,13 @@
   "description": "Styled textarea example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "label",
     "textarea"
   ],
   "files": [
     {
       "path": "src/examples/textarea-disabled.tsx",
-      "content": "import { Textarea } from '@/components/ui/textarea'\n\nexport default function TextareaDisabledExample() {\n  return (\n    <Textarea disabled placeholder=\"Disabled\" rows={4} />\n  )\n}\n",
+      "content": "import { Textarea } from '@/components/ui/textarea'\nimport { Label } from '@/components/ui/label'\n\nexport default function TextareaDisabledExample() {\n  return (\n    <div class=\"grid gap-2\"><Label for=\"message-disabled\">Message</Label><Textarea id=\"message-disabled\" disabled placeholder=\"Type your message here.\" rows={4} /></div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

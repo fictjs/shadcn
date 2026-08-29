@@ -5,12 +5,13 @@
   "description": "Styled textarea example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "label",
     "textarea"
   ],
   "files": [
     {
       "path": "src/examples/textarea-invalid.tsx",
-      "content": "import { Textarea } from '@/components/ui/textarea'\n\nexport default function TextareaInvalidExample() {\n  return (\n    <Textarea placeholder=\"Invalid\" rows={4} />\n  )\n}\n",
+      "content": "import { Textarea } from '@/components/ui/textarea'\nimport { Label } from '@/components/ui/label'\n\nexport default function TextareaInvalidExample() {\n  return (\n    <div class=\"grid gap-2\"><Label for=\"message-invalid\">Message</Label><Textarea id=\"message-invalid\" aria-invalid=\"true\" placeholder=\"Type your message here.\" rows={4} /><p class=\"text-sm text-destructive\">Please enter a valid message.</p></div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
