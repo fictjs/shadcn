@@ -69,6 +69,19 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain("return <span class={classValue} data-slot='badge'")
   })
 
+  it('renders the Alert Dialog API used by website examples', () => {
+    const entry = getBuiltinComponent('alert-dialog')
+    const source = renderRegistryEntryFiles(entry!, DEFAULT_CONFIG)
+      .map(file => file.content)
+      .join('\n')
+
+    expect(source).toContain("size?: 'default' | 'sm'")
+    expect(source).toContain("size === 'sm' ? 'max-w-xs' : 'max-w-lg'")
+    expect(source).toContain('export function AlertDialogMedia')
+    expect(source).toContain("variant?: 'default' | 'destructive'")
+    expect(source).toContain('buttonVariants({ variant })')
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')

@@ -5,12 +5,13 @@
   "description": "Alert dialog wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "alert-dialog"
+    "alert-dialog",
+    "button"
   ],
   "files": [
     {
       "path": "src/examples/alert-dialog-media.tsx",
-      "content": "import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'\n\nexport default function AlertDialogMediaExample() {\n  return (\n    <AlertDialog><AlertDialogTrigger>Open Dialog Media</AlertDialogTrigger><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription>This action cannot be undone.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction>Continue</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>\n  )\n}\n",
+      "content": "import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogMedia, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'\nimport { Button } from '@/components/ui/button'\n\nfunction ShareIcon() {\n  return <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\" /><path d=\"m12 8 3 3-3 3M9 11h6\" /></svg>\n}\n\nexport default function AlertDialogMediaExample() {\n  return (\n    <AlertDialog>\n      <AlertDialogTrigger asChild><Button variant=\"outline\">Share Project</Button></AlertDialogTrigger>\n      <AlertDialogContent>\n        <AlertDialogHeader><AlertDialogMedia><ShareIcon /></AlertDialogMedia><AlertDialogTitle>Share this project?</AlertDialogTitle><AlertDialogDescription>Anyone with the link will be able to view and edit this project.</AlertDialogDescription></AlertDialogHeader>\n        <AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction>Share</AlertDialogAction></AlertDialogFooter>\n      </AlertDialogContent>\n    </AlertDialog>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

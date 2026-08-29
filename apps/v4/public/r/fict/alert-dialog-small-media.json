@@ -5,12 +5,13 @@
   "description": "Alert dialog wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "alert-dialog"
+    "alert-dialog",
+    "button"
   ],
   "files": [
     {
       "path": "src/examples/alert-dialog-small-media.tsx",
-      "content": "import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'\n\nexport default function AlertDialogSmallMediaExample() {\n  return (\n    <AlertDialog><AlertDialogTrigger>Open Dialog Small Media</AlertDialogTrigger><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription>This action cannot be undone.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction>Continue</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>\n  )\n}\n",
+      "content": "import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogMedia, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'\nimport { Button } from '@/components/ui/button'\n\nfunction BluetoothIcon() {\n  return <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m7 7 10 10-5 4V3l5 4L7 17\" /></svg>\n}\n\nexport default function AlertDialogSmallMediaExample() {\n  return (\n    <AlertDialog>\n      <AlertDialogTrigger asChild><Button variant=\"outline\">Show Dialog</Button></AlertDialogTrigger>\n      <AlertDialogContent size=\"sm\">\n        <AlertDialogHeader><AlertDialogMedia><BluetoothIcon /></AlertDialogMedia><AlertDialogTitle>Allow accessory to connect?</AlertDialogTitle><AlertDialogDescription>Do you want to allow the USB accessory to connect to this device?</AlertDialogDescription></AlertDialogHeader>\n        <AlertDialogFooter><AlertDialogCancel>Don't allow</AlertDialogCancel><AlertDialogAction>Allow</AlertDialogAction></AlertDialogFooter>\n      </AlertDialogContent>\n    </AlertDialog>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

@@ -5,12 +5,13 @@
   "description": "Alert dialog wrappers example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "alert-dialog"
+    "alert-dialog",
+    "button"
   ],
   "files": [
     {
       "path": "src/examples/alert-dialog-destructive.tsx",
-      "content": "import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'\n\nexport default function AlertDialogDestructiveExample() {\n  return (\n    <AlertDialog><AlertDialogTrigger>Open Dialog Destructive</AlertDialogTrigger><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription>This action cannot be undone.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction>Continue</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>\n  )\n}\n",
+      "content": "import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogMedia, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'\nimport { Button } from '@/components/ui/button'\n\nfunction TrashIcon() {\n  return <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M4 7h16M10 11v6M14 11v6M5 7l1 14h12l1-14M9 7V4h6v3\" /></svg>\n}\n\nexport default function AlertDialogDestructiveExample() {\n  return (\n    <AlertDialog>\n      <AlertDialogTrigger asChild><Button variant=\"destructive\">Delete Chat</Button></AlertDialogTrigger>\n      <AlertDialogContent size=\"sm\">\n        <AlertDialogHeader><AlertDialogMedia class=\"bg-destructive/10 text-destructive\"><TrashIcon /></AlertDialogMedia><AlertDialogTitle>Delete chat?</AlertDialogTitle><AlertDialogDescription>This will permanently delete this chat conversation. View <a href=\"#settings\">Settings</a> to delete any memories saved during this chat.</AlertDialogDescription></AlertDialogHeader>\n        <AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction variant=\"destructive\">Delete</AlertDialogAction></AlertDialogFooter>\n      </AlertDialogContent>\n    </AlertDialog>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

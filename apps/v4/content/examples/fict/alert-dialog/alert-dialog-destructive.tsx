@@ -1,7 +1,18 @@
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogMedia, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+
+function TrashIcon() {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 14h12l1-14M9 7V4h6v3" /></svg>
+}
 
 export default function AlertDialogDestructiveExample() {
   return (
-    <AlertDialog><AlertDialogTrigger>Open Dialog Destructive</AlertDialogTrigger><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription>This action cannot be undone.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction>Continue</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog>
+    <AlertDialog>
+      <AlertDialogTrigger asChild><Button variant="destructive">Delete Chat</Button></AlertDialogTrigger>
+      <AlertDialogContent size="sm">
+        <AlertDialogHeader><AlertDialogMedia class="bg-destructive/10 text-destructive"><TrashIcon /></AlertDialogMedia><AlertDialogTitle>Delete chat?</AlertDialogTitle><AlertDialogDescription>This will permanently delete this chat conversation. View <a href="#settings">Settings</a> to delete any memories saved during this chat.</AlertDialogDescription></AlertDialogHeader>
+        <AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction variant="destructive">Delete</AlertDialogAction></AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

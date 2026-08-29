@@ -78,7 +78,7 @@ export const DialogClose = DialogPrimitive.Close
   },
   {
     name: 'alert-dialog',
-    version: '0.2.0',
+    version: '0.3.0',
     type: 'ui-component',
     description: 'Alert dialog wrappers',
     dependencies: ['@fictjs/radix-ui'],
@@ -101,19 +101,28 @@ type GenericProps = {
   [key: string]: unknown
 }
 
+type AlertDialogContentProps = GenericProps & {
+  size?: 'default' | 'sm'
+}
+
+type AlertDialogActionProps = GenericProps & {
+  variant?: 'default' | 'destructive'
+}
+
 export function AlertDialogOverlay(props: GenericProps) {
   const { class: className, ...rest } = props
   return <AlertDialogPrimitive.Overlay class={cn('fixed inset-0 z-50 bg-background/80 backdrop-blur-sm', className)} {...rest} />
 }
 
-export function AlertDialogContent(props: GenericProps) {
-  const { class: className, children, ...rest } = props
+export function AlertDialogContent(props: AlertDialogContentProps) {
+  const { class: className, children, size = 'default', ...rest } = props
   return (
     <>
       <AlertDialogOverlay />
       <AlertDialogPrimitive.Content
         class={cn(
-          'fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg',
+          'fixed left-1/2 top-1/2 z-50 grid w-full -translate-x-1/2 -translate-y-1/2 gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg',
+          size === 'sm' ? 'max-w-xs' : 'max-w-lg',
           className,
         )}
         {...rest}
@@ -144,9 +153,14 @@ export function AlertDialogDescription(props: GenericProps) {
   return <AlertDialogPrimitive.Description class={cn('text-sm text-muted-foreground', className)} {...rest} />
 }
 
-export function AlertDialogAction(props: GenericProps) {
+export function AlertDialogMedia(props: GenericProps) {
   const { class: className, ...rest } = props
-  return <AlertDialogPrimitive.Action class={cn(buttonVariants(), className)} {...rest} />
+  return <div class={cn('mb-2 flex size-10 items-center justify-center rounded-full bg-muted [&_svg]:size-5', className)} {...rest} />
+}
+
+export function AlertDialogAction(props: AlertDialogActionProps) {
+  const { class: className, variant = 'default', ...rest } = props
+  return <AlertDialogPrimitive.Action class={cn(buttonVariants({ variant }), className)} {...rest} />
 }
 
 export function AlertDialogCancel(props: GenericProps) {

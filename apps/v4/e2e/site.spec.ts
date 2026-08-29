@@ -568,6 +568,22 @@ test.describe("Fict shadcn website", () => {
     await expect(dialog).toHaveAttribute("dir", "rtl")
     await expect(dialog).toContainText("האם אתה בטוח לחלוטין?")
     await dialog.getByRole("button", { name: "ביטול" }).click()
+
+    const expectedSources = [
+      ["alert-dialog-demo", "Are you absolutely sure?"],
+      ["alert-dialog-basic", "<AlertDialogTrigger asChild>"],
+      ["alert-dialog-small", '<AlertDialogContent size="sm">'],
+      ["alert-dialog-media", "<AlertDialogMedia>", "Share this project?"],
+      ["alert-dialog-small-media", "<BluetoothIcon />"],
+      ["alert-dialog-destructive", 'variant="destructive"', '<a href="#settings">Settings</a>'],
+      ["alert-dialog-rtl", "$state<keyof typeof translations>", "translations[language].map"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("aspect ratio docs match Fict image geometry and RTL caption", async ({ page }) => {

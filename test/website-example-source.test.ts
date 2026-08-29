@@ -210,6 +210,26 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadAlert('alert-rtl')).toContain('translations[language].map')
   })
 
+  it('keeps every Alert Dialog source aligned with its rendered preview', () => {
+    expectCuratedFamily('alert-dialog')
+
+    const loadDialog = (previewName: string) => loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: 'alert-dialog',
+      previewName,
+    })!
+
+    expect(loadDialog('alert-dialog-demo')).toContain('Are you absolutely sure?')
+    expect(loadDialog('alert-dialog-basic')).toContain('<AlertDialogTrigger asChild>')
+    expect(loadDialog('alert-dialog-small')).toContain('<AlertDialogContent size="sm">')
+    expect(loadDialog('alert-dialog-media')).toContain('<AlertDialogMedia>')
+    expect(loadDialog('alert-dialog-small-media')).toContain('<BluetoothIcon />')
+    expect(loadDialog('alert-dialog-destructive')).toContain('<AlertDialogAction variant="destructive">')
+    expect(loadDialog('alert-dialog-destructive')).toContain('<a href="#settings">Settings</a>')
+    expect(loadDialog('alert-dialog-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadDialog('alert-dialog-rtl')).toContain('translations[language].map')
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],
