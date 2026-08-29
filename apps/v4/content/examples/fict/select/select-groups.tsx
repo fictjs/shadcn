@@ -18,7 +18,7 @@ export default function SelectGroupsExample() {
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Fruits</SelectLabel>
-          {['Apple', 'Banana', 'Blueberry'].map(item => (
+          {['Apple', 'Banana', 'Blueberry', 'Grapes', 'Pineapple'].map(item => (
             <SelectItem value={item.toLowerCase()}>{item}</SelectItem>
           ))}
         </SelectGroup>

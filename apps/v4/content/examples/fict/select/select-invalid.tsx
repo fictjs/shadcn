@@ -17,7 +17,7 @@ export default function SelectInvalidExample() {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {['Apple', 'Banana', 'Blueberry'].map(fruit => (
+            {['Apple', 'Banana', 'Blueberry', 'Grapes', 'Pineapple'].map(fruit => (
               <SelectItem value={fruit.toLowerCase()}>{fruit}</SelectItem>
             ))}
           </SelectGroup>

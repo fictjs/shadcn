@@ -3842,10 +3842,10 @@ test.describe("Fict shadcn website", () => {
     const expectedSources = [
       ["select-demo", '<SelectValue placeholder="Select a fruit" />'],
       ["select-align-item", "position={aligned ? 'item-aligned' : 'popper'}"],
-      ["select-groups", "<SelectLabel>Vegetables</SelectLabel>"],
+      ["select-groups", "<SelectLabel>Vegetables</SelectLabel>", "'Grapes', 'Pineapple'"],
       ["select-scrollable", "Indonesia Central Standard Time", "Chile Standard Time"],
       ["select-disabled", "<Select disabled>"],
-      ["select-invalid", 'aria-invalid="true"', "Please select a fruit."],
+      ["select-invalid", 'aria-invalid="true"', "Please select a fruit.", "'Grapes', 'Pineapple'"],
       ["select-rtl", "$state<keyof typeof translations>", "אוכמניה"],
     ] as const
     for (const [previewName, ...markers] of expectedSources) {
