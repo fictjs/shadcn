@@ -25,14 +25,14 @@ const components = [
   ],
   [
     'Progress',
-    'Displays an indicator showing the completion progress of a task.',
+    'Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.',
     '/docs/primitives/progress',
   ],
   ['Scroll-area', 'Visually or semantically separates content.', '/docs/primitives/scroll-area'],
-  ['Tabs', 'A set of layered content panels displayed one at a time.', '/docs/primitives/tabs'],
+  ['Tabs', 'A set of layered sections of content—known as tab panels—that are displayed one at a time.', '/docs/primitives/tabs'],
   [
     'Tooltip',
-    'A popup that displays information related to an element.',
+    'A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.',
     '/docs/primitives/tooltip',
   ],
 ]

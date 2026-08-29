@@ -3288,8 +3288,8 @@ test.describe("Fict shadcn website", () => {
     await expect(started).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
 
     const expectedSources = [
-      ["navigation-menu-demo", "Re-usable components built with Tailwind CSS.", "Alert Dialog", "Tooltip"],
-      ["navigation-menu-rtl", "$state<keyof typeof translations>", "כיצד להתקין תלויות ולבנות את האפליקציה שלך"],
+      ["navigation-menu-demo", "Re-usable components built with Tailwind CSS.", "Alert Dialog", "typically displayed as a progress bar.", "Tooltip"],
+      ["navigation-menu-rtl", "$state<keyof typeof translations>", "כיצד להתקין תלויות ולבנות את האפליקציה שלך", "טולטיפ", "חלון קופץ"],
     ] as const
     for (const [previewName, ...markers] of expectedSources) {
       const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
