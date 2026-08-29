@@ -22,7 +22,7 @@
   {
     "name": "avatar",
     "type": "ui-component",
-    "description": "Simple avatar wrapper"
+    "description": "Avatar primitives with badges, sizes, and groups"
   },
   {
     "name": "badge",

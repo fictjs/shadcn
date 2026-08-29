@@ -25,6 +25,12 @@ npx @fictjs/shadcn@latest add avatar
 
 <Steps>
 
+<Step>Install the runtime dependencies:</Step>
+
+```bash
+npm install @fictjs/radix-ui
+```
+
 <Step>Copy the Fict shadcn component into your project.</Step>
 
 <ComponentSource name="avatar" title="components/ui/avatar.tsx" />
@@ -37,7 +43,7 @@ npx @fictjs/shadcn@latest add avatar
 ## Usage
 
 ```tsx
-import * as Avatar from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 ```
 
 ## Examples

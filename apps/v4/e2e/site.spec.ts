@@ -697,6 +697,25 @@ test.describe("Fict shadcn website", () => {
     await expect(rtl.locator('[data-slot="avatar-group-count"]')).toHaveText("+3")
     await rtl.getByLabel("Preview language").selectOption("en")
     await expect(rtl.locator(".doc-avatar-demo-layout")).toHaveAttribute("dir", "ltr")
+
+    const expectedSources = [
+      ["avatar-demo", "<AvatarGroup", "<AvatarBadge", "<AvatarGroupCount>+3"],
+      ["avatar-basic", 'class="grayscale"'],
+      ["avatar-badge", "<AvatarBadge", "bg-green-600"],
+      ["avatar-badge-icon", "<PlusIcon />"],
+      ["avatar-group", "<AvatarGroup", "@maxleiter"],
+      ["avatar-group-count", "<AvatarGroupCount>+3"],
+      ["avatar-group-count-icon", "<AvatarGroupCount><PlusIcon"],
+      ["avatar-size", 'size="sm"', 'size="lg"'],
+      ["avatar-dropdown", "<DropdownMenuTrigger asChild>", "Log out"],
+      ["avatar-rtl", "$state<keyof typeof translations>", "translations[language]"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("badge docs match Fict variants, icons, colors, link, and RTL behavior", async ({ page }) => {

@@ -251,6 +251,27 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     }
   })
 
+  it('keeps every Avatar source aligned with its rendered preview', () => {
+    expectCuratedFamily('avatar')
+
+    const loadAvatar = (previewName: string) => loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: 'avatar',
+      previewName,
+    })!
+
+    expect(loadAvatar('avatar-demo').match(/<Avatar(?:\s|>)/g)).toHaveLength(5)
+    expect(loadAvatar('avatar-badge')).toContain('<AvatarBadge class="bg-green-600 dark:bg-green-800" />')
+    expect(loadAvatar('avatar-badge-icon')).toContain('<AvatarBadge><PlusIcon /></AvatarBadge>')
+    expect(loadAvatar('avatar-group').match(/<Avatar(?:\s|>)/g)).toHaveLength(3)
+    expect(loadAvatar('avatar-group-count')).toContain('<AvatarGroupCount>+3</AvatarGroupCount>')
+    expect(loadAvatar('avatar-group-count-icon')).toContain('<AvatarGroupCount><PlusIcon /></AvatarGroupCount>')
+    expect(loadAvatar('avatar-size')).toContain('<Avatar size="sm">')
+    expect(loadAvatar('avatar-size')).toContain('<Avatar size="lg">')
+    expect(loadAvatar('avatar-dropdown')).toContain('<DropdownMenuTrigger asChild>')
+    expect(loadAvatar('avatar-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],

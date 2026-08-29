@@ -82,6 +82,20 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain('buttonVariants({ variant })')
   })
 
+  it('renders the Avatar API used by website examples', () => {
+    const entry = getBuiltinComponent('avatar')
+    expect(entry?.dependencies).toContain('@fictjs/radix-ui')
+    const source = renderRegistryEntryFiles(entry!, DEFAULT_CONFIG)
+      .map(file => file.content)
+      .join('\n')
+
+    expect(source).toContain("import { Avatar as AvatarPrimitive } from '@fictjs/radix-ui'")
+    expect(source).toContain("size?: 'default' | 'sm' | 'lg'")
+    expect(source).toContain("data-slot='avatar-badge'")
+    expect(source).toContain('export function AvatarGroup')
+    expect(source).toContain('export function AvatarGroupCount')
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')

@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "avatar-group-count",
   "type": "registry:example",
-  "description": "Simple avatar wrapper example for Fict",
+  "description": "Avatar primitives with badges, sizes, and groups example for Fict",
   "dependencies": [],
   "registryDependencies": [
     "avatar"
@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/avatar-group-count.tsx",
-      "content": "import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\n\nexport default function AvatarGroupCountExample() {\n  return (\n    <Avatar><AvatarImage src=\"https://github.com/shadcn.png\" alt=\"Avatar\" /><AvatarFallback>CN</AvatarFallback></Avatar>\n  )\n}\n",
+      "content": "import { Avatar, AvatarFallback, AvatarGroup, AvatarGroupCount, AvatarImage } from '@/components/ui/avatar'\n\nexport default function AvatarGroupCountExample() {\n  return (\n    <AvatarGroup class=\"grayscale\">\n      <Avatar><AvatarImage src=\"https://github.com/shadcn.png\" alt=\"@shadcn\" /><AvatarFallback>CN</AvatarFallback></Avatar>\n      <Avatar><AvatarImage src=\"https://github.com/maxleiter.png\" alt=\"@maxleiter\" /><AvatarFallback>LR</AvatarFallback></Avatar>\n      <Avatar><AvatarImage src=\"https://github.com/evilrabbit.png\" alt=\"@evilrabbit\" /><AvatarFallback>ER</AvatarFallback></Avatar>\n      <AvatarGroupCount>+3</AvatarGroupCount>\n    </AvatarGroup>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

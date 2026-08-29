@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "avatar-rtl",
   "type": "registry:example",
-  "description": "Simple avatar wrapper example for Fict",
+  "description": "Avatar primitives with badges, sizes, and groups example for Fict",
   "dependencies": [],
   "registryDependencies": [
     "avatar"
@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/avatar-rtl.tsx",
-      "content": "import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\n\nexport default function AvatarRtlExample() {\n  return (\n    <Avatar dir=\"rtl\"><AvatarImage src=\"https://github.com/shadcn.png\" alt=\"Avatar\" /><AvatarFallback>CN</AvatarFallback></Avatar>\n  )\n}\n",
+      "content": "import { Avatar, AvatarBadge, AvatarFallback, AvatarGroup, AvatarGroupCount, AvatarImage } from '@/components/ui/avatar'\n\nconst translations = { ar: '+٣', he: '+3', en: '+3' } as const\n\nexport default function AvatarRtlExample() {\n  let language = $state<keyof typeof translations>('ar')\n  const direction = () => language === 'en' ? 'ltr' : 'rtl'\n\n  return (\n    <div class=\"grid gap-4\">\n      <select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof translations }}><option value=\"ar\">Arabic (العربية)</option><option value=\"he\">Hebrew (עברית)</option><option value=\"en\">English</option></select>\n      <div class=\"flex flex-wrap items-center gap-6 md:gap-12\" dir={direction()}>\n        <Avatar><AvatarImage class=\"grayscale\" src=\"https://github.com/shadcn.png\" alt=\"@shadcn\" /><AvatarFallback>CN</AvatarFallback></Avatar>\n        <Avatar><AvatarImage src=\"https://github.com/evilrabbit.png\" alt=\"@evilrabbit\" /><AvatarFallback>ER</AvatarFallback><AvatarBadge class=\"bg-green-600 dark:bg-green-800\" /></Avatar>\n        <AvatarGroup class=\"grayscale\">\n          <Avatar><AvatarImage src=\"https://github.com/shadcn.png\" alt=\"@shadcn\" /><AvatarFallback>CN</AvatarFallback></Avatar>\n          <Avatar><AvatarImage src=\"https://github.com/maxleiter.png\" alt=\"@maxleiter\" /><AvatarFallback>LR</AvatarFallback></Avatar>\n          <Avatar><AvatarImage src=\"https://github.com/evilrabbit.png\" alt=\"@evilrabbit\" /><AvatarFallback>ER</AvatarFallback></Avatar>\n          <AvatarGroupCount>{translations[language]}</AvatarGroupCount>\n        </AvatarGroup>\n      </div>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "avatar-size",
   "type": "registry:example",
-  "description": "Simple avatar wrapper example for Fict",
+  "description": "Avatar primitives with badges, sizes, and groups example for Fict",
   "dependencies": [],
   "registryDependencies": [
     "avatar"
@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/avatar-size.tsx",
-      "content": "import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\n\nexport default function AvatarSizeExample() {\n  return (\n    <Avatar><AvatarImage src=\"https://github.com/shadcn.png\" alt=\"Avatar\" /><AvatarFallback>CN</AvatarFallback></Avatar>\n  )\n}\n",
+      "content": "import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\n\nexport default function AvatarSizeExample() {\n  return (\n    <div class=\"flex items-center gap-2 grayscale\">\n      <Avatar size=\"sm\"><AvatarImage src=\"https://github.com/shadcn.png\" alt=\"@shadcn small\" /><AvatarFallback>CN</AvatarFallback></Avatar>\n      <Avatar><AvatarImage src=\"https://github.com/shadcn.png\" alt=\"@shadcn default\" /><AvatarFallback>CN</AvatarFallback></Avatar>\n      <Avatar size=\"lg\"><AvatarImage src=\"https://github.com/shadcn.png\" alt=\"@shadcn large\" /><AvatarFallback>CN</AvatarFallback></Avatar>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
