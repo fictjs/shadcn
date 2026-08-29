@@ -82,6 +82,19 @@ describe('builtin registry render completeness', () => {
     expect(source).not.toContain('Sheet as Drawer')
   })
 
+  it('renders the progressive Chart API used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('chart')!, DEFAULT_CONFIG)
+      .map(file => file.content)
+      .join('\n')
+
+    expect(source).toContain('secondaryValue?: number')
+    expect(source).toContain('showGrid?: boolean')
+    expect(source).toContain('showAxis?: boolean')
+    expect(source).toContain('showTooltip?: boolean')
+    expect(source).toContain("data-slot='bar-sparkline'")
+    expect(source).toContain('export function ChartTooltipContent')
+  })
+
   it('renders the Alert Dialog API used by website examples', () => {
     const entry = getBuiltinComponent('alert-dialog')
     const source = renderRegistryEntryFiles(entry!, DEFAULT_CONFIG)

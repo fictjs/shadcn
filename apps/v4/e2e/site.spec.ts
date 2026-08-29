@@ -1264,6 +1264,24 @@ test.describe("Fict shadcn website", () => {
     await rtl.getByLabel("Preview language").selectOption("en")
     await expect(charts.nth(6)).toHaveAttribute("dir", "ltr")
     await expect(charts.nth(6).locator(".doc-chart-axis text").first()).toHaveText("Jun")
+
+    const expectedSources = [
+      ["chart-demo", "$state<'desktop' | 'mobile'>('desktop')", "showGrid showAxis showTooltip"],
+      ["chart-example", "secondaryValue: 80"],
+      ["chart-example-grid", "showGrid"],
+      ["chart-example-axis", "showGrid showAxis"],
+      ["chart-example-tooltip", "showGrid showAxis showTooltip"],
+      ["chart-example-legend", "<ChartLegend items="],
+      ["chart-tooltip", "<ChartTooltipContent", "Page Views"],
+      ["chart-rtl", "$state<keyof typeof translations>('ar')", "dir={text().dir}"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+      await expect(source).not.toContainText("<h3>Example")
+    }
   })
 
   test("combobox docs match Fict controls, filtering, selection, keyboard, popup, and RTL", async ({ page }) => {

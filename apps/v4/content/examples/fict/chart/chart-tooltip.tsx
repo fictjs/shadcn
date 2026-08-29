@@ -1,7 +1,12 @@
-import { BarSparkline, ChartContainer, ChartLegend } from '@/components/ui/chart'
+import { ChartTooltipContent } from '@/components/ui/chart'
 
 export default function ChartTooltipExample() {
   return (
-    <ChartContainer><h3>Tooltip</h3><BarSparkline data={[{ label: "Jan", value: 42 }, { label: "Feb", value: 68 }, { label: "Mar", value: 51 }]} /><ChartLegend items={[{ label: "Visitors", colorClass: "bg-blue-500" }]} /></ChartContainer>
+    <div class="grid grid-cols-2 gap-4">
+      <ChartTooltipContent label="Page Views" items={[{ label: 'Desktop', value: 186 }, { label: 'Mobile', value: 80 }]} />
+      <ChartTooltipContent items={[{ label: 'Chrome', value: '1,286' }, { label: 'Firefox', value: '1,000' }]} />
+      <ChartTooltipContent label="Page Views" items={[{ label: 'Desktop', value: '12,486' }]} />
+      <ChartTooltipContent items={[{ label: 'Chrome', value: '1,286' }]} />
+    </div>
   )
 }

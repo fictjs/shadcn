@@ -489,6 +489,27 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadTable('table-rtl')).toContain("headings: ['חשבונית', 'סטטוס', 'שיטה', 'סכום']")
   })
 
+  it('keeps every Chart source aligned with its rendered preview', () => {
+    expectCuratedFamily('chart')
+
+    const loadChart = (previewName: string) => loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: 'chart',
+      previewName,
+    })!
+
+    expect(loadChart('chart-demo')).toContain("let series = $state<'desktop' | 'mobile'>('desktop')")
+    expect(loadChart('chart-demo')).toContain('<BarSparkline data={data} showGrid showAxis showTooltip')
+    expect(loadChart('chart-example')).not.toContain('showGrid')
+    expect(loadChart('chart-example-grid')).toContain('showGrid primaryLabel="Desktop"')
+    expect(loadChart('chart-example-axis')).toContain('showGrid showAxis')
+    expect(loadChart('chart-example-tooltip')).toContain('showGrid showAxis showTooltip')
+    expect(loadChart('chart-example-legend')).toContain('<ChartLegend items=')
+    expect(loadChart('chart-tooltip').match(/<ChartTooltipContent/g)).toHaveLength(4)
+    expect(loadChart('chart-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadChart('chart-rtl')).toContain('dir={text().dir} showGrid showAxis showTooltip')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

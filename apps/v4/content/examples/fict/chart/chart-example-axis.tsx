@@ -1,7 +1,11 @@
-import { BarSparkline, ChartContainer, ChartLegend } from '@/components/ui/chart'
+import { BarSparkline, ChartContainer } from '@/components/ui/chart'
+
+const data = [
+  { label: 'Jan', value: 186, secondaryValue: 80 }, { label: 'Feb', value: 305, secondaryValue: 200 },
+  { label: 'Mar', value: 237, secondaryValue: 120 }, { label: 'Apr', value: 73, secondaryValue: 190 },
+  { label: 'May', value: 209, secondaryValue: 130 }, { label: 'Jun', value: 214, secondaryValue: 140 },
+]
 
 export default function ChartExampleAxisExample() {
-  return (
-    <ChartContainer><h3>Example Axis</h3><BarSparkline data={[{ label: "Jan", value: 42 }, { label: "Feb", value: 68 }, { label: "Mar", value: 51 }]} /><ChartLegend items={[{ label: "Visitors", colorClass: "bg-blue-500" }]} /></ChartContainer>
-  )
+  return <ChartContainer><BarSparkline data={data} showGrid showAxis primaryLabel="Desktop" secondaryLabel="Mobile" /></ChartContainer>
 }

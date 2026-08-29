@@ -532,6 +532,7 @@ const chartTemplate: TemplateFn = context => `import { cn } from '${context.impo
 export interface ChartPoint {
   label: string
   value: number
+  secondaryValue?: number
 }
 
 export interface ChartLegendItem {
@@ -542,12 +543,27 @@ export interface ChartLegendItem {
 type DivProps = JSX.IntrinsicElements['div']
 
 type SparklineProps = {
-  data: ChartPoint[]
+  data: ChartPoint[] | (() => ChartPoint[])
   class?: string
+  dir?: 'ltr' | 'rtl'
+  showGrid?: boolean
+  showAxis?: boolean
+  showTooltip?: boolean
+  primaryLabel?: string
+  secondaryLabel?: string
 }
 
 type LegendProps = DivProps & {
   items: ChartLegendItem[]
+}
+
+type TooltipContentProps = DivProps & {
+  label?: string
+  items: Array<{ label: string; value: string | number; colorClass?: string }>
+}
+
+function readData(data: SparklineProps['data']): ChartPoint[] {
+  return typeof data === 'function' ? data() : data
 }
 
 function maxValue(data: ChartPoint[]): number {
@@ -562,19 +578,21 @@ export function ChartContainer(props: DivProps) {
 }
 
 export function BarSparkline(props: SparklineProps) {
-  const max = maxValue(props.data)
-  return (
-    <div class={cn('flex h-40 items-end gap-2', props.class)}>
-      {props.data.map(point => (
-        <div class='flex flex-1 flex-col items-center gap-2'>
-          <div class='w-full rounded-sm bg-primary/20'>
-            <div class='w-full rounded-sm bg-primary transition-[height]' style={{ height: String(Math.max((point.value / max) * 128, 4)) + 'px' }} />
+  return () => {
+    const data = readData(props.data)
+    const max = maxValue(data.flatMap(point => [point, { ...point, value: point.secondaryValue ?? 0 }]))
+    return (
+      <div data-slot='bar-sparkline' class={cn('relative flex h-40 items-end gap-2', props.showGrid && 'bg-[linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:100%_25%]', props.class)} dir={props.dir}>
+        {data.map(point => (
+          <div class='group relative flex h-full flex-1 items-end justify-center gap-1' title={props.showTooltip ? point.label + ': ' + (props.primaryLabel ?? 'Value') + ' ' + String(point.value) + (point.secondaryValue === undefined ? '' : ', ' + (props.secondaryLabel ?? 'Secondary') + ' ' + String(point.secondaryValue)) : undefined}>
+            <div class='w-full max-w-8 rounded-t-sm bg-primary transition-[height]' style={{ height: String(Math.max((point.value / max) * 128, 4)) + 'px' }} />
+            {point.secondaryValue === undefined ? null : <div class='w-full max-w-8 rounded-t-sm bg-primary/45 transition-[height]' style={{ height: String(Math.max((point.secondaryValue / max) * 128, 4)) + 'px' }} />}
+            {props.showAxis ? <span class='absolute -bottom-6 text-xs text-muted-foreground'>{point.label}</span> : null}
           </div>
-          <span class='text-xs text-muted-foreground'>{point.label}</span>
-        </div>
-      ))}
-    </div>
-  )
+        ))}
+      </div>
+    )
+  }
 }
 
 export function ChartLegend(props: LegendProps) {
@@ -588,6 +606,16 @@ export function ChartLegend(props: LegendProps) {
           {item.label}
         </span>
       ))}
+    </div>
+  )
+}
+
+export function ChartTooltipContent(props: TooltipContentProps) {
+  const { class: className, label, items, ...rest } = props
+  return (
+    <div role='tooltip' class={cn('grid min-w-32 gap-1.5 rounded-lg border bg-background px-3 py-2 text-xs shadow-xl', className)} {...rest}>
+      {label ? <strong>{label}</strong> : null}
+      {items.map(item => <span class='flex items-center justify-between gap-4'><span class='inline-flex items-center gap-2'><i class={cn('h-2 w-2 rounded-sm bg-primary', item.colorClass)} />{item.label}</span><b>{item.value}</b></span>)}
     </div>
   )
 }
