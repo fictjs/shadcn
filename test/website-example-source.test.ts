@@ -920,6 +920,14 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(source).toContain('endMonth={new Date(2026, 8, 1)}')
   })
 
+  it('keeps the Toast source aligned with its rendered preview', () => {
+    expectCuratedFamily('toast')
+    const source = loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'toast', previewName: 'toast-demo' })!
+    expect(source).toContain('<ToastTitle>Event created</ToastTitle>')
+    expect(source).toContain('Sunday, August 29 at 9:00 AM')
+    expect(source).toContain('<ToastAction altText="Undo">Undo</ToastAction>')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!
