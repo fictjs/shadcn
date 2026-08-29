@@ -1065,7 +1065,12 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
       expect(source, previewName).toContain(markers[previewName])
       expect(source, previewName).not.toContain('Fict field composition.')
     }
+    expect(loadField('field-demo')).toContain('Enter your 16-digit card number')
+    expect(loadField('field-demo')).toContain("'11', '12'")
+    expect(loadField('field-checkbox')).toContain('You can access them from other devices.')
     expect(loadField('field-rtl')).toContain('אמצעי תשלום')
+    expect(loadField('field-rtl')).toContain('أدخل رقم البطاقة المكون من 16 رقمًا')
+    expect(loadField('field-rtl')).toContain('<FieldLabel for="cvv-rtl">CVV</FieldLabel>')
   })
 
   it('keeps every Item source aligned with its rendered preview', () => {

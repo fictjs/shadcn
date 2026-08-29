@@ -2238,18 +2238,18 @@ test.describe("Fict shadcn website", () => {
     expect(responsiveInputBox?.width).toBe(responsiveFieldBox?.width)
 
     const expectedSources = [
-      ["field-demo", "<FieldLegend>Payment Method</FieldLegend>", "Same as shipping address"],
+      ["field-demo", "<FieldLegend>Payment Method</FieldLegend>", "Enter your 16-digit card number", "'11', '12'"],
       ["field-input", "Choose a unique username for your account."],
       ["field-textarea", "Your feedback helps us improve..."],
       ["field-select", "Engineering", "Customer Support"],
       ["field-slider", "$state([200, 800])", "max={1000}"],
       ["field-fieldset", "Address Information", "90502"],
-      ["field-checkbox", "Hard disks", "Sync Desktop &amp; Documents folders"],
+      ["field-checkbox", "Hard disks", "Sync Desktop &amp; Documents folders", "You can access them from other devices."],
       ["field-radio", "Yearly ($99.99/year)"],
       ["field-switch", "Multi-factor authentication"],
       ["field-choice-card", "Run GPU workloads on a K8s cluster."],
       ["field-group", "Get notified when ChatGPT responds"],
-      ["field-rtl", "$state<keyof typeof translations>", "אמצעי תשלום"],
+      ["field-rtl", "$state<keyof typeof translations>", "אמצעי תשלום", "أدخل رقم البطاقة المكون من 16 رقمًا", "CVV"],
       ["field-responsive", 'orientation="responsive"', "Provide your full name for identification"],
     ] as const
     for (const [previewName, ...markers] of expectedSources) {
