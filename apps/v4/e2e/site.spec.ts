@@ -3127,6 +3127,17 @@ test.describe("Fict shadcn website", () => {
     await expect(page.locator("html")).toHaveClass(/dark/)
     await triggers.nth(0).click()
     await expect(started).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+
+    const expectedSources = [
+      ["navigation-menu-demo", "Re-usable components built with Tailwind CSS.", "Alert Dialog", "Tooltip"],
+      ["navigation-menu-rtl", "$state<keyof typeof translations>", "כיצד להתקין תלויות ולבנות את האפליקציה שלך"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("pagination docs match Fict layouts, links, selector, focus, and RTL", async ({ page }) => {

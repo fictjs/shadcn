@@ -802,6 +802,15 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadPopover('popover-rtl')).toContain('dir={text().dir}')
   })
 
+  it('keeps every Navigation Menu source aligned with its rendered preview', () => {
+    expectCuratedFamily('navigation-menu')
+    const loadNavigationMenu = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'navigation-menu', previewName })!
+    expect(loadNavigationMenu('navigation-menu-demo')).toContain('A popup that displays information related to an element.')
+    expect(loadNavigationMenu('navigation-menu-demo')).toContain('<NavigationMenuTrigger>Getting started</NavigationMenuTrigger>')
+    expect(loadNavigationMenu('navigation-menu-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadNavigationMenu('navigation-menu-rtl')).toContain('dir={text().dir}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!
