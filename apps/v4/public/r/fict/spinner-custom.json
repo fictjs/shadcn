@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/spinner-custom.tsx",
-      "content": "import { Spinner } from '@/components/ui/spinner'\n\nexport default function SpinnerCustomExample() {\n  return (\n    <div class=\"flex items-center gap-2\"><Spinner /><span>Custom</span></div>\n  )\n}\n",
+      "content": "import { Spinner } from '@/components/ui/spinner'\n\nexport default function SpinnerCustomExample() { return <Spinner aria-label=\"Loading\" /> }\n",
       "type": "registry:page"
     }
   ]

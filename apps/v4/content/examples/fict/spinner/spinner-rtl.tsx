@@ -1,7 +1,5 @@
 import { Spinner } from '@/components/ui/spinner'
 
-export default function SpinnerRtlExample() {
-  return (
-    <div dir="rtl" class="flex items-center gap-2"><Spinner /><span>Rtl</span></div>
-  )
-}
+const translations = { ar: ['جاري معالجة الدفع...', '١٠٠.٠٠ دولار'], he: ['מעבד תשלום...', '$100.00'], en: ['Processing payment...', '$100.00'] } as const
+
+export default function SpinnerRtlExample() { let language = $state<keyof typeof translations>('ar'); const direction = () => language === 'en' ? 'ltr' : 'rtl'; return <div class="grid gap-4"><select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof translations }}><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><div class="flex w-80 items-center gap-3 rounded-lg border p-4" dir={direction()}><Spinner /><div class="grid"><strong>{translations[language][0]}</strong><span>{translations[language][1]}</span></div></div></div> }

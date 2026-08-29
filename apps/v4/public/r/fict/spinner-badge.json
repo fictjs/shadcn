@@ -5,12 +5,13 @@
   "description": "Animated spinner indicator with size variants example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "badge",
     "spinner"
   ],
   "files": [
     {
       "path": "src/examples/spinner-badge.tsx",
-      "content": "import { Spinner } from '@/components/ui/spinner'\n\nexport default function SpinnerBadgeExample() {\n  return (\n    <div class=\"flex items-center gap-2\"><Spinner /><span>Badge</span></div>\n  )\n}\n",
+      "content": "import { Badge } from '@/components/ui/badge'\nimport { Spinner } from '@/components/ui/spinner'\n\nexport default function SpinnerBadgeExample() { return <div class=\"flex gap-2\"><Badge><Spinner size=\"sm\" />Syncing</Badge><Badge variant=\"secondary\"><Spinner size=\"sm\" />Updating</Badge><Badge variant=\"outline\"><Spinner size=\"sm\" />Processing</Badge></div> }\n",
       "type": "registry:page"
     }
   ]

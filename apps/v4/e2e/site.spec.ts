@@ -3763,6 +3763,23 @@ test.describe("Fict shadcn website", () => {
     await expect(rtl).toContainText("Processing payment...")
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(rtl.locator(".doc-spinner-item")).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+
+    const expectedSources = [
+      ["spinner-demo", "Processing payment...", "$100.00"],
+      ["spinner-custom", 'aria-label="Loading"'],
+      ["spinner-size", 'size="sm"', 'size="lg"', 'class="size-8"'],
+      ["spinner-button", "Loading...", "Please wait", "Processing"],
+      ["spinner-badge", '<Badge variant="secondary">', '<Badge variant="outline">'],
+      ["spinner-input-group", "<textarea", "Validating..."],
+      ["spinner-empty", "Do not refresh the page."],
+      ["spinner-rtl", "$state<keyof typeof translations>", "מעבד תשלום..."],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("switch docs match Fict fields, cards, disabled, invalid, sizes, keyboard, and RTL", async ({ page }) => {

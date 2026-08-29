@@ -5,12 +5,13 @@
   "description": "Animated spinner indicator with size variants example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "spinner"
   ],
   "files": [
     {
       "path": "src/examples/spinner-empty.tsx",
-      "content": "import { Spinner } from '@/components/ui/spinner'\n\nexport default function SpinnerEmptyExample() {\n  return (\n    <div class=\"flex items-center gap-2\"><Spinner /><span>Empty</span></div>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Spinner } from '@/components/ui/spinner'\n\nexport default function SpinnerEmptyExample() { return <div class=\"grid justify-items-center gap-3 text-center\"><Spinner /><h3 class=\"font-semibold\">Processing your request</h3><p class=\"text-sm text-muted-foreground\">Please wait while we process your request. Do not refresh the page.</p><Button variant=\"outline\">Cancel</Button></div> }\n",
       "type": "registry:page"
     }
   ]

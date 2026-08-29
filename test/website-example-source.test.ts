@@ -351,6 +351,18 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(rtl).toContain('<Label for="label-terms-rtl">{translations[language]}</Label>')
   })
 
+  it('keeps every Spinner source aligned with its rendered preview', () => {
+    expectCuratedFamily('spinner')
+    const loadSpinner = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'spinner', previewName })!
+    expect(loadSpinner('spinner-demo')).toContain('Processing payment...')
+    expect(loadSpinner('spinner-size').match(/<Spinner(?:\s|\/)/g)).toHaveLength(4)
+    expect(loadSpinner('spinner-button').match(/<Button(?:\s|>)/g)).toHaveLength(3)
+    expect(loadSpinner('spinner-badge').match(/<Badge(?:\s|>)/g)).toHaveLength(3)
+    expect(loadSpinner('spinner-input-group')).toContain('<textarea')
+    expect(loadSpinner('spinner-empty')).toContain('Do not refresh the page.')
+    expect(loadSpinner('spinner-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],
