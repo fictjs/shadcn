@@ -5,12 +5,13 @@
   "description": "Drawer-style sheet based on dialog primitives example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "button",
     "sheet"
   ],
   "files": [
     {
       "path": "src/examples/sheet-no-close-button.tsx",
-      "content": "import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'\n\nexport default function SheetNoCloseButtonExample() {\n  return (\n    <Sheet><SheetTrigger>Open No Close Button</SheetTrigger><SheetContent><SheetHeader><SheetTitle>No Close Button</SheetTitle><SheetDescription>Edit your settings.</SheetDescription></SheetHeader><SheetFooter><SheetClose>Close</SheetClose></SheetFooter></SheetContent></Sheet>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'\n\nexport default function SheetNoCloseButtonExample() {\n  return (\n    <Sheet>\n      <SheetTrigger asChild><Button variant=\"outline\">Open Sheet</Button></SheetTrigger>\n      <SheetContent>\n        <SheetHeader>\n          <SheetTitle>No Close Button</SheetTitle>\n          <SheetDescription>\n            This sheet doesn't have a close button in the top-right corner. Click outside to close.\n          </SheetDescription>\n        </SheetHeader>\n      </SheetContent>\n    </Sheet>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

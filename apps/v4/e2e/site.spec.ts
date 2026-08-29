@@ -3572,6 +3572,21 @@ test.describe("Fict shadcn website", () => {
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await demoTrigger.click()
     await expect(page.getByRole("dialog", { name: "Edit profile" })).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+    await page.keyboard.press("Escape")
+
+    const expectedSources = [
+      ["sheet-demo", '<Input id="sheet-demo-name" value="Pedro Duarte" />', "Save changes"],
+      ["sheet-side", "const sides = ['top', 'right', 'bottom', 'left'] as const", "<SheetContent side={side}"],
+      ["sheet-no-close-button", "This sheet doesn't have a close button", "<SheetContent>"],
+      ["sheet-rtl", "$state<keyof typeof translations>('ar')", "side={text().dir === 'rtl' ? 'left' : 'right'}"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+      await expect(source).not.toContainText("Open Demo")
+    }
   })
 
   test("sidebar docs match Fict layout, navigation, collapse, shortcut, and dark theme", async ({ page }) => {

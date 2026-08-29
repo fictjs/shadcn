@@ -380,6 +380,25 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadSeparator('separator-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
   })
 
+  it('keeps every Sheet source aligned with its rendered preview', () => {
+    expectCuratedFamily('sheet')
+
+    const loadSheet = (previewName: string) => loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: 'sheet',
+      previewName,
+    })!
+
+    expect(loadSheet('sheet-demo')).toContain('<Input id="sheet-demo-name" value="Pedro Duarte" />')
+    expect(loadSheet('sheet-demo')).toContain('<SheetClose asChild><Button variant="outline">Close</Button></SheetClose>')
+    expect(loadSheet('sheet-side')).toContain("const sides = ['top', 'right', 'bottom', 'left'] as const")
+    expect(loadSheet('sheet-side')).toContain('<SheetContent side={side}')
+    expect(loadSheet('sheet-side')).toContain('Array.from({ length: 10 }')
+    expect(loadSheet('sheet-no-close-button')).not.toContain('<SheetClose')
+    expect(loadSheet('sheet-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadSheet('sheet-rtl')).toContain("side={text().dir === 'rtl' ? 'left' : 'right'}")
+  })
+
   it('keeps every Empty source aligned with its rendered preview', () => {
     expectCuratedFamily('empty')
     const loadEmpty = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'empty', previewName })!
