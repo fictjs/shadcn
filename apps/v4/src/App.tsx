@@ -4367,6 +4367,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
     <DocProgressPreview name={props.name} />
   ) : family === "radio-group" ? (
     <DocRadioGroupPreview name={props.name} />
+  ) : family === "range-calendar" ? (
+    <DocRangeCalendarPreview name={props.name} />
   ) : family === "resizable" ? (
     <DocResizablePreview name={props.name} />
   ) : family === "scroll-area" ? (
@@ -6285,6 +6287,11 @@ function DocCalendarPreview(props: { name: string }) {
   return isRtl ? <div class="doc-rtl-preview-shell"><div class="doc-rtl-preview-toolbar" dir="ltr"><select aria-label="Preview language" value="ar" data-doc-rtl-language><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><button type="button" class="doc-rtl-info-button" aria-label="Toggle language information"><RtlInfoIcon /></button></div><div class="doc-rtl-preview doc-calendar-rtl-preview" dir="rtl" data-lang="ar">{calendar}</div></div> : calendar
 }
 
+function DocRangeCalendarPreview(props: { name: string }) {
+  untrack(() => props.name)
+  return <div data-doc-range-calendar><DocCalendar variant="range" year={2026} month={7} months={2} /></div>
+}
+
 function DocCalendar(props: { variant: string; year: number; month: number; selectedDay?: number; rangeEnd?: number; months?: number; dropdown?: boolean; showWeekNumbers?: boolean }) {
   const variant = untrack(() => props.variant)
   const year = untrack(() => props.year)
@@ -7735,6 +7742,7 @@ function getDocPreviewFamily(name: string): string {
     "alert-dialog",
     "scroll-area",
     "radio-group",
+    "range-calendar",
     "date-picker",
     "aspect-ratio",
     "toggle-group",

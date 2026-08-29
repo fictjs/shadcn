@@ -2275,6 +2275,23 @@ test.describe("Fict shadcn website", () => {
     await expect(source).toContainText("<FormMessage />")
   })
 
+  test("range calendar docs render the configured Fict months and matching source", async ({ page }) => {
+    await page.goto("/docs/components/fict/range-calendar")
+    await waitForClientReady(page)
+
+    const preview = page.locator('[data-doc-preview-name="range-calendar-demo"]')
+    await expect(preview).not.toContainText("Registry preview surface")
+    const calendar = preview.locator("[data-doc-range-calendar]")
+    await expect(calendar.locator("[data-doc-calendar]")).toHaveAttribute("data-calendar-mode", "range")
+    await expect(calendar.locator("[data-doc-calendar-caption]")).toHaveText(["August 2026", "September 2026"])
+    await expect(calendar.locator('[aria-selected="true"]')).toHaveCount(0)
+
+    await preview.getByRole("button", { name: "View Code" }).click()
+    const source = preview.locator("[data-doc-preview-full-code]")
+    await expect(source).toContainText("startMonth={new Date(2026, 7, 1)}")
+    await expect(source).toContainText("endMonth={new Date(2026, 8, 1)}")
+  })
+
   test("hover card docs match Fict delays, geometry, sides, pointer transit, focus, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/fict/hover-card")
