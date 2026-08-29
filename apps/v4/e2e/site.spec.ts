@@ -2650,6 +2650,16 @@ test.describe("Fict shadcn website", () => {
     await page.keyboard.press("Tab")
     await expect(checkbox).toBeFocused()
     await expect(checkbox).toHaveCSS("box-shadow", /3px/)
+
+    for (const [previewName, markers] of [
+      ["label-demo", ['<Checkbox id="label-terms" />', '<Label for="label-terms">Accept terms and conditions</Label>']],
+      ["label-rtl", ["$state<keyof typeof translations>", '<Label for="label-terms-rtl">']],
+    ] as const) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("menubar docs match Fict menus, state, submenus, keyboard navigation, icons, and RTL", async ({ page }) => {

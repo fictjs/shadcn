@@ -341,6 +341,16 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadKbd('kbd-rtl')).toContain("let language = $state<'ar' | 'he' | 'en'>('ar')")
   })
 
+  it('keeps every Label source aligned with its rendered preview', () => {
+    expectCuratedFamily('label')
+    const demo = loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'label', previewName: 'label-demo' })!
+    const rtl = loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'label', previewName: 'label-rtl' })!
+    expect(demo).toContain('<Checkbox id="label-terms" />')
+    expect(demo).toContain('<Label for="label-terms">Accept terms and conditions</Label>')
+    expect(rtl).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(rtl).toContain('<Label for="label-terms-rtl">{translations[language]}</Label>')
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],

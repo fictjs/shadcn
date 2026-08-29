@@ -5,12 +5,13 @@
   "description": "Form label wrapper example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "checkbox",
     "label"
   ],
   "files": [
     {
       "path": "src/examples/label-rtl.tsx",
-      "content": "import { Label } from '@/components/ui/label'\n\nexport default function LabelRtlExample() {\n  return (\n    <Label dir=\"rtl\" for=\"example\">Rtl<input id=\"example\" class=\"ml-2 rounded border\" /></Label>\n  )\n}\n",
+      "content": "import { Checkbox } from '@/components/ui/checkbox'\nimport { Label } from '@/components/ui/label'\n\nconst translations = { ar: 'قبول الشروط والأحكام', he: 'קבל תנאים והגבלות', en: 'Accept terms and conditions' } as const\n\nexport default function LabelRtlExample() {\n  let language = $state<keyof typeof translations>('ar')\n  const direction = () => language === 'en' ? 'ltr' : 'rtl'\n  return <div class=\"grid gap-4\"><select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof translations }}><option value=\"ar\">Arabic (العربية)</option><option value=\"he\">Hebrew (עברית)</option><option value=\"en\">English</option></select><div class=\"flex items-center gap-2\" dir={direction()}><Checkbox id=\"label-terms-rtl\" /><Label for=\"label-terms-rtl\">{translations[language]}</Label></div></div>\n}\n",
       "type": "registry:page"
     }
   ]
