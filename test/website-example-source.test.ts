@@ -373,6 +373,18 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadSeparator('separator-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
   })
 
+  it('keeps every Empty source aligned with its rendered preview', () => {
+    expectCuratedFamily('empty')
+    const loadEmpty = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'empty', previewName })!
+    expect(loadEmpty('empty-demo')).toContain('No Projects Yet')
+    expect(loadEmpty('empty-outline')).toContain('Cloud Storage Empty')
+    expect(loadEmpty('empty-background')).toContain('No Notifications')
+    expect(loadEmpty('empty-avatar')).toContain('<Avatar size="lg">')
+    expect(loadEmpty('empty-avatar-group').match(/<Avatar size="lg">/g)).toHaveLength(3)
+    expect(loadEmpty('empty-input-group')).toContain('aria-label="Search pages"')
+    expect(loadEmpty('empty-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],

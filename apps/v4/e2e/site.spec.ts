@@ -1944,6 +1944,22 @@ test.describe("Fict shadcn website", () => {
     await rtl.getByLabel("Preview language").selectOption("en")
     await expect(empty).toHaveAttribute("dir", "ltr")
     await expect(rtl.getByRole("button", { name: "Create Project" })).toBeVisible()
+
+    const expectedSources = [
+      ["empty-demo", "No Projects Yet", "Create Project"],
+      ["empty-outline", "Cloud Storage Empty", "Upload Files"],
+      ["empty-background", "No Notifications"],
+      ["empty-avatar", '<Avatar size="lg">', "User Offline"],
+      ["empty-avatar-group", "<AvatarGroup>", "No Team Members"],
+      ["empty-input-group", 'aria-label="Search pages"', "Contact support"],
+      ["empty-rtl", "$state<keyof typeof translations>", "אין פרויקטים עדיין"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("field docs match all Fict layouts, control states, responsive behavior, and RTL content", async ({ page }) => {

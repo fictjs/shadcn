@@ -923,22 +923,37 @@ type ParagraphProps = JSX.IntrinsicElements['p']
 
 export function Empty(props: DivProps) {
   const { class: className, ...rest } = props
-  return <div class={cn('flex min-h-40 flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center', className)} {...rest} />
+  return <div data-slot='empty' class={cn('flex min-h-40 flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center', className)} {...rest} />
+}
+
+export function EmptyHeader(props: DivProps) {
+  const { class: className, ...rest } = props
+  return <div data-slot='empty-header' class={cn('flex max-w-sm flex-col items-center gap-2', className)} {...rest} />
+}
+
+export function EmptyMedia(props: DivProps) {
+  const { class: className, ...rest } = props
+  return <div data-slot='empty-media' class={cn('mb-2 flex size-12 items-center justify-center rounded-full bg-muted [&_svg]:size-6', className)} {...rest} />
 }
 
 export function EmptyTitle(props: HeadingProps) {
   const { class: className, ...rest } = props
-  return <h3 class={cn('mt-4 text-lg font-semibold', className)} {...rest} />
+  return <h3 data-slot='empty-title' class={cn('text-lg font-semibold', className)} {...rest} />
 }
 
 export function EmptyDescription(props: ParagraphProps) {
   const { class: className, ...rest } = props
-  return <p class={cn('mt-2 max-w-prose text-sm text-muted-foreground', className)} {...rest} />
+  return <p data-slot='empty-description' class={cn('max-w-prose text-sm text-muted-foreground', className)} {...rest} />
 }
 
 export function EmptyAction(props: DivProps) {
   const { class: className, ...rest } = props
-  return <div class={cn('mt-6 flex items-center justify-center gap-2', className)} {...rest} />
+  return <div data-slot='empty-action' class={cn('mt-4 flex items-center justify-center gap-2', className)} {...rest} />
+}
+
+export function EmptyContent(props: DivProps) {
+  const { class: className, ...rest } = props
+  return <div data-slot='empty-content' class={cn('mt-4 flex w-full max-w-sm flex-col items-center gap-2', className)} {...rest} />
 }
 `
 

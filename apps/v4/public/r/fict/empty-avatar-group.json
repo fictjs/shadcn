@@ -5,12 +5,14 @@
   "description": "Empty-state layout primitives example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "avatar",
+    "button",
     "empty"
   ],
   "files": [
     {
       "path": "src/examples/empty-avatar-group.tsx",
-      "content": "import { Empty, EmptyAction, EmptyDescription, EmptyTitle } from '@/components/ui/empty'\n\nexport default function EmptyAvatarGroupExample() {\n  return (\n    <Empty><EmptyTitle>Avatar Group</EmptyTitle><EmptyDescription>No items were found.</EmptyDescription><EmptyAction><button type=\"button\">Create item</button></EmptyAction></Empty>\n  )\n}\n",
+      "content": "import { Avatar, AvatarFallback, AvatarGroup, AvatarImage } from '@/components/ui/avatar'\nimport { Button } from '@/components/ui/button'\nimport { Empty, EmptyAction, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty'\n\nexport default function EmptyAvatarGroupExample() { return <Empty><EmptyHeader><AvatarGroup><Avatar size=\"lg\"><AvatarImage src=\"/avatars/shadcn.jpg\" alt=\"shadcn\" /><AvatarFallback>CN</AvatarFallback></Avatar><Avatar size=\"lg\"><AvatarImage src=\"/avatars/02.png\" alt=\"maxleiter\" /><AvatarFallback>ML</AvatarFallback></Avatar><Avatar size=\"lg\"><AvatarImage src=\"/avatars/03.png\" alt=\"evilrabbit\" /><AvatarFallback>ER</AvatarFallback></Avatar></AvatarGroup><EmptyTitle>No Team Members</EmptyTitle><EmptyDescription>Invite your team to collaborate on this project.</EmptyDescription></EmptyHeader><EmptyAction><Button size=\"sm\">Invite Members</Button></EmptyAction></Empty> }\n",
       "type": "registry:page"
     }
   ]

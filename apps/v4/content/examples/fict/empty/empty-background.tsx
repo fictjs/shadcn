@@ -1,7 +1,5 @@
-import { Empty, EmptyAction, EmptyDescription, EmptyTitle } from '@/components/ui/empty'
+import { Button } from '@/components/ui/button'
+import { Empty, EmptyAction, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 
-export default function EmptyBackgroundExample() {
-  return (
-    <Empty><EmptyTitle>Background</EmptyTitle><EmptyDescription>No items were found.</EmptyDescription><EmptyAction><button type="button">Create item</button></EmptyAction></Empty>
-  )
-}
+function BellIcon() { return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" /></svg> }
+export default function EmptyBackgroundExample() { return <Empty class="bg-muted/50"><EmptyHeader><EmptyMedia><BellIcon /></EmptyMedia><EmptyTitle>No Notifications</EmptyTitle><EmptyDescription>You're all caught up. New notifications will appear here.</EmptyDescription></EmptyHeader><EmptyAction><Button variant="outline">Refresh</Button></EmptyAction></Empty> }

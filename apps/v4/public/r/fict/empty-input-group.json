@@ -5,12 +5,14 @@
   "description": "Empty-state layout primitives example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "empty"
+    "empty",
+    "input-group",
+    "kbd"
   ],
   "files": [
     {
       "path": "src/examples/empty-input-group.tsx",
-      "content": "import { Empty, EmptyAction, EmptyDescription, EmptyTitle } from '@/components/ui/empty'\n\nexport default function EmptyInputGroupExample() {\n  return (\n    <Empty><EmptyTitle>Input Group</EmptyTitle><EmptyDescription>No items were found.</EmptyDescription><EmptyAction><button type=\"button\">Create item</button></EmptyAction></Empty>\n  )\n}\n",
+      "content": "import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty'\nimport { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'\nimport { Kbd } from '@/components/ui/kbd'\n\nexport default function EmptyInputGroupExample() { return <Empty><EmptyHeader><EmptyTitle>404 - Not Found</EmptyTitle><EmptyDescription>The page you're looking for doesn't exist. Try searching for what you need below.</EmptyDescription></EmptyHeader><EmptyContent><InputGroup><InputGroupInput type=\"search\" aria-label=\"Search pages\" placeholder=\"Try searching for pages...\" /><InputGroupAddon><Kbd>/</Kbd></InputGroupAddon></InputGroup><p>Need help? <a href=\"#support\">Contact support</a></p></EmptyContent></Empty> }\n",
       "type": "registry:page"
     }
   ]

@@ -1,7 +1,5 @@
-import { Empty, EmptyAction, EmptyDescription, EmptyTitle } from '@/components/ui/empty'
+import { Button } from '@/components/ui/button'
+import { Empty, EmptyAction, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty'
 
-export default function EmptyRtlExample() {
-  return (
-    <Empty dir="rtl"><EmptyTitle>Rtl</EmptyTitle><EmptyDescription>No items were found.</EmptyDescription><EmptyAction><button type="button">Create item</button></EmptyAction></Empty>
-  )
-}
+const translations = { ar: ['لا توجد مشاريع بعد', 'لم تقم بإنشاء أي مشاريع بعد. ابدأ بإنشاء مشروعك الأول.', 'إنشاء مشروع', 'استيراد مشروع'], he: ['אין פרויקטים עדיין', 'עדיין לא יצרת פרויקטים. התחל על ידי יצירת הפרויקט הראשון שלך.', 'צור פרויקט', 'ייבא פרויקט'], en: ['No Projects Yet', "You haven't created any projects yet. Get started by creating your first project.", 'Create Project', 'Import Project'] } as const
+export default function EmptyRtlExample() { let language = $state<keyof typeof translations>('ar'); const direction = () => language === 'en' ? 'ltr' : 'rtl'; const text = () => translations[language]; return <div class="grid gap-4"><select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof translations }}><option value="ar">Arabic (العربية)</option><option value="he">Hebrew (עברית)</option><option value="en">English</option></select><Empty dir={direction()}><EmptyHeader><EmptyTitle>{text()[0]}</EmptyTitle><EmptyDescription>{text()[1]}</EmptyDescription></EmptyHeader><EmptyAction><Button>{text()[2]}</Button><Button variant="outline">{text()[3]}</Button></EmptyAction></Empty></div> }

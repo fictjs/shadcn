@@ -5,12 +5,14 @@
   "description": "Empty-state layout primitives example for Fict",
   "dependencies": [],
   "registryDependencies": [
+    "avatar",
+    "button",
     "empty"
   ],
   "files": [
     {
       "path": "src/examples/empty-avatar.tsx",
-      "content": "import { Empty, EmptyAction, EmptyDescription, EmptyTitle } from '@/components/ui/empty'\n\nexport default function EmptyAvatarExample() {\n  return (\n    <Empty><EmptyTitle>Avatar</EmptyTitle><EmptyDescription>No items were found.</EmptyDescription><EmptyAction><button type=\"button\">Create item</button></EmptyAction></Empty>\n  )\n}\n",
+      "content": "import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'\nimport { Button } from '@/components/ui/button'\nimport { Empty, EmptyAction, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty'\n\nexport default function EmptyAvatarExample() { return <Empty><EmptyHeader><Avatar size=\"lg\"><AvatarImage src=\"/avatars/shadcn.jpg\" alt=\"shadcn\" /><AvatarFallback>CN</AvatarFallback></Avatar><EmptyTitle>User Offline</EmptyTitle><EmptyDescription>This user is currently offline. You can leave a message to notify them or try again later.</EmptyDescription></EmptyHeader><EmptyAction><Button size=\"sm\">Leave Message</Button></EmptyAction></Empty> }\n",
       "type": "registry:page"
     }
   ]

@@ -117,6 +117,14 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain("data-slot='kbd-group'")
   })
 
+  it('renders the Empty API used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('empty')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain("data-slot='empty'")
+    expect(source).toContain('export function EmptyHeader')
+    expect(source).toContain('export function EmptyMedia')
+    expect(source).toContain('export function EmptyContent')
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')
