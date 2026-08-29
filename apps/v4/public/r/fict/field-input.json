@@ -5,12 +5,13 @@
   "description": "Field composition primitives for labels and messages example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "field"
+    "field",
+    "input"
   ],
   "files": [
     {
       "path": "src/examples/field-input.tsx",
-      "content": "import { Field, FieldControl, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'\n\nexport default function FieldInputExample() {\n  return (\n    <Field><FieldLabel for=\"example\">Input</FieldLabel><FieldControl><input id=\"example\" placeholder=\"Enter a value\" /></FieldControl><FieldDescription>Fict field composition.</FieldDescription></Field>\n  )\n}\n",
+      "content": "import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSet } from '@/components/ui/field'\nimport { Input } from '@/components/ui/input'\n\nexport default function FieldInputExample() {\n  return (\n    <FieldSet class=\"w-80\">\n      <FieldGroup>\n        <Field><FieldLabel for=\"username\">Username</FieldLabel><Input id=\"username\" placeholder=\"Max Leiter\" /><FieldDescription>Choose a unique username for your account.</FieldDescription></Field>\n        <Field><FieldLabel for=\"password\">Password</FieldLabel><FieldDescription>Must be at least 8 characters long.</FieldDescription><Input id=\"password\" type=\"password\" placeholder=\"••••••••\" /></Field>\n      </FieldGroup>\n    </FieldSet>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

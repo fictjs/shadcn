@@ -5,12 +5,13 @@
   "description": "Field composition primitives for labels and messages example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "field"
+    "field",
+    "input"
   ],
   "files": [
     {
       "path": "src/examples/field-fieldset.tsx",
-      "content": "import { Field, FieldControl, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'\n\nexport default function FieldFieldsetExample() {\n  return (\n    <Field><FieldLabel for=\"example\">Fieldset</FieldLabel><FieldControl><input id=\"example\" placeholder=\"Enter a value\" /></FieldControl><FieldDescription>Fict field composition.</FieldDescription></Field>\n  )\n}\n",
+      "content": "import { Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '@/components/ui/field'\nimport { Input } from '@/components/ui/input'\n\nexport default function FieldFieldsetExample() {\n  return (\n    <FieldSet class=\"w-96\"><FieldLegend>Address Information</FieldLegend><FieldDescription>We need your address to deliver your order.</FieldDescription><FieldGroup><Field><FieldLabel for=\"street\">Street Address</FieldLabel><Input id=\"street\" placeholder=\"123 Main St\" /></Field><div class=\"grid grid-cols-2 gap-4\"><Field><FieldLabel for=\"city\">City</FieldLabel><Input id=\"city\" placeholder=\"New York\" /></Field><Field><FieldLabel for=\"postal-code\">Postal Code</FieldLabel><Input id=\"postal-code\" placeholder=\"90502\" /></Field></div></FieldGroup></FieldSet>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

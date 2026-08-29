@@ -158,6 +158,17 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain("if (!event.defaultPrevented && event.key === 'Escape') context.setOpen(false)")
   })
 
+  it('renders the Field composition API used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('field')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain("orientation?: 'vertical' | 'horizontal' | 'responsive'")
+    expect(source).toContain("data-slot='field'")
+    expect(source).toContain('export function FieldSet')
+    expect(source).toContain('export function FieldLegend')
+    expect(source).toContain('export function FieldGroup')
+    expect(source).toContain('export function FieldContent')
+    expect(source).toContain('export function FieldSeparator')
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')

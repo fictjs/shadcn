@@ -1,7 +1,8 @@
-import { Field, FieldControl, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'
+import { Field, FieldLabel } from '@/components/ui/field'
+import { Switch } from '@/components/ui/switch'
 
 export default function FieldSwitchExample() {
   return (
-    <Field><FieldLabel for="example">Switch</FieldLabel><FieldControl><input id="example" placeholder="Enter a value" /></FieldControl><FieldDescription>Fict field composition.</FieldDescription></Field>
+    <Field orientation="horizontal" class="w-fit"><FieldLabel for="multi-factor">Multi-factor authentication</FieldLabel><Switch id="multi-factor" /></Field>
   )
 }

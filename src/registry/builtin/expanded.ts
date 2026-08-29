@@ -975,10 +975,12 @@ import { Label } from '${context.uiImport('label')}'
 
 type DivProps = JSX.IntrinsicElements['div']
 type ParagraphProps = JSX.IntrinsicElements['p']
+type FieldsetProps = JSX.IntrinsicElements['fieldset']
+type LegendProps = JSX.IntrinsicElements['legend']
 
-export function Field(props: DivProps) {
-  const { class: className, ...rest } = props
-  return <div class={cn('grid gap-2', className)} {...rest} />
+export function Field(props: DivProps & { orientation?: 'vertical' | 'horizontal' | 'responsive' }) {
+  const { class: className, orientation = 'vertical', ...rest } = props
+  return <div data-slot='field' data-orientation={orientation} class={cn('grid gap-2', orientation === 'horizontal' && 'grid-cols-[auto_1fr] items-center', orientation === 'responsive' && 'grid-cols-1 sm:grid-cols-[1fr_2fr] sm:items-center', className)} {...rest} />
 }
 
 export function FieldLabel(props: JSX.IntrinsicElements['label']) {
@@ -987,7 +989,7 @@ export function FieldLabel(props: JSX.IntrinsicElements['label']) {
 
 export function FieldControl(props: DivProps) {
   const { class: className, ...rest } = props
-  return <div class={cn('grid gap-1', className)} {...rest} />
+  return <div data-slot='field-control' class={cn('grid gap-1', className)} {...rest} />
 }
 
 export function FieldDescription(props: ParagraphProps) {
@@ -998,6 +1000,31 @@ export function FieldDescription(props: ParagraphProps) {
 export function FieldError(props: ParagraphProps) {
   const { class: className, ...rest } = props
   return <p class={cn('text-xs font-medium text-destructive', className)} {...rest} />
+}
+
+export function FieldSet(props: FieldsetProps) {
+  const { class: className, ...rest } = props
+  return <fieldset data-slot='field-set' class={cn('grid gap-4', className)} {...rest} />
+}
+
+export function FieldLegend(props: LegendProps & { variant?: 'legend' | 'label' }) {
+  const { class: className, variant = 'legend', ...rest } = props
+  return <legend data-slot='field-legend' data-variant={variant} class={cn(variant === 'legend' ? 'text-base font-semibold' : 'text-sm font-medium', className)} {...rest} />
+}
+
+export function FieldGroup(props: DivProps) {
+  const { class: className, ...rest } = props
+  return <div data-slot='field-group' class={cn('grid gap-4', className)} {...rest} />
+}
+
+export function FieldContent(props: DivProps) {
+  const { class: className, ...rest } = props
+  return <div data-slot='field-content' class={cn('grid gap-1', className)} {...rest} />
+}
+
+export function FieldSeparator(props: DivProps) {
+  const { class: className, children, ...rest } = props
+  return <div role='separator' data-slot='field-separator' class={cn('relative my-2 h-px bg-border', className)} {...rest}>{children}</div>
 }
 `
 

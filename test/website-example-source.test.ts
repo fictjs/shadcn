@@ -483,6 +483,32 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadCommand('command-rtl')).toContain('הקלד פקודה או חפש...')
   })
 
+  it('keeps every Field source aligned with its rendered preview', () => {
+    expectCuratedFamily('field')
+    const loadField = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'field', previewName })!
+    const markers: Record<string, string> = {
+      'field-demo': '<FieldLegend>Payment Method</FieldLegend>',
+      'field-input': 'Choose a unique username for your account.',
+      'field-textarea': 'Your feedback helps us improve...',
+      'field-select': "const departments = ['Engineering'",
+      'field-slider': 'let value = $state([200, 800])',
+      'field-fieldset': '<FieldLegend>Address Information</FieldLegend>',
+      'field-checkbox': "const desktopItems = ['Hard disks'",
+      'field-radio': "['yearly', 'Yearly ($99.99/year)']",
+      'field-switch': 'Multi-factor authentication',
+      'field-choice-card': 'Run GPU workloads on a K8s cluster.',
+      'field-group': 'Get notified when ChatGPT responds',
+      'field-rtl': "let language = $state<keyof typeof translations>('ar')",
+      'field-responsive': 'orientation="responsive"',
+    }
+    for (const previewName of previewCatalog.field) {
+      const source = loadField(previewName)
+      expect(source, previewName).toContain(markers[previewName])
+      expect(source, previewName).not.toContain('Fict field composition.')
+    }
+    expect(loadField('field-rtl')).toContain('אמצעי תשלום')
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],

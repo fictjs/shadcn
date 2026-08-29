@@ -1,7 +1,12 @@
-import { Field, FieldControl, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet } from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
 
 export default function FieldDemoExample() {
   return (
-    <Field><FieldLabel for="example">Demo</FieldLabel><FieldControl><input id="example" placeholder="Enter a value" /></FieldControl><FieldDescription>Fict field composition.</FieldDescription></Field>
+    <form class="w-full max-w-md"><FieldGroup><FieldSet><FieldLegend>Payment Method</FieldLegend><FieldDescription>All transactions are secure and encrypted</FieldDescription><FieldGroup><Field><FieldLabel for="card-name">Name on Card</FieldLabel><Input id="card-name" placeholder="Evil Rabbit" /></Field><Field><FieldLabel for="card-number">Card Number</FieldLabel><Input id="card-number" placeholder="1234 5678 9012 3456" /></Field><div class="grid grid-cols-3 gap-3"><Field><FieldLabel>Month</FieldLabel><Select><SelectTrigger aria-label="MM"><SelectValue placeholder="MM" /></SelectTrigger><SelectContent>{['01', '02', '03', '04'].map(month => <SelectItem value={month}>{month}</SelectItem>)}</SelectContent></Select></Field><Field><FieldLabel>Year</FieldLabel><Select><SelectTrigger aria-label="YYYY"><SelectValue placeholder="YYYY" /></SelectTrigger><SelectContent>{['2026', '2027', '2028'].map(year => <SelectItem value={year}>{year}</SelectItem>)}</SelectContent></Select></Field><Field><FieldLabel for="cvv">CVV</FieldLabel><Input id="cvv" placeholder="123" /></Field></div></FieldGroup></FieldSet><FieldSeparator /><FieldSet><FieldLegend>Billing Address</FieldLegend><FieldDescription>The billing address associated with your payment method</FieldDescription><Field orientation="horizontal"><Checkbox id="shipping-address" defaultChecked /><FieldLabel for="shipping-address">Same as shipping address</FieldLabel></Field></FieldSet><Field><FieldLabel for="comments">Comments</FieldLabel><Textarea id="comments" placeholder="Add any additional comments" /></Field><Field orientation="horizontal"><Button type="submit">Submit</Button><Button type="button" variant="outline">Cancel</Button></Field></FieldGroup></form>
   )
 }

@@ -1,7 +1,8 @@
-import { Field, FieldControl, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'
+import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSet } from '@/components/ui/field'
+import { Textarea } from '@/components/ui/textarea'
 
 export default function FieldTextareaExample() {
   return (
-    <Field><FieldLabel for="example">Textarea</FieldLabel><FieldControl><input id="example" placeholder="Enter a value" /></FieldControl><FieldDescription>Fict field composition.</FieldDescription></Field>
+    <FieldSet class="w-80"><FieldGroup><Field><FieldLabel for="feedback">Feedback</FieldLabel><Textarea id="feedback" placeholder="Your feedback helps us improve..." rows={4} /><FieldDescription>Share your thoughts about our service.</FieldDescription></Field></FieldGroup></FieldSet>
   )
 }

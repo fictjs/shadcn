@@ -5,12 +5,13 @@
   "description": "Field composition primitives for labels and messages example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "field"
+    "field",
+    "radio-group"
   ],
   "files": [
     {
       "path": "src/examples/field-radio.tsx",
-      "content": "import { Field, FieldControl, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'\n\nexport default function FieldRadioExample() {\n  return (\n    <Field><FieldLabel for=\"example\">Radio</FieldLabel><FieldControl><input id=\"example\" placeholder=\"Enter a value\" /></FieldControl><FieldDescription>Fict field composition.</FieldDescription></Field>\n  )\n}\n",
+      "content": "import { Field, FieldDescription, FieldLabel, FieldLegend, FieldSet } from '@/components/ui/field'\nimport { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'\n\nconst plans = [['monthly', 'Monthly ($9.99/month)'], ['yearly', 'Yearly ($99.99/year)'], ['lifetime', 'Lifetime ($299.99)']] as const\n\nexport default function FieldRadioExample() {\n  return (\n    <FieldSet class=\"w-80\"><FieldLegend variant=\"label\">Subscription Plan</FieldLegend><FieldDescription>Yearly and lifetime plans offer significant savings.</FieldDescription><RadioGroup defaultValue=\"monthly\">{plans.map(([value, label]) => <Field orientation=\"horizontal\"><RadioGroupItem id={`plan-${value}`} value={value} /><FieldLabel for={`plan-${value}`}>{label}</FieldLabel></Field>)}</RadioGroup></FieldSet>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

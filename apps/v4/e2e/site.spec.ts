@@ -2080,6 +2080,29 @@ test.describe("Fict shadcn website", () => {
     const responsiveFieldBox = await responsiveField.boundingBox()
     const responsiveInputBox = await responsive.getByLabel("Name").boundingBox()
     expect(responsiveInputBox?.width).toBe(responsiveFieldBox?.width)
+
+    const expectedSources = [
+      ["field-demo", "<FieldLegend>Payment Method</FieldLegend>", "Same as shipping address"],
+      ["field-input", "Choose a unique username for your account."],
+      ["field-textarea", "Your feedback helps us improve..."],
+      ["field-select", "Engineering", "Customer Support"],
+      ["field-slider", "$state([200, 800])", "max={1000}"],
+      ["field-fieldset", "Address Information", "90502"],
+      ["field-checkbox", "Hard disks", "Sync Desktop &amp; Documents folders"],
+      ["field-radio", "Yearly ($99.99/year)"],
+      ["field-switch", "Multi-factor authentication"],
+      ["field-choice-card", "Run GPU workloads on a K8s cluster."],
+      ["field-group", "Get notified when ChatGPT responds"],
+      ["field-rtl", "$state<keyof typeof translations>", "אמצעי תשלום"],
+      ["field-responsive", 'orientation="responsive"', "Provide your full name for identification"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      await expect(source).not.toContainText("Fict field composition.")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("hover card docs match Fict delays, geometry, sides, pointer transit, focus, and RTL", async ({ page }) => {

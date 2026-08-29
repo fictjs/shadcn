@@ -5,12 +5,14 @@
   "description": "Field composition primitives for labels and messages example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "field"
+    "button",
+    "field",
+    "input"
   ],
   "files": [
     {
       "path": "src/examples/field-responsive.tsx",
-      "content": "import { Field, FieldControl, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'\n\nexport default function FieldResponsiveExample() {\n  return (\n    <Field><FieldLabel for=\"example\">Responsive</FieldLabel><FieldControl><input id=\"example\" placeholder=\"Enter a value\" /></FieldControl><FieldDescription>Fict field composition.</FieldDescription></Field>\n  )\n}\n",
+      "content": "import { Button } from '@/components/ui/button'\nimport { Field, FieldContent, FieldDescription, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '@/components/ui/field'\nimport { Input } from '@/components/ui/input'\n\nexport default function FieldResponsiveExample() {\n  return (\n    <form class=\"w-full max-w-lg\"><FieldSet><FieldLegend>Profile</FieldLegend><FieldDescription>Fill in your profile information.</FieldDescription><FieldGroup><Field orientation=\"responsive\"><FieldContent><FieldLabel for=\"profile-name\">Name</FieldLabel><FieldDescription>Provide your full name for identification</FieldDescription></FieldContent><Input id=\"profile-name\" placeholder=\"Evil Rabbit\" required /></Field><Field orientation=\"responsive\"><span /><div class=\"flex gap-2\"><Button type=\"submit\">Submit</Button><Button type=\"button\" variant=\"outline\">Cancel</Button></div></Field></FieldGroup></FieldSet></form>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

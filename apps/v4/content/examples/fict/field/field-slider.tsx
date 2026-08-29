@@ -1,7 +1,9 @@
-import { Field, FieldControl, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field'
+import { Field, FieldDescription, FieldLabel } from '@/components/ui/field'
+import { Slider } from '@/components/ui/slider'
 
 export default function FieldSliderExample() {
+  let value = $state([200, 800])
   return (
-    <Field><FieldLabel for="example">Slider</FieldLabel><FieldControl><input id="example" placeholder="Enter a value" /></FieldControl><FieldDescription>Fict field composition.</FieldDescription></Field>
+    <Field class="w-80"><FieldLabel>Price Range</FieldLabel><FieldDescription>Set your budget range (${value[0]} - ${value[1]}).</FieldDescription><Slider value={() => value} onValueChange={next => value = next} min={0} max={1000} step={10} aria-label="Price Range" /></Field>
   )
 }
