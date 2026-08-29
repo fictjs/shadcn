@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/toggle-rtl.tsx",
-      "content": "import { Toggle } from '@/components/ui/toggle'\n\nexport default function ToggleRtlExample() {\n  return (\n    <Toggle dir=\"rtl\" aria-label=\"Toggle formatting\">★ Rtl</Toggle>\n  )\n}\n",
+      "content": "import { Toggle } from '@/components/ui/toggle'\n\nconst translations = {\n  ar: { dir: 'rtl', bookmark: 'إشارة مرجعية' },\n  he: { dir: 'rtl', bookmark: 'סימנייה' },\n  en: { dir: 'ltr', bookmark: 'Bookmark' },\n} as const\n\nexport default function ToggleRtlExample() {\n  let language = $state<keyof typeof translations>('ar')\n  const text = () => translations[language]\n\n  return (\n    <div class=\"grid gap-4\"><select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof translations }}><option value=\"ar\">Arabic (العربية)</option><option value=\"he\">Hebrew (עברית)</option><option value=\"en\">English</option></select><Toggle dir={text().dir} variant=\"outline\" size=\"sm\" aria-label=\"Toggle bookmark\">{text().bookmark}</Toggle></div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

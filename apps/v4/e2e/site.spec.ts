@@ -4467,6 +4467,21 @@ test.describe("Fict shadcn website", () => {
     await expect(rtl).toContainText("Bookmark")
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(rtlToggle).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)")
+
+    const expectedSources = [
+      ["toggle-demo", "<BookmarkIcon />Bookmark"],
+      ["toggle-outline", 'aria-label="Toggle bold"'],
+      ["toggle-text", 'aria-label="Toggle italic">Italic'],
+      ["toggle-sizes", 'size="sm"', 'size="lg"'],
+      ["toggle-disabled", '<Toggle disabled', 'disabled variant="outline"'],
+      ["toggle-rtl", "$state<keyof typeof translations>", "dir={text().dir}"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("toggle group docs match Fict single, multiple, sizes, spacing, vertical, font, keyboard, and RTL", async ({ page }) => {

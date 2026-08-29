@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/toggle-sizes.tsx",
-      "content": "import { Toggle } from '@/components/ui/toggle'\n\nexport default function ToggleSizesExample() {\n  return (\n    <Toggle aria-label=\"Toggle formatting\">★ Sizes</Toggle>\n  )\n}\n",
+      "content": "import { Toggle } from '@/components/ui/toggle'\n\nexport default function ToggleSizesExample() {\n  return (\n    <div class=\"flex items-center gap-2\"><Toggle variant=\"outline\" size=\"sm\" aria-label=\"Toggle small\">Small</Toggle><Toggle variant=\"outline\" aria-label=\"Toggle default\">Default</Toggle><Toggle variant=\"outline\" size=\"lg\" aria-label=\"Toggle large\">Large</Toggle></div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

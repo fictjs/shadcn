@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/toggle-text.tsx",
-      "content": "import { Toggle } from '@/components/ui/toggle'\n\nexport default function ToggleTextExample() {\n  return (\n    <Toggle aria-label=\"Toggle formatting\">★ Text</Toggle>\n  )\n}\n",
+      "content": "import { Toggle } from '@/components/ui/toggle'\n\nexport default function ToggleTextExample() {\n  return <Toggle aria-label=\"Toggle italic\">Italic</Toggle>\n}\n",
       "type": "registry:page"
     }
   ]

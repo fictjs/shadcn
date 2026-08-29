@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/toggle-disabled.tsx",
-      "content": "import { Toggle } from '@/components/ui/toggle'\n\nexport default function ToggleDisabledExample() {\n  return (\n    <Toggle disabled aria-label=\"Toggle formatting\">★ Disabled</Toggle>\n  )\n}\n",
+      "content": "import { Toggle } from '@/components/ui/toggle'\n\nexport default function ToggleDisabledExample() {\n  return (\n    <div class=\"flex gap-2\"><Toggle disabled aria-label=\"Toggle disabled\">Disabled</Toggle><Toggle disabled variant=\"outline\" aria-label=\"Toggle disabled outline\">Disabled</Toggle></div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

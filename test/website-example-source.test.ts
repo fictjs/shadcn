@@ -714,6 +714,19 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadInputOtp('input-otp-rtl')).toContain('dir={text().dir}')
   })
 
+  it('keeps every Toggle source aligned with its rendered preview', () => {
+    expectCuratedFamily('toggle')
+    const loadToggle = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'toggle', previewName })!
+    expect(loadToggle('toggle-demo')).toContain('<BookmarkIcon />Bookmark')
+    expect(loadToggle('toggle-outline').match(/variant="outline"/g)).toHaveLength(2)
+    expect(loadToggle('toggle-text')).toContain('aria-label="Toggle italic">Italic')
+    expect(loadToggle('toggle-sizes')).toContain('size="sm"')
+    expect(loadToggle('toggle-sizes')).toContain('size="lg"')
+    expect(loadToggle('toggle-disabled').match(/disabled/g)).toHaveLength(4)
+    expect(loadToggle('toggle-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadToggle('toggle-rtl')).toContain('dir={text().dir}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

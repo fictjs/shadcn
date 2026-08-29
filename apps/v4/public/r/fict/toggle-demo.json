@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/toggle-demo.tsx",
-      "content": "import { Toggle } from '@/components/ui/toggle'\n\nexport default function ToggleDemoExample() {\n  return (\n    <Toggle aria-label=\"Toggle formatting\">★ Demo</Toggle>\n  )\n}\n",
+      "content": "import { Toggle } from '@/components/ui/toggle'\n\nfunction BookmarkIcon() {\n  return <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M6 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18l-6-4-6 4z\" /></svg>\n}\n\nexport default function ToggleDemoExample() {\n  return <Toggle variant=\"outline\" size=\"sm\" aria-label=\"Toggle bookmark\"><BookmarkIcon />Bookmark</Toggle>\n}\n",
       "type": "registry:page"
     }
   ]
