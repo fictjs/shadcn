@@ -2,6 +2,8 @@ import { AspectRatio } from '@/components/ui/aspect-ratio'
 
 export default function AspectRatioDemoExample() {
   return (
-    <AspectRatio ratio={16 / 9}><img class="h-full w-full rounded-md object-cover" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee" alt="Landscape" /></AspectRatio>
+    <AspectRatio ratio={16 / 9} class="w-96 overflow-hidden rounded-md">
+      <img class="h-full w-full object-cover grayscale dark:brightness-20" src="https://avatar.vercel.sh/shadcn1" alt="Photo" />
+    </AspectRatio>
   )
 }

@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/aspect-ratio-rtl.tsx",
-      "content": "import { AspectRatio } from '@/components/ui/aspect-ratio'\n\nexport default function AspectRatioRtlExample() {\n  return (\n    <AspectRatio dir=\"rtl\" ratio={16 / 9}><img class=\"h-full w-full rounded-md object-cover\" src=\"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee\" alt=\"Landscape\" /></AspectRatio>\n  )\n}\n",
+      "content": "import { AspectRatio } from '@/components/ui/aspect-ratio'\n\nconst translations = {\n  ar: 'منظر طبيعي جميل',\n  he: 'נוף יפה',\n  en: 'Beautiful landscape',\n} as const\n\nexport default function AspectRatioRtlExample() {\n  let language = $state<keyof typeof translations>('ar')\n  const direction = () => language === 'en' ? 'ltr' : 'rtl'\n\n  return (\n    <div class=\"grid gap-4\">\n      <select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof translations }}><option value=\"ar\">Arabic (العربية)</option><option value=\"he\">Hebrew (עברית)</option><option value=\"en\">English</option></select>\n      <figure class=\"grid gap-2\" dir={direction()}>\n        <AspectRatio ratio={16 / 9} class=\"w-96 overflow-hidden rounded-md\">\n          <img class=\"h-full w-full object-cover grayscale dark:brightness-20\" src=\"https://avatar.vercel.sh/shadcn1\" alt=\"Photo\" />\n        </AspectRatio>\n        <figcaption class=\"text-sm text-muted-foreground\">{translations[language]}</figcaption>\n      </figure>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

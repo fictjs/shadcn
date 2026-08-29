@@ -631,6 +631,21 @@ test.describe("Fict shadcn website", () => {
       "filter",
       "grayscale(1) brightness(0.2)",
     )
+
+    const expectedSources = [
+      ["aspect-ratio-demo", "ratio={16 / 9}"],
+      ["aspect-ratio-square", "ratio={1}"],
+      ["aspect-ratio-portrait", "ratio={9 / 16}"],
+      ["aspect-ratio-rtl", "$state<keyof typeof translations>", "<figcaption"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      await expect(source).toContainText('src="https://avatar.vercel.sh/shadcn1"')
+      await expect(source).toContainText('alt="Photo"')
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("avatar docs match Fict geometry, grouping, menu, and RTL behavior", async ({ page }) => {

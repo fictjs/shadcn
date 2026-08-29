@@ -230,6 +230,27 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadDialog('alert-dialog-rtl')).toContain('translations[language].map')
   })
 
+  it('keeps every Aspect Ratio source aligned with its rendered preview', () => {
+    expectCuratedFamily('aspect-ratio')
+
+    const loadAspectRatio = (previewName: string) => loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: 'aspect-ratio',
+      previewName,
+    })!
+
+    expect(loadAspectRatio('aspect-ratio-demo')).toContain('ratio={16 / 9}')
+    expect(loadAspectRatio('aspect-ratio-square')).toContain('ratio={1}')
+    expect(loadAspectRatio('aspect-ratio-portrait')).toContain('ratio={9 / 16}')
+    expect(loadAspectRatio('aspect-ratio-portrait')).not.toContain('ratio={3 / 4}')
+    expect(loadAspectRatio('aspect-ratio-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadAspectRatio('aspect-ratio-rtl')).toContain('<figcaption')
+    for (const previewName of previewCatalog['aspect-ratio']) {
+      expect(loadAspectRatio(previewName)).toContain('src="https://avatar.vercel.sh/shadcn1"')
+      expect(loadAspectRatio(previewName)).toContain('alt="Photo"')
+    }
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],
