@@ -3839,6 +3839,22 @@ test.describe("Fict shadcn website", () => {
     await expect(rtlThumb).toHaveAttribute("aria-valuenow", "75")
     await page.getByRole("button", { name: "Toggle theme" }).click()
     await expect(rtlThumb).toHaveCSS("background-color", "rgb(255, 255, 255)")
+
+    const expectedSources = [
+      ["slider-demo", "defaultValue={[75]}"],
+      ["slider-range", "defaultValue={[25, 50]}", "step={5}"],
+      ["slider-multiple", "defaultValue={[10, 20, 70]}"],
+      ["slider-vertical", 'orientation="vertical"'],
+      ["slider-controlled", "let values = $state([0.3, 0.7])", "onValueChange={next => { values = next }}"],
+      ["slider-disabled", "<Slider disabled"],
+      ["slider-rtl", "$state<keyof typeof directions>('ar')", "dir={directions[language]}"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("sonner docs match Fict toast content, types, actions, promise, positions, and theme", async ({ page }) => {

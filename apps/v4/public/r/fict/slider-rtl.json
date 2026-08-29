@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/slider-rtl.tsx",
-      "content": "import { Slider } from '@/components/ui/slider'\n\nexport default function SliderRtlExample() {\n  return (\n    <Slider dir=\"rtl\" defaultValue={[50]} min={0} max={100} />\n  )\n}\n",
+      "content": "import { Slider } from '@/components/ui/slider'\n\nconst directions = { ar: 'rtl', he: 'rtl', en: 'ltr' } as const\n\nexport default function SliderRtlExample() {\n  let language = $state<keyof typeof directions>('ar')\n  return <div class=\"grid gap-4\"><select value={language} onChange={event => { language = event.currentTarget.value as keyof typeof directions }}><option value=\"ar\">Arabic (العربية)</option><option value=\"he\">Hebrew (עברית)</option><option value=\"en\">English</option></select><Slider dir={directions[language]} defaultValue={[75]} min={0} max={100} /></div>\n}\n",
       "type": "registry:page"
     }
   ]

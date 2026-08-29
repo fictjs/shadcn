@@ -2,6 +2,6 @@ import { Slider } from '@/components/ui/slider'
 
 export default function SliderRangeExample() {
   return (
-    <Slider defaultValue={[25, 75]} min={0} max={100} />
+    <Slider defaultValue={[25, 50]} min={0} max={100} step={5} />
   )
 }

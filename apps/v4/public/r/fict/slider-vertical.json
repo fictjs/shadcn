@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/slider-vertical.tsx",
-      "content": "import { Slider } from '@/components/ui/slider'\n\nexport default function SliderVerticalExample() {\n  return (\n    <Slider defaultValue={[50]} min={0} max={100} />\n  )\n}\n",
+      "content": "import { Slider } from '@/components/ui/slider'\n\nexport default function SliderVerticalExample() {\n  return <div class=\"flex h-48 gap-8\"><Slider orientation=\"vertical\" defaultValue={[50]} min={0} max={100} /><Slider orientation=\"vertical\" defaultValue={[25]} min={0} max={100} /></div>\n}\n",
       "type": "registry:page"
     }
   ]

@@ -602,6 +602,21 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadSkeleton('skeleton-rtl')).toContain('dir={directions[language]}')
   })
 
+  it('keeps every Slider source aligned with its rendered preview', () => {
+    expectCuratedFamily('slider')
+    const loadSlider = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'slider', previewName })!
+    expect(loadSlider('slider-demo')).toContain('defaultValue={[75]}')
+    expect(loadSlider('slider-range')).toContain('defaultValue={[25, 50]}')
+    expect(loadSlider('slider-range')).toContain('step={5}')
+    expect(loadSlider('slider-multiple')).toContain('defaultValue={[10, 20, 70]}')
+    expect(loadSlider('slider-vertical').match(/orientation="vertical"/g)).toHaveLength(2)
+    expect(loadSlider('slider-controlled')).toContain('let values = $state([0.3, 0.7])')
+    expect(loadSlider('slider-controlled')).toContain('onValueChange={next => { values = next }}')
+    expect(loadSlider('slider-disabled')).toContain('<Slider disabled')
+    expect(loadSlider('slider-rtl')).toContain("let language = $state<keyof typeof directions>('ar')")
+    expect(loadSlider('slider-rtl')).toContain('dir={directions[language]}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!
