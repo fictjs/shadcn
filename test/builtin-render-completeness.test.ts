@@ -54,6 +54,21 @@ describe('builtin registry render completeness', () => {
     }
   })
 
+  it('renders the Badge API used by website examples', () => {
+    const entry = getBuiltinComponent('badge')
+    expect(entry).not.toBeNull()
+    expect(entry!.dependencies).toContain('@fictjs/radix-ui')
+    const source = renderRegistryEntryFiles(entry!, DEFAULT_CONFIG)
+      .map(file => file.content)
+      .join('\n')
+
+    expect(source).toContain("import { Slot } from '@fictjs/radix-ui'")
+    expect(source).toContain("ghost: 'border-transparent")
+    expect(source).toContain("link: 'border-transparent")
+    expect(source).toContain('asChild?: boolean')
+    expect(source).toContain("return <span class={classValue} data-slot='badge'")
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')

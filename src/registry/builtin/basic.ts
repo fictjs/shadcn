@@ -68,20 +68,21 @@ export { buttonVariants }
   },
   {
     name: 'badge',
-    version: '0.1.0',
+    version: '0.2.0',
     type: 'ui-component',
     description: 'Small status badge with variants',
-    dependencies: ['class-variance-authority'],
+    dependencies: ['@fictjs/radix-ui', 'class-variance-authority'],
     registryDependencies: [],
     files: [
       {
         path: '{{componentsDir}}/badge.tsx',
-        content: context => `import { cva, type VariantProps } from 'class-variance-authority'
+        content: context => `import { Slot } from '@fictjs/radix-ui'
+import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '${context.imports.cn}'
 
 const badgeVariants = cva(
-  'inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none',
+  'inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-medium transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3',
   {
     variants: {
       variant: {
@@ -89,6 +90,8 @@ const badgeVariants = cva(
         secondary: 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
         destructive: 'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',
         outline: 'text-foreground',
+        ghost: 'border-transparent hover:bg-accent hover:text-accent-foreground',
+        link: 'border-transparent text-primary underline-offset-4 hover:underline',
       },
     },
     defaultVariants: {
@@ -97,11 +100,19 @@ const badgeVariants = cva(
   },
 )
 
-type BadgeProps = JSX.IntrinsicElements['div'] & VariantProps<typeof badgeVariants>
+type BadgeProps = JSX.IntrinsicElements['span'] & VariantProps<typeof badgeVariants> & {
+  asChild?: boolean
+}
 
 export function Badge(props: BadgeProps) {
-  const { class: className, variant, ...rest } = props
-  return <div class={cn(badgeVariants({ variant }), className)} {...rest} />
+  const { asChild, class: className, variant = 'default', ...rest } = props
+  const classValue = cn(badgeVariants({ variant }), className)
+
+  if (asChild) {
+    return <Slot.Root class={classValue} data-slot='badge' data-variant={variant} {...rest} />
+  }
+
+  return <span class={classValue} data-slot='badge' data-variant={variant} {...rest} />
 }
 
 export { badgeVariants }

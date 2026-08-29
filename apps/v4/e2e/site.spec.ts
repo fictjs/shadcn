@@ -705,6 +705,23 @@ test.describe("Fict shadcn website", () => {
     await rtl.getByLabel("Preview language").selectOption("en")
     await expect(rtl.locator('[data-slot="badge"]').first()).toHaveText("Badge")
     await expect(rtl.locator(".doc-badge-row")).toHaveAttribute("dir", "ltr")
+
+    const expectedSource = [
+      ['badge-demo', ['variant="secondary"', 'variant="destructive"', 'variant="outline"']],
+      ['badge-variants', ['variant="ghost"', '>Ghost</Badge>']],
+      ['badge-icon', ['<VerifiedIcon />Verified', 'Bookmark<BookmarkIcon />']],
+      ['badge-spinner', ['<Spinner data-icon="inline-start" />Deleting', 'Generating<Spinner data-icon="inline-end" />']],
+      ['badge-link', ['<Badge asChild>', '<a href="#link">']],
+      ['badge-colors', ['bg-blue-50 text-blue-700', 'bg-red-50 text-red-700']],
+      ['badge-rtl', ["$state<keyof typeof translations>('ar')", 'variant="destructive"']],
+    ] as const
+    for (const [previewName, markers] of expectedSource) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole('button', { name: 'View Code' }).click()
+      const source = preview.locator('[data-doc-preview-full-code]')
+      for (const marker of markers) await expect(source).toContainText(marker)
+      await expect(source).not.toContainText('import * as UI')
+    }
   })
 
   test("breadcrumb docs match Fict trails, menus, separators, links, and RTL behavior", async ({ page }) => {

@@ -4,13 +4,14 @@
   "type": "registry:ui",
   "description": "Small status badge with variants",
   "dependencies": [
+    "@fictjs/radix-ui",
     "class-variance-authority"
   ],
   "registryDependencies": [],
   "files": [
     {
       "path": "src/components/ui/badge.tsx",
-      "content": "import { cva, type VariantProps } from 'class-variance-authority'\n\nimport { cn } from '@/lib/cn'\n\nconst badgeVariants = cva(\n  'inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none',\n  {\n    variants: {\n      variant: {\n        default: 'border-transparent bg-primary text-primary-foreground hover:bg-primary/80',\n        secondary: 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',\n        destructive: 'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',\n        outline: 'text-foreground',\n      },\n    },\n    defaultVariants: {\n      variant: 'default',\n    },\n  },\n)\n\ntype BadgeProps = JSX.IntrinsicElements['div'] & VariantProps<typeof badgeVariants>\n\nexport function Badge(props: BadgeProps) {\n  const { class: className, variant, ...rest } = props\n  return <div class={cn(badgeVariants({ variant }), className)} {...rest} />\n}\n\nexport { badgeVariants }\n",
+      "content": "import { Slot } from '@fictjs/radix-ui'\nimport { cva, type VariantProps } from 'class-variance-authority'\n\nimport { cn } from '@/lib/cn'\n\nconst badgeVariants = cva(\n  'inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-medium transition-[color,box-shadow] focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3',\n  {\n    variants: {\n      variant: {\n        default: 'border-transparent bg-primary text-primary-foreground hover:bg-primary/80',\n        secondary: 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',\n        destructive: 'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',\n        outline: 'text-foreground',\n        ghost: 'border-transparent hover:bg-accent hover:text-accent-foreground',\n        link: 'border-transparent text-primary underline-offset-4 hover:underline',\n      },\n    },\n    defaultVariants: {\n      variant: 'default',\n    },\n  },\n)\n\ntype BadgeProps = JSX.IntrinsicElements['span'] & VariantProps<typeof badgeVariants> & {\n  asChild?: boolean\n}\n\nexport function Badge(props: BadgeProps) {\n  const { asChild, class: className, variant = 'default', ...rest } = props\n  const classValue = cn(badgeVariants({ variant }), className)\n\n  if (asChild) {\n    return <Slot.Root class={classValue} data-slot='badge' data-variant={variant} {...rest} />\n  }\n\n  return <span class={classValue} data-slot='badge' data-variant={variant} {...rest} />\n}\n\nexport { badgeVariants }\n",
       "type": "registry:ui"
     }
   ]

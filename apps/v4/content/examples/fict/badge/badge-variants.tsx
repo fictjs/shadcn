@@ -2,6 +2,12 @@ import { Badge } from '@/components/ui/badge'
 
 export default function BadgeVariantsExample() {
   return (
-    <Badge>Variants</Badge>
+    <div class="flex flex-wrap gap-2">
+      <Badge>Default</Badge>
+      <Badge variant="secondary">Secondary</Badge>
+      <Badge variant="destructive">Destructive</Badge>
+      <Badge variant="outline">Outline</Badge>
+      <Badge variant="ghost">Ghost</Badge>
+    </div>
   )
 }

@@ -169,6 +169,27 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(rtlSource).not.toContain('language-selector')
   })
 
+  it('keeps every Badge source aligned with its rendered preview', () => {
+    expectCuratedFamily('badge')
+
+    const loadBadge = (previewName: string) => loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: 'badge',
+      previewName,
+    })!
+
+    expect(loadBadge('badge-demo').match(/<Badge(?:\s|>)/g)).toHaveLength(4)
+    expect(loadBadge('badge-variants')).toContain('<Badge variant="ghost">Ghost</Badge>')
+    expect(loadBadge('badge-icon')).toContain('<VerifiedIcon />Verified')
+    expect(loadBadge('badge-icon')).toContain('Bookmark<BookmarkIcon />')
+    expect(loadBadge('badge-spinner')).toContain('<Spinner data-icon="inline-start" />Deleting')
+    expect(loadBadge('badge-link')).toContain('<Badge asChild>')
+    expect(loadBadge('badge-link')).toContain('<a href="#link">')
+    expect(loadBadge('badge-colors').match(/<Badge(?:\s|>)/g)).toHaveLength(5)
+    expect(loadBadge('badge-rtl').match(/<Badge(?:\s|>)/g)).toHaveLength(6)
+    expect(loadBadge('badge-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],

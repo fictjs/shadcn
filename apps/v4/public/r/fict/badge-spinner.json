@@ -5,12 +5,13 @@
   "description": "Small status badge with variants example for Fict",
   "dependencies": [],
   "registryDependencies": [
-    "badge"
+    "badge",
+    "spinner"
   ],
   "files": [
     {
       "path": "src/examples/badge-spinner.tsx",
-      "content": "import { Badge } from '@/components/ui/badge'\n\nexport default function BadgeSpinnerExample() {\n  return (\n    <Badge>Spinner</Badge>\n  )\n}\n",
+      "content": "import { Badge } from '@/components/ui/badge'\nimport { Spinner } from '@/components/ui/spinner'\n\nexport default function BadgeSpinnerExample() {\n  return (\n    <div class=\"flex flex-wrap gap-2\">\n      <Badge variant=\"destructive\"><Spinner data-icon=\"inline-start\" />Deleting</Badge>\n      <Badge variant=\"secondary\">Generating<Spinner data-icon=\"inline-end\" /></Badge>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

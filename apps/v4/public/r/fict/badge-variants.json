@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/badge-variants.tsx",
-      "content": "import { Badge } from '@/components/ui/badge'\n\nexport default function BadgeVariantsExample() {\n  return (\n    <Badge>Variants</Badge>\n  )\n}\n",
+      "content": "import { Badge } from '@/components/ui/badge'\n\nexport default function BadgeVariantsExample() {\n  return (\n    <div class=\"flex flex-wrap gap-2\">\n      <Badge>Default</Badge>\n      <Badge variant=\"secondary\">Secondary</Badge>\n      <Badge variant=\"destructive\">Destructive</Badge>\n      <Badge variant=\"outline\">Outline</Badge>\n      <Badge variant=\"ghost\">Ghost</Badge>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

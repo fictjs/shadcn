@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/badge-colors.tsx",
-      "content": "import { Badge } from '@/components/ui/badge'\n\nexport default function BadgeColorsExample() {\n  return (\n    <Badge>Colors</Badge>\n  )\n}\n",
+      "content": "import { Badge } from '@/components/ui/badge'\n\nexport default function BadgeColorsExample() {\n  return (\n    <div class=\"flex flex-wrap gap-2\">\n      <Badge class=\"bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300\">Blue</Badge>\n      <Badge class=\"bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300\">Green</Badge>\n      <Badge class=\"bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300\">Sky</Badge>\n      <Badge class=\"bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300\">Purple</Badge>\n      <Badge class=\"bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300\">Red</Badge>\n    </div>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

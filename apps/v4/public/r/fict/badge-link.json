@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/badge-link.tsx",
-      "content": "import { Badge } from '@/components/ui/badge'\n\nexport default function BadgeLinkExample() {\n  return (\n    <Badge>Link</Badge>\n  )\n}\n",
+      "content": "import { Badge } from '@/components/ui/badge'\n\nfunction ExternalLinkIcon() {\n  return (\n    <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" data-icon=\"inline-end\" aria-hidden=\"true\">\n      <path d=\"M7 17 17 7M7 7h10v10\" />\n    </svg>\n  )\n}\n\nexport default function BadgeLinkExample() {\n  return (\n    <Badge asChild>\n      <a href=\"#link\">Open Link<ExternalLinkIcon /></a>\n    </Badge>\n  )\n}\n",
       "type": "registry:page"
     }
   ]
