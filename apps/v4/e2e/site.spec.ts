@@ -1731,6 +1731,17 @@ test.describe("Fict shadcn website", () => {
     await expect(rtlRoot).toHaveAttribute("dir", "ltr")
     await expect(rtlFilter).toHaveAttribute("placeholder", "Filter emails...")
     await expect(rtl.locator('th[data-doc-data-col="status"]')).toContainText("Status")
+
+    const expectedSources = [
+      ["data-table-demo", "let selected = $state<string[]>([])", "DropdownMenuCheckboxItem", "Copy payment ID"],
+      ["data-table-rtl", "$state<keyof typeof translations>", "סנן אימיילים...", "dir={text().dir}"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const sourcePreview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await sourcePreview.getByRole("button", { name: "View Code" }).click()
+      const source = sourcePreview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
 

@@ -952,6 +952,21 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadScrollArea('scroll-area-rtl')).toContain("he: { dir: 'rtl', tags: 'תגיות' }")
   })
 
+  it('keeps every Data Table source aligned with its rendered preview', () => {
+    expectCuratedFamily('data-table')
+    const loadDataTable = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'data-table', previewName })!
+    const demo = loadDataTable('data-table-demo')
+    expect(demo).toContain("let filter = $state('')")
+    expect(demo).toContain("let selected = $state<string[]>([])")
+    expect(demo).toContain('DropdownMenuCheckboxItem')
+    expect(demo).toContain('Copy payment ID')
+    expect(demo).toContain("email: 'ken99@example.com'")
+    const rtl = loadDataTable('data-table-rtl')
+    expect(rtl).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(rtl).toContain("filter: 'סנן אימיילים...'")
+    expect(rtl).toContain('dir={text().dir}')
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!
