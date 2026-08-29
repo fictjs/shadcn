@@ -4747,6 +4747,23 @@ test.describe("Fict shadcn website", () => {
     await expect(rtl.getByText("קבל תנאים והגבלות", { exact: true }).first()).toBeVisible()
     await rtl.getByLabel("Preview language").selectOption("en")
     await expect(rtl.locator(".doc-checkbox-fields")).toHaveAttribute("dir", "ltr")
+
+    const expectedSources = [
+      ["checkbox-demo", '<Checkbox id="terms" />', "You can enable or disable notifications at any time."],
+      ["checkbox-basic", '<Checkbox id="terms-basic" />'],
+      ["checkbox-description", "defaultChecked", "terms and conditions"],
+      ["checkbox-disabled", "disabled"],
+      ["checkbox-invalid", 'aria-invalid="true"'],
+      ["checkbox-group", "['hard-disks', 'Hard disks', true]"],
+      ["checkbox-table", "let selected = $state(new Set([0]))", "checked={() => selected.has(index)}"],
+      ["checkbox-rtl", "$state<keyof typeof translations>('ar')", "dir={text().dir}"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("dashboard example renders as a live desktop stage", async ({ page }) => {

@@ -530,6 +530,26 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadChart('chart-rtl')).toContain('dir={text().dir} showGrid showAxis showTooltip')
   })
 
+  it('keeps every Checkbox source aligned with its rendered preview', () => {
+    expectCuratedFamily('checkbox')
+
+    const loadCheckbox = (previewName: string) => loadFictExampleSource({
+      exampleRoot: repositoryExampleRoot,
+      componentName: 'checkbox',
+      previewName,
+    })!
+
+    expect(loadCheckbox('checkbox-demo').match(/<Checkbox(?:\s|>)/g)).toHaveLength(4)
+    expect(loadCheckbox('checkbox-basic')).toContain('<Checkbox id="terms-basic" />')
+    expect(loadCheckbox('checkbox-description')).toContain('defaultChecked')
+    expect(loadCheckbox('checkbox-disabled')).toContain('disabled')
+    expect(loadCheckbox('checkbox-invalid')).toContain('aria-invalid="true"')
+    expect(loadCheckbox('checkbox-group')).toContain("['hard-disks', 'Hard disks', true]")
+    expect(loadCheckbox('checkbox-table')).toContain('let selected = $state(new Set([0]))')
+    expect(loadCheckbox('checkbox-table')).toContain('checked={() => selected.has(index)}')
+    expect(loadCheckbox('checkbox-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+  })
+
   it('keeps every Typography source aligned with its rendered preview', () => {
     expectCuratedFamily('typography')
     const loadTypography = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'typography', previewName })!

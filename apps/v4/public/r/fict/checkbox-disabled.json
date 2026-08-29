@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/checkbox-disabled.tsx",
-      "content": "import { Checkbox } from '@/components/ui/checkbox'\n\nexport default function CheckboxDisabledExample() {\n  return (\n    <label class=\"flex items-center gap-2\"><Checkbox disabled defaultChecked /> Disabled</label>\n  )\n}\n",
+      "content": "import { Checkbox } from '@/components/ui/checkbox'\n\nexport default function CheckboxDisabledExample() {\n  return <label class=\"flex items-center gap-2 opacity-50\"><Checkbox id=\"notifications-disabled\" disabled />Enable notifications</label>\n}\n",
       "type": "registry:page"
     }
   ]

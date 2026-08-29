@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/checkbox-basic.tsx",
-      "content": "import { Checkbox } from '@/components/ui/checkbox'\n\nexport default function CheckboxBasicExample() {\n  return (\n    <label class=\"flex items-center gap-2\"><Checkbox defaultChecked /> Basic</label>\n  )\n}\n",
+      "content": "import { Checkbox } from '@/components/ui/checkbox'\n\nexport default function CheckboxBasicExample() {\n  return <label class=\"flex items-center gap-2\"><Checkbox id=\"terms-basic\" />Accept terms and conditions</label>\n}\n",
       "type": "registry:page"
     }
   ]

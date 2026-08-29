@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/checkbox-description.tsx",
-      "content": "import { Checkbox } from '@/components/ui/checkbox'\n\nexport default function CheckboxDescriptionExample() {\n  return (\n    <label class=\"flex items-center gap-2\"><Checkbox defaultChecked /> Description</label>\n  )\n}\n",
+      "content": "import { Checkbox } from '@/components/ui/checkbox'\n\nexport default function CheckboxDescriptionExample() {\n  return <label class=\"flex items-start gap-2\"><Checkbox id=\"terms-description\" defaultChecked /><span><strong>Accept terms and conditions</strong><small class=\"block text-muted-foreground\">By clicking this checkbox, you agree to the terms and conditions.</small></span></label>\n}\n",
       "type": "registry:page"
     }
   ]
