@@ -872,6 +872,8 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadButtonGroup('button-group-select')).toContain("let currency = $state('$')")
     expect(loadButtonGroup('button-group-popover')).toContain('<PopoverContent')
     expect(loadButtonGroup('button-group-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadButtonGroup('button-group-rtl')).toContain('وضع علامة كمقروء')
+    expect(loadButtonGroup('button-group-rtl')).toContain('<DropdownMenuItem variant="destructive">{t.trash}</DropdownMenuItem>')
   })
 
   it('keeps every Context Menu source aligned with its rendered preview', () => {

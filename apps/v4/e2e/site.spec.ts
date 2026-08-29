@@ -1025,7 +1025,7 @@ test.describe("Fict shadcn website", () => {
       ["button-group-input-group", "let voiceEnabled = $state(false)"],
       ["button-group-select", "let currency = $state('$')"],
       ["button-group-popover", "<PopoverContent"],
-      ["button-group-rtl", "$state<keyof typeof translations>", "ארכיון"],
+      ["button-group-rtl", "$state<keyof typeof translations>", "ארכיון", "وضع علامة كمقروء", "DropdownMenuItem variant=\"destructive\""],
     ] as const
     for (const [previewName, ...markers] of expectedSources) {
       const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
