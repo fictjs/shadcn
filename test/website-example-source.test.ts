@@ -462,6 +462,7 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadEmpty('empty-avatar-group').match(/<Avatar size="lg">/g)).toHaveLength(3)
     expect(loadEmpty('empty-input-group')).toContain('aria-label="Search pages"')
     expect(loadEmpty('empty-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadEmpty('empty-rtl')).toContain("'تعرف على المزيد'")
   })
 
   it('keeps every Sonner source aligned with its rendered preview', () => {

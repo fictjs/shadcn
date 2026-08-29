@@ -2123,7 +2123,7 @@ test.describe("Fict shadcn website", () => {
       ["empty-avatar", '<Avatar size="lg">', "User Offline"],
       ["empty-avatar-group", "<AvatarGroup>", "No Team Members"],
       ["empty-input-group", 'aria-label="Search pages"', "Contact support"],
-      ["empty-rtl", "$state<keyof typeof translations>", "אין פרויקטים עדיין"],
+      ["empty-rtl", "$state<keyof typeof translations>", "אין פרויקטים עדיין", "تعرف على المزيد"],
     ] as const
     for (const [previewName, ...markers] of expectedSources) {
       const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
