@@ -1644,6 +1644,23 @@ test.describe("Fict shadcn website", () => {
     await page.keyboard.press("Escape")
     await rtl.getByLabel("Preview language").selectOption("en")
     await expect(rtlTrigger).toContainText("Right click here")
+
+    const expectedSources = [
+      ["context-menu-demo", "<ContextMenuCheckboxItem", "<ContextMenuRadioGroup"],
+      ["context-menu-submenu", "<ContextMenuSub>"],
+      ["context-menu-shortcuts", "<ContextMenuShortcut>"],
+      ["context-menu-groups", "<ContextMenuGroup>"],
+      ["context-menu-radio", "let person = $state('pedro')"],
+      ["context-menu-destructive", 'variant="destructive"'],
+      ["context-menu-sides", 'side="right"'],
+      ["context-menu-rtl", "$state<keyof typeof translations>", "ניווט"],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("data table docs match Fict filtering, sorting, selection, visibility, menus, and RTL", async ({ page }) => {

@@ -125,6 +125,8 @@ import { cn } from '${context.imports.cn}'
 export const ContextMenu = ContextMenuPrimitive.Root
 export const ContextMenuTrigger = ContextMenuPrimitive.Trigger
 export const ContextMenuSub = ContextMenuPrimitive.Sub
+export const ContextMenuGroup = ContextMenuPrimitive.Group
+export const ContextMenuRadioGroup = ContextMenuPrimitive.RadioGroup
 
 type GenericProps = {
   class?: string
@@ -151,6 +153,31 @@ export function ContextMenuItem(props: GenericProps) {
       {...rest}
     />
   )
+}
+
+export function ContextMenuCheckboxItem(props: GenericProps) {
+  const { class: className, ...rest } = props
+  return <ContextMenuPrimitive.CheckboxItem class={cn('relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent', className)} {...rest} />
+}
+
+export function ContextMenuRadioItem(props: GenericProps) {
+  const { class: className, ...rest } = props
+  return <ContextMenuPrimitive.RadioItem class={cn('relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none hover:bg-accent', className)} {...rest} />
+}
+
+export function ContextMenuLabel(props: GenericProps) {
+  const { class: className, inset, ...rest } = props
+  return <ContextMenuPrimitive.Label class={cn('px-2 py-1.5 text-sm font-semibold', inset && 'pl-8', className)} {...rest} />
+}
+
+export function ContextMenuSeparator(props: GenericProps) {
+  const { class: className, ...rest } = props
+  return <ContextMenuPrimitive.Separator class={cn('-mx-1 my-1 h-px bg-muted', className)} {...rest} />
+}
+
+export function ContextMenuShortcut(props: JSX.IntrinsicElements['span']) {
+  const { class: className, ...rest } = props
+  return <span class={cn('ml-auto text-xs tracking-widest text-muted-foreground', className)} {...rest} />
 }
 
 export function ContextMenuSubTrigger(props: GenericProps) {

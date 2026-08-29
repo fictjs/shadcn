@@ -1,7 +1,66 @@
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger } from '@/components/ui/context-menu'
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuGroup,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu'
 
 export default function ContextMenuSidesExample() {
   return (
-    <ContextMenu><ContextMenuTrigger class="flex h-36 w-64 items-center justify-center rounded-md border border-dashed">Right click here</ContextMenuTrigger><ContextMenuContent><ContextMenuItem>Menu Sides</ContextMenuItem><ContextMenuSub><ContextMenuSubTrigger>More</ContextMenuSubTrigger><ContextMenuSubContent><ContextMenuItem>Save</ContextMenuItem></ContextMenuSubContent></ContextMenuSub></ContextMenuContent></ContextMenu>
+    <div class="grid w-full max-w-sm grid-cols-2 gap-4">
+      <ContextMenu>
+        <ContextMenuTrigger class="flex aspect-video w-full max-w-xs items-center justify-center rounded-xl border border-dashed text-sm">
+          <span class="hidden pointer-fine:inline-block">Right click (top)</span>
+          <span class="hidden pointer-coarse:inline-block">Long press (top)</span>
+        </ContextMenuTrigger>
+        <ContextMenuContent side="top">
+          <ContextMenuGroup>
+            <ContextMenuItem>Back</ContextMenuItem>
+            <ContextMenuItem>Forward</ContextMenuItem>
+            <ContextMenuItem>Reload</ContextMenuItem>
+          </ContextMenuGroup>
+        </ContextMenuContent>
+      </ContextMenu>
+      <ContextMenu>
+        <ContextMenuTrigger class="flex aspect-video w-full max-w-xs items-center justify-center rounded-xl border border-dashed text-sm">
+          <span class="hidden pointer-fine:inline-block">Right click (right)</span>
+          <span class="hidden pointer-coarse:inline-block">Long press (right)</span>
+        </ContextMenuTrigger>
+        <ContextMenuContent side="right">
+          <ContextMenuGroup>
+            <ContextMenuItem>Back</ContextMenuItem>
+            <ContextMenuItem>Forward</ContextMenuItem>
+            <ContextMenuItem>Reload</ContextMenuItem>
+          </ContextMenuGroup>
+        </ContextMenuContent>
+      </ContextMenu>
+      <ContextMenu>
+        <ContextMenuTrigger class="flex aspect-video w-full max-w-xs items-center justify-center rounded-xl border border-dashed text-sm">
+          <span class="hidden pointer-fine:inline-block">Right click (bottom)</span>
+          <span class="hidden pointer-coarse:inline-block">Long press (bottom)</span>
+        </ContextMenuTrigger>
+        <ContextMenuContent side="bottom">
+          <ContextMenuGroup>
+            <ContextMenuItem>Back</ContextMenuItem>
+            <ContextMenuItem>Forward</ContextMenuItem>
+            <ContextMenuItem>Reload</ContextMenuItem>
+          </ContextMenuGroup>
+        </ContextMenuContent>
+      </ContextMenu>
+      <ContextMenu>
+        <ContextMenuTrigger class="flex aspect-video w-full max-w-xs items-center justify-center rounded-xl border border-dashed text-sm">
+          <span class="hidden pointer-fine:inline-block">Right click (left)</span>
+          <span class="hidden pointer-coarse:inline-block">Long press (left)</span>
+        </ContextMenuTrigger>
+        <ContextMenuContent side="left">
+          <ContextMenuGroup>
+            <ContextMenuItem>Back</ContextMenuItem>
+            <ContextMenuItem>Forward</ContextMenuItem>
+            <ContextMenuItem>Reload</ContextMenuItem>
+          </ContextMenuGroup>
+        </ContextMenuContent>
+      </ContextMenu>
+    </div>
   )
 }

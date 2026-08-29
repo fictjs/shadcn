@@ -112,6 +112,14 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain('export function ButtonGroupSeparator')
   })
 
+  it('renders the Context Menu APIs used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('context-menu')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain('export const ContextMenuRadioGroup')
+    expect(source).toContain('export function ContextMenuCheckboxItem')
+    expect(source).toContain('export function ContextMenuRadioItem')
+    expect(source).toContain('export function ContextMenuShortcut')
+  })
+
   it('renders the directional Drawer API used by website examples', () => {
     const entry = getBuiltinComponent('drawer')
     const source = renderRegistryEntryFiles(entry!, DEFAULT_CONFIG)
