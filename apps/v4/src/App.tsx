@@ -4335,6 +4335,8 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
 
   return family === "checkbox" ? (
     <DocCheckboxPreview name={props.name} />
+  ) : family === "form" ? (
+    <DocFormPreview name={props.name} />
   ) : family === "direction" && name === "card-rtl" ? (
     <DocCardPreview name={props.name} />
   ) : family === "field" || name.startsWith("field-") ? (
@@ -4533,6 +4535,20 @@ function DocComponentPreviewSurface(props: { family: string; name: string }) {
       <h4>{formatDisplayLabel(family || "component preview")}</h4>
       <p>Registry preview surface for this documentation example.</p>
     </div>
+  )
+}
+
+function DocFormPreview(props: { name: string }) {
+  untrack(() => props.name)
+  return (
+    <form class="doc-form-preview doc-field-form" data-doc-form>
+      <div class="doc-field">
+        <label class="doc-field-label" for="doc-form-username">Username</label>
+        <input class="ui-input" id="doc-form-username" name="username" placeholder="fict-user" />
+        <p class="doc-field-description">This is your public display name.</p>
+        <p class="doc-form-message" aria-live="polite"></p>
+      </div>
+    </form>
   )
 }
 
@@ -7754,6 +7770,7 @@ function getDocPreviewFamily(name: string): string {
     "empty",
     "badge",
     "field",
+    "form",
     "input",
     "label",
     "alert",

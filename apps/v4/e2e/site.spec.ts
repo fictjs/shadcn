@@ -2257,6 +2257,24 @@ test.describe("Fict shadcn website", () => {
     }
   })
 
+  test("form docs render the real Fict field and matching source", async ({ page }) => {
+    await page.goto("/docs/components/fict/form")
+    await waitForClientReady(page)
+
+    const preview = page.locator('[data-doc-preview-name="form-demo"]')
+    await expect(preview).not.toContainText("Registry preview surface")
+    const form = preview.locator("[data-doc-form]")
+    await expect(form).toBeVisible()
+    await expect(form.getByLabel("Username")).toHaveAttribute("name", "username")
+    await expect(form.getByLabel("Username")).toHaveAttribute("placeholder", "fict-user")
+    await expect(form).toContainText("This is your public display name.")
+
+    await preview.getByRole("button", { name: "View Code" }).click()
+    const source = preview.locator("[data-doc-preview-full-code]")
+    await expect(source).toContainText('<FormField name="username">')
+    await expect(source).toContainText("<FormMessage />")
+  })
+
   test("hover card docs match Fict delays, geometry, sides, pointer transit, focus, and RTL", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })
     await page.goto("/docs/components/fict/hover-card")
