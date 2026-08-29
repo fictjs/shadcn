@@ -1103,12 +1103,16 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expectCuratedFamily('menubar')
     const loadMenubar = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'menubar', previewName })!
     expect(loadMenubar('menubar-demo')).toContain('<MenubarCheckboxItem checked>Full URLs</MenubarCheckboxItem>')
+    expect(loadMenubar('menubar-demo')).toContain('<MenubarItem>Search the web</MenubarItem>')
+    expect(loadMenubar('menubar-demo')).toContain('<MenubarItem inset>Hide Sidebar</MenubarItem>')
     expect(loadMenubar('menubar-checkbox')).toContain('Always Show Bookmarks Bar')
     expect(loadMenubar('menubar-radio')).toContain("let user = $state('benoit')")
     expect(loadMenubar('menubar-submenu')).toContain('<MenubarSubTrigger>Share</MenubarSubTrigger>')
     expect(loadMenubar('menubar-icons')).toContain('<MenubarItem variant="destructive">')
     expect(loadMenubar('menubar-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
     expect(loadMenubar('menubar-rtl')).toContain('כרטיסייה חדשה')
+    expect(loadMenubar('menubar-rtl')).toContain("searchWeb: 'البحث على الويب'")
+    expect(loadMenubar('menubar-rtl')).toContain('<MenubarCheckboxItem checked>{t.urls}</MenubarCheckboxItem>')
   })
 
   it.each([

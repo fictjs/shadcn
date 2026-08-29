@@ -3113,12 +3113,12 @@ test.describe("Fict shadcn website", () => {
     await expect(rtl.locator("[data-doc-menubar-trigger]")).toHaveText(["File", "Edit", "View", "Profiles"])
 
     const expectedSources = [
-      ["menubar-demo", "<MenubarCheckboxItem checked>Full URLs", '<MenubarRadioGroup value="benoit">'],
+      ["menubar-demo", "<MenubarCheckboxItem checked>Full URLs", '<MenubarRadioGroup value="benoit">', "Search the web", "Hide Sidebar"],
       ["menubar-checkbox", "Always Show Bookmarks Bar", "Force Reload"],
       ["menubar-radio", "$state('benoit')", 'value="system"'],
       ["menubar-submenu", "<MenubarSubTrigger>Share</MenubarSubTrigger>", "Find Previous"],
       ["menubar-icons", 'variant="destructive"', '<Icon name="Trash" />'],
-      ["menubar-rtl", "$state<keyof typeof translations>", "כרטיסייה חדשה"],
+      ["menubar-rtl", "$state<keyof typeof translations>", "כרטיסייה חדשה", "البحث على الويب", "MenubarCheckboxItem checked"],
     ] as const
     for (const [previewName, ...markers] of expectedSources) {
       const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
