@@ -10,7 +10,7 @@
   "files": [
     {
       "path": "src/examples/command-shortcuts.tsx",
-      "content": "import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from '@/components/ui/command'\n\nexport default function CommandShortcutsExample() {\n  return (\n    <Command><CommandInput placeholder=\"Type a command...\" /><CommandList><CommandEmpty>No results found.</CommandEmpty><CommandGroup heading=\"Suggestions\"><CommandItem value=\"calendar\">Calendar</CommandItem><CommandItem value=\"settings\">Shortcuts</CommandItem></CommandGroup><CommandSeparator /></CommandList></Command>\n  )\n}\n",
+      "content": "import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandTrigger } from '@/components/ui/command'\n\nexport default function CommandShortcutsExample() {\n  return (\n    <Command>\n      <CommandTrigger class=\"rounded-md border px-4 py-2\">Open Menu</CommandTrigger>\n      <CommandDialog aria-label=\"Command Palette\"><CommandInput placeholder=\"Type a command or search...\" /><CommandList><CommandEmpty>No results found.</CommandEmpty><CommandGroup heading=\"Settings\"><CommandItem value=\"profile\">Profile <span class=\"ml-auto\">⌘P</span></CommandItem><CommandItem value=\"billing\">Billing <span class=\"ml-auto\">⌘B</span></CommandItem><CommandItem value=\"settings\">Settings <span class=\"ml-auto\">⌘S</span></CommandItem></CommandGroup></CommandList></CommandDialog>\n    </Command>\n  )\n}\n",
       "type": "registry:page"
     }
   ]

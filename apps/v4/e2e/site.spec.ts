@@ -1443,6 +1443,21 @@ test.describe("Fict shadcn website", () => {
     await expect(rtlCommand).toHaveAttribute("dir", "ltr")
     await expect(rtlInput).toHaveAttribute("placeholder", "Type a command or search...")
     await expect(rtl.locator("[data-doc-command-item]").first()).toContainText("Calendar")
+
+    const expectedSources = [
+      ["command-demo", 'value="calculator" disabled', "Profile <span", "⌘P"],
+      ["command-basic", "<CommandTrigger", "Open Menu"],
+      ["command-shortcuts", "Profile <span", "⌘P"],
+      ["command-groups", "<CommandSeparator />", "Billing"],
+      ["command-scrollable", "Help & Support", "<CommandList class=\"max-h-72\">"],
+      ["command-rtl", "$state<keyof typeof translations>", "הקלד פקודה או חפש..."],
+    ] as const
+    for (const [previewName, ...markers] of expectedSources) {
+      const preview = page.locator(`[data-doc-preview-name="${previewName}"]`)
+      await preview.getByRole("button", { name: "View Code" }).click()
+      const source = preview.locator("[data-doc-preview-full-code]")
+      for (const marker of markers) await expect(source).toContainText(marker)
+    }
   })
 
   test("context menu docs match Fict triggers, items, state, submenus, placement, keyboard, and RTL", async ({ page }) => {

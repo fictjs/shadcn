@@ -663,7 +663,7 @@ function useCommand(): CommandContextValue {
 export function Command(props: CommandProps) {
   const internalValue = createSignal(props.defaultValue ?? '')
   const internalQuery = createSignal(props.defaultQuery ?? '')
-  const open = createSignal(true)
+  const open = createSignal(false)
   const records = createSignal<CommandRecord[]>([])
 
   const contextValue: CommandContextValue = {
@@ -714,8 +714,21 @@ export function Command(props: CommandProps) {
 }
 
 export function CommandDialog(props: GenericProps) {
-  const { class: className, ...rest } = props
-  return <div role='dialog' data-slot='command-dialog' class={cn('overflow-hidden rounded-lg border bg-popover shadow-md', className)} {...rest} />
+  const context = useCommand()
+  const { class: className, onKeyDown, ...rest } = props
+  return () => context.open() ? (
+    <div
+      role='dialog'
+      aria-modal='true'
+      data-slot='command-dialog'
+      class={cn('overflow-hidden rounded-lg border bg-popover shadow-md', className)}
+      onKeyDown={(event: KeyboardEvent) => {
+        ;(onKeyDown as ((event: KeyboardEvent) => void) | undefined)?.(event)
+        if (!event.defaultPrevented && event.key === 'Escape') context.setOpen(false)
+      }}
+      {...rest}
+    />
+  ) : null
 }
 
 export function CommandTrigger(props: GenericProps) {

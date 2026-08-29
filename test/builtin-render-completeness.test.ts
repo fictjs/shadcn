@@ -151,6 +151,13 @@ describe('builtin registry render completeness', () => {
     expect(source).toContain('export const TooltipTriggerEl = TooltipPrimitive.Trigger')
   })
 
+  it('renders the Command dialog API used by website examples', () => {
+    const source = renderRegistryEntryFiles(getBuiltinComponent('command')!, DEFAULT_CONFIG).map(file => file.content).join('\n')
+    expect(source).toContain('const open = createSignal(false)')
+    expect(source).toContain('return () => context.open() ? (')
+    expect(source).toContain("if (!event.defaultPrevented && event.key === 'Escape') context.setOpen(false)")
+  })
+
   it('uses the published Radix umbrella for every primitive-backed component', () => {
     expect(RUNTIME_DEPENDENCIES).toContain('@fictjs/radix-ui')
     expect(RUNTIME_DEPENDENCIES).not.toContain('@fictjs/ui-primitives')

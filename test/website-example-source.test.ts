@@ -470,6 +470,19 @@ export default function Demo() { return <ButtonGroup><Button>{format('Save')}</B
     expect(loadTypography('typography-rtl')).toContain('מיסוי הצחוק: כרוניקות מס הבדיחה')
   })
 
+  it('keeps every Command source aligned with its rendered preview', () => {
+    expectCuratedFamily('command')
+    const loadCommand = (previewName: string) => loadFictExampleSource({ exampleRoot: repositoryExampleRoot, componentName: 'command', previewName })!
+    expect(loadCommand('command-demo')).toContain('<CommandItem value="calculator" disabled>')
+    expect(loadCommand('command-basic')).toContain('<CommandTrigger class="rounded-md border px-4 py-2">Open Menu</CommandTrigger>')
+    expect(loadCommand('command-shortcuts')).toContain('Profile <span class="ml-auto">⌘P</span>')
+    expect(loadCommand('command-groups')).toContain('<CommandSeparator />')
+    expect(loadCommand('command-scrollable')).toContain("['Tools', ['Calculator', 'Calendar', 'Image Editor', 'Code Editor']]")
+    expect(loadCommand('command-scrollable')).toContain('<CommandList class="max-h-72">')
+    expect(loadCommand('command-rtl')).toContain("let language = $state<keyof typeof translations>('ar')")
+    expect(loadCommand('command-rtl')).toContain('הקלד פקודה או חפש...')
+  })
+
   it.each([
     ['React import', "import { useState } from 'react'\nexport default function Demo() { return null }"],
     ['React className attribute', 'export default function Demo() { return <div className="x" /> }'],
